@@ -6,15 +6,18 @@ class Lotes extends CI_Model {
 		parent::__construct();
 	}
 	
-	function Lotes_List() // Ok
+	function list() // Ok
 	{
 		//$userdata  = $this->session->userdata('user_data');
-        //$empresaId = $userdata[0]['id_empresa'];
-		$this->db->select('tbl_lote.*, articles.artDescription, articles.artBarCode,tbl_lote.cantidad,abmdeposito.depositodescrip,tbl_lote.lotestado');
-		$this->db->from('tbl_lote');
-		$this->db->join('articles', 'tbl_lote.artId = articles.artId');
-		$this->db->join('abmdeposito', ' tbl_lote.depositoId = abmdeposito.depositoid');
-		//$this->db->where('tbl_lote.id_empresa', $empresaId);
+		$empresaId = 1;//$userdata[0]['id_empresa'];
+		
+		$this->db->select('alm_lote.*, alm_articulos.descripcion as artDescription, alm_articulos.barcode as artBarCode,alm_lote.cantidad,alm_deposito.descripcion as depositodescrip,C.valor as lotestado');
+		$this->db->from('alm_lote');
+		$this->db->join('alm_articulos', 'alm_lote.arti_id = alm_articulos.arti_id');
+		$this->db->join('alm_deposito', ' alm_lote.depo_id = alm_deposito.depo_id');
+		$this->db->join('utl_tablas C','alm_lote.estado_id = C.tabl_id');
+		$this->db->where('alm_lote.empr_id', $empresaId);
+
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
@@ -30,13 +33,13 @@ class Lotes extends CI_Model {
 	{
 		//$userdata  = $this->session->userdata('user_data');
         //$empresaId = $userdata[0]['id_empresa'];
-		$this->db->select('tbl_lote.*, 
-			articles.artDescription, articles.artBarCode, articles.punto_pedido, tbl_lote.cantidad, abmdeposito.depositodescrip, tbl_lote.lotestado');
-		$this->db->from('tbl_lote');
-		$this->db->join('articles', 'tbl_lote.artId = articles.artId');
-		$this->db->join('abmdeposito', ' tbl_lote.depositoId = abmdeposito.depositoid');
-		$this->db->where('articles.punto_pedido >= tbl_lote.cantidad');
-		//$this->db->where('tbl_lote.id_empresa', $empresaId);
+		$this->db->select('alm_lote.*, 
+			alm_articulos.artDescription, alm_articulos.artBarCode, alm_articulos.punto_pedido, alm_lote.cantidad, alm_deposito.depositodescrip, alm_lote.lotestado');
+		$this->db->from('alm_lote');
+		$this->db->join('alm_articulos', 'alm_lote.arti_id = alm_articulos.arti_id');
+		$this->db->join('alm_deposito', ' alm_lote.depo_id = alm_deposito.depo_id');
+		$this->db->where('alm_articulos.punto_pedido >= alm_lote.cantidad');
+		//$this->db->where('alm_lote.empr_id', $empresaId);
 		$query = $this->db->get();
 
 		if ($query->num_rows()!=0)

@@ -1,24 +1,25 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Articulos extends CI_Controller {
+class Articulo extends CI_Controller {
 
 	function __construct() 
     {
 		parent::__construct();
-		$this->load->model('Articulos');
+		$this->load->model('almacen/Articulos');
 	}
 
 	// Muestra listado de articulos
 	public function index()
 	{
-		$data['list'] = $this->Articulos->Articles_List();
-		$this->load->view('articles/list', $data);
+		$data['list'] = $this->Articulos->list();
+		$data['permission'] = 'Add-Edit-Del-View';
+		$this->load->view('almacen/articulo/list', $data);
 	}
-	
-	public function getArticulos()//getdatosart() // Ok
+		
+	public function getdatosart() // Ok
 	{
-		$art = $this->Articulos->getdatosarts();
+		$art = $this->Articulos->getUnidadesMedidas();
 		if($art)
 		{	
 			$arre = array();
@@ -34,8 +35,8 @@ class Articulos extends CI_Controller {
 	//
 	public function getArticle() // Ok
 	{
-		$data['data']     = $this->Articulos->getArticle($this->input->post());
-		$response['html'] = $this->load->view('articles/view_', $data, true);
+		$data['data']   = $this->Articulos->getArticle($this->input->post());
+		$response['html'] = $this->load->view('almacen/articulo/view_', $data, true);
 
 		echo json_encode($response);
 	}
@@ -58,13 +59,6 @@ class Articulos extends CI_Controller {
 	}
 
 
-
-	
-
-
-
-
-
 	public function setArticle(){
 		$data = $this->Articulos->setArticle($this->input->post());
 		if($data  == false)
@@ -78,37 +72,12 @@ class Articulos extends CI_Controller {
 	}
 
 
-
-
-	
-	public function getdatosfam(){
-		
-		$art = $this->Articulos->getdatosfams();
-		//echo json_encode($Customers);
-
-		if($art)
-		{	
-			$arre=array();
-	        foreach ($art as $row ) 
-	        {   
-	           $arre[]=$row;
-	        }
-			echo json_encode($arre);
-		}
-		else echo "nada";
-	}
-
 	public function baja_articulo()
 	{
 		$idarticulo = $_POST['idelim'];
-		$datos      = array('artEstado'=>"AN");
-		$result     = $this->Articulos->update_articulo($datos, $idarticulo);
+		$result     = $this->Articulos->eliminar($idarticulo);
 		print_r($result);
 	}
-
-
-
-
 
 	public function searchByCode() {
 		$data = $this->Articulos->searchByCode($this->input->post());

@@ -1,23 +1,24 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 
-class Articles extends CI_Model
+class Articulos extends CI_Model
 {
 	function __construct()
 	{
 		parent::__construct();
 	}
 	
-	function getList()  
+	function list()  
 	{
-		$userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
+		//$userdata  = $this->session->userdata('user_data');
+		$empresaId = 1;//$userdata[0]['id_empresa'];
 		
-		$this->db->select('articles.*,tbl_unidadmedida.descripcion');
-		$this->db->from('articles');
-		$this->db->join('tbl_unidadmedida', 'tbl_unidadmedida.id_unidadmedida = articles.unidadmedida');
-		$this->db->where('articles.id_empresa', $empresaId);
-		$this->db->where('articles.artEstado', 'AC');
+		$this->db->select('A.*, B.descripcion as medida,C.valor');
+		$this->db->from('alm_articulos A');
+		$this->db->join('utl_tablas B', 'B.tabl_id = A.unidad_id','left');
+		$this->db->join('utl_tablas C', 'C.tabl_id = A.estado_id');
+		$this->db->where('A.empr_id', $empresaId);
+		$this->db->where('not A.eliminado');
 			
 		$query = $this->db->get();	
 		if ($query->num_rows()!=0)
@@ -30,12 +31,40 @@ class Articles extends CI_Model
 		}
 	}
 	
+	function getpencil($id) // Ok
+    {
+    	//$userdata  = $this->session->userdata('user_data');
+		$empresaId = 1;//$userdata[0]['id_empresa'];
+
+		$this->db->select('A.*, B.tabl_id as unidadmedida,B.descripcion as unidad_descripcion');
+		$this->db->from('alm_articulos A');
+		$this->db->join('utl_tablas B','A.unidad_id = B.tabl_id');
+		$this->db->where('arti_id',$id);
+		$this->db->where('empr_id',$empresaId);
+
+
+	    $query = $this->db->get();
+	    if( $query->num_rows() > 0)
+	    {
+	    	return $query->result_array();	
+	    } 
+	    else {
+	    	return 0;
+	    }
+	}
+
+	function eliminar($id){
+		//$estado_id = $this->db->get_where('utl_tablas',['valor'=>'IN'])->row()->tabl_id;
+		$this->db->where('arti_id',$id);
+		$this->db->set('eliminado',true);
+		return $this->db->update('alm_articulos');
+	}
+
 	function getUnidadesMedidas()
 	{
-		$userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
-		
-		$query     = $this->db->get_where('tbl_unidadmedida', array('id_empresa' => $empresaId));
+		$this->db->select('A.tabl_id as id_unidadmedida,A.descripcion');
+		$this->db->where('tabla','unidad');
+		$query  = $this->db->get('utl_tablas A');
 		if($query->num_rows()>0)
 		{
 		    return $query->result_array();
@@ -49,26 +78,26 @@ class Articles extends CI_Model
 
 	function getArticle($data = null)
 	{
-		if($data == null)
+		
+		if($data == null || strpos('Add',$data['act']) == 0)
 		{
 			return false;
 		}
 		else
 		{
-			$userdata  = $this->session->userdata('user_data');
-			$empresaId = $userdata[0]['id_empresa'];
+			//$userdata  = $this->session->userdata('user_data');
+			$empresaId = 1;//$userdata[0]['id_empresa'];
 			$action    = $data['act'];
 			$idArt     = $data['id'];
 			$data      = array();
-			//Datos del articulo
-			//$query= $this->db->get_where('articles',array('artId'=>$idArt));
-			$sql="SELECT *
-				FROM articles
-				JOIN tbl_unidadmedida ON tbl_unidadmedida.id_unidadmedida = articles.unidadmedida
-				WHERE articles.artId = $idArt 
-				AND articles.id_empresa = $empresaId
-				";
-		    $query = $this->db->query($sql);
+			
+			$this->db->select('A.*,B.valor as unidad');
+			$this->db->from('alm_articulos A');
+			$this->db->join('utl_tablas B','A.unidad_id = B.tabl_id');
+			$this->db->join('utl_tablas C','A.estado_id = C.tabl_id');
+			$this->db->where('C.valor','AC');
+		
+		    $query = $this->db->get();
 		    
 		 	if ($query->num_rows() != 0)
 			{
@@ -101,13 +130,8 @@ class Articles extends CI_Model
 			}
 			$data['read']   = $readonly;
 			$data['action'] = $action;
-			//familias
-			$query= $this->db->get('conffamily');
-			if ($query->num_rows() != 0)
-			{
-				$data['familia'] = $query->result_array();	
-			}
-			//dump_exit($data);
+		
+			
 			return $data;
 		}
 	}
@@ -120,8 +144,8 @@ class Articles extends CI_Model
 		}
 		else
 		{
-			$userdata  = $this->session->userdata('user_data');
-			$empresaId = $userdata[0]['id_empresa'];
+			//$userdata  = $this->session->userdata('user_data');
+			$empresaId = 1;//$userdata[0]['id_empresa'];
 			$id        = $data['id'];
 			$act       = $data['act'];
 			$name      = $data['name'];
@@ -129,37 +153,36 @@ class Articles extends CI_Model
 			$box       = $data['box'];
 			$boxCant   = $data['boxCant'];
 			$code      = $data['code'];
-			$famid     = $data['fam'];   
+		
 			$unidmed   = $data['unidmed'];   
 			$puntped   = $data['puntped'];     
 			$data      = array(
-				'artBarCode'     => $code,
-				'artDescription' => $name,
-				'artEstado'      => $status,
-				'artIsByBox'     => ($box === 'true'),
-				'artCantBox'     => $boxCant,
-				'famId'          => $famid,
-				'unidadmedida'   => $unidmed,
+				'barcode'     => $code,
+				'descripcion' => $name,
+				'estado_id'      => $status,
+				'es_caja'     => ($box === 'true'),
+				'cantidad_caja'     => $boxCant,
+				'unidad_id'   => $unidmed,
 				'punto_pedido'   => $puntped,
-				'id_empresa'	 => $empresaId
+				'empr_id'	 => $empresaId
 			);
 
 			switch($act){
 				case 'Add':
 					//Agregar Artículo 
-					if($this->db->insert('articles', $data) == false) {
+					if($this->db->insert('alm_articulos', $data) == false) {
 						return false;
 					} 
 					break;
 				case 'Edit':
 				 	//Actualizar Artículo
-				 	if($this->db->update('articles', $data, array('artId'=>$id)) == false) {
+				 	if($this->db->update('alm_articulos', $data, array('artId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
 				case 'Del':
 				 	//Eliminar Artículo
-				 	if($this->db->delete('articles', array('artId'=>$id)) == false) {
+				 	if($this->db->delete('alm_articulos', array('artId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
@@ -198,13 +221,10 @@ class Articles extends CI_Model
 
 	function update_editar($data, $id)
 	{
-        $this->db->where('artId', $id);
-        $query = $this->db->update("articles",$data);
+        $this->db->where('arti_id', $id);
+        $query = $this->db->update("alm_articulos",$data);
         return $query;
     }
-
-
-
 
 	function searchByCode($data = null){
 		$str = '';

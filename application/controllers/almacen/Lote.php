@@ -3,8 +3,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Lote extends CI_Controller {
 
-	private $permission = "Add-Edit-Del-View";
-
 	private $path = 'almacen/';
 
 	function __construct()
@@ -15,15 +13,15 @@ class Lote extends CI_Controller {
 
 	public function index()
 	{
-		$data['list']       = $this->Lotes->Lotes_List();
-		$data['permission'] = $this->$permission;
+		$data['list']       = $this->Lotes->list();
+		$data['permission'] = "Add-Edit-Del-View";
 		$this->load->view($this->path.'lotes/list', $data);
 	}
 	
 	public function puntoPedList($permission)
 	{
 		$data['list']       = $this->Lotes->puntoPedListado();
-		$data['permission'] = $this->$permission;
+		$data['permission'] = "Add-Edit-Del-View";
 		$this->load->view($this->path.'lotes/list_punto_ped', $data);
 	}
 

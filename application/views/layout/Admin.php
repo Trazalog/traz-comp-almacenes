@@ -29,6 +29,8 @@
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="<?php base_url() ?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
+    <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -38,7 +40,90 @@
 
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+          <!-- jQuery 3 -->
+    <script src="<?php base_url() ?>lib/bower_components/jquery/dist/jquery.min.js"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="<?php base_url() ?>lib/bower_components/jquery-ui/jquery-ui.min.js"></script>
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <!-- <script>
+        $.widget.bridge('uibutton', $.ui.button);
+    </script> -->
+    <!-- Bootstrap 3.3.7 -->
+    <script src="<?php base_url() ?>lib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Morris.js charts -->
+    <!-- <script src="<?php base_url() ?>lib/bower_components/raphael/raphael.min.js"></script>
+    <script src="<?php base_url() ?>lib/bower_components/morris.js/morris.min.js"></script> -->
+    <!-- Sparkline -->
+    <script src="<?php base_url() ?>lib/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
+    <!-- jvectormap -->
+    <!-- <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+    <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script> -->
+    <!-- jQuery Knob Chart -->
+    <script src="<?php base_url() ?>lib/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
+    <!-- daterangepicker -->
+    <script src="<?php base_url() ?>lib/bower_components/moment/min/moment.min.js"></script>
+    <script src="<?php base_url() ?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <!-- datepicker -->
+    <script src="<?php base_url() ?>lib/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+    <!-- Bootstrap WYSIHTML5 -->
+    <script src="<?php base_url() ?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+    <!-- Slimscroll -->
+    <script src="<?php base_url() ?>lib/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+    <!-- FastClick -->
+    <script src="<?php base_url() ?>lib/bower_components/fastclick/lib/fastclick.js"></script>
+   
+    <script src="<?php base_url() ?>lib/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
+
+    <script src="<?php base_url() ?>lib/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+
+   <!-- AdminLTE App -->
+    <script src="<?php base_url() ?>lib/dist/js/adminlte.min.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <!-- <script src="<?php base_url() ?>lib/dist/js/pages/dashboard.js"></script> -->
+    <!-- AdminLTE for demo purposes -->
+    <!-- <script src="<?php base_url() ?>lib/dist/js/demo.js"></script> -->
+
 </head>
+<!-- indicador de carga -->
+<div class="waiting" id="waiting">
+    <div style="top: 45%; left: 45%; position: fixed;">
+        <!--<div class="progress progress active">
+            <div class="progress-bar progress-bar-warning progress-bar-striped" role="progressbar" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+        </div>-->
+        <div class="box box-success" style="width: 200px; text-align: center;">
+            <br>
+            <br>
+            <br>
+            <div class="box-header">
+                <h3 class="box-title" id="waitingText">Cargando...</h3>
+            </div>
+            <!-- Loading (remove the following to stop the loading)-->
+            <div class="overlay">
+                <i class="fa fa-refresh fa-spin"></i>
+            </div>
+            <!-- end loading -->
+        </div>
+    </div>
+</div>
+
+<style>
+.waiting {
+    background: none;
+    display: block;
+    position: fixed;
+    z-index: 50000;
+    overflow: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    display: none;
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99000000,endColorstr=#99000000); /* AA, RR, GG, BB */
+    /*CSS3*/
+    background:rgba(0,0,0,0.5); /*0.5 De Transparencia*/
+}
+</style>
 
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -75,7 +160,7 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">        
-                            <li><a href="#" data-link="almacen/Articulos"><i class="fa fa-circle-o"></i>Articulos</a></li>     
+                            <li><a href="#" data-link="almacen/Articulo"><i class="fa fa-circle-o"></i>Articulos</a></li>     
                             <li><a href="#" data-link="almacen/Lote"><i class="fa fa-circle-o"></i>Stock</a></li>
                             <li><a href="#" data-link="almacen/Ordeninsumo"><i class="fa fa-circle-o"></i>Orden de Insumos</a></li>
                             <li><a href="#" data-link=""><i class="fa fa-circle-o"></i>Punto de Pedido</a></li>
@@ -104,13 +189,7 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-    <footer class="main-footer">
-        <div class="pull-right hidden-xs">
-            <b>Version</b> 2.4.0
-        </div>
-        <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
-        reserved.
-    </footer>
+ 
 
     <!-- Control Sidebar -->
     <aside class="control-sidebar control-sidebar-dark">
@@ -307,54 +386,37 @@
     <div class="control-sidebar-bg"></div>
     </div>
     <!-- ./wrapper -->
-
-  
-    <!-- jQuery 3 -->
-    <script src="<?php base_url() ?>lib/bower_components/jquery/dist/jquery.min.js"></script>
-    <!-- jQuery UI 1.11.4 -->
-    <script src="<?php base_url() ?>lib/bower_components/jquery-ui/jquery-ui.min.js"></script>
-    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-    <!-- <script>
-        $.widget.bridge('uibutton', $.ui.button);
-    </script> -->
-    <!-- Bootstrap 3.3.7 -->
-    <script src="<?php base_url() ?>lib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- Morris.js charts -->
-    <script src="<?php base_url() ?>lib/bower_components/raphael/raphael.min.js"></script>
-    <script src="<?php base_url() ?>lib/bower_components/morris.js/morris.min.js"></script>
-    <!-- Sparkline -->
-    <script src="<?php base_url() ?>lib/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script>
-    <!-- jvectormap -->
-    <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
-    <!-- jQuery Knob Chart -->
-    <script src="<?php base_url() ?>lib/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
-    <!-- daterangepicker -->
-    <script src="<?php base_url() ?>lib/bower_components/moment/min/moment.min.js"></script>
-    <script src="<?php base_url() ?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <!-- datepicker -->
-    <script src="<?php base_url() ?>lib/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
-    <!-- Bootstrap WYSIHTML5 -->
-    <script src="<?php base_url() ?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
-    <!-- Slimscroll -->
-    <script src="<?php base_url() ?>lib/bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
-    <!-- FastClick -->
-    <script src="<?php base_url() ?>lib/bower_components/fastclick/lib/fastclick.js"></script>
-    <!-- AdminLTE App -->
-    <script src="<?php base_url() ?>lib/dist/js/adminlte.min.js"></script>
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="<?php base_url() ?>lib/dist/js/pages/dashboard.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <script src="<?php base_url() ?>lib/dist/js/demo.js"></script>
-
     <script>
+        
+        var link = 'almacen/Articulo';
+        linkTo();
         $('.menu a').on('click',function(){
-            var link = $(this).data('link');
-            if(link == '') return;
-            $('.content').load('<?php base_url() ?>'+link);
+            link = $(this).data('link');
+            linkTo();
         });
-    </script>
 
+        function linkTo(){
+            if(link == '') return;
+            $('.content').empty();
+            $('.content').load('<?php base_url() ?>'+link);
+        }
+        
+
+        /* Abre cuadro cargando ajax */
+        function WaitingOpen(texto){
+            if(texto == '' || texto == null){
+                $('#waitingText').html('Cargando ...');
+            }
+            else{
+                $('#waitingText').html(texto);
+            }
+            $('#waiting').fadeIn('slow');
+        }
+        /* Cierra cuadro cargando ajax */
+        function WaitingClose(){
+            $('#waiting').fadeOut('slow');
+        }
+    </script>
 </body>
 
 </html>
