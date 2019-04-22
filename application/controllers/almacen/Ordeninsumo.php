@@ -5,20 +5,20 @@ class Ordeninsumo extends CI_Controller {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Ordeninsumos');
+        $this->load->model('almacen/Ordeninsumos');
     }
 
-    public function index($permission)
+    public function index()
     {
     	$data['list']       = $this->Ordeninsumos->getList();
-      	$data['permission'] = $permission;
-        $this->load->view('ordeninsumos/list',$data);
+      	$data['permission'] = "Add-Edit-Del-View";
+        $this->load->view('almacen/ordeninsumos/list',$data);
     }
 
-    public function cargarlista($permission)
+    public function cargarlista()
     {
-        $data['permission'] = $permission;
-        $this->load->view('ordeninsumos/view_',$data);
+		$data['permission'] = "Add-Edit-Del-View";
+        $this->load->view('almacen/ordeninsumos/view_',$data);
     }
 
 	public function getcodigo()
@@ -98,16 +98,11 @@ class Ordeninsumo extends CI_Controller {
 		$cantidad  = $this->input->post('comp');
 		$dep    = $this->input->post('depo');
 		$art    = $this->input->post('art');
-		$result = $this->Ordeninsumos->insert_orden($datos);
+		$result = $this->Ordeninsumos->insert_orden($datos);	
 
 		if($result)
 		{
 			$ultimoId = $this->db->insert_id(); 
-
-			dump($ultimoId, 'id orden');
-			dump($cantidad, 'cantidad');
-			dump($art, 'articulo');
-			dump($dep, 'deposito');
 
 			//$lote as $row 
 			for($i=0; $i < sizeof($art); $i++) { 
@@ -115,14 +110,14 @@ class Ordeninsumo extends CI_Controller {
 				if(isset($cantidad[$i]) && $cantidad[$i]){
 					$deposito = $dep[$i];
 					$idLote = $this->Ordeninsumos->lote($idArticulo,$cantidad[$i],$deposito);
-					dump($idLote, 'id lote for');
-					dump($ultimoId, 'id orden for');
+
+
 					$datos2 = array(
-	        			'id_ordeninsumo' => $ultimoId, 
-	        			'loteid'         => $idLote,
+	        			'enma_id' => $ultimoId, 
+	        			'lote_id'         => $idLote,
 	        			'cantidad'       => $cantidad[$i]
 	        		);
-		        	//dump($datos2,'datos2');
+		     
 		          	$this->Ordeninsumos->insert_detaordeninsumo($datos2);
          		}
 	        }        

@@ -18,7 +18,7 @@ class Lote extends CI_Controller {
 		$this->load->view($this->path.'lotes/list', $data);
 	}
 	
-	public function puntoPedList($permission)
+	public function puntoPedList()
 	{
 		$data['list']       = $this->Lotes->puntoPedListado();
 		$data['permission'] = "Add-Edit-Del-View";

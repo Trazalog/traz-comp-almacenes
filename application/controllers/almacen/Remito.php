@@ -2,23 +2,24 @@
 
 class Remito extends CI_Controller {
 
+	private $permission = 'Add-Edit-Del-View';
+
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('Remitos');
+        $this->load->model('almacen/Remitos');
     }
 
-    public function index($permission) // Ok
+    public function index() // Ok
     {
-      	$data['permission'] = $permission;
+      	$data['permission'] = $this->permission;
       	$data['list'] = $this->Remitos->getRemitosList();
-		  $this->load->view('almacen/remito/list',$data);
-        //$this->load->view('remito/view_',$data);
+		$this->load->view('almacen/remito/list',$data);
     }
 
-    public function cargarlista($permission) // Ok
+    public function cargarlista() // Ok
     {
-        $data['permission'] = $permission;
+        $data['permission'] = $this->permission;
         $this->load->view('almacen/remito/view_',$data);
 	}
 	
@@ -142,6 +143,7 @@ class Remito extends CI_Controller {
 		$dep    = $_POST['depo']; // deposito
 		$indice = $_POST['idsinsumo'];
 		$ar     = $_POST['art']; //id de articulos 
+		$prov_id = $_POST['prov_id'];
 		$i      = 1;
 		//$res  =array();
 		$result = $this->Remitos->insert_orden($datos);
@@ -149,7 +151,7 @@ class Remito extends CI_Controller {
 		{
 			//$this->db->trans_start();   // inicio transaccion
 			$ultimoId=$this->db->insert_id(); //traigo el ultimo id 
-			$this->Remitos->detaorden($ultimoId, $co, $dep, $indice, $ar);
+			$this->Remitos->detaorden($ultimoId, $co, $dep, $indice, $ar, $prov_id);
 			/*foreach ($indice as $row) {
 				if($ar[$i]){
 					if($dep[$i]){

@@ -1,4 +1,3 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
 <div class="row">
   <div class="col-xs-12">
     <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
@@ -49,7 +48,7 @@
                     </div>
                     <div class="col-xs-12 col-sm-6 col-md-4">
                       <label for="proveedor">Proveedor <strong style="color: #dd4b39">*</strong> :</label>
-                      <select  id="proveedor" name="proveedor" class="form-control"/>  
+                      <select  id="proveedor" name="proveedor" class="form-control"></select>  
                     </div>
                   </div><br>
                         
@@ -138,7 +137,7 @@ function traer_codigo(){ // Ok
     data: { },
     dataType: 'json',
     type: 'POST',
-    url: 'index.php/Remito/getcodigo',
+    url: 'index.php/almacen/Remito/getcodigo',
     success: function(data){
       var opcion  = "<option value='-1'>Seleccione...</option>";
       $('#codigo').append(opcion);
@@ -163,7 +162,7 @@ var dataF = function () {
     'type': "POST",
     'global': false,
     'dataType': 'json',
-    'url': "index.php/Remito/getcodigo",
+    'url': "index.php/almacen/Remito/getcodigo",
     'success': function (data) {
       tmp = data;
     }
@@ -205,7 +204,7 @@ function traer_deposito(){
   $.ajax({
     type: 'POST',
     data: {},
-    url: 'index.php/Remito/getdeposito',
+    url: 'index.php/almacen/Remito/getdeposito',
     success: function(data){
       console.log("exito en deposito");
       console.log(data);
@@ -213,8 +212,8 @@ function traer_deposito(){
       $('#deposito').append(opcion); 
       for(var i=0; i < data.length ; i++) 
       {    
-        var nombre = data[i]['depositodescrip'];
-        var opcion = "<option value='"+data[i]['depositoId']+"'>" +nombre+ "</option>" ; 
+        var nombre = data[i]['descripcion'];
+        var opcion = "<option value='"+data[i]['depo_id']+"'>" +nombre+ "</option>" ; 
         $('#deposito').append(opcion); 
       }
     },
@@ -233,7 +232,7 @@ function traer_proveedor(){ // Ok
   $.ajax({
     type: 'POST',
     data: {},
-    url: 'index.php/Remito/getproveedor',
+    url: 'index.php/almacen/Remito/getproveedor',
     success: function(data){
       console.log("exito en proveedor");
       console.log(data);
@@ -241,8 +240,8 @@ function traer_proveedor(){ // Ok
       $('#proveedor').append(opcion); 
       for(var i=0; i < data.length ; i++) 
       {    
-        var nombre = data[i]['provnombre'];
-        var opcion = "<option value='"+data[i]['provid']+"'>" +nombre+ "</option>" ; 
+        var nombre = data[i]['nombre'];
+        var opcion = "<option value='"+data[i]['prov_id']+"'>" +nombre+ "</option>" ; 
         $('#proveedor').append(opcion); 
       }
     },
@@ -261,7 +260,7 @@ function traer_lote(id_her, id_deposito){
   $.ajax({
     type: 'POST',
     data: {id_her:id_her, id_deposito:id_deposito},
-    url: 'index.php/Remito/getlote', //index.php/
+    url: 'index.php/almacen/Remito/getlote', //index.php/
     success: function(data){
       console.log("exito en lote");
       console.log(data);
@@ -298,7 +297,7 @@ function limpiar(){
   $.ajax({
     type: 'POST',
     data: {artId:artId }, 
-    url: 'index.php/Remito/getdescrip',
+    url: 'index.php/almacen/Remito/getdescrip',
     success: function(data){
       console.log(data);
       // if (data[0]['depositoid']!="")
@@ -363,7 +362,7 @@ $('#agregar').click(function (e) {
       dataType: 'json',
       data: { id_her:id_her, id_deposito:id_deposito}, 
       type: 'POST',
-      url: 'index.php/Remito/alerta', //se fija en la tabla lote , con el id de articulo y id d deposito
+      url: 'index.php/almacen/Remito/alerta', //se fija en la tabla lote , con el id de articulo y id d deposito
       success: function(data){
         //traigo la cantidad
         console.log("exito en la alerta");
@@ -489,8 +488,8 @@ function guardar(){
     //&& depo !=0 && idsinsumo >0 && comp >0
     $.ajax({
       type: 'POST',
-      data: {data:parametros, comp:comp, depo:depo, idsinsumo: idsinsumo, art:art},
-      url: 'index.php/Remito/guardar',  //index.php/
+      data: {data:parametros, comp:comp, depo:depo, idsinsumo: idsinsumo, art:art,prov_id:$('#proveedor').val()},
+      url: 'index.php/almacen/Remito/guardar',  //index.php/
       success: function(data){
         console.log("exito");
         console.log(data);
@@ -519,7 +518,7 @@ function guardar(){
 function regresa(){
   WaitingOpen();
   $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Remito/index/<?php echo $permission; ?>");
+  $("#content").load("<?php echo base_url(); ?>index.php/almacen/Remito/index/<?php echo $permission; ?>");
   WaitingClose();
 }
 </script>

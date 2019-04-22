@@ -7,7 +7,7 @@
           <h3 class="box-title">Orden de Insumo</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Ordeninsumo/cargarlista\')">Agregar</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -62,15 +62,8 @@ var ide     = "";
 var edit    = 0;
 var datos   = Array();
 
-$(document).ready(function(event) {
-
   datos=Array();
-  $('#btnAgre').click( function cargarVista(){
-    WaitingOpen();
-    $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/Ordeninsumo/cargarlista/<?php echo $permission; ?>");
-    WaitingClose();
-  });
+
 
   $(".fa-search-plus").click(function (e) { 
     $('#total').val(''); 
@@ -81,28 +74,23 @@ $(document).ready(function(event) {
     $.ajax({
       type: 'POST',
       data: { idor: idor},
-      url: 'index.php/Ordeninsumo/consultar', //index.php/
+      url: 'index.php/almacen/Ordeninsumo/consultar', //index.php/
       success: function(data){
         //var data = jQuery.parseJSON( data );
-        console.log("Estoy Consultando");
-        console.table(data);
-        console.log(data['datos'][0]['id_ordeninsumo']);
-        console.log(data['datos'][0]['id_ot']);
-        console.log(data['equipos'][0]['artBarCode']);
-        console.log(data['total'][0]['cantidad']);
+        
 
         datos={
-          'id':data['datos'][0]['id_orden'],
+          'id':data['datos'][0]['enma_id'],
           'fecha':data['datos'][0]['fecha'],
           'solicitante':data['datos'][0]['solicitante'],
           'comprobante':data['datos'][0]['comprobante'],
-          'id_ot':data['datos'][0]['id_ot'],
+          'id_ot':data['datos'][0]['ortr_id'],
         }
                     
         $('#total').val(data['total'][0]['cantidad']);
-        $('#orden').val(data['datos'][0]['id_ordeninsumo']);
+        $('#orden').val(data['datos'][0]['enma_id']);
         $('#fecha').val(data['datos'][0]['fecha']);
-        $('#id_ot').val(data['datos'][0]['id_ot']);
+        $('#id_ot').val(data['datos'][0]['ortr_id']);
 
         tabla = $('#tablaconsulta').DataTable(); 
         tabla.clear().draw();
@@ -134,24 +122,7 @@ $(document).ready(function(event) {
     } ],
     "order": [[1, "asc"]],
   });
-  /*
-  $('#tablaconsulta').DataTable({
-    "aLengthMenu": [ 10, 25, 50, 100 ],
-    "columnDefs": [ {
-      "targets": [ 0 ], 
-      "searchable": true
-    },
-    {
-      "targets": [ 0 ], 
-      "orderable": true
-    } ],
-    "order": [[0, "asc"]],
-    buttons: [
-      'print'
-    ],
-  });
-  */
-
+  
   var table = $('#tablaconsulta').DataTable( {
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ {
@@ -164,39 +135,37 @@ $(document).ready(function(event) {
     } ],
     "order": [[0, "asc"]],
   });
-  var buttons = new $.fn.dataTable.Buttons(table, {
-    buttons: [
-    {
-      extend: 'print',
-      text: 'Imprimir',
-      className: "btn btn-primary",
-      title: '',
-      //messageTop: '<strong>Mensaje entre el titulo y la tabla..</strong>',
-      init: function(api, node, config) {
-        $(node).removeClass('btn-default')
-      },
 
-      customize: function ( win ) {
-        $(win.document.body)
-          .css('font-size', '10pt')
-          /*.prepend(
-          '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
-          )*/;
+  // var buttons = new $.fn.dataTable.Buttons(table, {
+  //   buttons: [
+  //   {
+  //     extend: 'print',
+  //     text: 'Imprimir',
+  //     className: "btn btn-primary",
+  //     title: '',
+  //     //messageTop: '<strong>Mensaje entre el titulo y la tabla..</strong>',
+  //     init: function(api, node, config) {
+  //       $(node).removeClass('btn-default')
+  //     },
+
+  //     customize: function ( win ) {
+  //       $(win.document.body)
+  //         .css('font-size', '10pt')
+  //         /*.prepend(
+  //         '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
+  //         )*/;
         
-        $(win.document.body).find( 'table' )
-          .addClass( 'table-condensed' )
-          .css( 'font-size', 'inherit' );
+  //       $(win.document.body).find( 'table' )
+  //         .addClass( 'table-condensed' )
+  //         .css( 'font-size', 'inherit' );
 
-        $('#infoOI').clone().prependTo( win.document.body );
-        $(win.document.body).prepend('<h1>Orden de insumo</h1>');
-      } 
-    }
-    ]
-  }).container().appendTo($('#btn-datatables'));
+  //       $('#infoOI').clone().prependTo( win.document.body );
+  //       $(win.document.body).prepend('<h1>Orden de insumo</h1>');
+  //     } 
+  //   }
+  //   ]
+  // }).container().appendTo($('#btn-datatables'));
 
-
-
-});
 
 // imprime consulta de insumos
 $(".imprimir").click(function (e) {        

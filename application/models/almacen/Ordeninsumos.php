@@ -9,14 +9,13 @@ class Ordeninsumos extends CI_Model {
 
 	function getList()
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
+        //$userdata  = $this->session->userdata('user_data');
+        $empresaId = 1;//$userdata[0]['id_empresa'];
    
-        $this->db->select('orden_insumos.id_orden, orden_insumos.fecha, orden_insumos.solicitante, orden_insumos.comprobante,
-            orden_trabajo.id_orden as id_ot, orden_trabajo.descripcion');
-        $this->db->from('orden_insumos');
-        $this->db->join('orden_trabajo','orden_insumos.id_ot = orden_trabajo.id_orden');
-        $this->db->where('orden_insumos.id_empresa', $empresaId);
+        $this->db->select('alm_entrega_materiales.enma_id as id_orden,alm_entrega_materiales.ortr_id as id_ot, alm_entrega_materiales.fecha, alm_entrega_materiales.solicitante, alm_entrega_materiales.comprobante');
+        $this->db->from('alm_entrega_materiales');
+        $this->db->where('alm_entrega_materiales.empr_id', $empresaId);
+
         $query = $this->db->get();
 	    if( $query->num_rows() > 0)
 	    {
@@ -31,17 +30,19 @@ class Ordeninsumos extends CI_Model {
 
     function getcodigo()
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-        $sql       = "SELECT articles.artId, tbl_lote.loteid,articles.artBarCode, articles.artDescription
-        	FROM articles
-        	JOIN tbl_lote ON tbl_lote.artId= articles.artId  
-        	WHERE tbl_lote.artId=articles.artId
-            AND tbl_lote.lotestado='AC'
-            AND articles.id_empresa = $empresaId
-            GROUP BY tbl_lote.artId;
-        	";
-        $query = $this->db->query($sql);
+        //$userdata  = $this->session->userdata('user_data');
+        $empresaId = 1;//$userdata[0]['id_empresa'];
+        $this->db->select('alm_articulos.arti_id as artId ,alm_lotes.lote_id as loteid,alm_articulos.barcode as artBarCode, alm_articulos.descripcion as artDescription');
+        $this->db->from('alm_articulos');
+        $this->db->join('alm_lotes ','alm_lotes.arti_id= alm_articulos.arti_id');
+        $this->db->join('utl_tablas', 'utl_tablas.tabl_id = alm_lotes.estado_id');
+        $this->db->where('alm_lotes.arti_id = alm_articulos.arti_id');
+        $this->db->where('utl_tablas.valor','AC');
+        $this->db->where('alm_articulos.empr_id' ,$empresaId);
+        $this->db->group_by('alm_lotes.arti_id');
+        
+        $query = $this->db->get();
+
 		if($query->num_rows()>0)
         {
 	       return $query->result();
@@ -72,6 +73,28 @@ class Ordeninsumos extends CI_Model {
         }
     }
 
+    	// devuelve las ot de la empresa y que esten curso o asignadas
+	function getOT(){
+
+		$userdata  = $this->session->userdata('user_data');
+		$empresaId = $userdata[0]['id_empresa'];		
+		
+		$this->db->select('orden_trabajo.id_orden, orden_trabajo.descripcion');
+		$this->db->from('orden_trabajo');
+		$this->db->where('orden_trabajo.id_empresa', $empresaId); //de la empresa
+		$this->db->where('orden_trabajo.estado', 'C'); //que estan en curso
+		$this->db->or_where('orden_trabajo.estado', 'AS'); //que asignadas
+		
+		$query = $this->db->get();
+		if($query->num_rows()>0){
+			return $query->result();
+		}
+		else
+		{
+			return false;
+		}     
+	}
+
 	function getdescrip($data = null)
     {
 		if($data == null)
@@ -80,9 +103,9 @@ class Ordeninsumos extends CI_Model {
 		}
 		else
 		{
-			$id = $data['artId'];
+			$id = $data['arti_id'];
 			//Datos del usuario
-			$query = $this->db->get_where('articles', array('artId'=>$id));
+			$query = $this->db->get_where('alm_articulos', array('arti_id'=>$id));
 			if($query->num_rows()>0){
                 return $query->result();
             }
@@ -95,17 +118,17 @@ class Ordeninsumos extends CI_Model {
 
 	public function insert_orden($data)
     {
-        $userdata           = $this->session->userdata('user_data');
-        $data['id_empresa'] = $userdata[0]['id_empresa'];
-        $query              = $this->db->insert("orden_insumos", $data);
+        //$userdata           = $this->session->userdata('user_data');
+        $data['empr_id'] = 1;//$userdata[0]['id_empresa'];
+        $query              = $this->db->insert("alm_entrega_materiales", $data);
         return $query;
     }
 
     public function insert_detaordeninsumo($data2)
     {
-        $userdata           = $this->session->userdata('user_data');
-        $data2['id_empresa'] = $userdata[0]['id_empresa'];
-        $query              = $this->db->insert("deta_ordeninsumos", $data2);
+        //$userdata           = $this->session->userdata('user_data');
+        $data2['empr_id'] = 1;//$userdata[0]['id_empresa'];
+        $query              = $this->db->insert("alm_deta_entrega_materiales", $data2);
         return $query;
     }
 
@@ -117,17 +140,18 @@ class Ordeninsumos extends CI_Model {
 		}
 		else
 		{
-            $userdata  = $this->session->userdata('user_data');
-            $empresaId = $userdata[0]['id_empresa'];
+            //$userdata  = $this->session->userdata('user_data');
+            $empresaId = 1;//$userdata[0]['id_empresa'];
             $id        = $data['artId'];
-            $sql       = "SELECT articles.artId, abmdeposito.depositoId, abmdeposito.depositodescrip
-    			FROM articles
-    			JOIN tbl_lote ON tbl_lote.artId = articles.artId
-    			JOIN abmdeposito ON abmdeposito.depositoId = tbl_lote.depositoid
-    			WHERE tbl_lote.artId = $id
-                AND tbl_lote.id_empresa = $empresaId
-                ";
-			$query = $this->db->query($sql);
+
+            $this->db->select('alm_articulos.arti_id as artId, alm_depositos.depo_id as depositoId, alm_depositos.descripcion as depositodescrip');
+            $this->db->from('alm_articulos');
+            $this->db->join('alm_lotes','alm_lotes.arti_id = alm_articulos.arti_id');
+            $this->db->join('alm_depositos','alm_depositos.depo_id = alm_lotes.depo_id');
+            $this->db->where('alm_lotes.arti_id',$id);
+            $this->db->where('alm_lotes.empr_id',$empresaId);
+
+			$query = $this->db->get();
 			if($query->num_rows()>0){
                 return $query->result();
             }
@@ -138,9 +162,9 @@ class Ordeninsumos extends CI_Model {
 	}
 
     function getlotecant($id){
-    	$sql="SELECT  tbl_lote.cantidad
-    	FROM tbl_lote
-    	WHERE tbl_lote.depositoid=$id AND tbl_lote.lotestado='AC'
+    	$sql="SELECT  alm_lotes.cantidad
+    	FROM alm_lotes
+    	WHERE alm_lotes.depo_id=$id AND alm_lotes.lotestado='AC'
     	";
     	$query= $this->db->query($sql);
 
@@ -165,7 +189,7 @@ class Ordeninsumos extends CI_Model {
         $idLote = $result[0]["loteid"];
     	if ($idLote!=0) {
     	 	$cantidadLote = $this->lotecantidad($idLote); //obtengo la cantidad segun el lote
-    	 	dump($cantidadLote);
+    	 	//dump($cantidadLote);
     	} else {
             echo  "No hay insumos"; 
         }
@@ -180,7 +204,7 @@ class Ordeninsumos extends CI_Model {
 		$datos3 = array(
 			'cantidad'=>$res
 		);
-		dump($datos3);
+		//dump($datos3);
 					        	
 		$this->update_tbllote($idLote,$datos3);
         return $idLote;
@@ -188,10 +212,10 @@ class Ordeninsumos extends CI_Model {
 
     function traeIdLote($idarticulo,$iddeposito)
     {
-        $this->db->select('tbl_lote.loteid');
-        $this->db->from('tbl_lote');
-        $this->db->where('tbl_lote.artId', $idarticulo);
-        $this->db->where('tbl_lote.depositoid', $iddeposito);
+        $this->db->select('alm_lotes.lote_id as loteid');
+        $this->db->from('alm_lotes');
+        $this->db->where('alm_lotes.arti_id', $idarticulo);
+        $this->db->where('alm_lotes.depo_id', $iddeposito);
         $query = $this->db->get();
         if($query->num_rows()>0){
             return $query->result_array();
@@ -204,9 +228,9 @@ class Ordeninsumos extends CI_Model {
 
 	function lotecantidad($v)
     {
-  		$sql = "SELECT tbl_lote.cantidad
-			FROM tbl_lote
-			WHERE tbl_lote.loteid = $v";
+  		$sql = "SELECT alm_lotes.cantidad
+			FROM alm_lotes
+			WHERE alm_lotes.lote_id = $v";
    		$query = $this->db->query($sql);
    	  	foreach ($query->result() as $row)
         {
@@ -217,16 +241,16 @@ class Ordeninsumos extends CI_Model {
 
 
     public function update_tbllote($id,$data3){
-            $this->db->where('loteid', $id);
-            $query = $this->db->update("tbl_lote",$data3);
+            $this->db->where('lote_id', $id);
+            $query = $this->db->update("alm_lotes",$data3);
             return $query;
     }
 
     public function alerta($codigo,$de)
     {
-        $sql="SELECT tbl_lote.cantidad
-			FROM tbl_lote
-			WHERE tbl_lote.artId=$codigo AND tbl_lote.depositoid=$de
+        $sql="SELECT alm_lotes.cantidad
+			FROM alm_lotes
+			WHERE alm_lotes.arti_id=$codigo AND alm_lotes.depo_id=$de
 			";
 		$query = $this->db->query($sql);
 	  	foreach ($query->result() as $row)
@@ -238,13 +262,10 @@ class Ordeninsumos extends CI_Model {
 
     function getsolImps($id){
 
-        $sql="SELECT orden_insumos.fecha,orden_insumos.solicitante,orden_insumos.comprobante, deta_ordeninsumos.id_ordeninsumo, deta_ordeninsumos.loteid, deta_ordeninsumos.cantidad
-                  FROM orden_insumos
-                  JOIN deta_ordeninsumos ON deta_ordeninsumos.id_ordeninsumo=orden_insumos.id_orden
-                  
-                 
-
-                  WHERE orden_insumos.id_orden=$id
+        $sql="SELECT T.fecha,T.solicitante,T.comprobante, A.cantidad
+                  FROM alm_entrega_materiales T
+                  JOIN alm_deta_entrega_materiales A ON A.enma_id=T.enma_id
+                  WHERE T.ortr_id=$id
               ";
         
         $query= $this->db->query($sql);
@@ -262,12 +283,12 @@ class Ordeninsumos extends CI_Model {
 
     function getequiposBycomodato($id){
         
-        $sql= "SELECT deta_ordeninsumos.loteid, deta_ordeninsumos.cantidad, deta_ordeninsumos.id_ordeninsumo, tbl_lote.artId, articles.artBarCode, articles.artDescription 
-                FROM deta_ordeninsumos
+        $sql= "SELECT alm_deta_entrega_materiales.loteid, alm_deta_entrega_materiales.cantidad, alm_deta_entrega_materiales.enma_id as ortr_idinsumo, alm_lotes.arti_id, alm_articulos.artBarCode, alm_articulos.artDescription 
+                FROM alm_deta_entrega_materiales
                 
-                JOIN tbl_lote ON tbl_lote.loteid = deta_ordeninsumos.loteid
-                JOIN articles ON articles.artId= tbl_lote.artId
-                WHERE deta_ordeninsumos.id_ordeninsumo=$id
+                JOIN alm_lotes ON alm_lotes.loteid = alm_deta_entrega_materiales.loteid
+                JOIN alm_articulos ON alm_articulos.arti_id= alm_lotes.arti_id
+                WHERE alm_deta_entrega_materiales.enma_id=$id
                     ";
         
         $query= $this->db->query($sql);
@@ -284,9 +305,9 @@ class Ordeninsumos extends CI_Model {
     function getConsult($id)
     {
 	    $sql = "SELECT * 
-            FROM orden_insumos
-            JOIN deta_ordeninsumos ON deta_ordeninsumos.id_ordeninsumo = orden_insumos.id_orden 	  
-            WHERE orden_insumos.id_orden = $id
+            FROM alm_entrega_materiales
+            JOIN alm_deta_entrega_materiales ON alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id 	  
+            WHERE alm_entrega_materiales.enma_id = $id
             ";
 	    $query = $this->db->query($sql);
 	    if( $query->num_rows() > 0)
@@ -300,15 +321,15 @@ class Ordeninsumos extends CI_Model {
 
 	function getequipos($id)
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-	    $sql       = "SELECT deta_ordeninsumos.id_detaordeninsumo, deta_ordeninsumos.id_ordeninsumo, deta_ordeninsumos.loteid, deta_ordeninsumos.cantidad, tbl_lote.codigo, tbl_lote.depositoid, articles.artId, articles.artBarCode, articles.artDescription, abmdeposito.depositodescrip
-    		FROM deta_ordeninsumos
-			JOIN tbl_lote ON tbl_lote.loteid = deta_ordeninsumos.loteid
-			JOIN articles ON articles.artId = tbl_lote.artId
-			JOIN abmdeposito ON abmdeposito.depositoid = tbl_lote.depositoid
-			WHERE deta_ordeninsumos.id_ordeninsumo = $id
-            AND deta_ordeninsumos.id_empresa = $empresaId
+        //$userdata  = $this->session->userdata('user_data');
+        $empresaId = 1;//$userdata[0]['id_empresa'];
+	    $sql       = "SELECT T.deen_id as id_detaordeninsumo, T.enma_id as ortr_idinsumo, T.lote_id as loteid, T.cantidad, alm_lotes.codigo, alm_lotes.depo_id, art.arti_id, art.barcode as artBarCode, art.descripcion as artDescription, alm_depositos.descripcion as depositodescrip
+    		FROM alm_deta_entrega_materiales T
+			JOIN alm_lotes ON alm_lotes.lote_id = T.lote_id
+			JOIN alm_articulos art ON art.arti_id = alm_lotes.arti_id
+			JOIN alm_depositos ON alm_depositos.depo_id = alm_lotes.depo_id
+			WHERE T.enma_id = $id
+            AND T.empr_id = $empresaId
 			";
 	    $query = $this->db->query($sql);
 	    if( $query->num_rows() > 0)
@@ -322,13 +343,13 @@ class Ordeninsumos extends CI_Model {
 	
 	function total($id)
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-	    $sql       = "SELECT SUM(deta_ordeninsumos.cantidad) as cantidad
-    		FROM deta_ordeninsumos
-			JOIN orden_insumos ON orden_insumos.id_orden = deta_ordeninsumos. id_ordeninsumo
-			WHERE deta_ordeninsumos.id_ordeninsumo = $id
-            AND deta_ordeninsumos.id_empresa = $empresaId
+        //$userdata  = $this->session->userdata('user_data');
+        $empresaId = 1;//$userdata[0]['id_empresa'];
+	    $sql       = "SELECT SUM(alm_deta_entrega_materiales.cantidad) as cantidad
+    		FROM alm_deta_entrega_materiales
+			JOIN alm_entrega_materiales ON alm_entrega_materiales.enma_id = alm_deta_entrega_materiales. enma_id
+			WHERE alm_deta_entrega_materiales.enma_id = $id
+            AND alm_deta_entrega_materiales.empr_id = $empresaId
 			";
 	    $query = $this->db->query($sql);
 	    if( $query->num_rows() > 0)

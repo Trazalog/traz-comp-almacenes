@@ -2,35 +2,37 @@
 
 class Notapedido extends CI_Controller {
 
-	function __construct(){
+  private $permission = "Add-Edit-Del-View";
 
+	function __construct(){
+   
 		parent::__construct();
-    $this->load->model('Notapedidos');
-    $this->load->model('Bonitas');
+    $this->load->model('almacen/Notapedidos');
+    //$this->load->model('Bonitas');
 	}
 
-  public function index($permission){
+  public function index(){
     $data['list'] = $this->Notapedidos->notaPedidos_List();
-    $data['permission'] = $permission;
+    $data['permission'] = $this->permission;
     $this->load->view('almacen/notapedido/list',$data);
   }
 
-  public function getNotasxOT($permission, $idot){
-    $data['permission'] = $permission;
+  public function getNotasxOT($idot){
+    $data['permission'] = $this->permission;
     $data['list']       = $this->Notapedidos->getNotasxOT($idot);
     $this->load->view('almacen/notapedido/listOt', $data);
   }
 
-  public function agregarNota($permission, $idot){
-    $data['permission'] = $permission;
+  public function agregarNota($idot){
+    $data['permission'] = $this->permission;
     $data['ot']         = $this->Notapedidos->getOTporId($idot);
     $this->load->view('notapedido/view_', $data);
   }
 
 
   // devuelve plantilla de insumos a pedir por cliente 
-  public function agregarListInsumos($permission, $idcliente){
-    $data['permission'] = $permission;    
+  public function agregarListInsumos($idcliente){
+    $data['permission'] = $this->permission;    
     $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
     $this->load->view('notapedido/insumolist', $data);
   }
