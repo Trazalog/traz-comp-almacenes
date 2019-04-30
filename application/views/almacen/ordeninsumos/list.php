@@ -1,10 +1,9 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Orden de Insumo</h3>
+          <h3 class="box-title">Entrega Materiales</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Ordeninsumo/cargarlista\')">Agregar</button>';
@@ -26,7 +25,7 @@
             </thead>
             <tbody>
               <?php
-              if(isset($list))
+              if(isset($list['data'])){
               foreach($list['data'] as $a)
               { 
                 $id=$a['id_orden'];
@@ -41,7 +40,7 @@
                 echo '<td>'.$a['comprobante'].'</td>';
                 echo '<td>'.$a['solicitante'].'</td>';
                 echo '<td>'.date_format(date_create($a['fecha']), 'd-m-Y').'</td>';
-              }
+              }}
               ?>
             </tbody>
           </table>

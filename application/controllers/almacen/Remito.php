@@ -139,39 +139,21 @@ class Remito extends CI_Controller {
 	public function guardar()
 	{
 		$datos  = $_POST['data'];
+		$lote =   $_POST['lote'];
 		$co     = $_POST['comp']; // cnt
 		$dep    = $_POST['depo']; // deposito
 		$indice = $_POST['idsinsumo'];
 		$ar     = $_POST['art']; //id de articulos 
 		$prov_id = $_POST['prov_id'];
 		$i      = 1;
-		//$res  =array();
+	
 		$result = $this->Remitos->insert_orden($datos);
 		if($result)
 		{
-			//$this->db->trans_start();   // inicio transaccion
+		
 			$ultimoId=$this->db->insert_id(); //traigo el ultimo id 
-			$this->Remitos->detaorden($ultimoId, $co, $dep, $indice, $ar, $prov_id);
-			/*foreach ($indice as $row) {
-				if($ar[$i]){
-					if($dep[$i]){
-						$a=$ar[$i];
-						$d=$dep[$i];
-						$res=$this->Remitos->loteres($a,$d); //id de lote 
-						print_r($res);
-						if($co[$i]){
-							$datos2 = array(
-				        	 'id_remito'=>$ultimoId, 
-				        	 'loteid'=>$res,
-				        	 'cantidad'=>$co[$i]
-			        		);
-				        	print_r($datos2);
-				        	$this->Remitos->insert_detaremito($datos2);
-						}
-					}
-				}
-				$i++;
-			}*/
+			$this->Remitos->detaorden($ultimoId,$lote, $co, $dep, $indice, $ar, $prov_id);
+	
 		}
 		return $result;
 	}

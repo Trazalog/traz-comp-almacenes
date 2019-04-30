@@ -18,12 +18,14 @@ class Ordeninsumo extends CI_Controller {
     public function cargarlista()
     {
 		$data['permission'] = "Add-Edit-Del-View";
+		$data['list'] = $this->getcodigo();
         $this->load->view('almacen/ordeninsumos/view_',$data);
     }
 
 	public function getcodigo()
 	{
 		$codigo = $this->Ordeninsumos->getcodigo();
+
 		if($codigo)
 		{	
 			$arre = array();$i=0;
@@ -36,7 +38,7 @@ class Ordeninsumo extends CI_Controller {
 				$arre[$i]['loteid']         = $valorS['loteid'];
 				$i++;
 	        }
-			echo json_encode($arre);
+			return $arre;
 		}
 		else echo "nada";
 	}

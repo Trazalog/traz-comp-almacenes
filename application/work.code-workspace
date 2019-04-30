@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": "C:\\xampp\\htdocs\\traz-comp-almacenes"
+		},
+		{
+			"path": "config"
+		},
+		{
+			"path": "controllers"
+		},
+		{
+			"path": "models"
+		},
+		{
+			"path": "views"
+		},
+		{
+			"path": "helpers"
+		}
+	],
+	"settings": {}
+}

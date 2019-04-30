@@ -1,10 +1,9 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Nota de Pedido</h3>
+          <h3 class="box-title">Pedido Materiales</h3>
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="deposito" class="table table-bordered table-hover">
@@ -27,7 +26,7 @@
                   echo '<td>';
                   /*if (strpos($permission,'Edit') !== false) {
                     echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
-                  }
+                  } 
                   if (strpos($permission,'Del') !== false) {
                     echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;"></i>';
                   } */
@@ -115,39 +114,7 @@ $(".fa-times-circle").click(function (e) {
   });
 });
 
-//Ver Orden
-  // $(".fa-search").click(function (e) { 
-      
-  //     var id_nota = $(this).parent('td').parent('tr').attr('id');
-  //     console.log(id_nota);
-      
-  //     $.ajax({
-  //             type: 'POST',
-  //             data: { id: id_nota},
-  //             url: 'index.php/Notapedido/getNotaPedidoId', //index.php/
-  //             success: function(data){
-  //                     //$('tr.celdas').remove();
-  //                     for (var i = 0; i < data.length; i++) {            
-  //                        var tr = "<tr class='celdas'>"+
-  //                                //"<td ></td>"+
-  //                                "<td>"+data[i]['artDescription']+"</td>"+
-  //                                "<td>"+data[i]['cantidad']+"</td>"+                               
-  //                                "<td>"+data[i]['fecha']+"</td>"+
-  //                                "<td>"+data[i]['fechaEntrega']+"</td>"+
-  //                                "<td>"+data[i]['fechaEntredado']+"</td>"+
-  //                                "<td>"+data[i]['estado']+"</td>"+                               
-  //                                "</tr>";
-  //                        $('#tabladetalle tbody').append(tr);
-  //                      }
-  //                   },
-                
-  //             error: function(result){
-                    
-  //                   console.log(result);
-  //                 },
-  //                 dataType: 'json'
-  //     });
-// });
+
 
 //Ver Orden
 $(".fa-search").click(function (e) { 
@@ -157,7 +124,7 @@ $(".fa-search").click(function (e) {
     $.ajax({
             type: 'POST',
             data: { id: id_nota},
-            url: 'index.php/Notapedido/getNotaPedidoId',
+            url: 'index.php/almacen/Notapedido/getNotaPedidoId',
             success: function(data){
 
                     $('tr.celdas').remove();
@@ -166,10 +133,7 @@ $(".fa-search").click(function (e) {
                                "<td>"+data[i]['artDescription']+"</td>"+
                                "<td>"+data[i]['cantidad']+"</td>"+
                                "<td>"+data[i]['fecha']+"</td>"+ 
-                               "<td>"+data[i]['fechaEntrega']+"</td>"+ 
-                               "<td>"+data[i]['fechaEntregado']+"</td>"+     
-                               "<td>"+data[i]['provnombre']+"</td>"+                                 
-                               "<td>"+data[i]['estado']+"</td>"+                             
+                               "<td>"+data[i]['fecha_entrega']+"</td>"+ 
                                "</tr>";
                        $('#tabladetalle tbody').append(tr);
                     }
@@ -227,9 +191,7 @@ $('#deposito').DataTable({
                     <th>Cantidad</th>                    
                     <th>Fecha Nota</th>
                     <th>Fecha de Entrega</th>
-                    <th>Fecha Entregado</th>
-                    <th>Proveedor</th>
-                    <th>Estado</th>                  
+                              
                   </tr>
                 </thead>
                <tbody>

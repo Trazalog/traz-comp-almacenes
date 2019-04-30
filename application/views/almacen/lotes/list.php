@@ -20,18 +20,10 @@
             </thead>
             <tbody>
               <?php
-                if(count($list) > 0) {                  
+                if($list) {                  
                 	foreach($list as $f)
       		        {
   	                echo '<tr>';
-                    /*
-                    if (strpos($permission,'Edit') !== false) {
-  	                	echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadStk('.$s['stkId'].',\'Edit\')"></i>';
-                    }
-                    if (strpos($permission,'Del') !== false) {
-  	                	echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" onclick="LoadStk('.$s['stkId'].',\'Del\')"></i>';
-                    }
-                    */
                     echo '<td>'.$f['artBarCode'].'</td>';
                     echo '<td>'.$f['artDescription'].'</td>';
                     echo '<td>'.$f['cantidad'].'</td>';

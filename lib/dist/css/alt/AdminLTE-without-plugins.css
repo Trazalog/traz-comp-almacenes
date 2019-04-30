@@ -1555,7 +1555,7 @@ a:focus {
 .box.box-default {
   border-top-color: #d2d6de;
 }
-.box.collapsed-box .box-body,
+.box .box-body,
 .box.collapsed-box .box-footer {
   display: none;
 }

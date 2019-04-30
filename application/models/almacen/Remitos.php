@@ -199,16 +199,16 @@ class Remitos extends CI_Model {
      * @param   Array   $indice     ids de insumos
      * @param   Array   $ar         id de articulos
      */
-    function detaorden($ultimoId,$co,$dep,$indice,$list_art,$prov_id)
+    function detaorden($ultimoId,$lote,$co,$dep,$indice,$list_art,$prov_id)
     {
     	$i = 0;
-    	//$res=array();
+    	
     	foreach ($indice as $row) {
     		if(isset($list_art[$row])){
     			if($dep[$row]){
                     $a   = $list_art[$row];                 
                     $d   = $dep[$row];                
-                    $res = $this->loteres($a,$d);   //saca id de lote con articulo y deposito
+                    $res = $lote[$row];
     				
     				if($res > 0){ //si tiene id de lote
     					if($co[$row]){ //cant
@@ -219,7 +219,7 @@ class Remitos extends CI_Model {
     		        		);
         		        
         		        	$result = $this->insert_detaremito($datos2);
-        		        	//print_r($result);
+        		        
     					}
     					$this->sumarlote($res,$co[$row]);
     				}

@@ -11,6 +11,7 @@ class Tabla extends CI_Controller {
 
    function index(){
       $data['list'] = $this->Tablas->get();
+      $data['list_valores']  = $this->Tablas->get_valores();
       $this->load->view('general/abm_tablas',$data);
    }
 

@@ -5,7 +5,15 @@ class Notapedidos extends CI_Model
 	function __construct()
 	{
 		parent::__construct();
-	}
+    }
+    
+    function setMotivoRechazo($pema, $motivo){
+
+        $this->db->where('pema_id', $pema);
+        $this->db->set('motivo_rechazo', $motivo);
+        return $this->db->update('alm_pedidos_materiales');
+        
+    }
 	
     function notaPedidos_List()
     {
@@ -28,22 +36,38 @@ class Notapedidos extends CI_Model
         }
     }
 
+    function get($id){
+        $this->db->where('pema_id',$id);
+        return $this->db->get('alm_pedidos_materiales')->row_array();
+    }
+
+    function getXCaseId($case){
+        $this->db->where('case_id',$case);
+        return $this->db->get('alm_pedidos_materiales')->row_array();
+    }
+
+    function setCaseId($id,$case){
+        $this->db->set('case_id',$case);
+        $this->db->where('pema_id',$id);
+        $this->db->update('alm_pedidos_materiales');
+    }
+
         //
     function getNotasxOT($id)
     {
-        $userdata = $this->session->userdata('user_data');
-        $empId    = $userdata[0]['id_empresa'];
+        //$userdata = $this->session->userdata('user_data');
+        $empId  =  1;// = $userdata[0]['id_empresa'];
         $this->db->select('
-            alm_pedidos_materiales.id_notaPedido,
+            alm_pedidos_materiales.pema_id as id_notaPedido,
             alm_pedidos_materiales.fecha,
-            alm_pedidos_materiales.id_ordTrabajo,
+            alm_pedidos_materiales.ortr_id as id_ordTrabajo,
             solicitud_reparacion.solicitante,
             orden_trabajo.descripcion
         ');
         $this->db->from('alm_pedidos_materiales');
-        $this->db->join('orden_trabajo','alm_pedidos_materiales.id_ordTrabajo = orden_trabajo.id_orden');
-        $this->db->join('solicitud_reparacion', 'orden_trabajo.id_solicitud = solicitud_reparacion.id_solicitud');
-        $this->db->where('alm_pedidos_materiales.id_empresa', $empId);
+        $this->db->join('orden_trabajo','alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+        $this->db->join('solicitud_reparacion', 'orden_trabajo.id_solicitud = solicitud_reparacion.id_solicitud','left');
+        $this->db->where('alm_pedidos_materiales.empr_id', $empId);
         $this->db->where('orden_trabajo.id_orden', $id);
 
         $query = $this->db->get();
@@ -59,29 +83,23 @@ class Notapedidos extends CI_Model
     }
 
     // Trae lista de articulos por id de nota de pedido 
-    function getNotaPedidoIds($data){
+    function getNotaPedidoIds($id){
       
-      $id = $data['id'];
-      
-      $this->db->select('alm_pedidos_materiales.id_notaPedido,
+      $this->db->select('alm_pedidos_materiales.pema_id as id_notaPedido,
                           alm_pedidos_materiales.fecha,
-                          alm_pedidos_materiales.id_ordTrabajo,
+                          alm_pedidos_materiales.ortr_id as id_ordTrabajo,
                           orden_trabajo.descripcion,
-                          tbl_detanotapedido.cantidad,
-                          tbl_detanotapedido.provid,
-                          tbl_detanotapedido.fechaEntrega,
-                          tbl_detanotapedido.fechaEntregado,
-                          tbl_detanotapedido.remito,
-                          tbl_detanotapedido.estado,
-                          abmproveedores.provnombre,
-                          articles.artDescription'
+                          alm_deta_pedidos_materiales.cantidad,
+                          alm_deta_pedidos_materiales.fecha_entrega,
+                          alm_deta_pedidos_materiales.fecha_entregado,
+                          alm_articulos.barcode,
+                          alm_articulos.descripcion as artDescription'
                         );
       $this->db->from('alm_pedidos_materiales');
-      $this->db->join('orden_trabajo', 'alm_pedidos_materiales.id_ordTrabajo = orden_trabajo.id_orden');
-      $this->db->join('tbl_detanotapedido', 'tbl_detanotapedido.id_notaPedido = alm_pedidos_materiales.id_notaPedido');
-      $this->db->join('abmproveedores', 'abmproveedores.provid = tbl_detanotapedido.provid');
-      $this->db->join('articles', 'tbl_detanotapedido.artId = articles.artId');
-      $this->db->where('alm_pedidos_materiales.id_notaPedido', $id);
+      $this->db->join('orden_trabajo', 'alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+      $this->db->join('alm_deta_pedidos_materiales', 'alm_deta_pedidos_materiales.pema_id = alm_pedidos_materiales.pema_id');
+      $this->db->join('alm_articulos', 'alm_deta_pedidos_materiales.arti_id = alm_articulos.arti_id');
+      $this->db->where('alm_pedidos_materiales.pema_id', $id);
       $query = $this->db->get();
       
       if ($query->num_rows()!=0){      
@@ -94,7 +112,7 @@ class Notapedidos extends CI_Model
             
     function getArticulos()
     {
-        $query = $this->db->query("SELECT articles.artId, articles.artBarCode,articles.artDescription FROM articles");
+        $query = $this->db->query("SELECT alm_articulos;.artId, alm_articulos;.artBarCode,alm_articulos;.artDescription FROM alm_articulos;");
         $i     = 0;
         foreach ($query->result() as $row){
 
@@ -108,8 +126,8 @@ class Notapedidos extends CI_Model
 
     function getProveedores(){
         
-			$this->db->select('abmproveedores.provid, abmproveedores.provnombre');
-			$this->db->from('abmproveedores');        
+			$this->db->select('alm_proveedores.provid, alm_proveedores.provnombre');
+			$this->db->from('alm_proveedores');        
 			$query = $this->db->get();
 			if ($query->num_rows() != 0){
 					
@@ -149,7 +167,7 @@ class Notapedidos extends CI_Model
                     'remito' => 1,
                     'estado' => 'P' // Estado Pedido
                     );
-            $this->db->insert('tbl_detanotapedido', $nota);
+            $this->db->insert('alm_deta_pedidos_materiales', $nota);
         }
 
       if ($this->db->trans_status() === FALSE)
@@ -167,11 +185,11 @@ class Notapedidos extends CI_Model
 			//FIXME: DESHARDCODEAR ESTE CLIENTE!!!!
 			$idcliente = 21;
 			$this->db->select('asp_detaplantillainsumos.artId,
-												articles.artDescription,
+												alm_articulos;.artDescription,
 												asp_plantillainsumos.plant_id');
 			$this->db->from('asp_detaplantillainsumos'); 
 			$this->db->join('asp_plantillainsumos', 'asp_detaplantillainsumos.plant_id = asp_plantillainsumos.plant_id');
-			$this->db->join('articles', 'articles.artId = asp_detaplantillainsumos.artId');
+			$this->db->join('alm_articulos;', 'alm_articulos;.artId = asp_detaplantillainsumos.artId');
 			$this->db->join('admcustomers', 'asp_plantillainsumos.plant_id = admcustomers.plant_id');
 			$this->db->where('admcustomers.plant_id','(SELECT admcustomers.plant_id WHERE admcustomers.cliId = '.$idcliente.')', false);       
 			$query = $this->db->get();
@@ -190,7 +208,7 @@ class Notapedidos extends CI_Model
 		}
 		// guarda detalle nota pedido (desde tareas de bpm)
 		function setDetaNota($deta){
-			$response = $this->db->insert_batch('tbl_detanotapedido',$deta);
+			$response = $this->db->insert_batch('alm_deta_pedidos_materiales',$deta);
 			return $response;
 		}		
 

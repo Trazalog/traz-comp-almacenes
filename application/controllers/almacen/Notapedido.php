@@ -17,6 +17,12 @@ class Notapedido extends CI_Controller {
     $this->load->view('almacen/notapedido/list',$data);
   }
 
+  public function ObtenerNotasPedidosxOT($idot){
+    $data['permission'] = "Add-Edit-Del-View";
+    $data['list']  =$this->Notapedidos->getNotasxOT($idot);
+    $this->load->view('almacen/notapedido/list',$data);
+  }
+
   public function getNotasxOT($idot){
     $data['permission'] = $this->permission;
     $data['list']       = $this->Notapedidos->getNotasxOT($idot);
@@ -89,7 +95,7 @@ class Notapedido extends CI_Controller {
   }
 
   public function getNotaPedidoId(){
-    $response = $this->Notapedidos->getNotaPedidoIds($this->input->post());
+    $response = $this->Notapedidos->getNotaPedidoIds($this->input->post('id'));
     echo json_encode($response);
   }
 

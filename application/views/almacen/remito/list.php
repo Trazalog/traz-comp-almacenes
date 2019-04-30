@@ -1,10 +1,9 @@
-<input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Remitos</h3>
+          <h3 class="box-title">Recepción de Materiales</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
@@ -25,7 +24,7 @@
             </thead>
             <tbody>
               <?php
-              if(isset($list))
+              if(isset($list['data'])){
              
               foreach($list['data'] as $remito)
               { 
@@ -38,7 +37,7 @@
                   echo '<td>'.$remito['fecha'].'</td>';
                   echo '<td>'.$remito['provnombre'].'</td>';
                 echo '</tr>';
-              }
+              }}
               ?>
             </tbody>
           </table>
