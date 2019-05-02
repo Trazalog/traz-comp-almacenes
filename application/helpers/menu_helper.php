@@ -5,33 +5,40 @@ if(!function_exists('menu')){
     function menu($json)
     {
         $array =  json_decode($json);
+       // var_dump($array->menu);die;
+        $html = '<ul class="sidebar-menu menu" data-widget="tree">
+        <li class="header">MAIN NAVIGATION</li>';
+        foreach ($array->menu as $i) {
 
-        $html = '<ul>';
-
-        foreach ($array as $i) {
-
-            switch ($i['nivel']) {
+            switch ($i->nivel) {
                 case 1:
-                    $html .= '';
+                    $html .= '<li><a href="#" data-link="'.$i->link.'"><i class="fa fa-circle-o"></i>'.$i->nombre.'</a></li>';
                     break;
                 case 2:
-                    $html .= '';
+                    $html .= '<li class="active treeview">
+                    <a href="#">
+                        <i class="fa fa-fw fa-check"></i> <span>'.$i->nombre.'</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>';
+                    $html.= submenu($i->submenu);
+                   
                     break;   
                 default:
-                    # code...
                     break;
+            }
             
 
         }
-
         return $html.'</ul>';
     }
 
     function submenu($data)
     {
-        $html = '<ul>';
+        $html = ' <ul class="treeview-menu">';
         foreach ($data as $i) {
-            $html.= '';
+            $html.= '<li><a href="#" data-link="'.$i->link.'"><i class="fa fa-fw fa-barcode"></i>'.$i->nombre.'</a></li>';
         }
         return $html.'</ul>';
     }

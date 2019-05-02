@@ -1,26 +1,24 @@
 {
-    [
-        {
-                    nombre: 'Proceso',
-                    icono:'fa-flus',
-                    link: 'system/Proceso',
-                    nivel: 1
+    "menu": [{
+            "nombre": "Proceso",
+            "icono": "fa-flus",
+            "link": "system/Proceso",
+            "nivel": 1
         },
         {
-                    nombre: 'Item Padre',
-                    icono:'fa-flus',
-                    link: '',
-                    nivel: 2,
-                    submenu: [
-                {
-                            nombre: 'Submenu 1',
-                            icono:'fa-flus',
-                            link: 'system/Poceso/tu hermana',
+            "nombre": "Item Padre",
+            "icono": "fa-flus",
+            "link": "",
+            "nivel": 2,
+            "submenu": [{
+                    "nombre": "Submenu 1",
+                    "icono": "fa-flus",
+                    "link": "system/Poceso/tu hermana"
                 },
                 {
-                            nombre: 'Submenu 2',
-                            icono:'fa-flus',
-                            link: 'system/Poceso/tu hermano',
+                    "nombre": "Submenu 2",
+                    "icono": "fa-flus",
+                    "link": "system/Poceso/tu hermano"
                 }
             ]
         }
