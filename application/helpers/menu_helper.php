@@ -15,7 +15,7 @@ if(!function_exists('menu')){
                     $html .= '<li><a href="#" data-link="'.$i->link.'"><i class="fa fa-circle-o"></i>'.$i->nombre.'</a></li>';
                     break;
                 case 2:
-                    $html .= '<li class="active treeview">
+                    $html .= '<li class="treeview">
                     <a href="#">
                         <i class="fa fa-fw fa-check"></i> <span>'.$i->nombre.'</span>
                         <span class="pull-right-container">

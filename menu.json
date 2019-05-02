@@ -2,25 +2,58 @@
     "menu": [{
             "nombre": "Proceso",
             "icono": "fa-flus",
-            "link": "system/Proceso",
+            "link": "general/Proceso",
             "nivel": 1
         },
         {
-            "nombre": "Item Padre",
+            "nombre": "Almancenes",
             "icono": "fa-flus",
             "link": "",
             "nivel": 2,
             "submenu": [{
-                    "nombre": "Submenu 1",
+                    "nombre": "Artículos",
                     "icono": "fa-flus",
-                    "link": "system/Poceso/tu hermana"
+                    "link": "almacen/Articulo"
                 },
                 {
-                    "nombre": "Submenu 2",
+                    "nombre": "Stock",
                     "icono": "fa-flus",
-                    "link": "system/Poceso/tu hermano"
+                    "link": "almacen/Lote"
+                },
+                {
+                    "nombre": "Entrega Materiales",
+                    "icono": "fa-flus",
+                    "link": "almacen/Ordeninsumo"
+                },
+                {
+                    "nombre": "Recepcion Materiales",
+                    "icono": "fa-flus",
+                    "link": "almacen/Remito"
+                },
+                {
+                    "nombre": "Punto de Pedido",
+                    "icono": "fa-flus",
+                    "link": "almacen/Lote/puntoPedList"
+                },
+                {
+                    "nombre": "Pedido Materiales",
+                    "icono": "fa-flus",
+                    "link": "almacen/Notapedido"
                 }
             ]
+        },
+        {
+            "nombre": "Header(Cabera)",
+            "icono": "fa-flus",
+            "link": "general/Componente",
+            "nivel": 1
+        },
+        {
+            "nombre": "ABM Tablas",
+            "icono": "fa-flus",
+            "link": "general/Tabla",
+            "nivel": 1
         }
+
     ]
 }

@@ -84,8 +84,8 @@
     <section class="sidebar">
       
       <!-- sidebar menu: : style can be found in sidebar.less -->
-       <?php// $this->load->view('layout/menu'); ?>
-      <?php echo $menu?>
+       <!-- <?php// $this->load->view('layout/menu'); ?> -->
+       <?php echo $menu?> 
     </section>
     <!-- /.sidebar -->
   </aside>
