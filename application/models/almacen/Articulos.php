@@ -30,6 +30,21 @@ class Articulos extends CI_Model
 			return array();
 		}
 	}
+
+	function get($id)
+	{
+		$this->db->where('arti_id',$id);
+		return $this->db->get('alm_articulos')->row_array();
+	}
+
+	function getLotes($id)
+	{
+		$this->db->where('arti_id',$id);
+		$this->db->select('*');
+		$this->db->from('alm_lotes T');
+		$this->db->join('alm_depositos A','T.depo_id = A.depo_id');
+		return $this->db->get()->result_array();
+	}
 	
 	function getpencil($id) // Ok
     {

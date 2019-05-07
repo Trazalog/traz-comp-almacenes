@@ -4,7 +4,10 @@ class Proceso extends CI_Controller {
     function __construct(){
 
       parent::__construct();
+
       $this->load->library('BPM'); 
+
+      $this->load->model('almacen/Ordeninsumos');
 
       // SUPERVISOR1 => 102 => Aprueba pedido de Recursos Materiales
       $data = ['userId' => 102,'userName'=>'Fernando','userLastName'=>'Leiva','device'=>'','permission'=>'Add-View-Del-Edit'];
@@ -127,6 +130,8 @@ class Proceso extends CI_Controller {
         break;
      
       case 'Entrega pedido pendiente':
+         $contrato['entregaCompleta'] = true;
+         return $contrato;
        # code...
        break;
       
@@ -146,7 +151,11 @@ class Proceso extends CI_Controller {
        case 'Entrega pedido pendiente':
         $this->load->model('almacen/Notapedidos');
 
-        $data['list_deta_pema'] = $this->Notapedidos->getNotaPedidoIds(1);
+        //!HARDCODE
+        $data['pema_id'] = 1; 
+        //!HARDCODE
+        $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega(1);
+      //  $data['list_deta_pema'] = $this->Notapedidos->getNotaPedidoIds(1);
         
         return $this->load->view('proceso/tareas/view_entrega_pedido_pendiente',$data,true);
 

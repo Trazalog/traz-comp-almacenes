@@ -93,6 +93,7 @@ class Notapedidos extends CI_Model
                           alm_deta_pedidos_materiales.fecha_entrega,
                           alm_deta_pedidos_materiales.fecha_entregado,
                           alm_articulos.barcode,
+                          alm_articulos.arti_id,
                           alm_articulos.descripcion as artDescription'
                         );
       $this->db->from('alm_pedidos_materiales');

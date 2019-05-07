@@ -1,62 +1,113 @@
-<p>Permitir crear una entrega de materiales atada a la nota de pedido materiales anterior (Pantalla entrega materiales)
+<input type="text" id="pema" value="<?php echo $pema_id ?>" class="hidden">
 
-Insumo cantidad pedida/entregada/cantidad a entregar
+<h3>Entrega Materiales <small>Información</small></h3>
 
-entregada la cantidad de entregas acumuladas hasta el momento => no se puede pasar de la cantidad pedida
+<div class="row">
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="comprobante">Comprobante <strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control" type="text" placeholder="Comprobante" id="comprobante">
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="solicitante">Solicitante<strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="destino">Destino<strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control" type="text" placeholder="Destino..." id="destino">
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control" type="text" placeholder="Fecha" id="fecha_entrega">
+        </div>
+    </div>
+</div>
 
-validar antes de entregar que la ot esta activa </p>
-
-
-<button class="btn btn-primary" onclick="new_entrega_material();">
-    Agregar Registro de Entrega Material
-</button>
-
-
-<br>
-<h3>Pedido Materiales  <small>Detalle Entrega</small></h3>
+<hr>
+<h3>Pedido Materiales <small>Detalles del Pedido</small></h3>
 <table class="table table-striped">
     <thead>
-        <th>Código Barra</th>
+        <th>Código Articulo</th>
         <th>Descripción</th>
-        <th>Cant. Entregada</th>
         <th>Cant. Pedida</th>
+        <th>Cant. Entregada</th>
         <th>Cant. Disponible</th>
-        <th>Cant. A Entregar</th>
+        <th>Cant. a Entregar</th>
     </thead>
     <tbody>
-        <?php 
-       
-            foreach($list_deta_pema as $o){
-                echo '<tr>';
-                    echo '<td>'.$o['barcode'].'</td>';
-                    echo '<td>'.$o['artDescription'].'</td>';
-                    echo '<td>???</td>';
-                    echo '<td>'.$o['cantidad'].'</td>';
-                    echo '<td>???</td>';
-                    echo '<td><a href="#"><i class="fa fa-fw fa-plus"></i></a></td>';
-                echo '</tr>';
-            }
+        <?php
 
-        ?>
+foreach ($list_deta_pema as $o) {
+    echo '<tr data-id="' . $o['arti_id'] . '">';
+    echo '<td>' . $o['barcode'] . '</td>';
+    echo '<td>' . $o['descripcion'] . '</td>';
+    echo '<td class="pedido" style="text-align:center">' . $o['cant_pedida'] . '</td>';
+    echo '<td class="entregado" style="text-align:center">' . $o['cant_entregada'] . '</td>';
+    echo '<td class="disponible" style="text-align:center">'.($o['cant_disponible']<0?0:$o['cant_disponible']).'</td>';
+    echo '<td style="text-align:center"><a href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . '" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';
+    echo '</tr>';
+}
+
+?>
     </tbody>
 </table>
 
+
+
+
 <script>
+    $("#fecha_entrega").datetimepicker({
+        format: 'YYYY-MM-DD',
+        locale: 'es',
+    });
 
-function new_entrega_material(){
+    var select_row = null;
+    function ver_info(e) {
+        select_row = $(e).closest('tr');
 
-    $('#ent_mat .view').empty();
-    $('#ent_mat .view').load("index.php/almacen/Ordeninsumo/cargarlista");
-    $('#ent_mat').modal('show');
-}
+        var id = $(select_row).data('id');
+
+        $('#modal_view .view').empty();
+        $('#modal_view .view').load("almacen/Articulo/getLotes/" + id);
+        $('#modal_view').modal('show');
+    }
 
 
 </script>
 
+<script>
+    function cerrarTarea() {
 
-<div class="modal fade" id="ent_mat"  tabindex="-1" role="dialog">
+        var id = $('#idTarBonita').val();
+
+        if($('.pendiente').length!=0){linkTo('general/Proceso');return;}
+
+        $.ajax({
+            type: 'POST',
+            data: {},
+            url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/' + id,
+            success: function (data) {
+                //WaitingClose();
+                linkTo('general/Proceso');
+
+            },
+            error: function (data) {
+                alert("Error");
+            }
+        });
+
+    }
+</script>
+
+
+<div class="modal fade" id="modal_view" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg view" role="document">
 
     </div>
 </div>
-

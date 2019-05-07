@@ -6,7 +6,9 @@ class Articulo extends CI_Controller {
 	function __construct() 
     {
 		parent::__construct();
+
 		$this->load->model('almacen/Articulos');
+
 	}
 
 	// Muestra listado de articulos
@@ -103,10 +105,36 @@ class Articulo extends CI_Controller {
 		}
 	}
 
-	public function getestado()
-	{
+	public function getestado(){
+
 		$response = $this->Articulos->getestados();
-      	echo json_encode($response);
+
+		echo json_encode($response);
+		  
+	}
+
+	public function getLotes($id = null) //fleiva
+	{
+		if(!$id){ $this->load->view('no_encontrado');return;}
+
+		$data['articulo'] = $this->Articulos->get($id);
+
+		$data['list'] = $this->Articulos->getLotes($id);
+			
+		$this->load->view('proceso/tareas/componentes/tabla_lote_deposito', $data);
+	}
+
+	public function nuevaEntregaMaterial(){
+
+		
+		$this->load->model('almacen/Ordeninsumos');
+
+		$info = json_decode($this->input->post('info_entrega'),true);
+
+		$detalle = json_decode($this->input->post('detalle'),true);
+
+		echo $this->Ordeninsumos->insert_entrega_materiales($info,$detalle);
+
 	}
 
 }
