@@ -86,11 +86,9 @@ foreach ($list_deta_pema as $o) {
 
         var id = $('#idTarBonita').val();
 
-        if($('.pendiente').length!=0){linkTo('general/Proceso');return;}
-
         $.ajax({
             type: 'POST',
-            data: {},
+            data: {completa:$('.pendiente').length == 0},
             url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/' + id,
             success: function (data) {
                 //WaitingClose();
