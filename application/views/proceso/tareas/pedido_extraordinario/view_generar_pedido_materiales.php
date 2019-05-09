@@ -1,11 +1,12 @@
 
 <button class="btn btn-primary" onclick="$('#pedidos').modal('show')">Generar Pedido</button>
-<?php  $this->load->view('almacen/notapedido/list') ?>
+
+<?php  $this->load->view('proceso/tareas/componentes/pedido_materiales') ?>
 
 
 <script> 
- load_view_insumos();
 
+ load_view_insumos();
 function load_view_insumos() {
     var emp_id = $('#empresa_id').val();
     var iort = $('#ot').val();
@@ -24,7 +25,7 @@ $.ajax({
     processData: false,
     url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/'+id,
     success: function (data) {
-        //WaitingClose();
+       
         linkTo('general/Proceso');
 
     },

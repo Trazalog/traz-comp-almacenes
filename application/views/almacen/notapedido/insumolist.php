@@ -41,7 +41,7 @@
 
     <ul class="nav nav-tabs">
       <li class="nav active" data-tipo="comun"><a data-toggle="tab" href="#one">Pedidos</a></li>
-      <li class="nav" data-tipo="especial"><a data-toggle="tab" href="#two">Pedidos Especiales</a></li>
+      <li class="nav hidden" data-tipo="especial"><a data-toggle="tab" href="#two">Pedidos Especiales</a></li>
     </ul>
 
     <div class="tab-content">
