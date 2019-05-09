@@ -3,7 +3,7 @@ class BPM
 {
   // declaro variables a usar se mandan desde la carga de la libreria
   private $caseId;
-  protected $CI;
+	protected $CI;	
 
 
   public function __construct($idCase = null){
@@ -14,7 +14,7 @@ class BPM
 	}
 	
 	// Lanza proceso en BPM
-	function lanzarProceso($contract=NULL)
+	function lanzarProceso($processId,$contract=NULL)
 	{
 		//Preparar Ambiente
 		$parametros = $this->conexiones();
@@ -26,7 +26,7 @@ class BPM
 		$resource = 'API/bpm/process/';
 		$url = BONITA_URL.$resource;
 		$com = '/instantiation';			
-		$body = @file_get_contents($url.BPM_PROCESS_ID.$com, false, $param);
+		$body = @file_get_contents($url.$processId.$com, false, $param);
 
 		//Interpretar Responce
 		$response = $this->parseHeaders( $http_response_header);
@@ -49,7 +49,7 @@ class BPM
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
-		$userId= $userdata[0]["userId"];		
+		$userId= $userdata["userId"];		
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
@@ -104,7 +104,7 @@ class BPM
   }
   // Obtiene Actividades desde BPM por id de caso
   public function ObtenerActividades($caseId,$param){
-    $respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
+    $respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
     $array = json_decode($respuesta,true);
     $ord = array();
     foreach ($array as $key=>$value)if($value['type']=='MULTI_INSTANCE_ACTIVITY'){unset($array[$key]);}
@@ -118,7 +118,7 @@ class BPM
   }
   // Obtiene Actividades Archivadas desde BPM por id de caso
   public function ObtenerActividadesArchivadas($caseId,$param){
-    $respuesta = file_get_contents(BONITA_URL.'API/bpm/archivedActivity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
+    $respuesta = file_get_contents(BONITA_URL.'API/bpm/archivedActivity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
     $array = json_decode($respuesta,true);
     $ord = array();
     //$sort = array();

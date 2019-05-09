@@ -1,6 +1,8 @@
 <ul class="sidebar-menu menu" data-widget="tree">
     <li class="header">MAIN NAVIGATION</li>
-    <li><a href="#" data-link="general/Proceso"><i class="fa fa-circle-o"></i>Proceso</a></li>
+    <li><a href="#" data-link="general/Proceso"><i class="fa fa-circle-o"></i>Mis Tareas</a></li>
+    <li><a href="#" data-link="general/Proceso"><i class="fa fa-circle-o"></i>Lanzar Pedido Materiales</a></li>
+    <li><a href="#" data-link="general/Proceso"><i class="fa fa-circle-o"></i>Lanzar Pedido Extraordinario</a></li>
     <li class="active treeview">
         <a href="#">
             <i class="fa fa-fw fa-check"></i> <span>Almancenes</span>

@@ -82,9 +82,6 @@
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-      
-      <!-- sidebar menu: : style can be found in sidebar.less -->
-       <!-- <?php// $this->load->view('layout/menu'); ?> -->
        <?php echo $menu?> 
     </section>
     <!-- /.sidebar -->
@@ -309,7 +306,7 @@
 <script>
    
         var link = '';
-        linkTo('general/Proceso/detalleTarea/640002');
+        linkTo('general/Proceso');
         $('.menu a').on('click',function(){
             link = $(this).data('link');
             linkTo();

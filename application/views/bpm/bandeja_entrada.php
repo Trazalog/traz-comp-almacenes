@@ -49,7 +49,7 @@
               <?php                
                 foreach($list as $f){
 
-                  if($f['processId']==BPM_PROCESS_ID){
+                  if($f['processId']==BPM_PROCESS_ID_PEDIDOS_NORMALES || $f['processId']==BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS){
                   
                   $id=$f["id"];
                   $asig = $f['assigned_id'];

@@ -13,49 +13,17 @@ class Proceso extends CI_Controller
 
         $this->load->model('almacen/Notapedidos');
 
+        $this->load->model('almacen/Pedidoextra');
+
         // SUPERVISOR1 => 102 => Aprueba pedido de Recursos Materiales
-        $data = ['userId' => 102, 'userName' => 'Fernando', 'userLastName' => 'Leiva', 'device' => '', 'permission' => 'Add-View-Del-Edit'];
-        $this->session->set_userdata('user', $data);
+        $data = ['userId' => 102, 'userName' => 'Fernando', 'userLastName' => 'Leiva', 'device' => '', 'permission' => 'Add-View-Del-Edit','id_empresa'=>1];
+        $this->session->set_userdata('user_data', $data);
     }
 
     public function index()
     {
 
-        // $pema_id = 1 ;
-
-        // $contract = [
-        //     'pIdPedidoMaterial' => $pema_id,
-        // ];
-
-        // $data = $this->bpm->LanzarProceso($contract);
-
-        // $this->Notapedidos->setCaseId($pema_id, $data['case_id']);
-
-        ////////////////////////////////////////////////
-
-        //   $data = $this->bpm->setUsuario(620002,102);
-
-        //   echo var_dump($data);
-
-        //   $contract = [
-        //      'apruebaPedido' => true
-        //   ];
-
-        //   $data = $this->bpm->cerrarTarea(620002,$contract);
-
-        //   echo var_dump($data);
-
-        // $data = $this->bpm->setUsuario(620004,102);
-
-        // echo var_dump($data);
-
-        //     $contract = [
-        //      'entregaCompleta' => true
-        //       ];
-
-        //   $data = $this->bpm->cerrarTarea(620004,$contract);
-
-        //   echo var_dump($data);
+        //$this->pedidoExtraordinario();
 
         $data['device'] = "";
         $res = $this->bpm->getToDoList();
@@ -68,7 +36,7 @@ class Proceso extends CI_Controller
     {
 
         //PERMISOS PANTALLA
-        $data['permission'] = $this->session->userdata('user')['permission'];
+        $data['permission'] = $this->session->userdata('user_data')['permission'];
 
         //TIPO DISPOSITIVO
         $data['device'] = "";
@@ -97,13 +65,14 @@ class Proceso extends CI_Controller
     public function tomarTarea()
     {
         $id = $this->input->post('id');
-        echo json_encode($this->bpm->setUsuario($id, $this->session->userdata('user')['userId']));
+        echo json_encode($this->bpm->setUsuario($id, $this->session->userdata('user_data')['userId']));
     }
 
     public function soltarTarea()
     {
         $id = $this->input->post('id');
         echo json_encode($this->bpm->setUsuario($id, ""));
+
     }
 
     public function cerrarTarea($task_id)
@@ -129,8 +98,8 @@ class Proceso extends CI_Controller
         switch ($nombre) {
             case 'Aprueba pedido de Recursos Materiales':
 
-                $this->load->model('almacen/Notapedidos');
                 $this->Notapedidos->setMotivoRechazo($form['pema_id'], $form['motivo_rechazo']);
+
                 $contrato['apruebaPedido'] = $form['result'];
 
                 return $contrato;
@@ -140,7 +109,54 @@ class Proceso extends CI_Controller
             case 'Entrega pedido pendiente':
 
                 $contrato['entregaCompleta'] = $form['completa'];
+
                 return $contrato;
+
+                break;
+
+            // ?PEDIDO MATERIALES EXTRAORDINARIOS
+
+            case 'Aprueba pedido de Recursos Materiales Extraordinarios':
+
+                $this->Pedidoextra->setMotivoRechazo($form['peex_id'], $form['motivo_rechazo']);
+
+                $contrato['apruebaPedido'] = $form['result'];
+
+                return $contrato;
+
+                break;
+
+            case 'Comunica Rechazo':
+
+                $contrato['motivo'] = $form['motivo'];
+
+                return $contrato;
+
+                break;
+
+            case 'Solicita Compra de Recursos Materiales Extraordiinarios':
+
+                $this->Pedidoextra->setMotivoRechazo($form['peex_id'], $form['motivo_rechazo']);
+
+                $contrato['apruebaCompras'] = $form['result'];
+
+                return $contrato;
+
+                break;
+
+            case 'Comunica Rechazo por Compras':
+
+                $contrato['motivo'] = $form['motivo'];
+
+                return $contrato;
+
+                break;
+            case 'Generar Pedido de Materiales':
+
+                $this->Pedidoextra->setPemaId(1, 1); //!HARDCODE
+
+                return;
+
                 break;
 
             default:
@@ -155,28 +171,81 @@ class Proceso extends CI_Controller
 
             case 'Aprueba pedido de Recursos Materiales':
 
-                return $this->load->view('proceso/tareas/view_aprueba_pedido', null, true);
+                return $this->load->view('proceso/tareas/pedido_materiales/view_aprueba_pedido', null, true);
 
                 break;
 
             case 'Entrega pedido pendiente':
-                $this->load->model('almacen/Notapedidos');
 
-                $data['pema_id'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['pema_id'];
+                $proceso = $tarea['processId'];
+
+                if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
+
+                    $data['pema_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['pema_id'];
+
+                } else {
+
+                    $data['pema_id'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['pema_id'];
+
+                }
 
                 $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($data['pema_id']);
 
-                return $this->load->view('proceso/tareas/view_entrega_pedido_pendiente', $data, true);
+                return $this->load->view('proceso/tareas/pedido_materiales/view_entrega_pedido_pendiente', $data, true);
 
                 break;
 
             case 'Comunica Rechazo':
 
-                $this->load->model('almacen/Notapedidos');
+                $proceso = $tarea['processId'];
 
-                $data['motivo'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
+                if ($proceso == BPM_PROCESS_ID) {
 
-                return $this->load->view('proceso/tareas/view_comunica_rechazo', $data, true);
+                    $data['motivo'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
+
+                } else {
+
+                    $data['motivo'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
+
+                }
+
+                return $this->load->view('proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
+
+                break;
+
+            // ?PEDIDO MATERIALES EXTRAORDINARIOS
+
+            case 'Aprueba pedido de Recursos Materiales Extraordinarios':
+
+                $data['peex_id'] = 1; // !HARDCODE
+
+                return $this->load->view('proceso/tareas/pedido_extraordinario/view_aprueba_pedido', $data, true);
+
+                break;
+
+            case 'Solicita Compra de Recursos Materiales Extraordiinarios':
+
+                $data['peex_id'] = 1; // !HARDCODE
+
+                return $this->load->view('proceso/tareas/pedido_extraordinario/view_aprueba_compras', $data, true);
+
+                break;
+
+            case 'Comunica Rechazo por Compras':
+
+                $data['motivo'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
+
+                return $this->load->view('proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
+
+                break;
+
+            case 'Generar Pedido de Materiales':
+
+                $data['ot'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['ortr_id'];
+
+                $data['list']  = $this->Notapedidos->getNotasxOT($data['ot']);
+
+                return $this->load->view('proceso/tareas/pedido_extraordinario/view_generar_pedido_materiales', $data, true);
 
                 break;
 
@@ -184,5 +253,34 @@ class Proceso extends CI_Controller
                 # code...
                 break;
         }
+    }
+
+    public function pedidoNormal()
+    {
+        $pema_id = 1 ;
+
+        $contract = [
+            'pIdPedidoMaterial' => $pema_id,
+        ];
+
+        $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+
+        $this->Notapedidos->setCaseId($pema_id, $data['case_id']);
+
+        $this->index();
+    }
+
+    public function pedidoExtraordinario()
+    {
+
+        $contract = [
+            'pedidoExtraordinario' => 'Soy un Pedido Extraordinario',
+        ];
+
+        $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+
+        $this->Pedidoextra->setCaseId(1, $data['case_id']);
+
+        $this->index();
     }
 }

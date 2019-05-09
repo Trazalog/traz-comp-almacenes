@@ -20,7 +20,7 @@ class Notapedidos extends CI_Model
     //    $userdata = $this->session->userdata('user_data');
         $empId    = 1;// $userdata[0]['id_empresa'];
 
-        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id asid_ordTrabajo,orden_trabajo.descripcion');
+        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,orden_trabajo.descripcion');
         $this->db->from('alm_pedidos_materiales T');
         $this->db->join('orden_trabajo','T.ortr_id = orden_trabajo.id_orden');
         $this->db->where('T.empr_id', $empId);
@@ -144,8 +144,8 @@ class Notapedidos extends CI_Model
         $orden = $data['orden_Id'][0]; 
         $notaP = array(
             'fecha'         => date('Y-m-d H:i:s'),
-            'id_ordTrabajo' => $orden,
-            'id_empresa'    => $empId
+            'ortr_id' => $orden,
+            'empr_id'    => $empId
             );
         $this->db->insert('alm_pedidos_materiales', $notaP);
         $idNota = $this->db->insert_id();
@@ -159,14 +159,14 @@ class Notapedidos extends CI_Model
             $newDate = date("Y-m-d", strtotime($date));
 
             $nota = array(
-                    'id_notaPedido' => $idNota,
-                    'artId' => $insumo,
+                    'pema_id' => $idNota,
+                    'arti_id' => $insumo,
                     'cantidad' => $cant,
-                    'provid' => $proveed,
+                    'prov_id' => $proveed,
                     'fechaEntrega' => $newDate,
                     'fechaEntregado' => $newDate,
-                    'remito' => 1,
-                    'estado' => 'P' // Estado Pedido
+                   // 'remito' => 1,
+                   // 'estado' => 'P' // Estado Pedido
                     );
             $this->db->insert('alm_deta_pedidos_materiales', $nota);
         }

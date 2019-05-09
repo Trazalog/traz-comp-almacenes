@@ -6,25 +6,25 @@
     <div class="col-sm-6">
         <div class="form-group">
             <label for="comprobante">Comprobante <strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control" type="text" placeholder="Comprobante" id="comprobante">
+            <input class="form-control required" type="text" placeholder="Comprobante" id="comprobante">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
             <label for="solicitante">Solicitante<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
+            <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
             <label for="destino">Destino<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control" type="text" placeholder="Destino..." id="destino">
+            <input class="form-control required" type="text" placeholder="Destino..." id="destino">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
             <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control" type="text" placeholder="Fecha" id="fecha_entrega">
+            <input class="form-control required" type="text" placeholder="Fecha" id="fecha_entrega">
         </div>
     </div>
 </div>
@@ -47,7 +47,7 @@ foreach ($list_deta_pema as $o) {
     echo '<tr data-id="' . $o['arti_id'] . '">';
     echo '<td>' . $o['barcode'] . '</td>';
     echo '<td>' . $o['descripcion'] . '</td>';
-    echo '<td class="pedido" style="text-align:center">' . $o['cant_pedida'] . '</td>';
+    echo '<td class="pedido " style="text-align:center">' . $o['cant_pedida'] . '</td>';
     echo '<td class="entregado" style="text-align:center">' . $o['cant_entregada'] . '</td>';
     echo '<td class="disponible" style="text-align:center">'.($o['cant_disponible']<0?0:$o['cant_disponible']).'</td>';
     echo '<td style="text-align:center"><a href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . '" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';

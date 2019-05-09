@@ -32,21 +32,23 @@ class Notapedido extends CI_Controller {
   public function agregarNota($idot){
     $data['permission'] = $this->permission;
     $data['ot']         = $this->Notapedidos->getOTporId($idot);
-    $this->load->view('notapedido/view_', $data);
+    $this->load->view('almacen/notapedido/view_', $data);
   }
 
 
   // devuelve plantilla de insumos a pedir por cliente 
-  public function agregarListInsumos($idcliente){
+  public function agregarListInsumos($ot){
+    $this->load->model('almacen/Articulos');
+    $data['ot'] = $ot;
     $data['permission'] = $this->permission;    
-    $data['plantilla']  = $this->Notapedidos->getPlantillaPorCliente($idcliente);
-    $this->load->view('notapedido/insumolist', $data);
+    $data['plantilla']  = $this->Articulos->list();
+    $this->load->view('almacen/notapedido/insumolist', $data);
   }
 
   // agregar pedido especial carga vista
   public function pedidoEspecial(){
 
-    $this->load->view('notapedido/viewPedidoEspecial_');
+    $this->load->view('almacen/notapedido/viewPedidoEspecial_');
   }
 
   // guardar pedido especial
@@ -101,24 +103,24 @@ class Notapedido extends CI_Controller {
 
   public function setNotaPedido(){
     
-    $userdata = $this->session->userdata('user_data');
-    $empId = $userdata[0]['id_empresa'];
+    //$userdata = $this->session->userdata('user_data');
+    $empId = 1;//$userdata['id_empresa'];
 
     $ids = $this->input->post('idinsumos');
     $cantidades = $this->input->post('cantidades');
     $idOT = $this->input->post('idOT');
     
     $cabecera['fecha'] = date('Y-m-d');
-    $cabecera['id_ordTrabajo'] = $idOT;
-    $cabecera['id_empresa'] = $empId;
+    $cabecera['ortr_id'] = $idOT;
+    $cabecera['empr_id'] = $empId;
     $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
     
     for ($i=0; $i < count($ids); $i++) { 
-      $deta[$i]['id_notaPedido'] = $idnota;
-      $deta[$i]['artId'] = $ids[$i];
+      $deta[$i]['pema_id'] = $idnota;
+      $deta[$i]['arti_id'] = $ids[$i];
       $deta[$i]['cantidad'] = $cantidades[$i];
-      $deta[$i]['fechaEntrega'] = date('Y-m-d');
-      $deta[$i]['estado'] = 'P';
+      $deta[$i]['fecha_entrega'] = date('Y-m-d');
+      //$deta[$i]['estado'] = 'P';
     }
 
     $response = $this->Notapedidos->setDetaNota($deta);

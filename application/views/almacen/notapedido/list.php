@@ -24,23 +24,15 @@
                   $id = $z['id_notaPedido'];
                   echo '<tr id="'.$id.'" class="'.$id.'" >';
                   echo '<td>';
-                  /*if (strpos($permission,'Edit') !== false) {
-                    echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
-                  } 
-                  if (strpos($permission,'Del') !== false) {
-                    echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;"></i>';
-                  } */
-                  //if (strpos($permission,'View') !== false) {
-                    echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Nota Pedido" data-toggle="modal" data-target="#modaltarea"></i>';
-                  //}                     
+                 
+                  echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Ver Nota Pedido"></i>';
+                                  
                   echo '</td>';
                   echo '<td>'.$z['id_notaPedido'].'</td>';
                   echo '<td>'.$z['id_ordTrabajo'].'</td>';
                   echo '<td>'.$z['descripcion'].'</td>';
                   echo '<td>'.$z['fecha'].'</td>';
-                  // echo '<td>'.$z['marcadescrip'].'</td>';
-                  // echo '<td>'.$z['depositodescrip'].'</td>';
-                  // echo '<td style="text-align: center">'.($z['equip_estad']  == 'AC' ? '<small class="label pull-left bg-green" >Activa</small>' :'<small class="label pull-left bg-blue">Transito</small>').'</td>';
+                
                   echo '</tr>';
                 }
               }
@@ -54,67 +46,6 @@
 </section><!-- /.content -->
 
 <script>
-var ed="";
-
-//Editar
-$(".fa-pencil").click(function (e) { 
-  console.log ("entre");
-  var idh = $(this).parent('td').parent('tr').attr('id');
-  console.log("ID de herramienta es ");
-  console.log(idh);
-  // alert(idh);
-  ed=idh;
-  $.ajax({
-    type: 'GET',
-    data: { idh:idh},
-    url: 'index.php/Herramienta/getpencil', //index.php/
-    success: function(data){
-      console.log("Estoy editando");
-      console.log(data);
-      console.log(data[0]['modid']);             
-      datos={
-        'codigode':data[0]['herrcodigo'],
-        'descripcionde':data[0]['herrdescrip'],
-        'modid':data[0]['modid'],
-        'depositoid':data[0]['depositoId'],
-        'marcade':data[0]['herrmarca'], 
-        'descrip': data[0]['depositodescrip'],
-        'descripmarca' : data[0]['marcadescrip'],
-        'descripdepo' : data[0]['depositodescrip'],
-      }
-      completarEdit(datos);
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-});
-
-//Eiminar
-$(".fa-times-circle").click(function (e) {                 
-  console.log("Esto eliminando"); 
-  var id_herr = $(this).parent('td').parent('tr').attr('id');
-  console.log(id_herr);
-  $.ajax({
-    type: 'POST',
-    data: { id_herr: id_herr},
-    url: 'index.php/Herramienta/baja_herramienta', //index.php/
-    success: function(data){
-      //var data = jQuery.parseJSON( data );
-      console.log(data);
-      //$(tr).remove();
-      alert("HERRAMIENTA Eliminado");
-      regresa();
-    },
-    error: function(result){
-      console.log(result);
-    },
-    dataType: 'json'
-  });
-});
-
-
 
 //Ver Orden
 $(".fa-search").click(function (e) { 
@@ -137,6 +68,8 @@ $(".fa-search").click(function (e) {
                                "</tr>";
                        $('#tabladetalle tbody').append(tr);
                     }
+
+                    $('#detalle_pedido').modal('show');
                   },                
             error: function(result){
                   
@@ -147,14 +80,6 @@ $(".fa-search").click(function (e) {
 });
 
   
-function regresa(){
-  //WaitingOpen();
-  //$('#modaldeposito').empty();
-  //$('#modaleditar').empty(); 
-  //$('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Herramienta/index/<?php echo $permission; ?>");
-  WaitingClose();
-}
 
 $('#deposito').DataTable({
   "aLengthMenu": [ 10, 25, 50, 100 ],
@@ -172,7 +97,7 @@ $('#deposito').DataTable({
 
 
 <!-- Modal ver nota pedido-->
-<div class="modal fade" id="modaltarea" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
@@ -184,7 +109,7 @@ $('#deposito').DataTable({
       <div class="modal-body" id="modalBodyArticle">
         <div class="row" >
           <div class="col-xs-12">
-             <table id="tabladetalle" class="table table-bordered table-hover">
+             <table id="tabladetalle" class="table table-bordered table-striped table-hover">
                <thead>
                   <tr>
                     <th>Articulo</th>

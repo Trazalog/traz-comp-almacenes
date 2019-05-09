@@ -1,6 +1,6 @@
 <input class="hidden" id="case_id" value="<?php echo $case_id ?>">
 <?php 
-  $userdata = $this->session->userdata('user');
+  $userdata = $this->session->userdata('user_data');
   $usrId = $userdata['userId'];     // guarda usuario logueado 
   $usrName =  $userdata['userName'];
   $usrLastName = $userdata["userLastName"];

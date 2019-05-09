@@ -1,8 +1,21 @@
 {
-    "menu": [{
-            "nombre": "Proceso",
-            "icono": "fa-flus",
+    "menu": [
+        {
+            "nombre": "Mis Tareas",
+            "icono": "fa-list",
             "link": "general/Proceso",
+            "nivel": 1
+        },
+        {
+            "nombre": "Lanzar Ped. Materiales",
+            "icono": "fa-cogs",
+            "link": "general/Proceso/pedidoNormal",
+            "nivel": 1
+        },
+        {
+            "nombre": "Lanzar Ped. Extraordinario",
+            "icono": "fa-cogs",
+            "link": "general/Proceso/pedidoExtraordinario",
             "nivel": 1
         },
         {
@@ -10,50 +23,38 @@
             "icono": "fa-flus",
             "link": "",
             "nivel": 2,
-            "submenu": [{
+            "submenu": [
+                {
                     "nombre": "Artículos",
-                    "icono": "fa-flus",
+                    "icono": "fa-barcode",
                     "link": "almacen/Articulo"
                 },
                 {
                     "nombre": "Stock",
-                    "icono": "fa-flus",
+                    "icono": "fa-cubes",
                     "link": "almacen/Lote"
                 },
                 {
                     "nombre": "Entrega Materiales",
-                    "icono": "fa-flus",
+                    "icono": "fa-check",
                     "link": "almacen/Ordeninsumo"
                 },
                 {
                     "nombre": "Recepcion Materiales",
-                    "icono": "fa-flus",
+                    "icono": "fa-paperclip",
                     "link": "almacen/Remito"
                 },
                 {
                     "nombre": "Punto de Pedido",
-                    "icono": "fa-flus",
+                    "icono": "fa-bookmark",
                     "link": "almacen/Lote/puntoPedList"
                 },
                 {
                     "nombre": "Pedido Materiales",
-                    "icono": "fa-flus",
+                    "icono": "fa-cart-plus",
                     "link": "almacen/Notapedido"
                 }
             ]
-        },
-        {
-            "nombre": "Header(Cabera)",
-            "icono": "fa-flus",
-            "link": "general/Componente",
-            "nivel": 1
-        },
-        {
-            "nombre": "ABM Tablas",
-            "icono": "fa-flus",
-            "link": "general/Tabla",
-            "nivel": 1
         }
-
     ]
 }

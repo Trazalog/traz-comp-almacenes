@@ -60,7 +60,7 @@
 
     function guardar_entrega() {
 
-        if (!verificar_cantidad()) return;
+        if (!verificar_cantidad() || !validar_campos_obligatorios()) return;
 
         var array = [];
 
@@ -89,6 +89,17 @@
         });
 
         $('.modal').modal('hide');
+    }
+
+    function validar_campos_obligatorios(){
+        var ban = true;
+        $('.required').each(function() {
+            ban = ban && ($(this).val() != '');;
+        });
+
+        if(!ban){alert('Campos Obligatorios Incompletos (*)');return false;}
+
+        return true;
     }
 
     function verificar_cantidad() {

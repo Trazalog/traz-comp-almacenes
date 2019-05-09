@@ -1,6 +1,6 @@
 
 <h4>Motivo Rechazo</h4>
-<p1> <?php echo $motivo ?> </p1>
+<p1 id="motivo"> <?php echo $motivo ?> </p1>
 
 
 <script>
@@ -10,7 +10,7 @@ var id = $('#idTarBonita').val();
 
 var dataForm = new FormData($('#generic_form')[0]);
 
-dataForm.append('pema_id', $('table#deposito tbody tr').attr('id'));
+dataForm.append('motivo', $('#motivo').html());
 
 $.ajax({
     type: 'POST',

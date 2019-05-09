@@ -12,7 +12,7 @@ if(!function_exists('menu')){
 
             switch ($i->nivel) {
                 case 1:
-                    $html .= '<li><a href="#" data-link="'.$i->link.'"><i class="fa fa-circle-o"></i>'.$i->nombre.'</a></li>';
+                    $html .= '<li><a href="#" data-link="'.$i->link.'"><i class="fa '.$i->icono.'"></i>'.$i->nombre.'</a></li>';
                     break;
                 case 2:
                     $html .= '<li class="treeview">
@@ -38,7 +38,7 @@ if(!function_exists('menu')){
     {
         $html = ' <ul class="treeview-menu">';
         foreach ($data as $i) {
-            $html.= '<li><a href="#" data-link="'.$i->link.'"><i class="fa fa-fw fa-barcode"></i>'.$i->nombre.'</a></li>';
+            $html.= '<li><a href="#" data-link="'.$i->link.'"><i class="fa fa-fw '.$i->icono.'"></i>'.$i->nombre.'</a></li>';
         }
         return $html.'</ul>';
     }
