@@ -51,7 +51,7 @@ class Proceso extends CI_Controller
         $data['datos'] = '';
 
         //LINEA DE TIEMPO
-        $data['timeline'] = $this->bpm->ObtenerLineaTiempo($tarea['rootCaseId']);
+        $data['timeline'] = $this->bpm->ObtenerLineaTiempo($tarea['processId'],$tarea['rootCaseId']);
 
         //COMENTARIOS
         $data_aux = ['case_id' => $tarea['rootCaseId'], 'comentarios' => $this->bpm->ObtenerComentarios()];
@@ -199,7 +199,7 @@ class Proceso extends CI_Controller
 
                 $proceso = $tarea['processId'];
 
-                if ($proceso == BPM_PROCESS_ID) {
+                if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
 
                     $data['motivo'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
 

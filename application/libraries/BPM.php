@@ -93,18 +93,18 @@ class BPM
 		}
 	}
   // Gestiona Actividaddes desde BPM
-  public function ObtenerLineaTiempo($caseId){
+  public function ObtenerLineaTiempo($processId,$caseId){
     
     $parametros = $this->LoggerAdmin();
 		$parametros["http"]["method"] = "GET";
 		$param = stream_context_create($parametros);
-		$data['listAct'] = $this->ObtenerActividades($caseId, $param);
-		$data['listArch'] = $this->ObtenerActividadesArchivadas($caseId, $param);
+		$data['listAct'] = $this->ObtenerActividades($processId, $caseId, $param);
+		$data['listArch'] = $this->ObtenerActividadesArchivadas($processId, $caseId, $param);
 		return $data;
   }
   // Obtiene Actividades desde BPM por id de caso
-  public function ObtenerActividades($caseId,$param){
-    $respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
+  public function ObtenerActividades($processId, $caseId,$param){
+    $respuesta = file_get_contents(BONITA_URL.'API/bpm/activity?p=0&c=200&f=processId%3D'.$processId.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
     $array = json_decode($respuesta,true);
     $ord = array();
     foreach ($array as $key=>$value)if($value['type']=='MULTI_INSTANCE_ACTIVITY'){unset($array[$key]);}
@@ -117,8 +117,8 @@ class BPM
     return $array;
   }
   // Obtiene Actividades Archivadas desde BPM por id de caso
-  public function ObtenerActividadesArchivadas($caseId,$param){
-    $respuesta = file_get_contents(BONITA_URL.'API/bpm/archivedActivity?p=0&c=200&f=processId%3D'.BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
+  public function ObtenerActividadesArchivadas($processId, $caseId,$param){
+    $respuesta = file_get_contents(BONITA_URL.'API/bpm/archivedActivity?p=0&c=200&f=processId%3D'.$processId.'&f=rootCaseId%3D'.$caseId.'&d=assigned_id',false,$param);
     $array = json_decode($respuesta,true);
     $ord = array();
     //$sort = array();

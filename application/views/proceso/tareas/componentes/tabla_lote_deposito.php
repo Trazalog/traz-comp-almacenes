@@ -4,13 +4,20 @@
     </div>
 
     <div class="panel-body">
-
         <div class="row">
-            <div class="col-sm-4 text-light-blue"><h3 id="tit_pedida">Cantidad Pedida: ???</h3></div>
-            <div class="col-sm-4 text-light-blue"><h3 id="tit_entregada">Cantidad Entregada: ???</h3></div>
-            <div class="col-sm-4 text-light-blue"><h3 id="tit_disponible">Cantidad Disponible: ???</h3></div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="comprobante">Cantidad Pedida:</label>
+                <input id="tit_pedida" type="text" class="form-control" disabled>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="fecha">Cantidad Entregada:</label>
+                <input id="tit_entregada" type="text" class="form-control" disabled>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <label for="fecha">Cantidad Disponible:</label>
+                <input id="tit_disponible" type="text" class="form-control" disabled>
+            </div>
         </div>
-
         <hr>
 
         <table class="table table-striped">
@@ -22,16 +29,16 @@
             </thead>
             <tbody id="lotes_depositos">
 
-                <?php 
-                        foreach ($list as $o) {
-                            echo '<tr>';
-                                echo '<td class="hidden"><input class="lote_depo" value=\''.json_encode(['lote_id'=>$o['lote_id'] , 'depo_id'=>$o['depo_id'],'arti_id'=>$o['arti_id'],'prov_id'=>$o['prov_id'],'empr_id'=>$o['empr_id']]).'\'></td>';
-                                echo '<td>'.$o['codigo'].'</td>'; 
-                                echo '<td>'.$o['descripcion'].'</td>'; 
-                                echo '<td class="cant_lote">'.$o['cantidad'].'</td>'; 
-                                echo '<td><input class="form-control cantidad" placeholder="Ingrese Cantidad..." type="number" name="cantidad"></td>';
-                            echo'</tr>';
-                        }
+                <?php
+                    foreach ($list as $o) {
+                        echo '<tr>';
+                        echo '<td class="hidden"><input class="lote_depo" value=\'' . json_encode(['lote_id' => $o['lote_id'], 'depo_id' => $o['depo_id'], 'arti_id' => $o['arti_id'], 'prov_id' => $o['prov_id'], 'empr_id' => $o['empr_id']]) . '\'></td>';
+                        echo '<td>' . $o['codigo'] . '</td>';
+                        echo '<td>' . $o['descripcion'] . '</td>';
+                        echo '<td class="cant_lote">' . $o['cantidad'] . '</td>';
+                        echo '<td><input class="form-control cantidad" placeholder="Ingrese Cantidad..." type="number" name="cantidad"></td>';
+                        echo '</tr>';
+                    }
                     ?>
 
             </tbody>
@@ -42,10 +49,10 @@
 
 <script>
     index();
-    function index(){
-        $('#tit_pedida').html('Cantidad Pedida: ' +$(select_row).find('.pedido').html());
-        $('#tit_entregada').html('Cantidad Entregada: ' +$(select_row).find('.entregado').html());
-        $('#tit_disponible').html('Cantidad Disponible: ' +$(select_row).find('.disponible').html());
+    function index() {
+        $('#tit_pedida').val($(select_row).find('.pedido').html());
+        $('#tit_entregada').val($(select_row).find('.entregado').html());
+        $('#tit_disponible').val($(select_row).find('.disponible').html());
     }
 
     function get_info_entrega() {
@@ -91,13 +98,13 @@
         $('.modal').modal('hide');
     }
 
-    function validar_campos_obligatorios(){
+    function validar_campos_obligatorios() {
         var ban = true;
-        $('.required').each(function() {
+        $('.required').each(function () {
             ban = ban && ($(this).val() != '');;
         });
 
-        if(!ban){alert('Campos Obligatorios Incompletos (*)');return false;}
+        if (!ban) { alert('Campos Obligatorios Incompletos (*)'); return false; }
 
         return true;
     }

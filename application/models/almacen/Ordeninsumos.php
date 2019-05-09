@@ -12,9 +12,10 @@ class Ordeninsumos extends CI_Model {
         //$userdata  = $this->session->userdata('user_data');
         $empresaId = 1;//$userdata[0]['id_empresa'];
    
-        $this->db->select('alm_entrega_materiales.enma_id as id_orden,alm_entrega_materiales.ortr_id as id_ot, alm_entrega_materiales.fecha, alm_entrega_materiales.solicitante, alm_entrega_materiales.comprobante');
-        $this->db->from('alm_entrega_materiales');
-        $this->db->where('alm_entrega_materiales.empr_id', $empresaId);
+        $this->db->select('A.enma_id as id_orden, B.ortr_id as id_ot, A.fecha, A.solicitante, A.comprobante');
+        $this->db->from('alm_entrega_materiales A');
+        $this->db->join('alm_pedidos_materiales B','B.pema_id = A.pema_id');
+        $this->db->where('A.empr_id', $empresaId);
 
         $query = $this->db->get();
 	    if( $query->num_rows() > 0)
@@ -38,7 +39,6 @@ class Ordeninsumos extends CI_Model {
        $this->db->join('alm_lotes ','alm_lotes.arti_id = alm_articulos.arti_id');
        $this->db->join('utl_tablas', 'utl_tablas.tabl_id = alm_lotes.estado_id');
        $this->db->where('alm_lotes.arti_id = alm_articulos.arti_id');
-      // $this->db->where('utl_tablas.valor','AC');
        $this->db->where('alm_articulos.empr_id' ,$empresaId);
        $this->db->group_by('alm_lotes.arti_id');
         

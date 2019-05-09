@@ -20,29 +20,20 @@
 
   <link rel="stylesheet" href="<?php base_url();?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
 
-  <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="<?php base_url()?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
-  <link rel="stylesheet" href="<?php base_url() ?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <link rel="stylesheet" href="<?php base_url()?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
-  <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="<?php base_url()?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 
   <!-- Bootstrap datetimepicker -->
   <link rel="stylesheet" href="<?php base_url();?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
 
 
-
-
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-  <?php $this->load->view('layout/general_scripts') ?>
+  <?php $this->load->view('layout/general_scripts')?>
 
 </head>
 
@@ -69,20 +60,20 @@
         <span class="icon-bar"></span>
       </a>
 
-      <?php 
-      
-        $this->load->view('layout/perfil');
-      
-      ?>
+      <?php
 
-     
+$this->load->view('layout/perfil');
+
+?>
+
+
     </nav>
   </header>
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-       <?php echo $menu?> 
+       <?php echo $menu ?>
     </section>
     <!-- /.sidebar -->
   </aside>
@@ -93,7 +84,7 @@
     <section id="content" class="content">
 
 
- 
+
 
     </section>
     <!-- /.content -->
@@ -304,10 +295,10 @@
 </div>
 <!-- ./wrapper -->
 <script>
-   
+
         var link = '';
         linkTo('general/Proceso');
-        $('.menu a').on('click',function(){
+        $('.menu .link').on('click',function(){
             link = $(this).data('link');
             linkTo();
         });
@@ -315,7 +306,7 @@
         function linkTo(uri = ''){
             if(link == '' && uri == '') return;
             $('#content').empty();
-            $('#content').load('<?php base_url() ?>'+(uri==''?link:uri));
+            $('#content').load('<?php base_url()?>'+(uri==''?link:uri));
         }
 
         function collapse(e){
@@ -326,9 +317,9 @@
             }else{
                 $(e).addClass('collapsed-box');
             }
-            
+
         }
-        
+
 
         /* Abre cuadro cargando ajax */
         function WaitingOpen(texto){

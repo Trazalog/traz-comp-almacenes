@@ -5,48 +5,7 @@
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
-        <!-- <div class="box-header">
-          <h3 class="box-title">Orden de Insumo</h3> 
-          <?php
-          //if (strpos($permission,'Add') !== false) {
-            #echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="listado">Ver Listado</button>';
-          //}
-          ?>
-        </div> -->
-
         <div class="box-body">
-            <!-- <div class="row">
-                <div class="col-xs-12">
-                  <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-                    <h4><i class="icon fa fa-ban"></i> Error!</h4>
-                    Revise que todos los campos obligatorios esten seleccionados
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="alert alert-danger alert-dismissable" id="error1" style="display: none">
-                    <h4><i class="icon fa fa-ban"></i> Error!</h4>
-                    NO HAY INSUMOS SUFICIENTES
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="alert alert-success" id="error2" style="display: none">
-                    <h4></h4>
-                    HAY INSUMOS SUFICIENTES
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xs-12">
-                  <div class="alert alert-danger alert-dismissable" id="error3" style="display: none">
-                    <h4></h4>
-                    NO HAY INSUMOS
-                  </div>
-                </div>
-              </div> -->
           <div class="row">
             <div class="col-xs-12">
 
@@ -73,12 +32,12 @@
                       <!--<select id="solicitante" name="solicitante" class="form-control"   />-->
                     </div>
 
-                    <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4 hidden">
                       <label for="">id Orden de Trabajo <strong style="color: #dd4b39">*</strong> :</label>
-                      <input type="text" id="idOT" name="idOT" class="form-control" value=""
+                      <input type="text" id="idOT" name="idOT" class="form-control" value="0"
                         placeholder="Ingrese id de OT" />
                     </div>
-                    <div class="col-xs-12 col-sm-6 col-md-4">
+                    <div class="col-xs-12 col-sm-6 col-md-4 hidden">
                       <label for="">Descripción de OT <strong style="color: #dd4b39">*</strong> :</label>
                       <textarea id="ot" name="ot" class="form-control"></textarea>
                     </div>
@@ -233,42 +192,6 @@
       });
       return tmp;
     }();
-    $("#idOT").autocomplete({
-      autoFocus: true,
-      source: dataOT,
-      delay: 500,
-      minLength: 1,
-      response: function (event, ui) {
-        var noResult = { value: "", label: "No se encontraron resultados" };
-        ui.content.push(noResult);
-      },
-      focus: function (event, ui) {
-        // prevent autocomplete from updating the textbox
-        event.preventDefault();
-        // manually update the textbox
-        $(this).val(ui.item.value);
-        if (ui.item.value == "")
-          $('#ot').html("");
-        $('#ot').html(ui.item.info);
-      },
-      select: function (event, ui) {
-        // prevent autocomplete from updating the textbox
-        event.preventDefault();
-        // manually update the textbox and hidden field
-        $(this).val(ui.item.value);//label
-        if (ui.item.value == "")
-          $('#ot').html("");
-        $("#ot").html(ui.item.info);
-        //console.log("id articulo de orden insumo: ") 
-        //console.log(ui.item.value);                
-      },
-      /*change: function (event, ui) {
-        if (!ui.item) {
-          this.value = '';
-          $("#ot").val("");
-        }
-      }*/
-    }).autocomplete("widget").addClass("hidden");
 
 
     function traer_deposito(artId) {
