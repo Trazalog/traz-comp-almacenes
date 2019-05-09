@@ -241,9 +241,7 @@ class Proceso extends CI_Controller
 
             case 'Generar Pedido de Materiales':
 
-                $data['ot'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['ortr_id'];
-
-                $data['list']  = $this->Notapedidos->getNotasxOT($data['ot']);
+                $data['pema_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['pema_id'];
 
                 return $this->load->view('proceso/tareas/pedido_extraordinario/view_generar_pedido_materiales', $data, true);
 

@@ -14,7 +14,6 @@
                 <th>Cantidad</th>
                 <th>Fecha Nota</th>
                 <th>Fecha de Entrega</th>
-
               </tr>
             </thead>
             <tbody>

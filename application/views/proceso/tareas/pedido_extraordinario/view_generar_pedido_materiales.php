@@ -1,5 +1,6 @@
 
 <button class="btn btn-primary" onclick="$('#pedidos').modal('show')">Generar Pedido</button>
+<input id="pema_id" type="number" class="hidden" value="<?php echo $pema_id ?>">
 
 <?php  $this->load->view('proceso/tareas/componentes/pedido_materiales') ?>
 
@@ -11,7 +12,7 @@ function load_view_insumos() {
     var emp_id = $('#empresa_id').val();
     var iort = $('#ot').val();
     $('#body-pedidos').empty();
-    $("#body-pedidos").load("<?php base_url(); ?>index.php/almacen/Notapedido/agregarListInsumos/"+iort);
+    $("#body-pedidos").load("<?php base_url(); ?>index.php/almacen/Notapedido/editarPedido");
 }
 
 function cerrarTarea() {
