@@ -5,10 +5,10 @@
         <center>
             <h4> ¿Se Aprueba o Rechaza el Pedido de Materiales? </h4>
             <label class="radio-inline">
-                <input type="radio" name="result" value="true" onclick="$('#motivo').hide()"> Aprobar
+                <input type="radio" name="result" value="true" onclick="$('#motivo').hide();$('#hecho').prop('disabled',false);"> Aprobar
             </label>
             <label class="radio-inline">
-                <input type="radio" name="result" value="false" onclick="$('#motivo').show()"> Rechazar
+                <input type="radio" name="result" value="false" onclick="$('#motivo').show();$('#hecho').prop('disabled',false);"> Rechazar
             </label>
         </center>
 
@@ -21,6 +21,7 @@
 
 <script>
     $('#motivo').hide();
+    $('#hecho').prop('disabled',true);
 
     function cerrarTarea() {
 

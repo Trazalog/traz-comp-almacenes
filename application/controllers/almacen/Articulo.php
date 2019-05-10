@@ -126,14 +126,15 @@ class Articulo extends CI_Controller {
 
 	public function nuevaEntregaMaterial(){
 
-		
 		$this->load->model('almacen/Ordeninsumos');
 
 		$info = json_decode($this->input->post('info_entrega'),true);
 
 		$detalle = json_decode($this->input->post('detalle'),true);
 
-		echo $this->Ordeninsumos->insert_entrega_materiales($info,$detalle);
+		$info['enma_id'] = $this->input->post('enma_id');
+
+		echo json_encode(['id' => $this->Ordeninsumos->insert_entrega_materiales($info,$detalle)]);
 
 	}
 

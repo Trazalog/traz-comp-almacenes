@@ -108,33 +108,12 @@
 
 <script>
 
-  actualizar_terminadas();
-  function actualizar_terminadas(){
-    var aux = sessionStorage.getItem("tareas_cerradas");
-    if(aux==null || aux.length==0) return;
-    var aux = aux.split("-");
-    for(var i=0 ;i<aux.length-1;i++){
-      $("#"+aux[i]).remove();
-    }
-  }
-
  
-
 //Tomo valor de la celda y carga detalle de la tarea
   $('tbody tr').click( function () {
     var id = $(this).attr('id');
-    verTarea(id);
+    linkTo("general/Proceso/detalleTarea/" + id);  
   });
-
-
-  // Carga para cargar notif estandar
-  function verTarea(idTarBonita){
-
-    WaitingOpen();
-    $(".content").load("index.php/general/Proceso/detalleTarea/" + idTarBonita);
-    WaitingClose();
-    
-  }
 
 </script>
 

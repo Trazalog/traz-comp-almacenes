@@ -86,16 +86,33 @@
         $.ajax({
             url: 'almacen/Articulo/nuevaEntregaMaterial',
             type: 'POST',
-            data: { info_entrega: get_info_entrega(), detalle: JSON.stringify(array) },
+            data: { info_entrega: get_info_entrega(), detalle: JSON.stringify(array) ,enma_id: $('#enma_id').val()},
             success: function (data) {
-                linkTo('general/Proceso/detalleTarea/' + $('#idTarBonita').val());
+                alert(data.id);
+                $('#enma_id').val(data.id);
+                actualizar_entregas();
+            },
+            error: function (error) {
+                alert('Error');
+            },
+            dataType: 'json'
+        });
+
+        $('.modal').modal('hide');
+    }
+
+    function actualizar_entregas(){
+        $.ajax({
+            url: 'almacen/Notapedido/getTablaDetalle/'+$('#pema').val(),
+            type: 'POST',
+            success: function (data) {
+                $('#entregas').empty();
+                $('#entregas').html(data);
             },
             error: function (error) {
                 alert('Error');
             }
         });
-
-        $('.modal').modal('hide');
     }
 
     function validar_campos_obligatorios() {

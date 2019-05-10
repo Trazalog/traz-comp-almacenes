@@ -14,10 +14,10 @@
                 <th>Cantidad</th>
                 <th>Fecha Nota</th>
                 <th>Fecha de Entrega</th>
+                <th>Acción</th>
               </tr>
             </thead>
             <tbody>
-              <!-- -->
             </tbody>
           </table>
 
@@ -29,29 +29,45 @@
 
 <script>
 
+  function del(e){
+    var id = $(e).closest('tr').data('id');
+    alert(id);
+  }
+
   get_detalle();
   function get_detalle() {
 
-    var id_nota = 1;
+    var id = $('#pema_id').val();
 
     $.ajax({
       type: 'POST',
-      data: { id: id_nota },
+      data: { id },
       url: 'index.php/almacen/Notapedido/getNotaPedidoId',
       success: function (data) {
-
+            $('#tabladetalle').find('tbody').empty();
         $('tr.celdas').remove();
         for (var i = 0; i < data.length; i++) {
-          var tr = "<tr class='celdas'>" +
+          var tr = "<tr class='celdas' data-id='"+data[i]['arti_id']+"'>" +
             "<td>" + data[i]['artDescription'] + "</td>" +
             "<td>" + data[i]['cantidad'] + "</td>" +
             "<td>" + data[i]['fecha'] + "</td>" +
             "<td>" + data[i]['fecha_entrega'] + "</td>" +
+            "<td class='text-light-blue'><i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 15px;' title='Eliminar' onclick='del(this);'></i></td>" +
             "</tr>";
           $('#tabladetalle tbody').append(tr);
         }
+    
+      },
+      error: function (result) {
 
-        $('#tabladetalle').DataTable({
+        console.log(result);
+      },
+      dataType: 'json'
+    });
+  }
+
+
+  $('#tabladetalle').DataTable({
           "aLengthMenu": [10, 25, 50, 100],
           "columnDefs": [{
             "targets": [0],
@@ -63,12 +79,4 @@
           }],
           "order": [[1, "asc"]],
         });
-      },
-      error: function (result) {
-
-        console.log(result);
-      },
-      dataType: 'json'
-    });
-  }
 </script>

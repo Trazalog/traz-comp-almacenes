@@ -49,8 +49,7 @@
       <!-- Show this tab by adding `active` class -->
       <div class="tab-pane fade in active" id="one">
         <!-- sacar u ocultar -->
-        <input type="text" id="id_ordTrabajo" name="id_ordTrabajo" class="form-control hidden" value="<?php echo $ot ?>"
-          disabled>
+       
         <form id="form_insumos">
           <table id="tbl_insumos" class="table table-bordered table-hover">
             <thead>
@@ -107,8 +106,9 @@
     locale: 'es',
   });
 
-  guardar_pedido(){
-      if($('#pema_id').val()==''){
+  function guardar_pedido(){
+    
+      if($('#pema_id').val()=='' || $('#pema_id').val()==0){
 
         set_pedido();
 
@@ -153,7 +153,7 @@
 
     });
 
-    var idOT = $('#id_ordTrabajo').val();
+    //var idOT = $('#id_ordTrabajo').val();
 
     if (hayError == true) {
       $('#error').fadeIn('slow');
@@ -161,24 +161,15 @@
     }
     WaitingOpen("Guardando pedido...");
 
-    // if (!navigator.onLine) {//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
-    //   console.log("Sin Conexión");
-    //   var aux = sessionStorage.getItem('list_pedidos_' + idOT);
-    //   if (aux == null) aux = []; else aux = JSON.parse(aux);
-    //   aux.push({ nombreIns, idinsumos, cantidades, idOT });
-    //   sessionStorage.setItem('list_pedidos_' + idOT, JSON.stringify(aux));
-    //   console.log(sessionStorage.getItem('list_pedidos_' + idOT));
-    //   cargarNotasOffline();
-    // }
-
     $.ajax({
-      data: { idinsumos, cantidades, idOT},
+      data: { idinsumos, cantidades, idOT: $('#ot').val(), peex_id: $('#peex_id').val()},
       type: 'POST',
       dataType: 'json',
       url: 'index.php/almacen/Notapedido/setNotaPedido',
       success: function (result) {
+        $('#pema_id').val(result.pema_id);
         WaitingClose();
-        cargarPedidos();
+        get_detalle();
         $('.modal').modal('hide');
         $('input.check').attr('checked', false);
       },
@@ -232,16 +223,6 @@
     }
     WaitingOpen("Guardando pedido...");
 
-    // if (!navigator.onLine) {//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
-    //   console.log("Sin Conexión");
-    //   var aux = sessionStorage.getItem('list_pedidos_' + idOT);
-    //   if (aux == null) aux = []; else aux = JSON.parse(aux);
-    //   aux.push({ nombreIns, idinsumos, cantidades, idOT });
-    //   sessionStorage.setItem('list_pedidos_' + idOT, JSON.stringify(aux));
-    //   console.log(sessionStorage.getItem('list_pedidos_' + idOT));
-    //   cargarNotasOffline();
-    // }
-
     $.ajax({
       data: { idinsumos, cantidades, idOT, pema: $('#pema_id').val()},
       type: 'POST',
@@ -249,7 +230,7 @@
       url: 'index.php/almacen/Notapedido/editPedido',
       success: function (result) {
         WaitingClose();
-        cargarPedidos();
+        get_detalle();
         $('.modal').modal('hide');
         $('input.check').attr('checked', false);
       },

@@ -85,17 +85,17 @@ class Proceso extends CI_Controller
         $form = $this->input->post();
 
         //Mapeo de Contrato
-        $contrato = $this->getContrato($tarea['displayName'], $form);
+        $contrato = $this->getContrato($tarea, $form);
 
         //Cerrar Tarea
         $this->bpm->cerrarTarea($task_id, $contrato);
 
     }
 
-    public function getContrato($nombre, $form)
+    public function getContrato($tarea, $form)
     {
 
-        switch ($nombre) {
+        switch ($tarea['displayName']) {
             case 'Aprueba pedido de Recursos Materiales':
 
                 $this->Notapedidos->setMotivoRechazo($form['pema_id'], $form['motivo_rechazo']);
@@ -151,9 +151,12 @@ class Proceso extends CI_Controller
                 return $contrato;
 
                 break;
+
             case 'Generar Pedido de Materiales':
 
-                $this->Pedidoextra->setPemaId(1, 1); //!HARDCODE
+                $this->Pedidoextra->setPemaId($form['peex_id'], $form['pema_id']); 
+
+                $this->Notapedidos->setCaseId($form['pema_id'], $tarea['rootCaseId']);
 
                 return;
 
@@ -217,7 +220,7 @@ class Proceso extends CI_Controller
 
             case 'Aprueba pedido de Recursos Materiales Extraordinarios':
 
-                $data['peex_id'] = 1; // !HARDCODE
+                $data['peex_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['peex_id'];
 
                 return $this->load->view('proceso/tareas/pedido_extraordinario/view_aprueba_pedido', $data, true);
 
@@ -225,7 +228,7 @@ class Proceso extends CI_Controller
 
             case 'Solicita Compra de Recursos Materiales Extraordiinarios':
 
-                $data['peex_id'] = 1; // !HARDCODE
+                $data['peex_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['peex_id'];
 
                 return $this->load->view('proceso/tareas/pedido_extraordinario/view_aprueba_compras', $data, true);
 
@@ -241,7 +244,11 @@ class Proceso extends CI_Controller
 
             case 'Generar Pedido de Materiales':
 
-                $data['pema_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['pema_id'];
+                $peex  = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
+
+                $data['pema_id'] = $peex['pema_id'];
+
+                $data['peex_id'] = $peex['peex_id'];
 
                 return $this->load->view('proceso/tareas/pedido_extraordinario/view_generar_pedido_materiales', $data, true);
 
@@ -258,6 +265,7 @@ class Proceso extends CI_Controller
         $pema_id = 1 ;
 
         $contract = [
+
             'pIdPedidoMaterial' => $pema_id,
         ];
 
@@ -270,14 +278,20 @@ class Proceso extends CI_Controller
 
     public function pedidoExtraordinario()
     {
+        $ot = 36; //!HARDCODE
 
         $contract = [
-            'pedidoExtraordinario' => 'Soy un Pedido Extraordinario',
+            'pedidoExtraordinario' => 'Soy un Pedido Extraordinario'           
         ];
 
         $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
 
-        $this->Pedidoextra->setCaseId(1, $data['case_id']);
+        $peex['case_id'] = $data['case_id'];
+        $peex['fecha'] = date("Y-m-d");
+        $peex['ortr_id'] = $ot; 
+        $peex['empr_id'] = 1; //!HARDCODE
+
+        $this->Pedidoextra->set($peex);
 
         $this->index();
     }

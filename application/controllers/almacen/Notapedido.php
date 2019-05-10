@@ -130,6 +130,11 @@ class Notapedido extends CI_Controller
         $cabecera['empr_id'] = $empId;
         $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
 
+        // SET EN PEDIDO EXTRA EL PEDIDO MATERILES
+        $peex_id = $this->input->post('peex_id');
+    
+        if($peex_id){$this->load->model('almacen/Pedidoextra'); $this->Pedidoextra->setPemaId($peex_id, $idnota);}
+
         for ($i = 0; $i < count($ids); $i++) {
             $deta[$i]['pema_id'] = $idnota;
             $deta[$i]['arti_id'] = $ids[$i];
@@ -139,14 +144,14 @@ class Notapedido extends CI_Controller
         }
 
         $response = $this->Notapedidos->setDetaNota($deta);
-        echo json_encode($response);
+        
+        echo json_encode(['pema_id'=>$idnota]);
     }
 
     public function editarPedido()
     {
 
         $this->load->model('almacen/Articulos');
-        $data['ot'] = $ot;
         $data['permission'] = $this->permission;
         $data['plantilla'] = $this->Articulos->list();
         $this->load->view('almacen/notapedido/edit_pedido', $data);
@@ -159,7 +164,7 @@ class Notapedido extends CI_Controller
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');
 
-        $idnota = $this->input->post('pema_id');
+        $idnota = $this->input->post('pema');
 
         for ($i = 0; $i < count($ids); $i++) {
             $deta[$i]['pema_id'] = $idnota;
@@ -170,6 +175,17 @@ class Notapedido extends CI_Controller
 
         $response = $this->Notapedidos->setDetaNota($deta);
         echo json_encode($response);
+    }
+
+    public function getTablaDetalle($pema=null)
+    {
+        $this->load->model('almacen/Ordeninsumos');
+
+        $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($pema);
+
+        $aux = $this->load->view('proceso/tareas/componentes/tabla_detalle_entregas', $data, true);
+
+        echo $aux;
     }
 
 }

@@ -11,6 +11,12 @@ class Pedidoextra extends CI_Model {
         return $this->db->insert('alm_pedidos_extraordinario', $data);
     }
 
+    public function get($id)
+    {
+        $this->db->where('peex_id', $id);
+        return $this->db->get('alm_pedidos_extraordinario')->row_array();
+    }
+
     public function setCaseId($id,$case)
     {
         $this->db->set('case_id', $case);
