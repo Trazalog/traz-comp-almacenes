@@ -54,7 +54,7 @@ class Proceso extends CI_Controller
         $data['timeline'] = $this->bpm->ObtenerLineaTiempo($tarea['processId'],$tarea['rootCaseId']);
 
         //COMENTARIOS
-        $data_aux = ['case_id' => $tarea['rootCaseId'], 'comentarios' => $this->bpm->ObtenerComentarios()];
+        $data_aux = ['case_id' => $tarea['rootCaseId'], 'comentarios' => $this->bpm->ObtenerComentarios($tarea['rootCaseId'])];
         $data['comentarios'] = $this->load->view('proceso/tareas/componentes/comentarios', $data_aux, true);
 
         //DESPLEGAR VISTA
@@ -294,5 +294,10 @@ class Proceso extends CI_Controller
         $this->Pedidoextra->set($peex);
 
         $this->index();
+    }
+
+    public function guardarComentario()
+    {
+        echo $this->bpm->guardarComentario($this->input->post());
     }
 }

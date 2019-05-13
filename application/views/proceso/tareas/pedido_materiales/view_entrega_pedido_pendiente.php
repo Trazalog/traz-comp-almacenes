@@ -71,6 +71,8 @@
 
     var select_row = null;
     function ver_info(e) {
+
+        if (!validar_campos_obligatorios()) return;
         select_row = $(e).closest('tr');
 
         var id = $(select_row).data('id');
@@ -78,6 +80,17 @@
         $('#modal_view .view').empty();
         $('#modal_view .view').load("almacen/Articulo/getLotes/" + id);
         $('#modal_view').modal('show');
+    }
+
+    function validar_campos_obligatorios() {
+        var ban = true;
+        $('.required').each(function () {
+            ban = ban && ($(this).val() != '');
+        });
+
+        if (!ban) { alert('Campos Obligatorios Incompletos (*)'); return false; }
+
+        return true;
     }
 
 

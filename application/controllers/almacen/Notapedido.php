@@ -188,4 +188,16 @@ class Notapedido extends CI_Controller
         echo $aux;
     }
 
+    public function editarDetalle()
+    {
+        $id = $this->input->post('id');
+        $data['cantidad'] = $this->input->post('cantidad');
+        echo $this->Notapedidos->editarDetalle($id, $data);
+    }
+
+    public function eliminarDetalle()
+    {
+        $id = $this->input->post('id');
+        echo $this->Notapedidos->eliminarDetalle($id);
+    }
 }

@@ -170,15 +170,16 @@
     }
     //Funcion COMENTARIOS
     function guardarComentario() {
-			console.log("Guardar Comentarios...");
+	
 			var id= $('#case_id').val();
 			var comentario=$('#comentario').val();
             var nombUsr = $('#usrName').val();
-            var apellUsr = $('#usrLastName').val();;
+            var apellUsr = $('#usrLastName').val();
+						
 			$.ajax({
 					type:'POST',
 					data:{'processInstanceId':id, 'content':comentario},
-					url:'index.php/Tarea/GuardarComentario',
+					url:'index.php/general/Proceso/guardarComentario',
 					success:function(result){
 						console.log("Submit");
 						var lista =  $('#listaComentarios');

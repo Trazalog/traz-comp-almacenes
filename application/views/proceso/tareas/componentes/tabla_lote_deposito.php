@@ -67,7 +67,7 @@
 
     function guardar_entrega() {
 
-        if (!verificar_cantidad() || !validar_campos_obligatorios()) return;
+        if (!verificar_cantidad()) return;
 
         var array = [];
 
@@ -88,7 +88,6 @@
             type: 'POST',
             data: { info_entrega: get_info_entrega(), detalle: JSON.stringify(array) ,enma_id: $('#enma_id').val()},
             success: function (data) {
-                alert(data.id);
                 $('#enma_id').val(data.id);
                 actualizar_entregas();
             },
@@ -115,16 +114,7 @@
         });
     }
 
-    function validar_campos_obligatorios() {
-        var ban = true;
-        $('.required').each(function () {
-            ban = ban && ($(this).val() != '');;
-        });
 
-        if (!ban) { alert('Campos Obligatorios Incompletos (*)'); return false; }
-
-        return true;
-    }
 
     function verificar_cantidad() {
 

@@ -5,10 +5,10 @@
         <div class="box-header">
           <h3 class="box-title">Entrega Materiales</h3>
           <?php
-          if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Ordeninsumo/cargarlista\')">Agregar</button>';
-          }
-          ?>
+          // if (strpos($permission,'Add') !== false) {
+          //   echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Ordeninsumo/cargarlista\')">Agregar</button>';
+          // }
+           ?>
         </div><!-- /.box-header -->
 
         <div class="box-body">

@@ -133,24 +133,22 @@ class BPM
     return $array;
   }
   // Comentarios
-  public function ObtenerComentarios(){
+  public function ObtenerComentarios($caseId){
     //CONTEXTO
     $parametros = $this->LoggerAdmin();
 		$param = stream_context_create($parametros);
 		
 		//URL Y ENVIO
-    $processInstance = 'processInstanceId%3D'.$this->caseId;
+    $processInstance = 'processInstanceId%3D'.$caseId;
 		$result = file_get_contents(BONITA_URL.'API/bpm/comment?f='.$processInstance.'&o=postDate%20DESC&p=0&c=200&d=userId',false,$param);
 		
 		//RETORNO RESULTADO
 		return json_decode($result,true);
 	}		
 	//Guardar Comentarios
-  public function GuardarComentario($comentario){
-    
-    //$comentario = $this->input->post();
-    // trae la cabecera
-    $parametros = $this->CI->Bonitas->conexiones();
+  public function guardarComentario($comentario){
+
+    $parametros = $this->conexiones();
 
     // Cambio el metodo de la cabecera a "PUT"
     $parametros["http"]["method"] = "POST";
