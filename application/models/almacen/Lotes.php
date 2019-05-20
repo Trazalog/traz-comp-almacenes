@@ -141,5 +141,20 @@ class Lotes extends CI_Model {
 
 		}
 	}
+
+	public function crearLoteSistema($data)
+	{
+		$empr = 1;
+		$aux  = array(
+			'codigo'=> $data['barcode'],
+			'arti_id'=>$data['arti_id'],
+			'prov_id'=>0,
+			'depo_id'=>1,
+			'cantidad'=>0,
+			'estado_id'=>1,
+			'empr_id'=>$empr
+		);
+		return $this->db->insert('alm_lotes',$aux);
+	}
 	
 }

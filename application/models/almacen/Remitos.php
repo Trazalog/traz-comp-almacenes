@@ -32,7 +32,7 @@ class Remitos extends CI_Model {
         //$userdata  = $this->session->userdata('user_data');
         $empresaId = 1;//$userdata[0]['id_empresa'];
 
-        $this->db->select('T.arti_id as artId, T.barcode as artBarCode, T.descripcion as artDescription');
+        $this->db->select('T.arti_id as artId, T.barcode as artBarCode, T.descripcion as artDescription,T.es_loteado');
         $this->db->from('alm_articulos as T');
         $this->db->where('empr_id',$empresaId);
         $this->db->where('T.eliminado',false);
@@ -55,7 +55,7 @@ class Remitos extends CI_Model {
         //$userdata  = $this->session->userdata('user_data');
         $empresaId = 1;//$userdata[0]['id_empresa'];
      
-        $query = $this->db->get_where('alm_depositos', array('empr_id' => $empresaId));
+        $query = $this->db->get_where('alm_depositos', array('empr_id' => $empresaId, 'depo_id!='=>1));
             if($query->num_rows()>0){
             return $query->result();
         }
@@ -411,6 +411,45 @@ class Remitos extends CI_Model {
         $this->db->where('loteid', $id);
         $query = $this->db->update("alm_lotes",$data3);
         return $query;
+    }
+
+    public function guardar_detalles($id, $detalles)
+    {
+        $empr_id = 1;
+        foreach ($detalles as $o) {
+            $o['empr_id'] = $empr_id;
+            $o['lote_id'] = $this->verificar_lote($o);
+            $o['rema_id'] = $id;
+            unset($o['codigo']);unset($o['depo_id']);
+            $this->db->insert('alm_deta_recepcion_materiales', $o);
+        };
+    }
+
+    public function verificar_lote($data)
+    {
+        //? SI EXISTE LO TE RETORNA ID
+
+        $codigo = $data['lote_id']=='S/L'?$data['codigo']:$data['lote_id'];
+
+        $this->db->where('codigo', $codigo);
+
+        $res =  $this->db->get('alm_lotes')->row();
+
+        if($res){ $this->sumarlote($res->lote_id,$data['cantidad']); return $res->lote_id;}
+
+        //? SI NO EXISTE LOTE LO CREA
+
+        $loteado = $data['lote_id'] != 'S/L';
+
+        $data['codigo'] = $loteado? $data['lote_id']:$data['codigo'];
+
+        $data['fecha'] = date("Y-m-d H:i:s");
+
+        $data['estado_id'] = 1;
+          
+        $this->insert_lote($data);
+
+        return $this->db->insert_id();
     }
 
 }

@@ -57,7 +57,7 @@
                       <div class="row">
                         <br>
                         <div class="col-xs-12 col-sm-12 col-md-6">
-                        <label for="">Seleccionar Artículo <strong style="color: #dd4b39">*</strong> :</label>
+                          <label for="">Seleccionar Artículo <strong style="color: #dd4b39">*</strong> :</label>
                           <div class="input-group">              
                             <div class="input-group-btn">
                               <button type="button" class="btn btn-primary" onclick="$('#articulos').modal('show')">Artículos</button>
@@ -434,7 +434,7 @@
 
 
 
-  <!-- Modal eliminar-->
+ 
   <div class="modal" id="articulos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog" role="document">
       <div class="modal-content">

@@ -8,6 +8,7 @@ class Articulo extends CI_Controller {
 		parent::__construct();
 
 		$this->load->model('almacen/Articulos');
+		$this->load->model('almacen/Lotes');
 
 	}
 
@@ -48,7 +49,7 @@ class Articulo extends CI_Controller {
 	{
 		$id     = $this->input->post('idartic');
 		$result = $this->Articulos->getpencil($id);
-		print_r(json_encode($result));
+		echo json_encode($result);
 	}
 
 	//
@@ -62,13 +63,17 @@ class Articulo extends CI_Controller {
 
 
 	public function setArticle(){
-		$data = $this->Articulos->setArticle($this->input->post());
-		if($data  == false)
+		$data = $this->input->post();
+		$id = $this->Articulos->setArticle($data);
+
+
+		if($id  == false)
 		{
 			echo json_encode(false);
 		}
 		else
 		{
+			
 			echo json_encode(true);	
 		}
 	}

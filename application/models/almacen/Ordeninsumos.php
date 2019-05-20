@@ -122,9 +122,13 @@ class Ordeninsumos extends CI_Model
         $data['empr_id'] = 1; //$userdata[0]['id_empresa'];
 
         if (!$info['enma_id']) {
+            
+            $info['empr_id'] = $data['empr_id'];
+
             $query = $this->db->insert("alm_entrega_materiales", $info);
 
             $id = $this->db->insert_id();
+
         }else{
             $id = $info['enma_id'];
         }
@@ -155,13 +159,15 @@ class Ordeninsumos extends CI_Model
     public function get_detalle_entrega($pema)
     {
         // FILTRAR ARTICULOS PEDIDO MATERIALES
-        $this->db->select('arti_id, cantidad as cant_pedida');
-        $this->db->from('alm_deta_pedidos_materiales');
+        $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum(LOTE.cantidad) as cantidad');
+        $this->db->from('alm_deta_pedidos_materiales PEMA');
+        $this->db->join('alm_articulos ART', 'ART.arti_id = PEMA.arti_id');
+        $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
         $this->db->where('pema_id', $pema);
         $A = '(' . $this->db->get_compiled_select() . ') A';
 
         // SUMAR ENTREGAS
-        $this->db->select('arti_id, sum(cantidad) as cant_entregada');
+        $this->db->select('B.arti_id, sum(cantidad) as cant_entregada');
         $this->db->from('alm_entrega_materiales A');
         $this->db->join('alm_deta_entrega_materiales B', 'B.enma_id = A.enma_id');
         $this->db->where('A.pema_id', $pema);
@@ -176,7 +182,7 @@ class Ordeninsumos extends CI_Model
         $C = '(' . $this->db->get_compiled_select() . ') C';
 
         // SUMAR ENTREGAS DE OTRAS NOTAS PEDIDOS
-        $this->db->select('arti_id, sum(cantidad) as aux_cant_entrega');
+        $this->db->select('B.arti_id, sum(cantidad) as aux_cant_entrega');
         $this->db->from('alm_entrega_materiales A');
         $this->db->join('alm_deta_entrega_materiales B', 'B.enma_id = A.enma_id');
         $this->db->where('A.pema_id !=', $pema);
@@ -184,17 +190,14 @@ class Ordeninsumos extends CI_Model
         $D = '(' . $this->db->get_compiled_select() . ') D';
 
         // OBTENER EXISTENCIAS
-        $this->db->select('ART.barcode, ART.descripcion, LOTE.arti_id, A.cant_pedida, sum(LOTE.cantidad) -  IFNULL(C.cant_reservada,0) + IFNULL(D.aux_cant_entrega,0) as cant_disponible, B.cant_entregada');
-        $this->db->from('alm_lotes LOTE');
-        $this->db->join($A, 'A.arti_id = LOTE.arti_id');
-        $this->db->join($B, 'B.arti_id = LOTE.arti_id', 'left');
-        $this->db->join($C, 'C.arti_id = LOTE.arti_id ', 'left');
-        $this->db->join($D, 'D.arti_id = LOTE.arti_id ', 'left');
-        $this->db->join('alm_articulos ART', 'ART.arti_id = LOTE.arti_id', 'left');
-        $this->db->group_by('LOTE.arti_id');
+        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, cantidad -  IFNULL(C.cant_reservada,0) + IFNULL(D.aux_cant_entrega,0) as cant_disponible, B.cant_entregada');
+        $this->db->from($A);
+        $this->db->join($B, 'B.arti_id = A.arti_id', 'left');
+        $this->db->join($C, 'C.arti_id = A.arti_id ', 'left');
+        $this->db->join($D, 'D.arti_id = A.arti_id ', 'left');
+        $this->db->group_by('A.arti_id');
 
-        //  $aux=$this->db->get_compiled_select();
-
+        //echo var_dump($this->db->get()->result_array());die;
         return $this->db->get()->result_array();
     }
 

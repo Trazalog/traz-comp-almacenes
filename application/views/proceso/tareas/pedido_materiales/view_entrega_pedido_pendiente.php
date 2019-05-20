@@ -1,6 +1,6 @@
-<input type="text" id="pema" value="<?php echo $pema_id ?>" class="hidden">
+<input type="text" id="pema" value="<?php echo $pema_id ?>" class="">
 
-<input type="text" id="enma_id" value="" class="hidden">
+<input type="text" id="enma_id" value="" class="">
 
 <h3>Entrega Materiales <small>Información</small></h3>
 
@@ -64,6 +64,7 @@
 
 
 <script>
+
     $("#fecha_entrega").datetimepicker({
         format: 'YYYY-MM-DD',
         locale: 'es',

@@ -89,8 +89,17 @@
   <div class="col-xs-12 col-sm-8">
     <input type="text" name="puntped" id="puntped" class="form-control">
   </div>
-</div>
+</div><br>
   
+<div class="row">
+    <div class="col-xs-12 col-sm-4">
+        <label style="margin-top: 7px;">¿Lotear Artículo?</label>
+    </div>
+    <div class="col-xs-12 col-sm-8">
+        <input type="checkbox" name="es_loteado" id="es_loteado"  <?php echo($data['article']['es_loteado'] == true ? 'checked': ''); ?>>
+    </div>
+</div> <!-- /.modal-body -->
+ 
 <script>
 $('#artIsByBox').click(function() {
   if($('#artIsByBox').is(':checked')){

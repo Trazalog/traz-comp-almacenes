@@ -6,8 +6,11 @@ class Remito extends CI_Controller {
 
     public function __construct()
     {
-        parent::__construct();
-        $this->load->model('almacen/Remitos');
+		parent::__construct();
+		
+		$this->load->model('almacen/Remitos');
+		$this->load->model('almacen/Articulos');
+		$this->load->model('almacen/Lotes');
     }
 
     public function index() // Ok
@@ -19,13 +22,15 @@ class Remito extends CI_Controller {
 
     public function cargarlista() // Ok
     {
-        $data['permission'] = $this->permission;
+		$data['permission'] = $this->permission;
+		$data['list'] =  $this->getcodigo(false);
         $this->load->view('almacen/remito/view_',$data);
 	}
 	
-	public function getcodigo()
+	public function getcodigo($json=true)
     {
 		$codigo = $this->Remitos->getcodigo();
+
 		if($codigo)
 		{	
 			$arre = array();$i=0;
@@ -35,9 +40,11 @@ class Remito extends CI_Controller {
 				$arre[$i]['value'] = $valorS['artId'];
 				$arre[$i]['label'] = $valorS['artBarCode'];
 				$arre[$i]['artDescription'] = $valorS['artDescription'];
+				$arre[$i]['es_loteado'] = $valorS['es_loteado'];
 				$i++;
 	        }
-			echo json_encode($arre);
+			if($json) echo json_encode($arre);
+			else{return $arre;}
 		}
 		else echo "nada";
 	}
@@ -174,6 +181,21 @@ class Remito extends CI_Controller {
 			echo json_encode($arre);
 		}
 		else echo "nada";
+	}
+
+	public function guardar_mejor()
+	{
+		$info = $this->input->post('info');
+
+		$detalles = $this->input->post('detalles');
+
+		$this->Remitos->insert_orden($info);
+
+		$id = $this->db->insert_id();
+
+		$this->Remitos->guardar_detalles($id,$detalles);
+
+		return $data;
 	}
 
 }

@@ -1,7 +1,7 @@
 <?php info_header('Cabecera Informacion 1',''); ?>
 <?php info_header('Cabecera Informacion 2',''); ?>
 <?php info_header('Cabecera Informacion 3',''); ?>
-<input id="tarea" data-info="">
+<input id="tarea" data-info="" class="hidden">
 <input type="text" class="form-control hidden" id="asignado" value="<?php echo $tarea->assigned_id?>">
 
 <div class="nav-tabs-custom ">
@@ -11,7 +11,7 @@
 		<li class="privado"><a href="#tab_3" data-toggle="tab" aria-expanded="false">Vista Global</a></li>
 		<li class="privado"><a href="#tab_4" data-toggle="tab" aria-expanded="false">Acciones</a></li>
 		
-		<li class="dropdown">
+		<!-- <li class="dropdown">
 			<a class="dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
 				Dropdown <span class="caret"></span>
 			</a>
@@ -22,7 +22,7 @@
 				<li role="presentation" class="divider"></li>
 				<li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
 			</ul>
-		</li>
+		</li> -->
 		<li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
 		
 	</ul>
@@ -30,11 +30,12 @@
 		<div class="tab-pane active" id="tab_1">
 			
 			<?php
-				echo "<button class='btn btn-block btn-success btn-tomar' onclick='tomarTarea()'>Tomar tarea</button>";
+				echo "<button class='btn  btn-success btn-tomar' onclick='tomarTarea()'>Tomar tarea</button>";
 
-				echo "<button class='btn btn-block btn-danger grupNoasignado btn-soltar' onclick='soltarTarea()'>Soltar tarea</button>";													
+				echo "<button class='btn  btn-danger grupNoasignado btn-soltar' onclick='soltarTarea()'>Soltar tarea</button>";													
 
 				var_dump($tarea);
+			//	echo $view;
 			?>
 		</div>
 		<!-- /.tab-pane -->

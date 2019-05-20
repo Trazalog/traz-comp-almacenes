@@ -18,7 +18,7 @@
                 <th>Acciones</th>
                 <th>Orden de Insumo</th>
                 <th>Orden de Trabajo</th>
-                <th>Nro de Comprobante</th>
+                <th>Comprobante</th>
                 <th>Solicitante</th>
                 <th>Fecha</th>
               </tr>

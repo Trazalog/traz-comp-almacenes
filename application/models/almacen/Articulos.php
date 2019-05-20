@@ -13,10 +13,10 @@ class Articulos extends CI_Model
 		//$userdata  = $this->session->userdata('user_data');
 		$empresaId = 1;//$userdata[0]['id_empresa'];
 		
-		$this->db->select('A.*, B.descripcion as medida,C.valor');
+		$this->db->select('A.*, B.descripcion as medida,"AC" as valor');
 		$this->db->from('alm_articulos A');
 		$this->db->join('utl_tablas B', 'B.tabl_id = A.unidad_id','left');
-		$this->db->join('utl_tablas C', 'C.tabl_id = A.estado_id');
+		//$this->db->join('utl_tablas C', 'C.tabl_id = A.estado_id',);
 		$this->db->where('A.empr_id', $empresaId);
 		$this->db->where('not A.eliminado');
 			
@@ -53,7 +53,7 @@ class Articulos extends CI_Model
 
 		$this->db->select('A.*, B.tabl_id as unidadmedida,B.descripcion as unidad_descripcion');
 		$this->db->from('alm_articulos A');
-		$this->db->join('utl_tablas B','A.unidad_id = B.tabl_id');
+		$this->db->join('utl_tablas B','A.unidad_id = B.tabl_id','left');
 		$this->db->where('arti_id',$id);
 		$this->db->where('empr_id',$empresaId);
 
@@ -179,14 +179,15 @@ class Articulos extends CI_Model
 				'cantidad_caja'     => $boxCant,
 				'unidad_id'   => $unidmed,
 				'punto_pedido'   => $puntped,
+				'es_loteado' => $data['es_loteado'],
 				'empr_id'	 => $empresaId
 			);
 
 			switch($act){
 				case 'Add':
 					//Agregar Artículo 
-					if($this->db->insert('alm_articulos', $data) == false) {
-						return false;
+					if($this->db->insert('alm_articulos', $data)) {
+						return $this->db->insert_id();
 					} 
 					break;
 				case 'Edit':

@@ -36,7 +36,9 @@
                   echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Asignación</td>';                 
                                   
 
-                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Vto.</td>'; 
+                  echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Fecha Vto.</td>';
+                  
+                  echo '<th>caseId</td>';
 
                   // echo '<th '.($device == 'android' ? 'class= "hidden"' :'class= ""').' >Prioridad</td>';
                                   
@@ -75,7 +77,10 @@
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['assigned_date']).'</td>'; 
 
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').' style="text-align: left">'.formato_fecha_hora($f['dueDate']).'</td>';
-                
+                  
+                    echo '<td>'.$f['caseId'].'</td>';
+
+
                     echo '</tr>';
 
                 }

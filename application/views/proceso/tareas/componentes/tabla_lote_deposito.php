@@ -120,8 +120,8 @@
 
         var disponible = parseInt($(select_row).find('.disponible').html());
         var pedido = parseInt($(select_row).find('.pedido').html());
-        var entregado = parseInt($(select_row).find('.entregado').html());
-
+        var entregado = parseInt($(select_row).find('.entregado').html()); entregado = isNaN(entregado)? 0 : entregado;
+        
         var acum = 0;
 
         $('#lotes_depositos tr').each(function (i, e) {
