@@ -55,21 +55,13 @@
         $('#tit_disponible').val($(select_row).find('.disponible').html());
     }
 
-    function get_info_entrega() {
-        return JSON.stringify(obj = {
-            comprobante: $('#comprobante').val(),
-            fecha: $('#fecha_entrega').val(),
-            destino: $('#destino').val(),
-            solicitante: $('#solicitante').val(),
-            pema_id: $('#pema').val()
-        });
-    }
-
     function guardar_entrega() {
 
         if (!verificar_cantidad()) return;
 
         var array = [];
+
+        var sum = 0;
 
         $('#lotes_depositos tr').each(function (i, e) {
 
@@ -79,25 +71,15 @@
 
             var num = $(e).find('.cantidad').val();
 
-            if (num != '' && num != 0) { aux.cantidad = num; array.push(aux); }
+            if (!isNaN(num) && num != 0) { aux.cantidad = num; array.push(aux); sum += parseInt(num); }
 
         });
 
-        $.ajax({
-            url: 'almacen/Articulo/nuevaEntregaMaterial',
-            type: 'POST',
-            data: { info_entrega: get_info_entrega(), detalle: JSON.stringify(array) ,enma_id: $('#enma_id').val()},
-            success: function (data) {
-                $('#enma_id').val(data.id);
-                actualizar_entregas();
-            },
-            error: function (error) {
-                alert('Error');
-            },
-            dataType: 'json'
-        });
-
+        $(select_row).attr('data-json',JSON.stringify(array));
+        $(select_row).find('.extraer').html(sum)
+        
         $('.modal').modal('hide');
+        
     }
 
     function actualizar_entregas(){

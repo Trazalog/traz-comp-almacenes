@@ -129,18 +129,4 @@ class Articulo extends CI_Controller {
 		$this->load->view('proceso/tareas/componentes/tabla_lote_deposito', $data);
 	}
 
-	public function nuevaEntregaMaterial(){
-
-		$this->load->model('almacen/Ordeninsumos');
-
-		$info = json_decode($this->input->post('info_entrega'),true);
-
-		$detalle = json_decode($this->input->post('detalle'),true);
-
-		$info['enma_id'] = $this->input->post('enma_id');
-
-		echo json_encode(['id' => $this->Ordeninsumos->insert_entrega_materiales($info,$detalle)]);
-
-	}
-
 }

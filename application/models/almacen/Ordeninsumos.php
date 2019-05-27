@@ -116,33 +116,35 @@ class Ordeninsumos extends CI_Model
         return $query;
     }
 
-    public function insert_entrega_materiales($info, $detalle)
+    public function insert_entrega_materiales($form)
     {
         //$userdata           = $this->session->userdata('user_data');
         $data['empr_id'] = 1; //$userdata[0]['id_empresa'];
 
-        if (!$info['enma_id']) {
-            
-            $info['empr_id'] = $data['empr_id'];
+        $info['empr_id'] = $data['empr_id'];
 
-            $query = $this->db->insert("alm_entrega_materiales", $info);
 
-            $id = $this->db->insert_id();
+        //CABECERA ENTREGA
+        $info = json_decode($form['info_entrega'],true);
 
-        }else{
-            $id = $info['enma_id'];
-        }
+        //DETALLE ENTREGA
+        $detalle = $form['detalles'];
 
+        //INSERTAR EN CABECERA ENTREGA
+        $query = $this->db->insert("alm_entrega_materiales", $info);
+        $id = $this->db->insert_id();
+
+        //VALIDAR INSERCION
         if (!$id) return false;
 
+        //PREPARO INSERCION DETALLES
         foreach ($detalle as $key => $o) {
             $detalle[$key]['enma_id'] = $id;
         }
 
+        //INSERTAR DETALLES
         $this->db->insert_batch('alm_deta_entrega_materiales', $detalle);
         $this->actualizar_lote($detalle);
-
-        return $id;
 
     }
 
@@ -164,6 +166,7 @@ class Ordeninsumos extends CI_Model
         $this->db->join('alm_articulos ART', 'ART.arti_id = PEMA.arti_id');
         $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id');
         $this->db->where('pema_id', $pema);
+        $this->db->group_by('ART.arti_id');
         $A = '(' . $this->db->get_compiled_select() . ') A';
 
         // SUMAR ENTREGAS
@@ -190,12 +193,11 @@ class Ordeninsumos extends CI_Model
         $D = '(' . $this->db->get_compiled_select() . ') D';
 
         // OBTENER EXISTENCIAS
-        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, cantidad -  IFNULL(C.cant_reservada,0) + IFNULL(D.aux_cant_entrega,0) as cant_disponible, B.cant_entregada');
+        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, cantidad -  IFNULL(C.cant_reservada,0) + IFNULL(D.aux_cant_entrega,0) as cant_disponible, IFNULL(B.cant_entregada,0) as cant_entregada');
         $this->db->from($A);
         $this->db->join($B, 'B.arti_id = A.arti_id', 'left');
         $this->db->join($C, 'C.arti_id = A.arti_id ', 'left');
         $this->db->join($D, 'D.arti_id = A.arti_id ', 'left');
-        $this->db->group_by('A.arti_id');
 
         //echo var_dump($this->db->get()->result_array());die;
         return $this->db->get()->result_array();

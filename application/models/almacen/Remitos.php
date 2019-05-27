@@ -334,15 +334,9 @@ class Remitos extends CI_Model {
     {
         //$userdata            = $this->session->userdata('user_data');
         $data3['empr_id'] = 1;//$userdata[0]['id_empresa'];
-        
         $query   = $this->db->insert("alm_lotes",$data3);
         return $query;
     }
-
-
-
-
-
 
 
     function getsolicitante(){
@@ -420,7 +414,7 @@ class Remitos extends CI_Model {
             $o['empr_id'] = $empr_id;
             $o['lote_id'] = $this->verificar_lote($o);
             $o['rema_id'] = $id;
-            unset($o['codigo']);unset($o['depo_id']);
+            unset($o['codigo']);unset($o['depo_id']);unset($o['fec_vencimiento']);unset($o['loteado']);
             $this->db->insert('alm_deta_recepcion_materiales', $o);
         };
     }
@@ -429,27 +423,35 @@ class Remitos extends CI_Model {
     {
         //? SI EXISTE LO TE RETORNA ID
 
-        $codigo = $data['lote_id']=='S/L'?$data['codigo']:$data['lote_id'];
+        if($data['loteado'] == 1){
 
-        $this->db->where('codigo', $codigo);
+            $this->db->where('lote_id', $data['lote_id']);
 
+        }else{
+
+            $this->db->where('arti_id', $data['arti_id']);
+
+        }
+        
         $res =  $this->db->get('alm_lotes')->row();
 
-        if($res){ $this->sumarlote($res->lote_id,$data['cantidad']); return $res->lote_id;}
+
+        if($res){ $this->sumarlote($res->lote_id, $data); return $res->lote_id;}
 
         //? SI NO EXISTE LOTE LO CREA
 
-        $loteado = $data['lote_id'] != 'S/L';
-
-        $data['codigo'] = $loteado? $data['lote_id']:$data['codigo'];
-
-        $data['fecha'] = date("Y-m-d H:i:s");
-
         $data['estado_id'] = 1;
-          
+        unset($data['loteado']);
+
         $this->insert_lote($data);
 
         return $this->db->insert_id();
+    }
+
+    public function actualizar_lote($id, $data)
+    {
+        $this->db->set('cantidad = cantidad +'.$data['cantidad'], false);
+        return $this->db->update('alm_lotes');
     }
 
 }

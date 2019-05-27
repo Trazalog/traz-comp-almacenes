@@ -1,7 +1,5 @@
 <input type="text" id="pema" value="<?php echo $pema_id ?>" class="">
 
-<input type="text" id="enma_id" value="" class="">
-
 <h3>Entrega Materiales <small>Información</small></h3>
 
 <div class="row">
@@ -17,12 +15,12 @@
             <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>
-    <div class="col-sm-6">
+    <!-- <div class="col-sm-6">
         <div class="form-group">
             <label for="destino">Destino<strong style="color: #dd4b39">*</strong>:</label>
             <input class="form-control required" type="text" placeholder="Destino..." id="destino">
         </div>
-    </div>
+    </div> -->
     <div class="col-sm-6">
         <div class="form-group">
             <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>
@@ -41,6 +39,7 @@
         <th>Cant. Entregada</th>
         <th>Cant. Disponible</th>
         <th>Cant. a Entregar</th>
+        <th>Extraer</th>
     </thead>
     <tbody id="entregas">
         <?php
@@ -52,6 +51,7 @@
                 echo '<td class="pedido " style="text-align:center">' . $o['cant_pedida'] . '</td>';
                 echo '<td class="entregado" style="text-align:center">' . $o['cant_entregada'] . '</td>';
                 echo '<td class="disponible" style="text-align:center">'.($o['cant_disponible']<0?0:$o['cant_disponible']).'</td>';
+                echo '<td class="extraer" style="text-align:center">-</td>';
                 echo '<td style="text-align:center"><a href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . '" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';
                 echo '</tr>';
             }
@@ -73,7 +73,6 @@
     var select_row = null;
     function ver_info(e) {
 
-        if (!validar_campos_obligatorios()) return;
         select_row = $(e).closest('tr');
 
         var id = $(select_row).data('id');
@@ -100,22 +99,48 @@
 <script>
     function cerrarTarea() {
 
+        if (!validar_campos_obligatorios()) return;
+
         var id = $('#idTarBonita').val();
+
+        var detalles = [];
+
+        var completa = true;
+
+        $('#entregas tr').each(function() {
+            const row = $(this).data('json');
+            
+            completa = completa && (parseInt($(this).find('.pedido').html()) == (parseInt($(this).find('.entregado').html()) + parseInt($(this).find('.extraer').html()=='-'?0:$(this).find('.extraer').html())));
+
+            if(row == null) return;
+            row.forEach(element => {
+                detalles.push(element);
+            });
+        });
 
         $.ajax({
             type: 'POST',
-            data: {completa:$('.pendiente').length == 0},
+            data: {completa, info_entrega: get_info_entrega(), detalles},
             url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/' + id,
             success: function (data) {
-                //WaitingClose();
-                linkTo('general/Proceso');
+
+               linkTo('general/Proceso');
 
             },
             error: function (data) {
                 alert("Error");
             }
         });
+    }
 
+    function get_info_entrega() {
+        return JSON.stringify(obj = {
+            comprobante: $('#comprobante').val(),
+            fecha: $('#fecha_entrega').val(),
+            //destino: $('#destino').val(),
+            solicitante: $('#solicitante').val(),
+            pema_id: $('#pema').val()
+        });
     }
 </script>
 

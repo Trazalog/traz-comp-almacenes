@@ -11,10 +11,9 @@
                 <input type="radio" name="result" value="true" onclick="$('#motivo').hide();$('#hecho').prop('disabled',false);"> Aprobar
             </label>
             <label class="radio-inline">
-                <input type="radio" name="result" value="false" onclick="$('#motivo').show();$('#hecho').prop('disabled',false);"> Rechazar
+                <input id="rechazo" type="radio" name="result" value="false" onclick="$('#motivo').show();$('#hecho').prop('disabled',false);"> Rechazar
             </label>
         </center>
-
     </div>
 
     <div id="motivo" class="form-group motivo">
@@ -34,6 +33,8 @@
     }
 
     function cerrarTarea() {
+
+        if($('#rechazo').prop('checked') && $('#motivo .form-control').val() == ''){alert('Completar Motivo de Rechazo'); return;}
 
         var id = $('#idTarBonita').val();
 

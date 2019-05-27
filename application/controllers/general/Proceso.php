@@ -107,6 +107,10 @@ class Proceso extends CI_Controller
                 break;
 
             case 'Entrega pedido pendiente':
+           
+                $this->load->model('almacen/Ordeninsumos');
+       
+                $this->Ordeninsumos->insert_entrega_materiales($form);
 
                 $contrato['entregaCompleta'] = $form['completa'];
 
@@ -220,7 +224,7 @@ class Proceso extends CI_Controller
 
             case 'Aprueba pedido de Recursos Materiales Extraordinarios':
 
-                $data['peex_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['peex_id'];
+                $data = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
                 return $this->load->view('proceso/tareas/pedido_extraordinario/view_aprueba_pedido', $data, true);
 
@@ -228,7 +232,7 @@ class Proceso extends CI_Controller
 
             case 'Solicita Compra de Recursos Materiales Extraordiinarios':
 
-                $data['peex_id'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['peex_id'];
+                $data = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
                 return $this->load->view('proceso/tareas/pedido_extraordinario/view_aprueba_compras', $data, true);
 
@@ -280,14 +284,17 @@ class Proceso extends CI_Controller
     {
         $ot = 36; //!HARDCODE
 
+        $pedidoExtra = 'Soy un Pedido Extraordinario';  //!HARDCODE    
+
         $contract = [
-            'pedidoExtraordinario' => 'Soy un Pedido Extraordinario'           
+            'pedidoExtraordinario' =>  $pedidoExtra
         ];
 
         $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
 
         $peex['case_id'] = $data['case_id'];
         $peex['fecha'] = date("Y-m-d");
+        $peex['detalle'] = $pedidoExtra;    
         $peex['ortr_id'] = $ot; 
         $peex['empr_id'] = 1; //!HARDCODE
 

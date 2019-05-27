@@ -4,6 +4,7 @@
 </style>
 
 
+            </div>
 
   <div class="row">
     <div class="col-xs-12">
@@ -120,6 +121,7 @@
     linkTo("general/Proceso/detalleTarea/" + id);  
   });
 
+  $('#ferchu').DataTable();
 </script>
 
 

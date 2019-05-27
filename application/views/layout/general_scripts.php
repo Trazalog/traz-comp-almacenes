@@ -8,14 +8,7 @@
     </script>
     <!-- Bootstrap 3.3.7 -->
     <script src="<?php base_url() ?>lib/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- Morris.js charts -->
-    <!-- <script src="<?php base_url() ?>lib/bower_components/raphael/raphael.min.js"></script>
-    <script src="<?php base_url() ?>lib/bower_components/morris.js/morris.min.js"></script> -->
-    <!-- Sparkline -->
-    <!-- <script src="<?php base_url() ?>lib/bower_components/jquery-sparkline/dist/jquery.sparkline.min.js"></script> -->
-    <!-- jvectormap -->
-    <!-- <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="<?php base_url() ?>lib/plugins/jvectormap/jquery-jvectormap-world-mill-en.js"></script> -->
+ 
     <!-- jQuery Knob Chart -->
     <script src="<?php base_url() ?>lib/bower_components/jquery-knob/dist/jquery.knob.min.js"></script>
     <!-- daterangepicker -->
@@ -37,15 +30,9 @@
 
    <!-- AdminLTE App -->
     <script src="<?php base_url() ?>lib/dist/js/adminlte.min.js"></script>
-
-        
+    
     <script src="<?php base_url();?>lib/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
-    <!-- <script src="https://code.jquery.com/jquery-migrate-3.0.0.min.js"></script> -->
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <!-- <script src="<?php base_url() ?>lib/dist/js/pages/dashboard.js"></script> -->
-    <!-- AdminLTE for demo purposes -->
-    <!-- <script src="<?php base_url() ?>lib/dist/js/demo.js"></script> -->
 
 
 

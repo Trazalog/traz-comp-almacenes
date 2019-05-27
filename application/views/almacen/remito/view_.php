@@ -46,7 +46,7 @@
                                         </div>
                                         <div class="col-xs-12 col-sm-6 col-md-4">
                                             <label for="fecha">Fecha <strong style="color: #dd4b39">*</strong> :</label>
-                                            <input type="text" class="form-control" id="fecha" name="fecha">
+                                            <input type="text" class="form-control fecha" id="fecha" name="fecha">
                                         </div>
                                         <div class="col-xs-12 col-sm-6 col-md-4">
                                             <label for="proveedor">Proveedor <strong style="color: #dd4b39">*</strong>
@@ -85,6 +85,12 @@
                                                         class="form-control">
                                                 </div>
                                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
+                                                    <label for="vencimiento">Fecha Vencimiento <strong
+                                                            style="color: #dd4b39">*</strong>:</label>
+                                                    <input type="text" id="vencimiento" name="vencimiento" placeholder="dd/mm/yyyy"
+                                                        class="form-control fecha">
+                                                </div>
+                                                <div class="col-xs-12 col-sm-3 col-md-3"><br>
                                                     <label for="cantidad">Cantidad <strong
                                                             style="color: #dd4b39">*</strong> :</label>
                                                     <input type="number" id="cantidad" name="cantidad"
@@ -109,6 +115,7 @@
                                                             <tr>
                                                                 <th></th>
                                                                 <th>Lote</th>
+                                                                <th>Fec. Vencimiento</th>
                                                                 <th>Código</th>
                                                                 <th>Descripción</th>
                                                                 <th>Cantidad</th>
@@ -144,6 +151,11 @@ var j = 0;
 
 $("#fecha").datetimepicker({
     format: 'YYYY-MM-DD HH:mm:ss',
+    locale: 'es',
+});
+
+$("#vencimiento").datetimepicker({
+    format: 'YYYY-MM-DD',
     locale: 'es',
 });
 
@@ -267,6 +279,7 @@ function traer_lote(id_her, id_deposito) {
 
 function limpiar() {
     $("#comprobante").val("");
+    $('#vencimiento').val('');
     $("#fecha").val("");
     $("#solicitante").val("");
     $("#destino").val("");
@@ -284,6 +297,7 @@ function limpiar() {
 var i = 1;
 $('#agregar').click(function(e) {
     var lote = $('#lote').val();
+    var vencimiento = $('#vencimiento').val();
     var codigo = seleccion_art.label;
     var id_her = seleccion_art.value;
     var descripcion = seleccion_art.artDescription;
@@ -291,11 +305,21 @@ $('#agregar').click(function(e) {
     var deposito = $("select#deposito option:selected").html();
     var id_deposito = $('#deposito').val();
 
-    var json = {lote_id:lote, arti_id: id_her, codigo:codigo, cantidad:cantidad, depo_id:id_deposito, prov_id:$('#proveedor').val()}
+    var json = {
+        lote_id: (seleccion_art.es_loteado == 0 ? 1 : lote),
+        fec_vencimiento: vencimiento,
+        arti_id: id_her,
+        loteado: seleccion_art.es_loteado,
+        codigo: codigo,
+        cantidad: cantidad,
+        depo_id: id_deposito,
+        prov_id: $('#proveedor').val()
+    }
 
-    var tr = "<tr id='" + i + "'  data-json=\'"+JSON.stringify(json)+"\'>" +
+    var tr = "<tr id='" + i + "'  data-json=\'" + JSON.stringify(json) + "\'>" +
         "<td ><i class='fa fa-ban elirow text-light-blue' style='cursor: 'pointer'></i></td>" +
         "<td>" + lote + "</td>" +
+        "<td>" + vencimiento + "</td>" +
         "<td>" + codigo + "</td>" +
         "<td class='hidden' id='" + id_her + "'>" + id_her + "</td>" +
         "<td>" + descripcion + "</td>" +
@@ -330,26 +354,29 @@ $('#agregar').click(function(e) {
         $('#descripcion').val('');
         $('#cantidad').val('');
         $('#deposito').val('');
-        $('#lote').prop('disabled',false);
+        $('#vencimiento').val('');
+        $('#lote').prop('disabled', false);
     }
 });
 
 function guardar() {
-   
+
     var info = get_info_remito();
 
-    if(info==null)return;
+    if (info == null) return;
 
     var detalles = [];
 
     $("#tablainsumo tbody tr").each(function(index) {
 
-       detalles.push($(this).data('json'));
+        detalles.push($(this).data('json'));
 
     });
 
-    if(detalles.lenght==0) {alert('No hay datos cargados');}
-    
+    if (detalles.lenght == 0) {
+        alert('No hay datos cargados');
+    }
+
     $.ajax({
         type: 'POST',
         data: {
@@ -359,7 +386,7 @@ function guardar() {
         url: 'index.php/almacen/Remito/guardar_mejor', //index.php/
         success: function(data) {
 
-            regresa();
+            //regresa();
         },
         error: function(result) {
             alert('Error');
@@ -383,12 +410,14 @@ function seleccion_articulo(e) {
     $('#articulos').modal('hide');
 }
 
-function get_info_remito(){ 
+function get_info_remito() {
 
-    if($('#fecha').val()=='' || $('#comprobante').val()=='' || $('#proveedor').val()==-1){alert('Campos Obligatorios(*) Incompletos'); return null;}
+    if ($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == -1) {
+        alert('Campos Obligatorios(*) Incompletos');
+        return null;
+    }
 
     return {
-
         'fecha': $('#fecha').val(),
         'provid': $('#proveedor').val(),
         'comprobante': $('#comprobante').val(),
@@ -436,17 +465,16 @@ function get_info_remito(){
 
 <script>
 function seleccion_articulo(e) {
-    
     seleccion_art = JSON.parse(JSON.stringify($(e).data('json')));
     $('#art_select').val($(e).find('a').html());
     $('#articulos').modal('hide');
     if(seleccion_art.es_loteado == 0){
         $('#lote').prop('disabled',true);
         $('#lote').val('S/L');
-        $('#deposito').empty(); $('#deposito').append('<option value="1">Sin Depósito</option>')
-    }else{
-        traer_deposito($(e).data('id'));    
+        //$('#deposito').empty(); $('#deposito').append('<option value="1">Sin Depósito</option>')
     }
+    traer_deposito($(e).data('id'));    
+    
     
 }
 </script>

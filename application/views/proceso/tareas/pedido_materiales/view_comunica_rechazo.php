@@ -1,6 +1,6 @@
 
 <h4>Motivo Rechazo</h4>
-<p1 id="motivo"> <?php echo $motivo ?> </p1>
+<p1 id="motivo" class="text-danger"> <?php echo $motivo ?> </p1>
 
 
 <script>
@@ -20,7 +20,7 @@ $.ajax({
     processData: false,
     url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/'+id,
     success: function (data) {
-        //WaitingClose();
+       
         linkTo('general/Proceso');
 
     },
