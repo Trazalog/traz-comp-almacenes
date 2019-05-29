@@ -12,8 +12,8 @@
                             <tr>
                                 <th>Articulo</th>
                                 <th>Cantidad</th>
-                                <th>Fecha Nota</th>
-                                <th>Fecha de Entrega</th>
+                                <th class="hidden">Fecha Nota</th>
+                                <th class="hidden">Fecha de Entrega</th>
                                 <th>Acción</th>
                             </tr>
                         </thead>
@@ -28,12 +28,17 @@
 </section><!-- /.content -->
 
 <script>
+var select_id  = null;
 function del(e) {
-    var id = $(e).closest('tr').data('depe');
+    select_id = $(e).closest('tr').data('depe');
+    $('#eliminar').modal('show');
+}
+
+function del_detalle(){
     $.ajax({
         type: 'POST',
         data: {
-            id
+            id: select_id
         },
         url: 'index.php/almacen/Notapedido/eliminarDetalle',
         success: function(data) {
@@ -85,12 +90,12 @@ function get_detalle() {
                 var tr = "<tr class='celdas' data-depe='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
                     ] + "'>" +
-                    "<td>" + data[i]['artDescription'] + "</td>" +
-                    "<td>" + data[i]['cantidad'] + "</td>" +
-                    "<td>" + data[i]['fecha'] + "</td>" +
-                    "<td>" + data[i]['fecha_entrega'] + "</td>" +
+                    "<td class='articulo'>" + data[i]['artDescription'] + "</td>" +
+                    "<td class='cantidad'>" + data[i]['cantidad'] + "</td>" +
+                    "<td class='hidden'>" + data[i]['fecha'] + "</td>" +
+                    "<td class='hidden'>" + data[i]['fecha_entrega'] + "</td>" +
                     "<td class='text-light-blue'>" +
-                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 15px;' title='Editar' onclick='select=this;$(\"#set_cantidad\").modal(\"show\");'></i>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 15px;' title='Editar' onclick='edit_cantidad(this)'></i>" +
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 15px;' title='Eliminar' onclick='del(this);'></i></td></tr>";
                 $('#tabladetalle tbody').append(tr);
             }
@@ -103,8 +108,15 @@ function get_detalle() {
         dataType: 'json'
     });
 }
-
 var select = null;
+function edit_cantidad(e) {
+    select = $(e).closest('tr');
+    $('#set_cantidad input').val($(select).find('.cantidad').html());
+    $('#set_cantidad h5').html($(select).find('.articulo').html());
+    $('#set_cantidad').modal('show');
+}
+
+
 
 $('#tabladetalle').DataTable({
     "aLengthMenu": [25, 10, 25, 50, 100]
@@ -121,6 +133,7 @@ $('#tabladetalle').DataTable({
                 <h4 class="modal-title">Ingresar Cantidad</h4>
             </div>
             <div class="modal-body">
+                <h5 class="text-center"></h5>
                 <input id="cantidad" class="form-control" type="number" placeholder="Cantidad">
             </div>
             <div class="modal-footer">
@@ -133,3 +146,30 @@ $('#tabladetalle').DataTable({
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+<!-- Modal eliminar-->
+<div class="modal" id="eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
+                        class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar Artículo</h4>
+            </div> <!-- /.modal-header  -->
+
+            <div class="modal-body" id="modalBodyArticle">
+                <h4 class="text-center">¿Confirmar Operación? </h4>
+            </div> <!-- /.modal-body -->
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal"
+                    onclick="del_detalle()">Eliminar</button>
+            </div> <!-- /.modal footer -->
+
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog modal-lg -->
+</div> <!-- /.modal fade -->
+<!-- / Modal -->

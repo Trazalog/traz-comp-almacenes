@@ -121,11 +121,10 @@ class Ordeninsumos extends CI_Model
         //$userdata           = $this->session->userdata('user_data');
         $data['empr_id'] = 1; //$userdata[0]['id_empresa'];
 
-        $info['empr_id'] = $data['empr_id'];
-
-
         //CABECERA ENTREGA
-        $info = json_decode($form['info_entrega'],true);
+        $info = json_decode($form['info_entrega'],true); 
+        
+        $info['empr_id'] = $data['empr_id'];
 
         //DETALLE ENTREGA
         $detalle = $form['detalles'];
@@ -373,6 +372,7 @@ class Ordeninsumos extends CI_Model
         $sql = "SELECT *
             FROM alm_entrega_materiales
             JOIN alm_deta_entrega_materiales ON alm_deta_entrega_materiales.enma_id = alm_entrega_materiales.enma_id
+            JOIN alm_lotes ON alm_lotes.lote_id = alm_deta_entrega_materiales.lote_id
             WHERE alm_entrega_materiales.enma_id = $id
             ";
         $query = $this->db->query($sql);

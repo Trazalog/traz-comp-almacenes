@@ -4,11 +4,7 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Entrega Materiales</h3>
-          <?php
-          // if (strpos($permission,'Add') !== false) {
-          //   echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Ordeninsumo/cargarlista\')">Agregar</button>';
-          // }
-           ?>
+  
         </div><!-- /.box-header -->
 
         <div class="box-body">
@@ -18,9 +14,9 @@
                 <th>Acciones</th>
                 <th>Orden de Insumo</th>
                 <th>Orden de Trabajo</th>
-                <th>Comprobante</th>
+                <th>N° Comprobante</th>
                 <th>Solicitante</th>
-                <th>Fecha</th>
+                <th>Fecha Entrega</th>
               </tr>
             </thead>
             <tbody>
@@ -97,6 +93,7 @@ var datos   = Array();
           $('#tablaconsulta').DataTable().row.add( [
             data['equipos'][i]['artBarCode'],
             data['equipos'][i]['artDescription'],
+            data['equipos'][i]['codigo'],
             data['equipos'][i]['depositodescrip'],
             data['equipos'][i]['cantidad']
           ]).draw();
@@ -134,36 +131,6 @@ var datos   = Array();
     } ],
     "order": [[0, "asc"]],
   });
-
-  // var buttons = new $.fn.dataTable.Buttons(table, {
-  //   buttons: [
-  //   {
-  //     extend: 'print',
-  //     text: 'Imprimir',
-  //     className: "btn btn-primary",
-  //     title: '',
-  //     //messageTop: '<strong>Mensaje entre el titulo y la tabla..</strong>',
-  //     init: function(api, node, config) {
-  //       $(node).removeClass('btn-default')
-  //     },
-
-  //     customize: function ( win ) {
-  //       $(win.document.body)
-  //         .css('font-size', '10pt')
-  //         /*.prepend(
-  //         '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
-  //         )*/;
-        
-  //       $(win.document.body).find( 'table' )
-  //         .addClass( 'table-condensed' )
-  //         .css( 'font-size', 'inherit' );
-
-  //       $('#infoOI').clone().prependTo( win.document.body );
-  //       $(win.document.body).prepend('<h1>Orden de insumo</h1>');
-  //     } 
-  //   }
-  //   ]
-  // }).container().appendTo($('#btn-datatables'));
 
 
 // imprime consulta de insumos
@@ -213,6 +180,7 @@ $(".imprimir").click(function (e) {
                 <tr>
                   <th>Articulo</th>
                   <th>Descripción</th>
+                  <th>N° Lote</th>
                   <th>Deposito</th>
                   <th>Cantidad</th>
                 </tr>

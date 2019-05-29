@@ -11,27 +11,29 @@
           <table id="stock" class="table table-bordered table-hover">
             <thead>
               <tr>
+                <th class="text-center">N° Lote</th>
                 <th>Codigo</th>
                 <th>Producto</th>
-                <th>Cantidad</th>
+                <th class="text-center">Cantidad</th>
                 <th>Deposito</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
               <?php
-                if($list) {                  
+                if(!$list) return;           
                 	foreach($list as $f)
       		        {
-  	                echo '<tr>';
+                    echo '<tr>';
+                    echo '<td class="text-center">'.($f['codigo']==1?'S/L':$f['codigo']).'</td>';
                     echo '<td>'.$f['artBarCode'].'</td>';
                     echo '<td>'.$f['artDescription'].'</td>';
-                    echo '<td>'.$f['cantidad'].'</td>';
+                    echo '<td class="text-center">'.$f['cantidad'].'</td>';
                     echo '<td>'.$f['depositodescrip'].'</td>';
                     echo '<td>'.($f['lotestado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($f['lotestado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
    	                echo '</tr>';
       		        }
-                }
+                
               ?>
             </tbody>
           </table>

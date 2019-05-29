@@ -44,7 +44,7 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="lib/index2.html" class="logo">
+    <a href="#" class="logo" onclick="linkTo();">
       <!-- mini logo for sidebar mini 50x50 pixels -->
       <span class="logo-mini"><b>A</b>LT</span>
       <!-- logo for regular state and mobile devices -->
@@ -297,7 +297,7 @@ $this->load->view('layout/perfil');
 <script>
 
         var link = '';
-        linkTo('almacen/Ordeninsumo/cargarlista');
+        linkTo('general/Proceso');
         $('.menu .link').on('click',function(){
             link = $(this).data('link');
             linkTo();
@@ -307,6 +307,8 @@ $this->load->view('layout/perfil');
             if(link == '' && uri == '') return;
             $('#content').empty();
             $('#content').load('<?php base_url()?>'+(uri==''?link:uri));
+            link = (uri==''?link:uri);
+
         }
 
         function collapse(e){

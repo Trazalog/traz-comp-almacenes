@@ -41,6 +41,7 @@
 
     <ul class="nav nav-tabs">
       <li class="nav active" data-tipo="comun"><a data-toggle="tab" href="#one">Pedidos</a></li>
+      <!-- <li class="nav"><a data-toggle="tab" href="#one"><input type="text" placeholder="Ingrese Artículo..."></a></li> -->
       <li class="nav hidden" data-tipo="especial"><a data-toggle="tab" href="#two">Pedidos Especiales</a></li>
     </ul>
 
@@ -54,7 +55,7 @@
           <table id="tbl_insumos" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th style="width: 2%;">Seleccionar</th>
+                <th style="width:1%;">Seleccionar</th>
                 <th style="width: 50%;">Insumo</th>
                 <th>Cantidad</th>
               </tr>
@@ -67,11 +68,11 @@
                     foreach ($plantilla as $p) {
 
                         echo '<tr id="" class="">';
-                        echo '<td>';
+                        echo '<td class="text-center">';
                         echo '<input class="check" type="checkbox" name="artId[' . $i . ']" value="' . $p['arti_id'] . '" id="' . $p['arti_id'] . '">';
                         echo '</td>';
-                        echo '<td>';
-                        echo '<input type="text" class="celda insum_Desc" id="insum_Desc" value=" ' . $p['descripcion'] . ' " placeholder="">';
+                        echo '<td>' . $p['descripcion'];
+                        echo '<input type="text" class="celda insum_Desc hidden" id="insum_Desc" value=" ' . $p['descripcion'] . ' " placeholder="">';
                         echo '</td>';
                         echo '<td>';
                         echo '<input type="text" name="cant_insumos[' . $i . ']" class="cant_insumos" id="cant_insumos" value="" placeholder="Ingrese cantidad...">';
@@ -79,7 +80,6 @@
 
                         echo '</tr>';
                         $i++;
-
                     }
                 }
               ?>
@@ -159,6 +159,8 @@
       $('#error').fadeIn('slow');
       return;
     }
+    $('.check').prop('checked',false);
+    if(idinsumos.length==0){$('.modal').modal('hide'); return;}
     WaitingOpen("Guardando pedido...");
 
     $.ajax({
@@ -221,6 +223,9 @@
       $('#error').fadeIn('slow');
       return;
     }
+
+    $('.check').prop('checked',false);
+    if(idinsumos.length==0){$('.modal').modal('hide'); return;}
     WaitingOpen("Guardando pedido...");
 
     $.ajax({
@@ -242,17 +247,16 @@
   }
 
 
-  $('#tabModInsum').DataTable({
-    "aLengthMenu": [10, 25, 50, 100],
-    "columnDefs": [{
-      "targets": [0],
-      "searchable": false
-    },
-    {
-      "targets": [0],
-      "orderable": false
-    }],
-    "order": [[1, "asc"]],
+  $('#tbl_insumos').DataTable({
+    // "columnDefs": [{
+    //   "targets": [1],
+    //   "searchable": false
+    // },
+    // {
+    //   "targets": [1],
+    //   "orderable": false
+    // }],
+    "order": [[1, "asc"]]
   });
 
 

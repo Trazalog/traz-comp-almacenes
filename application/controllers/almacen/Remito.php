@@ -41,6 +41,8 @@ class Remito extends CI_Controller {
 				$arre[$i]['label'] = $valorS['artBarCode'];
 				$arre[$i]['artDescription'] = $valorS['artDescription'];
 				$arre[$i]['es_loteado'] = $valorS['es_loteado'];
+				$arre[$i]['es_caja'] = $valorS['es_caja'];
+				$arre[$i]['cantidad_caja'] = $valorS['cantidad_caja'];
 				$i++;
 	        }
 			if($json) echo json_encode($arre);

@@ -1,11 +1,11 @@
-<input type="text" id="pema" value="<?php echo $pema_id ?>" class="">
+<input type="text" id="pema" value="<?php echo $pema_id ?>" class="hidden">
 
 <h3>Entrega Materiales <small>Información</small></h3>
 
 <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="comprobante">Comprobante <strong style="color: #dd4b39">*</strong>:</label>
+            <label for="comprobante">N° Comprobante <strong style="color: #dd4b39">*</strong>:</label>
             <input class="form-control required" type="text" placeholder="Comprobante" id="comprobante">
         </div>
     </div>
@@ -137,7 +137,6 @@
         return JSON.stringify(obj = {
             comprobante: $('#comprobante').val(),
             fecha: $('#fecha_entrega').val(),
-            //destino: $('#destino').val(),
             solicitante: $('#solicitante').val(),
             pema_id: $('#pema').val()
         });

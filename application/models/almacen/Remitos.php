@@ -32,7 +32,7 @@ class Remitos extends CI_Model {
         //$userdata  = $this->session->userdata('user_data');
         $empresaId = 1;//$userdata[0]['id_empresa'];
 
-        $this->db->select('T.arti_id as artId, T.barcode as artBarCode, T.descripcion as artDescription,T.es_loteado');
+        $this->db->select('T.arti_id as artId, T.barcode as artBarCode, T.descripcion as artDescription,T.es_loteado, T.es_caja, T.cantidad_caja');
         $this->db->from('alm_articulos as T');
         $this->db->where('empr_id',$empresaId);
         $this->db->where('T.eliminado',false);
@@ -425,18 +425,20 @@ class Remitos extends CI_Model {
 
         if($data['loteado'] == 1){
 
-            $this->db->where('lote_id', $data['lote_id']);
+            $this->db->where('depo_id', $data['depo_id']);
+            $this->db->where('codigo', $data['codigo']);
 
         }else{
-
+            
+            $this->db->where('depo_id', $data['depo_id']);
             $this->db->where('arti_id', $data['arti_id']);
-
+            $data['codigo'] = 1;
         }
         
         $res =  $this->db->get('alm_lotes')->row();
 
 
-        if($res){ $this->sumarlote($res->lote_id, $data); return $res->lote_id;}
+        if($res){ $this->actualizar_lote($res->lote_id, $data); return $res->lote_id;}
 
         //? SI NO EXISTE LOTE LO CREA
 
@@ -450,7 +452,8 @@ class Remitos extends CI_Model {
 
     public function actualizar_lote($id, $data)
     {
-        $this->db->set('cantidad = cantidad +'.$data['cantidad'], false);
+        $this->db->where('lote_id', $id);
+        $this->db->set('cantidad','cantidad +'.$data['cantidad'], false);
         return $this->db->update('alm_lotes');
     }
 
