@@ -8,23 +8,23 @@ class Remito extends CI_Controller {
     {
 		parent::__construct();
 		
-		$this->load->model('almacen/Remitos');
-		$this->load->model('almacen/Articulos');
-		$this->load->model('almacen/Lotes');
+		$this->load->model(CMP_ALM.'/Remitos');
+		$this->load->model(CMP_ALM.'/Articulos');
+		$this->load->model(CMP_ALM.'/Lotes');
     }
 
     public function index() // Ok
     {
       	$data['permission'] = $this->permission;
       	$data['list'] = $this->Remitos->getRemitosList();
-		$this->load->view('almacen/remito/list',$data);
+		$this->load->view(CMP_ALM.'/remito/list',$data);
     }
 
     public function cargarlista() // Ok
     {
 		$data['permission'] = $this->permission;
 		$data['list'] =  $this->getcodigo(false);
-        $this->load->view('almacen/remito/view_',$data);
+        $this->load->view(CMP_ALM.'/remito/view_',$data);
 	}
 	
 	public function getcodigo($json=true)

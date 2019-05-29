@@ -18,10 +18,10 @@ $.ajax({
     cache: false,
     contentType: false,
     processData: false,
-    url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/'+id,
+    url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/'+id,
     success: function (data) {
        
-        linkTo('general/Proceso');
+        linkTo('almacen/Proceso');
 
     },
     error: function (data) {

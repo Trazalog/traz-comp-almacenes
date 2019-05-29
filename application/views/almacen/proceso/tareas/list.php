@@ -118,7 +118,7 @@
 //Tomo valor de la celda y carga detalle de la tarea
   $('tbody tr').click( function () {
     var id = $(this).attr('id');
-    linkTo("general/Proceso/detalleTarea/" + id);  
+    linkTo("almacen/Proceso/detalleTarea/" + id);  
   });
 
   $('#ferchu').DataTable();

@@ -252,7 +252,7 @@
 			$.ajax({
 					type:'POST',
 					data:{'processInstanceId':id, 'content':comentario},
-					url:'index.php/general/Proceso/guardarComentario',
+					url:'index.php/almacen/Proceso/guardarComentario',
 					success:function(result){
 						console.log("Submit");
 						var lista =  $('#listaComentarios');
@@ -273,7 +273,7 @@
 					data: {
 							id: idTarBonita
 					},
-					url: 'index.php/general/Proceso/tomarTarea',
+					url: 'index.php/almacen/Proceso/tomarTarea',
 					success: function(data) {
 						
 									if(data['status']){
@@ -295,7 +295,7 @@
 					data: {
 							id: idTarBonita
 					},
-					url: 'index.php/general/Proceso/soltarTarea',
+					url: 'index.php/almacen/Proceso/soltarTarea',
 					success: function(data) {
 						
 									// toma a tarea exitosamente

@@ -3,19 +3,19 @@
         {
             "nombre": "Mis Tareas",
             "icono": "fa-list",
-            "link": "general/Proceso",
+            "link": "almacen/Proceso",
             "nivel": 1
         },
         {
             "nombre": "Lanzar Ped. Materiales",
             "icono": "fa-cogs",
-            "link": "general/Proceso/pedidoNormal",
+            "link": "almacen/Proceso/pedidoNormal",
             "nivel": 1
         },
         {
             "nombre": "Lanzar Ped. Extraordinario",
             "icono": "fa-cogs",
-            "link": "general/Proceso/pedidoExtraordinario",
+            "link": "almacen/Proceso/pedidoExtraordinario",
             "nivel": 1
         },
         {

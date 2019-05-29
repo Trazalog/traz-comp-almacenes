@@ -9,7 +9,7 @@ class Notapedido extends CI_Controller
     {
 
         parent::__construct();
-        $this->load->model('almacen/Notapedidos');
+        $this->load->model(CMP_ALM.'/Notapedidos');
         //$this->load->model('Bonitas');
     }
 
@@ -17,45 +17,45 @@ class Notapedido extends CI_Controller
     {
         $data['list'] = $this->Notapedidos->notaPedidos_List();
         $data['permission'] = $this->permission;
-        $this->load->view('almacen/notapedido/list', $data);
+        $this->load->view(CMP_ALM.'/notapedido/list', $data);
     }
 
     public function ObtenerNotasPedidosxOT($idot)
     {
         $data['permission'] = "Add-Edit-Del-View";
         $data['list'] = $this->Notapedidos->getNotasxOT($idot);
-        $this->load->view('almacen/notapedido/list', $data);
+        $this->load->view(CMP_ALM.'/notapedido/list', $data);
     }
 
     public function getNotasxOT($idot)
     {
         $data['permission'] = $this->permission;
         $data['list'] = $this->Notapedidos->getNotasxOT($idot);
-        $this->load->view('almacen/notapedido/listOt', $data);
+        $this->load->view(CMP_ALM.'/notapedido/listOt', $data);
     }
 
     public function agregarNota($idot)
     {
         $data['permission'] = $this->permission;
         $data['ot'] = $this->Notapedidos->getOTporId($idot);
-        $this->load->view('almacen/notapedido/view_', $data);
+        $this->load->view(CMP_ALM.'/notapedido/view_', $data);
     }
 
     // devuelve plantilla de insumos a pedir por cliente
     public function agregarListInsumos($ot)
     {
-        $this->load->model('almacen/Articulos');
+        $this->load->model(CMP_ALM.'/Articulos');
         $data['ot'] = $ot;
         $data['permission'] = $this->permission;
         $data['plantilla'] = $this->Articulos->list();
-        $this->load->view('almacen/notapedido/insumolist', $data);
+        $this->load->view(CMP_ALM.'/notapedido/insumolist', $data);
     }
 
     // agregar pedido especial carga vista
     public function pedidoEspecial()
     {
 
-        $this->load->view('almacen/notapedido/viewPedidoEspecial_');
+        $this->load->view(CMP_ALM.'/notapedido/viewPedidoEspecial_');
     }
 
     // guardar pedido especial
@@ -133,7 +133,7 @@ class Notapedido extends CI_Controller
         // SET EN PEDIDO EXTRA EL PEDIDO MATERILES
         $peex_id = $this->input->post('peex_id');
     
-        if($peex_id){$this->load->model('almacen/Pedidoextra'); $this->Pedidoextra->setPemaId($peex_id, $idnota);}
+        if($peex_id){$this->load->model(CMP_ALM.'/Pedidoextra'); $this->Pedidoextra->setPemaId($peex_id, $idnota);}
 
         for ($i = 0; $i < count($ids); $i++) {
             $deta[$i]['pema_id'] = $idnota;
@@ -151,10 +151,10 @@ class Notapedido extends CI_Controller
     public function editarPedido()
     {
 
-        $this->load->model('almacen/Articulos');
+        $this->load->model(CMP_ALM.'/Articulos');
         $data['permission'] = $this->permission;
         $data['plantilla'] = $this->Articulos->list();
-        $this->load->view('almacen/notapedido/edit_pedido', $data);
+        $this->load->view(CMP_ALM.'/notapedido/edit_pedido', $data);
 
     }
 
@@ -179,11 +179,11 @@ class Notapedido extends CI_Controller
 
     public function getTablaDetalle($pema=null)
     {
-        $this->load->model('almacen/Ordeninsumos');
+        $this->load->model(CMP_ALM.'/Ordeninsumos');
 
         $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($pema);
 
-        $aux = $this->load->view('proceso/tareas/componentes/tabla_detalle_entregas', $data, true);
+        $aux = $this->load->view(CMP_ALM.'/proceso/tareas/componentes/tabla_detalle_entregas', $data, true);
 
         echo $aux;
     }

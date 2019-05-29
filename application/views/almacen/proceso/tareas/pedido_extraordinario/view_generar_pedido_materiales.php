@@ -3,7 +3,7 @@
 <input id="pema_id" type="number" class="hidden" value="<?php echo $pema_id ?>">
 <input id="peex_id" type="number" class="hidden" value="<?php echo $peex_id ?>">
 
-<?php $this->load->view('proceso/tareas/componentes/pedido_materiales')?>
+<?php $this->load->view(CMP_ALM.'/proceso/tareas/componentes/pedido_materiales')?>
 
 
 <script>
@@ -25,10 +25,10 @@ var peex_id = $('#peex_id').val();
 $.ajax({
     type: 'POST',
     data:{pema_id, peex_id},
-    url: '<?php base_url()?>index.php/general/Proceso/cerrarTarea/'+id,
+    url: '<?php base_url()?>index.php/almacen/Proceso/cerrarTarea/'+id,
     success: function (data) {
 
-        linkTo('general/Proceso');
+        linkTo('almacen/Proceso');
 
     },
     error: function (data) {

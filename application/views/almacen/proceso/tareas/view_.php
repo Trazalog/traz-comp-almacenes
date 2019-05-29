@@ -148,7 +148,7 @@
 		</div><!-- /.col -->
 	</div><!-- /.row -->
 
-<?php $this->load->view('proceso/tareas/scripts/tarea_std'); ?>
+<?php $this->load->view(CMP_ALM.'/proceso/tareas/scripts/tarea_std'); ?>
 <script>  
 
 	$('.fecha').datepicker({

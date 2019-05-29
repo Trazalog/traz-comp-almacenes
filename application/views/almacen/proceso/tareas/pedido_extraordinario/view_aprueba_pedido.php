@@ -1,11 +1,9 @@
 
 <input class="hidden" type="number" id="peex_id" value="<?php echo $peex_id ?>">
-
 <hr>
 <h3>Pedido Extraordinario <small>Detalle del Pedido</small></h3>
 <p class="text-danger"><?php echo $detalle ?></p>
 <hr>
-
 <form id="generic_form">
     <div class="form-group">
         <center>
@@ -31,7 +29,7 @@
 
     function cerrarTarea() {
 
-        if($('#rechazo').prop('checked') && $('#motivo textarea').val() == ''){alert('Completar Motivo de Rechazo'); return;}
+        if($('#rechazo').prop('checked') && $('#motivo .form-control').val() == ''){alert('Completar Motivo de Rechazo'); return;}
 
         var id = $('#idTarBonita').val();
 
@@ -45,10 +43,10 @@
             cache: false,
 			contentType: false,
 			processData: false,
-            url: '<?php base_url() ?>index.php/general/Proceso/cerrarTarea/'+id,
+            url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/'+id,
             success: function (data) {
                 //WaitingClose();
-                linkTo('general/Proceso');
+                linkTo('almacen/Proceso');
 
             },
             error: function (data) {
