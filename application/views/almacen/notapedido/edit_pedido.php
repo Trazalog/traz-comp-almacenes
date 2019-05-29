@@ -100,6 +100,10 @@
 </div><!-- /.panel -->
 
 <script>
+  $('.cant_insumos').prop('disabled',true);
+  $('.check').on('change',function() {
+    $(this).closest('tr').find('.cant_insumos').prop('disabled',!$(this).prop('checked'));
+  })
 
   $("#fechaEnt").datetimepicker({
     format: 'YYYY-MM-DD',

@@ -15,12 +15,6 @@
             <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>
-    <!-- <div class="col-sm-6">
-        <div class="form-group">
-            <label for="destino">Destino<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Destino..." id="destino">
-        </div>
-    </div> -->
     <div class="col-sm-6">
         <div class="form-group">
             <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>

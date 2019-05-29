@@ -297,7 +297,7 @@ function limpiar() {
 var i = 1;
 $('#agregar').click(function(e) {
 
-    if($('#proveedor').val()==-1){alert('Seleccionar Proveedor'); return;}
+    if(!validar_campos()){ alert('Campos Obligatorios(*) Incompletos'); return;}
 
     var lote = $('#lote').val();
     var vencimiento = $('#vencimiento').val();
@@ -307,6 +307,8 @@ $('#agregar').click(function(e) {
     var cantidad = $('#cantidad').val();
     var deposito = $("select#deposito option:selected").html();
     var id_deposito = $('#deposito').val();
+
+    if(id_her == '' || lote == '' || vencimiento=='' || cantidad=='' || id_deposito==-1){alert('Campos Obligatorios(*) Incompletos'); return;}
 
     var json = {
        // lote_id: (seleccion_art.es_loteado == 0 ? 1 : lote),
@@ -394,7 +396,7 @@ function guardar() {
         url: 'index.php/almacen/Remito/guardar_mejor', //index.php/
         success: function(data) {
 
-            //regresa();
+            regresa();
         },
         error: function(result) {
             alert('Error');
@@ -424,13 +426,16 @@ function get_info_remito() {
         alert('Campos Obligatorios(*) Incompletos');
         return null;
     }
-
     return {
         'fecha': $('#fecha').val(),
         'provid': $('#proveedor').val(),
         'comprobante': $('#comprobante').val(),
     };
 
+}
+
+function validar_campos() {
+    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == -1) 
 }
 </script>
 

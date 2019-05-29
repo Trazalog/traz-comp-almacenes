@@ -36,7 +36,7 @@
                         echo '<td>' . $o['codigo'] . '</td>';
                         echo '<td>' . $o['descripcion'] . '</td>';
                         echo '<td class="cant_lote">' . $o['cantidad'] . '</td>';
-                        echo '<td><input class="form-control cantidad" placeholder="Ingrese Cantidad..." type="number" name="cantidad"></td>';
+                        echo '<td><input class="form-control cantidad" placeholder="Ingrese Cantidad..." type="number" name="cantidad" ></td>';
                         echo '</tr>';
                     }
                     ?>

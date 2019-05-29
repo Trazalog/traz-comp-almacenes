@@ -134,7 +134,7 @@ $('#tabladetalle').DataTable({
             </div>
             <div class="modal-body">
                 <h5 class="text-center"></h5>
-                <input id="cantidad" class="form-control" type="number" placeholder="Cantidad">
+                <input id="cantidad" class="form-control text-center" type="number" placeholder="Cantidad">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
