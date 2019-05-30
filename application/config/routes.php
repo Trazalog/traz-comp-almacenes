@@ -52,3 +52,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'dash';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+$route['almacen/(:any)'] = CMP_ALM.'/$1';
+$route['almacen/(:any)/(:any)'] = CMP_ALM.'/$1/$2';
+$route['almacen/(:any)/(:any)/(:any)'] = CMP_ALM.'/$1/$2/$3';

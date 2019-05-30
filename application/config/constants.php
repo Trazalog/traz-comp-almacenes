@@ -91,7 +91,7 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'almacen');  
+define('CMP_ALM', 'almacenV1');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -101,7 +101,8 @@ define('CMP_ALM', 'almacen');
 |
 */
 
-define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
+//define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
+define('BONITA_URL', 'http://localhost:8080/bonita/');  
 
 
 /*
