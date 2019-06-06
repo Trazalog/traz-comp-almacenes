@@ -55,6 +55,29 @@
                     "link": "almacen/Notapedido"
                 }
             ]
+        },
+        {
+            "nombre": "ABMs",
+            "icono": "fa-flus",
+            "link": "",
+            "nivel": 2,
+            "submenu": [
+                {
+                    "nombre": "Parametros",
+                    "icono": "fa-cubes",
+                    "link": ""
+                },
+                {
+                    "nombre": "Depositos",
+                    "icono": "fa-cubes",
+                    "link": ""
+                },
+                {
+                    "nombre": "Proveedores",
+                    "icono": "fa-cubes",
+                    "link": ""
+                }
+             ] 
         }
     ]
 }

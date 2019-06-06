@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-class BPM
+class BPMALM
 {
   // declaro variables a usar se mandan desde la carga de la libreria
   private $caseId;
@@ -49,7 +49,7 @@ class BPM
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
-		$userId= $userdata["userId"];		
+		$userId= $userdata[0]["userBpm"];		
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
@@ -254,10 +254,7 @@ class BPM
   // TODO: SACAR DE ACA Y ACCEDER A TRAVES DE MODELO BONITAS
   /* FUNCIONES DE BPM */
   function LoggerAdmin(){	
-
-
-		$usrNick = 'mantenedor1';
-		//dump_exit($userdata);
+	
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
 		  'http'=>array(
@@ -270,10 +267,11 @@ class BPM
 		$contexto = stream_context_create($opciones);
 
 			$data = array(
-					'username'=>$usrNick,
-					'password'=>'bpm',
+					'username'=> BPM_ADMIN_USER,
+					'password'=> BPM_ADMIN_PASS,
 					'redirect'=>'false'
-					);
+			);
+
 			$url = http_build_query( $data );
 			$url = BONITA_URL.'loginservice?'.$url;
 			file_get_contents($url, false, $contexto);	
