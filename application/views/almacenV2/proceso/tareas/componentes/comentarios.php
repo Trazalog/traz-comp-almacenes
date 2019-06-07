@@ -1,9 +1,9 @@
 <input class="hidden" id="case_id" value="<?php echo $case_id ?>">
 <?php 
-  $userdata = $this->session->userdata('user_data');
-  $usrId = $userdata['userId'];     // guarda usuario logueado 
-  $usrName =  $userdata['userName'];
-  $usrLastName = $userdata["userLastName"];
+  $userdata = $this->session->userdata('user_data')[0];
+  $usrId = $userdata['usrId'];     // guarda usuario logueado 
+  $usrName =  $userdata['usrName'];
+  $usrLastName = $userdata["usrLastName"];
   
   echo "<input type='text' class='hidden' id='usrName' value='$usrName' >";
   echo "<input type='text' class='hidden' id='usrLastName' value='$usrLastName' >";

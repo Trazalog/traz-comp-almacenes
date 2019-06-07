@@ -33,6 +33,8 @@
     
     <script src="<?php base_url();?>lib/plugins/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 
+  <!--Arma Tablas -->
+  <script src="<?php echo base_url('lib/tabla.js');?>"></script>
 
 
 

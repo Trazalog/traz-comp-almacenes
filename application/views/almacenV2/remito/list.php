@@ -1,4 +1,4 @@
-<section class="content">
+<section >
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
@@ -31,7 +31,7 @@
                 $id=$remito['remitoId'];
                 echo '<tr id="'.$id.'">';
                   echo '<td>';
-                  echo '<i class="fa fa-fw fa-search-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" data-toggle="modal" data-target="#modalvista" title="Consultar"></i>';
+                  echo '<i class="fa fa-fw fa-search-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Consultar"></i>';
                   echo '</td>';
                   echo '<td>'.$remito['comprobante'].'</td>';
                   echo '<td>'.$remito['fecha'].'</td>';
@@ -92,42 +92,12 @@ $(".fa-search-plus").click(function (e) {
             data['datosDetaRemitos'][i]['depositodescrip'],
           ]).draw();
         }
-        /*
-        console.log(data['datos'][0]['codigo']);
-        console.log(data['datos'][0]['descripcion']);
-        console.log(data['total'][0]['cantidad']);
-        console.log(data['equipos'][0]['deposito']);
-        */
 
-
-
-        // console.log(data.datos.abonodescrip);
-        //console.log(data['datos']['id_ordeninsumo']);
-        //console.log(data['datos'][1]['abonodescrip']);
-
-        /*datos={
-          'id':data['datos'][0]['id_orden'],
-          'fecha':data['datos'][0]['fecha'],
-          'solicitante':data['datos'][0]['solicitante'],
-          'comprobante':data['datos'][0]['comprobante'],
-          'id_ot':data['datos'][0]['id_ot'],
-        }
-                    
-
-        tabla = $('#tablaconsulta').DataTable(); 
-        tabla.clear().draw();
-        for (var i = 0; i < data['equipos'].length; i++) { 
-          $('#tablaconsulta').DataTable().row.add( [
-            '',
-            data['equipos'][i]['artBarCode'],
-            data['equipos'][i]['artDescription'],
-            data['equipos'][i]['depositodescrip'],
-            data['equipos'][i]['cantidad']
-          ]).draw();
-        }*/
+        $('#modalvista').modal('show');
+        
       },
       error: function(result){
-        console.error("Error al traer datos de remito")
+        alert("Error al traer datos de remito")
         console.table(result);
       },
     });   
@@ -181,39 +151,32 @@ var table = $('#tablaconsulta').DataTable( {
       "orderable": true
     } ],
     "order": [[0, "asc"]],
+    "language":{
+    "sProcessing":     "Procesando...",
+    "sLengthMenu":     "Mostrar _MENU_ registros",
+    "sZeroRecords":    "No se encontraron resultados",
+    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+    "sInfoPostFix":    "",
+    "sSearch":         "Buscar:",
+    "sUrl":            "",
+    "sInfoThousands":  ",",
+    "sLoadingRecords": "Cargando...",
+    "oPaginate": {
+        "sFirst":    "Primero",
+        "sLast":     "Último",
+        "sNext":     "Siguiente",
+        "sPrevious": "Anterior"
+    },
+    "oAria": {
+        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+    }
+    }
+
   });
-// var buttons = new $.fn.dataTable.Buttons(table, {
-//     buttons: [
-//     {
-//       extend: 'print',
-//       text: 'Imprimir',
-//       className: "btn btn-primary",
-//       title: '',
-//       //messageTop: '<strong>Mensaje entre el titulo y la tabla..</strong>',
-//       init: function(api, node, config) {
-//         $(node).removeClass('btn-default')
-//       },
-
-//       customize: function ( win ) {
-//         $(win.document.body)
-//           .css('font-size', '10pt')
-//           /*.prepend(
-//           '<img src="http://datatables.net/media/images/logo-fade.png" style="position:absolute; top:0; left:0;" />'
-//           )*/;
-        
-//         $(win.document.body).find( 'table' )
-//           .addClass( 'table-condensed' )
-//           .css( 'font-size', 'inherit' );
-
-//         $('#infoOI').clone().prependTo( win.document.body );
-//         $(win.document.body).prepend('<h1>Remito</h1>');
-//       } 
-//     }
-//     ]
-//   }).container().appendTo($('#btn-datatables'));
-
-
-
 </script>
 
 
@@ -264,13 +227,6 @@ var table = $('#tablaconsulta').DataTable( {
             </table>
           </div>
         </div> 
-
-        <!--<div class="row">
-          <div class="col-xs-12">
-            <label for="total">Total:</label>
-            <input type="text" class="form-control" id="total" name="total">
-          </div>
-        </div>-->
       </div>  <!-- /.modal-body -->
       
       <div class="modal-footer">

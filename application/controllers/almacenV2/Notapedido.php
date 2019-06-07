@@ -224,4 +224,9 @@ class Notapedido extends CI_Controller
         $id = $this->input->post('id');
         echo $this->Notapedidos->eliminarDetalle($id);
     }
+
+    public function crearPedido()
+    {   
+        
+    }
 }

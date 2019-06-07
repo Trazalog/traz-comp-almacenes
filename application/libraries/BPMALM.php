@@ -187,7 +187,11 @@ class BPMALM
 		return 0;
 	}
 
-  public function setUsuario($tarea_id, $user_id){
+  public function setUsuario($tarea_id){
+
+		$userdata = $this->CI->session->userdata('user_data');
+		$user_id= $userdata[0]["userBpm"];	
+
 		$parametros = $this->LoggerAdmin();
 		$parametros["http"]["method"] = "PUT";
 		$contract = array (

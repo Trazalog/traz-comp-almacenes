@@ -11,6 +11,14 @@ if(!function_exists('formato_fecha')){
         }
     }
 
+    function fecha($fecha){
+        if(strlen($fecha)==0) return '';
+        $date = explode("-",$fecha);
+        $date = $date[2].'/'.$date[1].'/'.$date[0];
+        return $date;
+        
+    }
+
     function resta_fechas($a,$b){
         $fecha1 = new DateTime($a);
         $fecha2 = new DateTime($b);
@@ -22,16 +30,6 @@ if(!function_exists('formato_fecha')){
             return $resultado->format('%i').' min';
         }else{
             return $result;
-        }
-    }
-
-    function fecha($fecha){
-        if(strlen($fecha)==0) return '';
-        $aux = explode(" ",$fecha);
-        if(sizeOf($aux)==2){
-            $date = explode("-",$aux[0]);
-            $date = $date[2].'/'.$date[1].'/'.$date[0].'  -  '.substr($aux[1],0,5).' hs';
-            return $date;
         }
     }
 }

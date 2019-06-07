@@ -74,12 +74,12 @@ class Proceso extends CI_Controller
 
     public function tomarTarea($id)
     {
-        echo json_encode($this->bpmalm->setUsuario($id, 102)); //!HARDCODE USUSARIO
+        echo json_encode($this->bpmalm->setUsuario($id));
     }
 
     public function soltarTarea($id)
     {
-        echo json_encode($this->bpmalm->setUsuario($id, ""));   
+        echo json_encode($this->bpmalm->setUsuario($id));   
     }
 
     public function cerrarTarea($task_id)

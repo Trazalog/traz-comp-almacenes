@@ -139,13 +139,6 @@ $("#fechaEnt").datetimepicker({
   locale: 'es',
 });
 
-/*/va listado de OTs
-$("#listadoOT").click(function (e) {
-  WaitingOpen();
-  $('#content').empty();
-  $("#content").load("<?php echo base_url(); ?>index.php/Otrabajo/listOrden/<?php echo $permission; ?>");
-  WaitingClose();
-});*/
 
 //va a listado de nota de pedido
 $("#listado").click(function (e) {

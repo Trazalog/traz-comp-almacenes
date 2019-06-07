@@ -78,6 +78,12 @@
                     "link": ""
                 }
              ] 
+        },
+        {
+            "nombre": "Componente Articulos",
+            "icono": "fa-cart-plus",
+            "link": "traz-comp/Tabla",
+            "nivel": 1
         }
     ]
 }

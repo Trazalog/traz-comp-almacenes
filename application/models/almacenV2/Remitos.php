@@ -119,6 +119,7 @@ class Remitos extends CI_Model {
     {
         $userdata  = $this->session->userdata('user_data');
         $empresaId = $userdata[0]['id_empresa'];
+        
         $sql       = "SELECT T.dere_id as detaremitoid, T.rema_id as id_remito, T.lote_id as loteid, T.cantidad, 
             art.barcode as codigo, alm_lotes.depo_id as depositoid, 
             art.arti_id as artId, art.barcode as artBarCode, art.descripcion as artDescription, 
@@ -128,7 +129,7 @@ class Remitos extends CI_Model {
             JOIN alm_articulos art ON art.arti_id = alm_lotes.arti_id
             JOIN alm_depositos ON alm_depositos.depo_id = alm_lotes.depo_id
             WHERE T.rema_id = $idRemito
-            WHERE T.empr_id = $empresaId
+            AND art.empr_id = $empresaId
             ";
 
         $query = $this->db->query($sql);

@@ -24,6 +24,7 @@
 </div>
 
 <hr>
+<div class="table-responsive">
 <h3>Pedido Materiales <small>Detalles del Pedido</small></h3>
 <table class="table table-striped">
     <thead>
@@ -53,7 +54,7 @@
 ?>
     </tbody>
 </table>
-
+</div>
 
 
 
@@ -114,6 +115,8 @@
 
             cantidades.push({arti_id:$(this).data('id'), resto:$(this).attr('resto')});
         });
+
+        if(detalles == null || detalles.length == 0) {alert('No se Registraron Entregas');return;}
 
         $.ajax({
             type: 'POST',
