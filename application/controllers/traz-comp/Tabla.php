@@ -17,9 +17,10 @@ class Tabla extends CI_Controller {
           $obj->id = $o->arti_id;
           $obj->descripcion = $o->descripcion;
           $obj->codigo = $o->barcode;
+
           array_push($aux, $obj);
       }
-      $data['list'] = $aux;
+      $data['items'] = $aux;
       //echo var_dump($data);die;
       $data['lang'] = json_decode(file_get_contents(base_url('lang.json')), true)['labels']['label'];
       $lenguaje =  array();

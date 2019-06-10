@@ -260,6 +260,9 @@ class Proceso extends CI_Controller
 
                 $peex  = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
+                $this->load->model('traz-comp/Componentes');
+		        $data = $this->Componentes-> listaArticulos();
+
                 $data['pema_id'] = $peex['pema_id'];
 
                 $data['peex_id'] = $peex['peex_id'];

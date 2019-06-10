@@ -297,7 +297,7 @@ $this->load->view('layout/perfil');
 <script>
 
         var link = '';
-        linkTo('almacen/Proceso');
+        linkTo('almacen/Remito');
         $('.menu .link').on('click',function(){
             link = $(this).data('link');
             linkTo();

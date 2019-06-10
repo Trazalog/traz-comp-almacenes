@@ -38,7 +38,7 @@
 
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <div class="col-xs-12 col-sm-6 col-md-6">
                                             <label for="comprobante">Comprobante <strong
                                                     style="color: #dd4b39">*</strong> :</label>
                                             <input type="text" placeholder="Ingrese Numero..." class="form-control"
@@ -66,18 +66,12 @@
                                     <div class="tab-content">
                                         <div role="tabpanel" class="tab-pane active" id="insum">
                                             <div class="row"><br>
-                                                <div class="col-xs-12 col-sm-12 col-md-12">
-                                                    <label for="art_select">Seleccionar Artículo <strong
-                                                            style="color: #dd4b39">*</strong> :</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-btn">
-                                                            <button type="button" class="btn btn-primary"
-                                                                onclick="$('#articulos').modal('show');">Artículos</button>
-                                                        </div>
-                                                        <input type="text" id="art_select" class="form-control"
-                                                            disabled>
-                                                    </div>
+                                                <div class="col-xs-12 col-sm-12 col-md-12"><br>
+                                                    <label for="lote">Seleccionar Articulo <strong
+                                                            style="color: #dd4b39">*</strong>:</label>
+                                                    <?php $this->load->view('test'); ?>
                                                 </div>
+
                                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
                                                     <label for="lote">Lote <strong
                                                             style="color: #dd4b39">*</strong>:</label>
@@ -101,16 +95,15 @@
                                                             style="color: #dd4b39">*</strong> :</label>
                                                     <select id="deposito" name="deposito" class="form-control"></select>
                                                 </div>
-                                                <div class="col-xs-12 col-sm-3 col-md-3"><br>
+                                                <div class="col-xs-12 col-sm-12 col-md-12"><br>
                                                     <br>
-                                                    <button type="button" class="btn btn-primary" id="agregar"><i
-                                                            class="fa fa-check">Agregar</i></button>
+                                                    <button class="btn btn-primary " style="float:right;" id="agregar"><i class="fa fa-check"></i>Agregar</button>
                                                 </div>
                                             </div><br>
 
                                             <div class="row">
-                                                <div class="col-xs-12">
-                                                    <table class="table table-bordered" id="tablainsumo">
+                                                <div class="col-xs-12 table-responsive">
+                                                    <table class="table table-bordered table-striped" id="tablainsumo">
                                                         <thead>
                                                             <tr>
                                                                 <th></th>
@@ -297,21 +290,27 @@ function limpiar() {
 var i = 1;
 $('#agregar').click(function(e) {
 
-    if(!validar_campos()){ alert('Campos Obligatorios(*) Incompletos'); return;}
+    if (!validar_campos()) {
+        alert('Campos Obligatorios(*) Incompletos');
+        return;
+    }
 
     var lote = $('#lote').val();
     var vencimiento = $('#vencimiento').val();
-    var codigo = seleccion_art.label;
-    var id_her = seleccion_art.value;
-    var descripcion = seleccion_art.artDescription;
+    var codigo = seleccion_art.barcode;
+    var id_her = seleccion_art.arti_id;
+    var descripcion = seleccion_art.descripcion;
     var cantidad = $('#cantidad').val();
     var deposito = $("select#deposito option:selected").html();
     var id_deposito = $('#deposito').val();
 
-    if(id_her == '' || lote == '' || vencimiento=='' || cantidad=='' || id_deposito==-1){alert('Campos Obligatorios(*) Incompletos'); return;}
+    if (id_her == '' || lote == '' || vencimiento == '' || cantidad == '' || id_deposito == -1) {
+        alert('Campos Obligatorios(*) Incompletos');
+        return;
+    }
 
     var json = {
-       // lote_id: (seleccion_art.es_loteado == 0 ? 1 : lote),
+        // lote_id: (seleccion_art.es_loteado == 0 ? 1 : lote),
         fec_vencimiento: vencimiento,
         arti_id: id_her,
         loteado: seleccion_art.es_loteado,
@@ -410,14 +409,24 @@ function regresa() {
     $("#content").load("<?php echo base_url(); ?>index.php/almacen/Remito/index/<?php echo $permission; ?>");
     WaitingClose();
 }
-
+function select_list() {
+    var json = JSON.stringify($('#articulos').find("[value='" + $('#inputarti').val() + "']").data('json'));
+    select(json);
+}
 var seleccion_art = '';
 
-function seleccion_articulo(e) {
-    traer_deposito($(e).data('id'));
-    seleccion_art = JSON.parse(JSON.stringify($(e).data('json')));
-    $('#art_select').val($(e).find('a').html());
+function select(item) {
+    seleccion_art = JSON.parse(item);
     $('#articulos').modal('hide');
+    if (seleccion_art.es_loteado == 0) {
+        $('#lote').prop('disabled', true);
+        $('#lote').val('S/L');
+    } else {
+        $('#lote').prop('disabled', false);
+        $('#lote').val('');
+    }
+  //  traer_deposito($(e).data('id'));
+    
 }
 
 function get_info_remito() {
@@ -435,46 +444,10 @@ function get_info_remito() {
 }
 
 function validar_campos() {
-    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == -1) 
+    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == -1)
 }
 </script>
 
-<div class="modal" id="articulos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <div class="input-group input-group-sm">
-                    <input id="myInput" type="text" class="form-control" onkeyup="filtrar()"
-                        placeholder="Buscar Artículos...">
-                    <span class="input-group-btn">
-                        <button type="button" class="btn btn-primary btn-flat"><i class="fa fa-search"></i></button>
-                    </span>
-                </div>
-            </div> <!-- /.modal-header  -->
-
-            <div class="modal-body" id="modalBodyArticle">
-
-                <ul id="myUL" class="nav nav-pills nav-stacked">
-
-                    <?php
-
-                    foreach ($list as $o) {
-                        echo '<li onclick="seleccion_articulo(this)" data-id="' . $o['value'] . '" data-json=\'' . json_encode($o) . '\'><a href="#">' . $o['label'] . ' | ' . $o['artDescription'] . '</a></li>';
-                    }
-
-                    ?>
-
-                </ul>
-            </div> <!-- /.modal-body -->
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" onclick="$('#articulos').modal('hide');">Listo</button>
-            </div> <!-- /.modal footer -->
-
-        </div> <!-- /.modal-content -->
-    </div> <!-- /.modal-dialog modal-lg -->
-</div> <!-- /.modal fade -->
 
 <script>
 function seleccion_articulo(e) {
@@ -484,7 +457,7 @@ function seleccion_articulo(e) {
     if (seleccion_art.es_loteado == 0) {
         $('#lote').prop('disabled', true);
         $('#lote').val('S/L');
-    }else{
+    } else {
         $('#lote').prop('disabled', false);
         $('#lote').val('');
     }

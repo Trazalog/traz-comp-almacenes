@@ -15,15 +15,17 @@ class Remito extends CI_Controller {
 
     public function index() // Ok
     {
+		 
       	$data['permission'] = $this->permission;
       	$data['list'] = $this->Remitos->getRemitosList();
 		$this->load->view(CMP_ALM.'/remito/list',$data);
     }
 
     public function cargarlista() // Ok
-    {
+    { 
+		$this->load->model('traz-comp/Componentes');
+		$data = $this->Componentes-> listaArticulos();
 		$data['permission'] = $this->permission;
-		$data['list'] =  $this->getcodigo(false);
         $this->load->view(CMP_ALM.'/remito/view_',$data);
 	}
 	

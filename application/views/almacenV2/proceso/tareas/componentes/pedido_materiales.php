@@ -1,4 +1,22 @@
-<section class="content">
+<div class="row">
+    <div class="col-xs-6 col-sm-6 col-md-6">
+        <div class="form-group">
+            <label>Seleccionar Articulo:</label>
+            <?php $this->load->view('test'); ?>
+        </div>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <label>Cantidad:</label>
+            <input type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
+        </div>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
+        <button class="btn btn-primary "><i class="fa fa-check"></i>Agregar</button>
+    </div>
+</div>
+
+<section>
     <div class="row">
         <div class="col-xs-12">
             <div class="box">
@@ -28,13 +46,14 @@
 </section><!-- /.content -->
 
 <script>
-var select_id  = null;
+var select_id = null;
+
 function del(e) {
     select_id = $(e).closest('tr').data('depe');
     $('#eliminar').modal('show');
 }
 
-function del_detalle(){
+function del_detalle() {
     $.ajax({
         type: 'POST',
         data: {
@@ -109,6 +128,7 @@ function get_detalle() {
     });
 }
 var select = null;
+
 function edit_cantidad(e) {
     select = $(e).closest('tr');
     $('#set_cantidad input').val($(select).find('.cantidad').html());
