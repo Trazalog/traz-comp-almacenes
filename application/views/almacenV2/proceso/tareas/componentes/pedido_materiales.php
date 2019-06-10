@@ -8,11 +8,11 @@
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
             <label>Cantidad:</label>
-            <input type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
+            <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
-        <button class="btn btn-primary "><i class="fa fa-check"></i>Agregar</button>
+        <button class="btn btn-primary" onclick="guardar_pedido()"><i class="fa fa-check"></i>Agregar</button>
     </div>
 </div>
 
@@ -29,10 +29,8 @@
                         <thead>
                             <tr>
                                 <th>Articulo</th>
-                                <th>Cantidad</th>
-                                <th class="hidden">Fecha Nota</th>
-                                <th class="hidden">Fecha de Entrega</th>
-                                <th>Acción</th>
+                                <th class="text-center">Cantidad</th>
+                                <th width="15%">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -46,32 +44,36 @@
 </section><!-- /.content -->
 
 <script>
-var select_id = null;
+var selectRow = null;
 
 function del(e) {
-    select_id = $(e).closest('tr').data('depe');
+    selectRow = $(e).closest('tr');
     $('#eliminar').modal('show');
 }
 
 function del_detalle() {
-    $.ajax({
-        type: 'POST',
-        data: {
-            id: select_id
-        },
-        url: 'index.php/almacen/Notapedido/eliminarDetalle',
-        success: function(data) {
-            get_detalle();
-        },
-        error: function(data) {
-            alert('Error');
-        }
-    });
+    if (selectRow.hasClass('new')) $(selectRow).remove();
+    else {
+        $.ajax({
+            type: 'POST',
+            data: {
+                id: $(selectRow).data('id')
+            },
+            url: 'index.php/almacen/Notapedido/eliminarDetalle',
+            success: function(data) {
+                get_detalle();
+            },
+            error: function(data) {
+                alert('Error');
+            }
+        });
+    }
 }
 
 function edit() {
-    var id = $(select).closest('tr').data('depe');
-    var cantidad = $('#cantidad').val();
+
+    var id = $(selectRow).closest('tr').data('id');
+    var cantidad = $('#set_cantidad #cantidad').val();
     $.ajax({
         type: 'POST',
         data: {
@@ -81,21 +83,27 @@ function edit() {
         url: 'index.php/almacen/Notapedido/editarDetalle',
         success: function(data) {
             get_detalle();
-            select = null;
+            selectRow = null;
             $('.modal').modal('hide');
         },
         error: function(data) {
             alert('Error');
         }
     });
+
+}
+
+function edit_cantidad(e) {
+    selectRow = $(e).closest('tr');
+    $('#set_cantidad input').val($(selectRow).find('.cantidad').html());
+    $('#set_cantidad h5').html($(selectRow).find('.articulo').html());
+    $('#set_cantidad').modal('show');
 }
 
 get_detalle();
-
 function get_detalle() {
-
+    $('#tabladetalle').DataTable().destroy();
     var id = $('#pema_id').val();
-
     $.ajax({
         type: 'POST',
         data: {
@@ -106,18 +114,18 @@ function get_detalle() {
             $('#tabladetalle').find('tbody').empty();
             $('tr.celdas').remove();
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-depe='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
                     ] + "'>" +
-                    "<td class='articulo'>" + data[i]['artDescription'] + "</td>" +
-                    "<td class='cantidad'>" + data[i]['cantidad'] + "</td>" +
-                    "<td class='hidden'>" + data[i]['fecha'] + "</td>" +
-                    "<td class='hidden'>" + data[i]['fecha_entrega'] + "</td>" +
+                    "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
+                    "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td>" +
                     "<td class='text-light-blue'>" +
                     "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 15px;' title='Editar' onclick='edit_cantidad(this)'></i>" +
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 15px;' title='Eliminar' onclick='del(this);'></i></td></tr>";
                 $('#tabladetalle tbody').append(tr);
             }
+            $('#tabladetalle').DataTable({"aLengthMenu": [25, 10, 25, 50, 100]});
+
 
         },
         error: function(result) {
@@ -127,20 +135,20 @@ function get_detalle() {
         dataType: 'json'
     });
 }
-var select = null;
 
-function edit_cantidad(e) {
-    select = $(e).closest('tr');
-    $('#set_cantidad input').val($(select).find('.cantidad').html());
-    $('#set_cantidad h5').html($(select).find('.articulo').html());
-    $('#set_cantidad').modal('show');
+var seleccion_art = '';
+
+function select(item) {
+    seleccion_art = JSON.parse(item);
 }
 
-
-
-$('#tabladetalle').DataTable({
-    "aLengthMenu": [25, 10, 25, 50, 100]
-});
+// function btn_agregar() {
+//     var html = '<td class="articulo">' + seleccion_art.barcode + '</td><td class="text-center cantidad">' + $(
+//             '#cantidad').val() +
+//         '</td><td class="text-light-blue"><i class="fa fa-fw fa-pencil" style="cursor: pointer; margin-left: 15px;" title="Editar" onclick="edit_cantidad(this)"></i><i class="fa fa-fw fa-times-circle" style="cursor: pointer; margin-left: 15px;" title="Eliminar" onclick="del(this);"></i></td></tr>';
+//     $('#tabladetalle tbody').append("<tr class='new' data-json='" + JSON.stringify(seleccion_art) + "'>" + html +
+//         "</tr>");
+// }
 </script>
 
 
@@ -158,7 +166,8 @@ $('#tabladetalle').DataTable({
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" onclick="edit()">Guardar</button>
+                <button type="button" class="btn btn-primary btn-accion" data-dismiss="modal"
+                    onclick="edit()">Guardar</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -193,3 +202,111 @@ $('#tabladetalle').DataTable({
     </div> <!-- /.modal-dialog modal-lg -->
 </div> <!-- /.modal fade -->
 <!-- / Modal -->
+
+
+<script>
+function guardar_pedido() {
+
+    if(!validarCampos()){alert('Completar Campos');return;}
+
+    if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
+
+        set_pedido();
+
+    } else {
+
+        edit_pedido();
+
+    }
+}
+
+function set_pedido() {
+
+    var idinsumos = new Array();
+    var cantidades = new Array();
+
+
+    id = seleccion_art.arti_id;
+    idinsumos.push(id);
+    cant = $('#add_cantidad').val();
+    cantidades.push(cant);
+
+    var idOT = $('#id_ordTrabajo').val();
+
+    WaitingOpen("Guardando pedido...");
+
+    $.ajax({
+        data: {
+            idinsumos,
+            cantidades,
+            idOT: $('#ot').val(),
+            peex_id: $('#peex_id').val()
+        },
+        type: 'POST',
+        dataType: 'json',
+        url: 'index.php/almacen/Notapedido/setNotaPedido',
+        success: function(result) {
+            $('#pema_id').val(result.pema_id);
+            WaitingClose();
+            get_detalle();
+            clear();
+        },
+        error: function(result) {
+            WaitingClose();
+            alert("Error en guardado...");
+        },
+    });
+}
+
+
+function edit_pedido() {
+
+    var idinsumos = new Array();
+    var cantidades = new Array();
+
+
+    id = seleccion_art.arti_id;
+    idinsumos.push(id);
+    cant = $('#add_cantidad').val();
+    cantidades.push(cant);
+
+    var idOT = $('#id_ordTrabajo').val();
+
+    WaitingOpen("Guardando pedido...");
+
+    $.ajax({
+        data: {
+            idinsumos,
+            cantidades,
+            idOT,
+            pema: $('#pema_id').val()
+        },
+        type: 'POST',
+        dataType: 'json',
+        url: 'index.php/almacen/Notapedido/editPedido',
+        success: function(result) {
+            WaitingClose();
+            get_detalle();
+            clear();
+        },
+        error: function(result) {
+            WaitingClose();
+            alert("Error en guardado...");
+        },
+    });
+}
+
+function validarCampos() {
+
+    if($('#inputarti').val()==null)return false;
+
+    if($('#add_cantidad')==null)return false;
+
+    return true;
+}
+
+function clear() {
+    $('#inputarti').val(null);
+    $('#add_cantidad').val(null);
+}
+</script>

@@ -1,5 +1,5 @@
  <div class="input-group">
-     <input list="articulos" id="inputarti" class="form-control text-center" placeholder="Seleccionar Articulo" onchange="select_list()">
+     <input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo" onchange="select_list()">
      <datalist id="articulos">
          <?php foreach($items as $o)
            {
