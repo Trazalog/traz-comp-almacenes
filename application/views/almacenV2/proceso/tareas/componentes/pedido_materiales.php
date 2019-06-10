@@ -136,19 +136,9 @@ function get_detalle() {
     });
 }
 
-var seleccion_art = '';
 
-function select(item) {
-    seleccion_art = JSON.parse(item);
-}
 
-// function btn_agregar() {
-//     var html = '<td class="articulo">' + seleccion_art.barcode + '</td><td class="text-center cantidad">' + $(
-//             '#cantidad').val() +
-//         '</td><td class="text-light-blue"><i class="fa fa-fw fa-pencil" style="cursor: pointer; margin-left: 15px;" title="Editar" onclick="edit_cantidad(this)"></i><i class="fa fa-fw fa-times-circle" style="cursor: pointer; margin-left: 15px;" title="Eliminar" onclick="del(this);"></i></td></tr>';
-//     $('#tabladetalle tbody').append("<tr class='new' data-json='" + JSON.stringify(seleccion_art) + "'>" + html +
-//         "</tr>");
-// }
+
 </script>
 
 
@@ -225,13 +215,14 @@ function set_pedido() {
     var idinsumos = new Array();
     var cantidades = new Array();
 
-
-    id = seleccion_art.arti_id;
+    id = selectItem.arti_id;
     idinsumos.push(id);
     cant = $('#add_cantidad').val();
     cantidades.push(cant);
 
     var idOT = $('#id_ordTrabajo').val();
+
+    if(idinsumos.length == 0){alert('Error'); return;}
 
     WaitingOpen("Guardando pedido...");
 
@@ -239,8 +230,8 @@ function set_pedido() {
         data: {
             idinsumos,
             cantidades,
-            idOT: $('#ot').val(),
-            peex_id: $('#peex_id').val()
+            idOT,
+            peex_id: 1
         },
         type: 'POST',
         dataType: 'json',
@@ -265,12 +256,14 @@ function edit_pedido() {
     var cantidades = new Array();
 
 
-    id = seleccion_art.arti_id;
+    id = selectItem.arti_id;
     idinsumos.push(id);
     cant = $('#add_cantidad').val();
     cantidades.push(cant);
 
     var idOT = $('#id_ordTrabajo').val();
+
+    if(idinsumos.length == 0){alert('Error'); return;}
 
     WaitingOpen("Guardando pedido...");
 

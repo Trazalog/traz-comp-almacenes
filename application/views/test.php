@@ -1,5 +1,5 @@
  <div class="input-group">
-     <input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo" onchange="select_list()">
+     <input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
      <datalist id="articulos">
          <?php foreach($items as $o)
            {
@@ -56,11 +56,19 @@ function checkTabla(idtabla, idrecipiente, json, acciones) {
     });
 
 }
+
+var selectItem = null;
 $(document).off('click', '.tabla_articulos_nuevo').on('click', '.tabla_articulos_nuevo', function() {
     $('.modal').modal('hide');
     var item = $(this).closest('tr').data('json')[0];
     $('#inputarti').val(item.Codigo);
     var json = JSON.stringify($('#articulos').find("[value='" + item.Codigo + "']").data('json'));
-    select(json);
+    selectItem = JSON.parse(json);
 });
+
+
+function getItem(item){
+    var json = JSON.stringify($('#articulos').find("[value='" + item.value + "']").data('json'));
+    selectItem = JSON.parse(json);
+}
  </script>

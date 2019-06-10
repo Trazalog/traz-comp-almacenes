@@ -227,6 +227,8 @@ class Notapedido extends CI_Controller
 
     public function crearPedido()
     {   
-        
+        $this->load->model('traz-comp/Componentes');
+		$data = $this->Componentes-> listaArticulos();
+        $this->load->view(CMP_ALM.'/notapedido/componente/generar_pedido', $data);
     }
 }
