@@ -1,18 +1,25 @@
-<div class="row">
-    <div class="col-xs-6 col-sm-6 col-md-6">
-        <div class="form-group">
-            <label>Seleccionar Articulo:</label>
-            <?php $this->load->view('test'); ?>
+<input id="pema_id" type="number" class="hidden">
+<input id="ortr_id" type="number" class="hidden" value="">
+<div class="box">
+
+    <div class="box-body">
+        <div class="row">
+            <div class="col-xs-6 col-sm-6 col-md-6">
+                <div class="form-group">
+                    <label>Seleccionar Articulo:</label>
+                    <?php $this->load->view('test'); ?>
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3">
+                <div class="form-group">
+                    <label>Cantidad:</label>
+                    <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
+                </div>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
+                <button class="btn btn-primary" onclick="guardar_pedido()"><i class="fa fa-check"></i>Agregar</button>
+            </div>
         </div>
-    </div>
-    <div class="col-xs-3 col-sm-3 col-md-3">
-        <div class="form-group">
-            <label>Cantidad:</label>
-            <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
-        </div>
-    </div>
-    <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
-        <button class="btn btn-primary" onclick="guardar_pedido()"><i class="fa fa-check"></i>Agregar</button>
     </div>
 </div>
 
@@ -101,9 +108,14 @@ function edit_cantidad(e) {
 }
 
 get_detalle();
+
 function get_detalle() {
-    $('#tabladetalle').DataTable().destroy();
+
     var id = $('#pema_id').val();
+    if(id == null || id == ''){
+        DataTable('#tabladetalle');
+        return;
+    }
     $.ajax({
         type: 'POST',
         data: {
@@ -111,8 +123,9 @@ function get_detalle() {
         },
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
+            $('#tabladetalle').DataTable().destroy();
             $('#tabladetalle').find('tbody').empty();
-            $('tr.celdas').remove();
+
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
@@ -124,7 +137,7 @@ function get_detalle() {
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 15px;' title='Eliminar' onclick='del(this);'></i></td></tr>";
                 $('#tabladetalle tbody').append(tr);
             }
-            $('#tabladetalle').DataTable({"aLengthMenu": [25, 10, 25, 50, 100]});
+            DataTable('#tabladetalle');
 
 
         },
@@ -136,9 +149,9 @@ function get_detalle() {
     });
 }
 
-
-
-
+function eventSelect() {
+  alert('holis'); return;
+}
 </script>
 
 
@@ -197,7 +210,10 @@ function get_detalle() {
 <script>
 function guardar_pedido() {
 
-    if(!validarCampos()){alert('Completar Campos');return;}
+    if (!validarCampos()) {
+        alert('Completar Campos');
+        return;
+    }
 
     if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
 
@@ -220,9 +236,12 @@ function set_pedido() {
     cant = $('#add_cantidad').val();
     cantidades.push(cant);
 
-    var idOT = $('#id_ordTrabajo').val();
+    var idOT = $('#ortr_id').val();
 
-    if(idinsumos.length == 0){alert('Error'); return;}
+    if (idinsumos.length == 0) {
+        alert('Error');
+        return;
+    }
 
     WaitingOpen("Guardando pedido...");
 
@@ -261,9 +280,12 @@ function edit_pedido() {
     cant = $('#add_cantidad').val();
     cantidades.push(cant);
 
-    var idOT = $('#id_ordTrabajo').val();
+    var idOT = $('#ortr_id').val();
 
-    if(idinsumos.length == 0){alert('Error'); return;}
+    if (idinsumos.length == 0) {
+        alert('Error');
+        return;
+    }
 
     WaitingOpen("Guardando pedido...");
 
@@ -291,9 +313,9 @@ function edit_pedido() {
 
 function validarCampos() {
 
-    if($('#inputarti').val()==null)return false;
+    if ($('#inputarti').val() == null) return false;
 
-    if($('#add_cantidad')==null)return false;
+    if ($('#add_cantidad') == null) return false;
 
     return true;
 }

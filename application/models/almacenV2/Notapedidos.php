@@ -99,7 +99,7 @@ class Notapedidos extends CI_Model
                           alm_deta_pedidos_materiales.depe_id'
         );
         $this->db->from('alm_pedidos_materiales');
-        $this->db->join('orden_trabajo', 'alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden');
+        $this->db->join('orden_trabajo', 'alm_pedidos_materiales.ortr_id = orden_trabajo.id_orden','left');
         $this->db->join('alm_deta_pedidos_materiales', 'alm_deta_pedidos_materiales.pema_id = alm_pedidos_materiales.pema_id');
         $this->db->join('alm_articulos', 'alm_deta_pedidos_materiales.arti_id = alm_articulos.arti_id');
         $this->db->where('alm_pedidos_materiales.pema_id', $id);

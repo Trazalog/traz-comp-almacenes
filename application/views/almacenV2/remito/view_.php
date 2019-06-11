@@ -38,17 +38,17 @@
 
                                 <div class="panel-body">
                                     <div class="row">
-                                        <div class="col-xs-12 col-sm-6 col-md-6">
+                                        <div class="col-xs-12 col-sm-4 col-md-4">
                                             <label for="comprobante">Comprobante <strong
                                                     style="color: #dd4b39">*</strong> :</label>
                                             <input type="text" placeholder="Ingrese Numero..." class="form-control"
                                                 id="comprobante" name="comprobante">
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <div class="col-xs-12 col-sm-4 col-md-4">
                                             <label for="fecha">Fecha <strong style="color: #dd4b39">*</strong> :</label>
                                             <input type="text" class="form-control fecha" id="fecha" name="fecha">
                                         </div>
-                                        <div class="col-xs-12 col-sm-6 col-md-4">
+                                        <div class="col-xs-12 col-sm-4 col-md-4">
                                             <label for="proveedor">Proveedor <strong style="color: #dd4b39">*</strong>
                                                 :</label>
                                             <select id="proveedor" name="proveedor" class="form-control"></select>

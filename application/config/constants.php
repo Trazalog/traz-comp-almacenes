@@ -87,9 +87,6 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 
 define('TAREAS_ASIGNAR', 'traz-comp');
 
-define('REST', 'http://192.168.1.165:8080/');
-
-
 /*
 |--------------------------------------------------------------------------
 | Almacen
@@ -109,7 +106,7 @@ define('CMP_ALM', 'almacenV2');
 */
 
 //define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
+define('BONITA_URL', 'http://holis:8080/bonita/');  
 define('BPM_ADMIN_USER', 'mantenedor1');
 define('BPM_ADMIN_PASS', 'bpm');
 

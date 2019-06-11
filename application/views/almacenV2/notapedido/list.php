@@ -8,14 +8,14 @@
                 <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo('almacen/Notapedido/crearPedido')">Agregar</button>
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <table id="deposito" class="table table-bordered table-hover">
+                    <table id="deposito" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
+                                <th width="10%">N° Pedido</th>
                                 <th width="1%">Acciones</th>
-                                <th width="5%">N° Pedido</th>
-                                <th width="5%">Ord. Trabajo</th>
+                                <th width="20%" class="text-center">Fecha</th>
                                 <th>Detalle</th>
-                                <th width="20%">Fecha Nota</th>
+                                <th width="10%">Ord.Trabajo</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -29,10 +29,10 @@
                   echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer; margin-left: 15px;" title="Detalle Pedido Materiales"></i></td>';
                               
                   echo '<td class="text-center">'.bolita($z['id_notaPedido'],null,'blue').'</td>';
-                  echo '<td class="text-center">'.bolita('OT: '.$z['id_ordTrabajo'],'Orden de Trabajo N°'.$z['id_ordTrabajo'],'yellow').'</td>';
+                  echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
                   echo '<td>'.$z['descripcion'].'</td>';
-                  echo '<td>'.fecha($z['fecha']).'</td>';
-                
+                  echo '<td class="text-center">'.bolita('OT: '.$z['id_ordTrabajo'],'Orden de Trabajo N°'.$z['id_ordTrabajo'],'yellow').'</td>';
+                  
                   echo '</tr>';
                 }
               }

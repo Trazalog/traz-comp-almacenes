@@ -229,6 +229,6 @@ class Notapedido extends CI_Controller
     {   
         $this->load->model('traz-comp/Componentes');
 		$data = $this->Componentes-> listaArticulos();
-        $this->load->view(CMP_ALM.'/notapedido/componente/generar_pedido', $data);
+        $this->load->view(CMP_ALM.'/Proceso/tareas/componentes/pedido_materiales', $data);
     }
 }
