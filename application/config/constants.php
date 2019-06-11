@@ -147,3 +147,6 @@ define('ASP_0101', 'Error ASP_0101: No se pudo Asignar Usuario');
 
 //Errores 200 < 300 de MySql
 define('ASP_0200', 'Error ASP_0200: Error de Base de Datos'); 
+
+
+define('viewOT',false);

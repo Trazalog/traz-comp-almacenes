@@ -10,7 +10,6 @@ class Notapedido extends CI_Controller
 
         parent::__construct();
         $this->load->model(CMP_ALM.'/Notapedidos');
-        //$this->load->model('Bonitas');
     }
 
     public function index()
@@ -131,10 +130,15 @@ class Notapedido extends CI_Controller
         $ids = $this->input->post('idinsumos');
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');
+        $justificacion = $this->input->post('justificacion');
 
-        $cabecera['fecha'] = date('Y-m-d');
-        $cabecera['ortr_id'] = $idOT;
-        $cabecera['empr_id'] = $empId;
+        $cabecera = array(
+            'fecha' => date('Y-m-d'),
+            'ortr_id' => $idOT,
+            'empr_id' => $empId,
+            'justificacion' => $justificacion
+        );
+
         $idnota = $this->Notapedidos->setCabeceraNota($cabecera);
 
         // SET EN PEDIDO EXTRA EL PEDIDO MATERILES
@@ -228,7 +232,8 @@ class Notapedido extends CI_Controller
     public function crearPedido()
     {   
         $this->load->model('traz-comp/Componentes');
-		$data = $this->Componentes-> listaArticulos();
-        $this->load->view(CMP_ALM.'/Proceso/tareas/componentes/pedido_materiales', $data);
+        $data = $this->Componentes-> listaArticulos();
+        $this->load->view(CMP_ALM.'/notapedido/generar_pedido', $data);
+       
     }
 }

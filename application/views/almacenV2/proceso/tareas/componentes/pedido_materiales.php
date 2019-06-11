@@ -1,9 +1,14 @@
 <input id="pema_id" type="number" class="hidden">
 <input id="ortr_id" type="number" class="hidden" value="">
-<div class="box">
-
+<div class="box box-primary">
     <div class="box-body">
         <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
+                <div class="form-group">
+                    <label>Justificacíon:</label>
+                    <input id="just" type="text" class="form-control" placeholder="Ingrese Justificación...">
+                </div>
+            </div>
             <div class="col-xs-6 col-sm-6 col-md-6">
                 <div class="form-group">
                     <label>Seleccionar Articulo:</label>
@@ -43,6 +48,8 @@
                         <tbody>
                         </tbody>
                     </table>
+
+                    <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;" onclick="linkTo('almacen/Notapedido')">Hecho</button>
 
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -149,9 +156,6 @@ function get_detalle() {
     });
 }
 
-function eventSelect() {
-  alert('holis'); return;
-}
 </script>
 
 
@@ -243,6 +247,8 @@ function set_pedido() {
         return;
     }
 
+    var justificacion = $('#just').val();
+
     WaitingOpen("Guardando pedido...");
 
     $.ajax({
@@ -250,7 +256,8 @@ function set_pedido() {
             idinsumos,
             cantidades,
             idOT,
-            peex_id: 1
+            peex_id: 1, //!HARDCODE,
+            justificacion
         },
         type: 'POST',
         dataType: 'json',

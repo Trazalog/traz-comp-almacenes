@@ -129,9 +129,7 @@
                 </div><!-- /.box-body -->
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default delete" onclick="limpiar()">Cancelar</button>
-                    <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        onclick="guardar()">Guardar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()">Guardar</button>
                 </div> <!-- /.modal footer -->
 
             </div><!-- /.box -->
@@ -139,17 +137,33 @@
     </div><!-- /.row -->
 </section><!-- /.content -->
 <script>
+
+function eventSelect() {
+
+    if (selectItem.es_loteado == 0) {
+        $('#lote').prop('disabled', true);
+        $('#lote').val('S/L');
+    } else {
+        $('#lote').prop('disabled', false);
+        $('#lote').val('');
+    }
+    traer_deposito($(e).data('id'));
+}
+
+
 var idslote = {};
 var j = 0;
 
 $("#fecha").datetimepicker({
-    format: 'YYYY-MM-DD HH:mm:ss',
-    locale: 'es',
+    format: 'YYYY-MM-DD HH:mm',
+    locale: 'en',
+    date: new Date()
 });
 
 $("#vencimiento").datetimepicker({
     format: 'YYYY-MM-DD',
-    locale: 'es',
+    locale: 'en',
+    date: new Date()
 });
 
 
@@ -395,7 +409,7 @@ function guardar() {
         url: 'index.php/almacen/Remito/guardar_mejor', //index.php/
         success: function(data) {
 
-            regresa();
+            linkTo('almacen/Remite');
         },
         error: function(result) {
             alert('Error');

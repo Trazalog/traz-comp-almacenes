@@ -11,14 +11,20 @@
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="solicitante">Solicitante<strong style="color: #dd4b39">*</strong>:</label>
+            <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control required" type="text" placeholder="Fecha" id="fecha_entrega">
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="form-group">
+            <label for="solicitante">Recive Nombre y Apellido <strong style="color: #dd4b39">*</strong>:</label>
             <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="entrega">Fecha Entrega<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Fecha" id="fecha_entrega">
+            <label for="solicitante">D.N.I<strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>
 </div>
@@ -34,7 +40,7 @@
         <th>Cant. Entregada</th>
         <th>Cant. Stock</th>
         <th>Cant. a Entregar</th>
-        <th>Extraer</th>
+        <th>a Entregar</th>
     </thead>
     <tbody id="entregas">
         <?php

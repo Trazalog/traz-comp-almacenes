@@ -1,7 +1,6 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-
-	<?php info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
-	<!-- <?php #info_header('Nota de Pedido N° ???','Informacion Nota'); ?> -->
+	<?php if(viewOT)info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
+	
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="box">
@@ -24,7 +23,7 @@
 									<!-- Tab panes -->
 									<div class="tab-content">
 
-										<div role="tabpanel" class="tab-pane active" id="home">
+										<div role="tabpanel" class="tab-pane active" id="home"><br>
 										<?php
 													echo "<button class='btn btn-block btn-success' id='btontomar' style='width: 100px; margin-top: 10px ;display: inline-block;' onclick='tomarTarea()'>Tomar tarea</button>";
 													
@@ -33,7 +32,7 @@
 													echo "</br>"; 			
 												?>
 											
-											<div class="panel-body">
+											<div class="panel-body hidden">
 
 												<!-- botones Tomar y soltar tareas -->
 												

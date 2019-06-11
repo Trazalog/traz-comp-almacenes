@@ -62,4 +62,30 @@ if (!function_exists('info_orden')) {
                         </div>';
         }	
     }
+
+    function estadoPedido($estado){
+        switch ($estado) {
+            case 'Solicitado':
+                return bolita($estado ,null,'orange');
+                break;
+            case 'Aprobado':
+                return bolita($estado ,null,'green');
+                break;
+            case 'Rechazado':
+                return bolita($estado ,null,'red');
+                break;
+            case 'Ent. Parcial':
+                return bolita($estado ,null,'blue');
+                break;
+            case 'Entregado':
+                return bolita($estado ,null,'green');
+                break;
+            case 'Cancelado':
+                return bolita($estado ,null,'red');
+                break;
+            default:
+                return bolita('S/E' ,null,'');
+                break;
+        }
+    }
 }

@@ -23,9 +23,9 @@ class Notapedidos extends CI_Model
         $userdata = $this->session->userdata('user_data');
         $empId = $userdata[0]['id_empresa'];
 
-        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,orden_trabajo.descripcion');
+        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,orden_trabajo.descripcion,T.justificacion, T.estado');
         $this->db->from('alm_pedidos_materiales T');
-        $this->db->join('orden_trabajo', 'T.ortr_id = orden_trabajo.id_orden');
+        $this->db->join('orden_trabajo', 'T.ortr_id = orden_trabajo.id_orden','left');
         $this->db->where('T.empr_id', $empId);
         $query = $this->db->get();
 
@@ -89,6 +89,7 @@ class Notapedidos extends CI_Model
         $this->db->select('alm_pedidos_materiales.pema_id as id_notaPedido,
                           alm_pedidos_materiales.fecha,
                           alm_pedidos_materiales.ortr_id as id_ordTrabajo,
+                          alm_pedidos_materiales.justificacion,
                           orden_trabajo.descripcion,
                           alm_deta_pedidos_materiales.cantidad,
                           alm_deta_pedidos_materiales.fecha_entrega,

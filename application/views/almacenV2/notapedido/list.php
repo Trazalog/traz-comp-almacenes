@@ -11,32 +11,31 @@
                     <table id="deposito" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
-                                <th width="10%">N° Pedido</th>
                                 <th width="1%">Acciones</th>
+                                <th width="10%">N° Pedido</th>
                                 <th width="20%" class="text-center">Fecha</th>
                                 <th>Detalle</th>
-                                <th width="10%">Ord.Trabajo</th>
+                                <th class="<?php echo(!viewOT?"hidden":null)?>" width="10%">Ord.Trabajo</th>
+                                <th width="10%">Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-              if($list) {
-                foreach($list as $z)
-                {
-                  $id = $z['id_notaPedido'];
-                  echo '<tr id="'.$id.'" class="'.$id.'">';
-            
-                  echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer; margin-left: 15px;" title="Detalle Pedido Materiales"></i></td>';
-                              
-                  echo '<td class="text-center">'.bolita($z['id_notaPedido'],null,'blue').'</td>';
-                  echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
-                  echo '<td>'.$z['descripcion'].'</td>';
-                  echo '<td class="text-center">'.bolita('OT: '.$z['id_ordTrabajo'],'Orden de Trabajo N°'.$z['id_ordTrabajo'],'yellow').'</td>';
-                  
-                  echo '</tr>';
-                }
-              }
-              ?>
+                            if($list) {
+                                foreach($list as $z)
+                                {
+                                $id = $z['id_notaPedido'];
+                                echo '<tr id="'.$id.'" class="'.$id.'">';
+                                echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer; margin-left: 15px;" title="Detalle Pedido Materiales"></i></td>';           
+                                echo '<td class="text-center">'.bolita($z['id_notaPedido'],null,'blue').'</td>';
+                                echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
+                                echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
+                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita('OT: '.$z['id_ordTrabajo'],'Orden de Trabajo N°'.$z['id_ordTrabajo'],'yellow').'</td>';
+                                echo '<td class="text-center">'.estadoPedido($z['estado']).'</td>';
+                                echo '</tr>';
+                                }
+                            }
+                            ?>
                         </tbody>
                     </table>
                 </div><!-- /.box-body -->
@@ -88,48 +87,6 @@ function ver(e) {
 
 DataTable('#tabladetalle');
 DataTable('#deposito');
-
-function DataTable(tabla) {
-    $(tabla).DataTable({
-        "aLengthMenu": [10, 25, 50, 100],
-        "columnDefs": [{
-                "targets": [0],
-                "searchable": false
-            },
-            {
-                "targets": [0],
-                "orderable": false
-            }
-        ],
-        "order": [
-            [1, "asc"]
-        ],
-        "language": {
-            "sProcessing": "Procesando...",
-            "sLengthMenu": "Mostrar _MENU_ registros",
-            "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
-            "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-            "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-            "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-            "sInfoPostFix": "",
-            "sSearch": "Buscar:",
-            "sUrl": "",
-            "sInfoThousands": ",",
-            "sLoadingRecords": "Cargando...",
-            "oPaginate": {
-                "sFirst": "Primero",
-                "sLast": "Último",
-                "sNext": "Siguiente",
-                "sPrevious": "Anterior"
-            },
-            "oAria": {
-                "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-            }
-        }
-    });
-}
 </script>
 
 
