@@ -1,49 +1,31 @@
-<section>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box box-primary">
-                <div class="box-header">
-                    <h3 class="box-title">Entrega Materiales</h3>
+<section>                                                                                                  
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Entrega Materiales</h3>
+        </div><!-- /.box-header -->
 
-                </div><!-- /.box-header -->
+        <div class="box-body table-responsive">
 
-                <div class="box-body">
-                    <table id="insumo" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th width="1%">Acciones</th>
-                                <th width="1%">N° Entrega</th>
-                                <th class="<?php echo (!viewOT?"hidden":null) ?>">Orden de Trabajo</th>
-                                <th>N° Comprobante</th>
-                                <th>Solicitante</th>
-                                <th>Fecha Entrega</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-              // if(isset($list['data'])){
-              // foreach($list['data'] as $a)
-              // { 
-              //   // $id=$a['id_orden'];
-              //   // echo '<tr data-id="'.$id.'">';
-              //   // echo '<td>';
-              //   // //echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Imprimir"  ></i> ';
-              //   // echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer; margin-left: 15px;" data-toggle="modal" data-target="#modalvista" title="Consultar"></i> ';
-              //   // echo '</td>';
-              //   // echo '<td class="text-center">'.bolita($a['id_orden'], null,'blue').'</td>';
-              //   // echo '<td class="'.(!viewOT?"hidden":null).'">'.$a['id_ot'].'</td>';
-              //   // //echo '<td>'.$a['descripcion'].'</td>';
-              //   // echo '<td>'.$a['comprobante'].'</td>';
-              //   // echo '<td>'.$a['solicitante'].'</td>';
-              //   echo '<td>'.date_format(date_create($a['fecha']), 'd-m-Y').'</td>';
-              // }}
+            <table id="insumo" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="1%">Acciones</th>
+                        <th width="10%">N° Entrega</th>
+                        <th class="<?php echo (!viewOT?"hidden":null) ?>">Orden de Trabajo</th>
+                        <th>N° Comprobante</th>
+                        <th>Solicitante</th>
+                        <th>Fecha Entrega</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+          
                            ?>
-                        </tbody>
-                    </table>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-    </div><!-- /.row -->
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
+    </div><!-- /.box -->
+
 </section><!-- /.content -->
 
 <script>
@@ -130,7 +112,7 @@ $(".fa-search-plus").click(function(e) {
 });
 
 function consultarDetalle(e) {
-  var row = $(e).closest('tr');
+    var row = $(e).closest('tr');
 }
 
 

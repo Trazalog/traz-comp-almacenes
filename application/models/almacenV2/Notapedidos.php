@@ -212,9 +212,8 @@ class Notapedidos extends CI_Model
     // guarda detalle nota pedido (desde tareas de bpm)
     public function setDetaNota($deta)
     {
-        // $response = $this->db->insert_batch('alm_deta_pedidos_materiales', $deta);
-        // return $response;
         foreach ($deta as $o) {
+            $o['resto'] = $o['cantidad'];
             if($this->db->get_where('alm_deta_pedidos_materiales',array('pema_id'=>$o['pema_id'],'arti_id'=>$o['arti_id']))->num_rows()==1){
                 
                 $this->db->where(array('pema_id'=>$o['pema_id'],'arti_id'=>$o['arti_id']));
@@ -230,6 +229,7 @@ class Notapedidos extends CI_Model
     public function editarDetalle($id, $data)
     {
         $this->db->where('depe_id', $id);
+        $data['resto'] = $data['cantidad'];
         return $this->db->update('alm_deta_pedidos_materiales',$data);
     }
 

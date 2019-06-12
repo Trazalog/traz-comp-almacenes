@@ -37,7 +37,7 @@
                 {
                     "nombre": "Entrega Materiales",
                     "icono": "fa-check",
-                    "link": "almacen/Ordeninsumo"
+                    "link": "almacen/new/Entrega_Material"
                 },
                 {
                     "nombre": "Recepcion Materiales",

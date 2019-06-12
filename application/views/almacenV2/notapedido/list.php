@@ -5,7 +5,8 @@
             <div class="box">
                 <div class="box-header">
                     <h3 class="box-title">Pedido Materiales</h3>
-                <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo('almacen/Notapedido/crearPedido')">Agregar</button>
+                    <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                        onclick="linkTo('almacen/Notapedido/crearPedido')">Agregar</button>
                 </div><!-- /.box-header -->
                 <div class="box-body">
                     <table id="deposito" class="table table-bordered table-striped table-hover">
@@ -27,10 +28,10 @@
                                 $id = $z['id_notaPedido'];
                                 echo '<tr id="'.$id.'" class="'.$id.'">';
                                 echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer; margin-left: 15px;" title="Detalle Pedido Materiales"></i></td>';           
-                                echo '<td class="text-center">'.bolita($z['id_notaPedido'],null,'blue').'</td>';
+                                echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
                                 echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
                                 echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
-                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita('OT: '.$z['id_ordTrabajo'],'Orden de Trabajo N°'.$z['id_ordTrabajo'],'yellow').'</td>';
+                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita('OT: '.$z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
                                 echo '<td class="text-center">'.estadoPedido($z['estado']).'</td>';
                                 echo '</tr>';
                                 }
@@ -45,11 +46,10 @@
 </section><!-- /.content -->
 
 <script>
-
 function ver(e) {
-     var id_nota = $(e).closest('tr').attr('id');
+    var id_nota = $(e).closest('tr').attr('id');
 
-    if(id_nota == null)return;
+    if (id_nota == null) return;
     $.ajax({
         type: 'POST',
         data: {
@@ -57,7 +57,7 @@ function ver(e) {
         },
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
-           $('#tabladetalle').DataTable().destroy();
+            $('#tabladetalle').DataTable().destroy();
             $('tr.celdas').remove();
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr class='celdas'>" +
@@ -69,7 +69,7 @@ function ver(e) {
                 $('#tabladetalle tbody').append(tr);
             }
 
-         
+
             DataTable('#tabladetalle');
 
             $('#detalle_pedido').modal('show');

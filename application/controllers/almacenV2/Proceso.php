@@ -12,6 +12,7 @@ class Proceso extends CI_Controller
         $this->load->model(CMP_ALM.'/Ordeninsumos');
 
         $this->load->model(CMP_ALM.'/Notapedidos');
+        $this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
 
         $this->load->model(CMP_ALM.'/Pedidoextra');
 
@@ -107,6 +108,8 @@ class Proceso extends CI_Controller
             case 'Aprueba pedido de Recursos Materiales':
 
                 $this->Notapedidos->setMotivoRechazo($form['pema_id'], $form['motivo_rechazo']);
+
+                $this->Pedidos_Materiales->setEstado($form['pema_id'],$form['result']=="true"?'Aprobado':'Rechazado');
 
                 $contrato['apruebaPedido'] = $form['result'];
 

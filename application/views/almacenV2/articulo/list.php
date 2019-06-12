@@ -1,9 +1,9 @@
-<section class="content">
+<section>
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">Artículos</h3>
+                    <h3 class="box-title">Listado de Artículos</h3>
                     <?php
 if (strpos($permission, 'Add') !== false) {
     echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="LoadArt(0,\'Add\')">Agregar</button>';
@@ -14,11 +14,11 @@ if (strpos($permission, 'Add') !== false) {
                     <table id="articles" class="table table-bordered table-hover">
                         <thead>
                             <tr>
-                                <th>Acciones</th>
+                                <th width="10%">Acciones</th>
                                 <th>Código</th>
                                 <th>Descripción</th>
                                 <th>Unidad de Medida</th>
-                                <th>Estado</th>
+                                <th width="10%">Estado</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -31,17 +31,17 @@ foreach ($list as $a) {
 
     echo '<td>';
     if (strpos($permission, 'Edit') !== false) {
-        echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+        echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 10px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
     }
     if (strpos($permission, 'Del') !== false) {
-        echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Eliminar" onclick="seleccionar(this)"></i>';
+        echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 10px;" title="Eliminar" onclick="seleccionar(this)"></i>';
     }
     echo '</td>';
 
     echo '<td>' . $a['barcode'] . '</td>';
     echo '<td>' . $a['descripcion'] . '</td>';
     echo '<td>' . ($a['medida'] == '' ? '-' : $a['medida']) . '</td>';
-    echo '<td>' . ($a['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')) . '</td>';
+    echo '<td class="text-center">' . ($a['valor'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['valor'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')) . '</td>';
     echo '</tr>';
 
 }
@@ -120,7 +120,7 @@ $('#btnSave').click(function() {
             boxCant: $('#artCantBox').val(),
             unidmed: $('#unidmed').val(),
             puntped: $('#puntped').val(),
-            es_loteado: $('#new_articulo #es_loteado').prop('checked')?1:0
+            es_loteado: $('#new_articulo #es_loteado').prop('checked') ? 1 : 0
         },
         url: 'index.php/almacen/Articulo/setArticle',
         success: function(result) {
@@ -151,29 +151,29 @@ $('#articles').DataTable({
     "order": [
         [1, "asc"]
     ],
-    "language":{
-    "sProcessing":     "Procesando...",
-    "sLengthMenu":     "Mostrar _MENU_ registros",
-    "sZeroRecords":    "No se encontraron resultados",
-    "sEmptyTable":     "Ningún dato disponible en esta tabla",
-    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-    "sInfoPostFix":    "",
-    "sSearch":         "Buscar:",
-    "sUrl":            "",
-    "sInfoThousands":  ",",
-    "sLoadingRecords": "Cargando...",
-    "oPaginate": {
-        "sFirst":    "Primero",
-        "sLast":     "Último",
-        "sNext":     "Siguiente",
-        "sPrevious": "Anterior"
-    },
-    "oAria": {
-        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-    }
+    "language": {
+        "sProcessing": "Procesando...",
+        "sLengthMenu": "Mostrar _MENU_ registros",
+        "sZeroRecords": "No se encontraron resultados",
+        "sEmptyTable": "Ningún dato disponible en esta tabla",
+        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+        "sInfoPostFix": "",
+        "sSearch": "Buscar:",
+        "sUrl": "",
+        "sInfoThousands": ",",
+        "sLoadingRecords": "Cargando...",
+        "oPaginate": {
+            "sFirst": "Primero",
+            "sLast": "Último",
+            "sNext": "Siguiente",
+            "sPrevious": "Anterior"
+        },
+        "oAria": {
+            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+        }
     }
 });
 </script>
@@ -240,7 +240,7 @@ function completarEdit(datos) { // Ok
     traer_estado(datos['estado']);
     traer_unidad(datos['idunidad']);
     $('#puntped').val(datos['punto_pedido']);
-    $('#es_loteado').attr('checked',datos['es_loteado']==1?true:false);
+    $('#es_loteado').attr('checked', datos['es_loteado'] == 1 ? true : false);
 }
 
 // Trae estado de artículo y llena select
@@ -297,7 +297,7 @@ function guardareditar() { // Ok
     var estado = $('#artEstado').val();
     var unmed = $('#unidmed').val();
     var punto = $('#puntped').val();
-    var loteado = $('#es_loteado').prop('checked')?1:0;
+    var loteado = $('#es_loteado').prop('checked') ? 1 : 0;
     var parametros = {
         // 'id_equipo': id_equipo, // el id_equipo es ida
         'barcode': codigo,

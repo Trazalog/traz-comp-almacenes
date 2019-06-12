@@ -66,26 +66,33 @@ if (!function_exists('info_orden')) {
     function estadoPedido($estado){
         switch ($estado) {
             case 'Solicitado':
-                return bolita($estado ,null,'orange');
+                return bolita($estado ,'orange');
                 break;
             case 'Aprobado':
-                return bolita($estado ,null,'green');
+                return bolita($estado ,'green');
                 break;
             case 'Rechazado':
-                return bolita($estado ,null,'red');
+                return bolita($estado ,'red');
                 break;
             case 'Ent. Parcial':
-                return bolita($estado ,null,'blue');
+                return bolita($estado ,'blue');
                 break;
             case 'Entregado':
-                return bolita($estado ,null,'green');
+                return bolita($estado ,'green');
                 break;
             case 'Cancelado':
-                return bolita($estado ,null,'red');
+                return bolita($estado ,'red');
                 break;
             default:
-                return bolita('S/E' ,null,'');
+                return bolita('S/E' ,'');
                 break;
         }
+    }
+
+    function empresa(){
+
+        $ci =& get_instance();			
+        $userdata  = $ci->session->userdata('user_data');
+		return  $userdata[0]['id_empresa'];
     }
 }

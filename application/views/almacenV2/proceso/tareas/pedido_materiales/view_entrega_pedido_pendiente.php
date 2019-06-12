@@ -17,7 +17,7 @@
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="solicitante">Recive Nombre y Apellido <strong style="color: #dd4b39">*</strong>:</label>
+            <label for="solicitante">Recibe Nombre y Apellido <strong style="color: #dd4b39">*</strong>:</label>
             <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
         </div>
     </div>

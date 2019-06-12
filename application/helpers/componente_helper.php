@@ -17,9 +17,9 @@ if (!function_exists('info_header')) {
             </div>';
     }
 
-    function bolita($texto, $detalle, $color){
+    function bolita($texto,$color,$detalle=null){
         return
 
-        '<span data-toggle="tooltip" title="'.$detalle.'" class="badge bg-'.$color.'">'.$texto.'</span>';
+        '<span data-toggle="tooltip" title="'.$detalle.'" class="badge bg-'.$color.' estado">'.$texto.'</span>';
     }
 }
