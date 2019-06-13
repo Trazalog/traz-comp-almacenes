@@ -92,6 +92,7 @@ class Notapedidos extends CI_Model
                           alm_pedidos_materiales.justificacion,
                           orden_trabajo.descripcion,
                           alm_deta_pedidos_materiales.cantidad,
+                          (alm_deta_pedidos_materiales.cantidad - alm_deta_pedidos_materiales.resto) as entregado,
                           alm_deta_pedidos_materiales.fecha_entrega,
                           alm_deta_pedidos_materiales.fecha_entregado,
                           alm_articulos.barcode,

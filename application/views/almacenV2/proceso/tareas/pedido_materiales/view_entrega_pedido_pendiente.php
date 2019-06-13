@@ -104,6 +104,8 @@
 
         var id = $('#idTarBonita').val();
 
+        var pema_id = $('#pema').val();
+
         var cantidades =[];
 
         var detalles = [];
@@ -126,7 +128,7 @@
 
         $.ajax({
             type: 'POST',
-            data: {completa, info_entrega: get_info_entrega(), detalles, cantidades},
+            data: {completa, info_entrega: get_info_entrega(), detalles, cantidades, pema_id},
             url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
             success: function (data) {
 

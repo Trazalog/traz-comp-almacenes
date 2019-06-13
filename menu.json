@@ -7,18 +7,6 @@
             "nivel": 1
         },
         {
-            "nombre": "Lanzar Ped. Materiales",
-            "icono": "fa-cogs",
-            "link": "almacen/Proceso/pedidoNormal",
-            "nivel": 1
-        },
-        {
-            "nombre": "Lanzar Ped. Extraordinario",
-            "icono": "fa-cogs",
-            "link": "almacen/Proceso/pedidoExtraordinario",
-            "nivel": 1
-        },
-        {
             "nombre": "Almancenes",
             "icono": "fa-flus",
             "link": "",

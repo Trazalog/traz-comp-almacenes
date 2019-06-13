@@ -6,7 +6,7 @@
           <h3 class="box-title">Recepción de Materiales</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" id="btnAgre">Agregar</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Remito/cargarlista\')">Agregar</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -15,8 +15,7 @@
           <table id="tbl-remitos" class="table table-bordered table-hover">
             <thead>
               <tr>                
-                <th>Acciones</th>
-                <!--<th>Id de Remito</th>-->
+                <th width="1%">Acciones</th>
                 <th>Nº de Comprobante</th>
                 <th>Fecha</th>
                 <th>Proveedor</th>
@@ -30,8 +29,8 @@
               { 
                 $id=$remito['remitoId'];
                 echo '<tr id="'.$id.'">';
-                  echo '<td>';
-                  echo '<i class="fa fa-fw fa-search-plus text-light-blue" style="cursor: pointer; margin-left: 15px;" title="Consultar"></i>';
+                  echo '<td class="text-center">';
+                  echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer;" title="Consultar"></i>';
                   echo '</td>';
                   echo '<td>'.$remito['comprobante'].'</td>';
                   echo '<td>'.$remito['fecha'].'</td>';
@@ -57,16 +56,8 @@ var comglob = "";
 var ide     = "";
 var edit    = 0;
 var datos   = Array();
-//datos=Array();
-  
-$('#btnAgre').on('click',function(){
-  WaitingOpen();
-  $('.content').empty();
-  $(".content").load("<?php base_url() ?>almacen/Remito/cargarlista");
-  WaitingClose();
-});
 
-$(".fa-search-plus").click(function (e) { 
+$(".fa-search").click(function (e) { 
     console.log("Estoy Consultando"); 
     var idremito = $(this).parent('td').parent('tr').attr('id');
     console.log("id de remito: "+idremito);
@@ -103,42 +94,7 @@ $(".fa-search-plus").click(function (e) {
     });   
 });
 
-$('#tbl-remitos').DataTable({
-  "aLengthMenu": [ 10, 25, 50, 100 ],
-  "columnDefs": [ {
-    "targets": [ 0 ], 
-    "searchable": false
-  },
-  {
-    "targets": [ 0 ], 
-    "orderable": false
-  } ],
-  "order": [[1, "asc"]],
-  "language":{
-    "sProcessing":     "Procesando...",
-    "sLengthMenu":     "Mostrar _MENU_ registros",
-    "sZeroRecords":    "No se encontraron resultados",
-    "sEmptyTable":     "Ningún dato disponible en esta tabla",
-    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-    "sInfoPostFix":    "",
-    "sSearch":         "Buscar:",
-    "sUrl":            "",
-    "sInfoThousands":  ",",
-    "sLoadingRecords": "Cargando...",
-    "oPaginate": {
-        "sFirst":    "Primero",
-        "sLast":     "Último",
-        "sNext":     "Siguiente",
-        "sPrevious": "Anterior"
-    },
-    "oAria": {
-        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-    }
-    }
-});
+DataTable('#tbl-remitos');
 
 var table = $('#tablaconsulta').DataTable( {
     "aLengthMenu": [ 10, 25, 50, 100 ],

@@ -184,7 +184,8 @@ class Articulos extends CI_Model
 
 			switch($act){
 				case 'Add':
-					//Agregar Artículo 
+					if($this->db->get_where('alm_articulos',['barcode'=>$code, 'empr_id'=>$empresaId])->num_rows()>0)return false;
+				
 					if($this->db->insert('alm_articulos', $data)) {
 						return $this->db->insert_id();
 					} 

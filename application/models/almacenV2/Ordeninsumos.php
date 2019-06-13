@@ -174,17 +174,13 @@ class Ordeninsumos extends CI_Model
 
     public function get_detalle_entrega($pema)
     {
-
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
-
         // FILTRAR ARTICULOS PEDIDO MATERIALES
         $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum(LOTE.cantidad) as cantidad_stock');
         $this->db->from('alm_deta_pedidos_materiales PEMA');
         $this->db->join('alm_articulos ART', 'ART.arti_id = PEMA.arti_id');
         $this->db->join('alm_lotes LOTE','LOTE.arti_id = ART.arti_id', 'left');
         $this->db->where('pema_id', $pema);
-        $this->db->where('ART.empr_id', $empresaId);
+        $this->db->where('ART.empr_id', empresa());
         $this->db->group_by('ART.arti_id');
         $A = '(' . $this->db->get_compiled_select() . ') A';
 

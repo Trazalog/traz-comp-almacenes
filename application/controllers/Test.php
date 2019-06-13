@@ -4,10 +4,11 @@ class Test extends CI_Controller {
     function __construct(){
 
       parent::__construct();
-      $this->load->model(CMP_ALM.'/Ordeninsumos'); 
+    
    }
    function index(){
-      $this->Ordeninsumos->get_cantidad_disponible(1);
+      $this->load->model(CMP_ALM.'/new/Entregas_Materiales'); 
+      echo var_dump($this->Entregas_Materiales->obtenerDetalles(6));
    }
 }
 ?>  

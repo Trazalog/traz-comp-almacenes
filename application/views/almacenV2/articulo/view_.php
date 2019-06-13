@@ -29,49 +29,28 @@
 <!-- Descripción del Artículo -->
 <div class="row">
   <div class="col-xs-10 col-sm-4">
-    <label style="margin-top: 7px;">Se Compra x Caja <strong style="color: #dd4b39">*</strong>: </label>
+    <label style="margin-top: 7px;">Se Compra x Caja: </label>
   </div>
   <div class="col-xs-2 col-sm-1">
     <input type="checkbox" id="artIsByBox" style="margin-top:10px;" <?php echo($data['article']['es_caja'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
   </div>
   <div class="col-xs-12 col-sm-3">
-    <label style="margin-top: 7px;">Unidades <strong style="color: #dd4b39">*</strong>: </label>
+    <label style="margin-top: 7px;" class="unidades">Unidades <strong style="color: #dd4b39">*</strong>: </label>
   </div>
   <div class="col-xs-12 col-sm-4">
-    <input type="text" class="form-control" id="artCantBox" value="<?php echo $data['article']['cantidad_caja'];?>" <?php echo (($data['article']['es_caja'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
+    <input type="text" class="form-control unidades" id="artCantBox" value="<?php echo $data['article']['cantidad_caja'];?>" <?php echo (($data['article']['es_caja'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
   </div>
 </div><br>
-
-<!-- <div class="row">
-  <div class="col-xs-12 col-sm-4">
-    <label style="margin-top: 7px;">Familia: </label>
-  </div>
-  <div class="col-xs-12 col-sm-8">
-    <select class="form-control" id="famId"  <?php //echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-      <?php 
-      ////echo '<option value="'.$f['famId'].'" '.($data['article']['famId'] == $f['famId'] ? 'selected' : '').'>'.$f['famName'].'</option>';
-     // }
-      ?>
-    </select>
-  </div>
-</div><br> -->
-
-<!-- -->
 <div class="row hidden">
   <div class="col-xs-12 col-sm-4">
     <label style="margin-top: 7px;">Estado: </label>
   </div>
   <div class="col-xs-12 col-sm-8">
     <select class="form-control hidden" id="artEstado"  <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-      <?php 
-      echo '<option value="1">Activo</option>';
-      //echo '<option value="1" '.($data['article']['artEstado'] == 'AC' ? 'selected' : '').'>Activo</option>';
-      // echo '<option value="7" '.($data['article']['artEstado'] == 'IN' ? 'selected' : '').'>Inactivo</option>';
-      // echo '<option value="20" '.($data['article']['artEstado'] == 'SU' ? 'selected' : '').'>Suspendido</option>';
-      ?>
+    <option value="1">Activo</option>;
     </select>
   </div>
-</div><br>
+</div>
 
 <div class="row">
   <div class="col-xs-12 col-sm-4">
@@ -85,7 +64,7 @@
 
 <div class="row">
   <div class="col-xs-12 col-sm-4">
-    <label style="margin-top: 7px;">Punto de pedido<strong style="color: #dd4b39">*</strong>:</label>
+    <label style="margin-top: 7px;">Punto de pedido:</label>
   </div>
   <div class="col-xs-12 col-sm-8">
     <input type="text" name="puntped" id="puntped" class="form-control">
@@ -102,14 +81,18 @@
 </div> <!-- /.modal-body -->
  
 <script>
+init();
+function init() {
+  $('.unidades').hide();
+}
+
 $('#artIsByBox').click(function() {
   if($('#artIsByBox').is(':checked')){
-    $('#artCantBox').prop('disabled', false);
+    $('.unidades').show();
   } else {
     $('#artCantBox').val('');
-    $('#artCantBox').prop('disabled', true);
+    $('.unidades').hide();
   }
- 
 });
 
 

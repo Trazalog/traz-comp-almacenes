@@ -1,32 +1,7 @@
-<div class="row">
-    <div class="col-xs-12">
-        <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> Error!</h4>
-            Revise que todos los campos obligatorios esten seleccionados
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-12">
-        <div class="alert alert-danger alert-dismissable" id="error1" style="display: none">
-            <h4><i class="icon fa fa-ban"></i> </h4>
-            El artículo y depósito seleccionado no están en Lote.
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="col-xs-12">
-        <div class="alert alert-success" id="error2" style="display: none">
-            <h4></h4>
-            El artículo y depósito seleccionado están en Lote.
-        </div>
-    </div>
-</div>
-
 <section>
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header">
                     <h3 class="box-title"> Recepción de Materiales</h3>
                 </div><!-- /.box-header -->
@@ -79,8 +54,7 @@
                                                         class="form-control">
                                                 </div>
                                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
-                                                    <label for="vencimiento">Fecha Vencimiento <strong
-                                                            style="color: #dd4b39">*</strong>:</label>
+                                                    <label for="vencimiento">Fecha Vencimiento:</label>
                                                     <input type="text" id="vencimiento" name="vencimiento"
                                                         placeholder="dd/mm/yyyy" class="form-control fecha">
                                                 </div>
@@ -97,7 +71,8 @@
                                                 </div>
                                                 <div class="col-xs-12 col-sm-12 col-md-12"><br>
                                                     <br>
-                                                    <button class="btn btn-primary " style="float:right;" id="agregar"><i class="fa fa-check"></i>Agregar</button>
+                                                    <button class="btn btn-primary " style="float:right;"
+                                                        id="agregar"><i class="fa fa-check"></i>Agregar</button>
                                                 </div>
                                             </div><br>
 
@@ -129,7 +104,8 @@
                 </div><!-- /.box-body -->
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="guardar()">Guardar</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        onclick="guardar()">Guardar</button>
                 </div> <!-- /.modal footer -->
 
             </div><!-- /.box -->
@@ -137,7 +113,6 @@
     </div><!-- /.row -->
 </section><!-- /.content -->
 <script>
-
 function eventSelect() {
 
     if (selectItem.es_loteado == 0) {
@@ -162,8 +137,7 @@ $("#fecha").datetimepicker({
 
 $("#vencimiento").datetimepicker({
     format: 'YYYY-MM-DD',
-    locale: 'en',
-    date: new Date()
+    locale: 'en'
 });
 
 
@@ -318,7 +292,7 @@ $('#agregar').click(function(e) {
     var deposito = $("select#deposito option:selected").html();
     var id_deposito = $('#deposito').val();
 
-    if (id_her == '' || lote == '' || vencimiento == '' || cantidad == '' || id_deposito == -1) {
+    if (id_her == '' || lote == '' || cantidad == '' || id_deposito == -1) {
         alert('Campos Obligatorios(*) Incompletos');
         return;
     }
@@ -374,12 +348,11 @@ $('#agregar').click(function(e) {
         $('#deposito').val('');
         $('#vencimiento').val('');
         $('#lote').prop('disabled', false);
-
-        if (selectItem.es_loteado == 0) {
-            $('#lote').prop('disabled', true);
-            $('#lote').val('S/L');
-        }
+        $('#lote').prop('disabled', true);
+        $('#lote').val('S/L');
+     
     }
+    clearSelect();
 });
 
 function guardar() {
@@ -456,6 +429,6 @@ function selectItemiculo(e) {
         $('#lote').prop('disabled', false);
         $('#lote').val('');
     }
-    traer_deposito($(e).data('id'));
+  //  traer_deposito($(e).data('id'));
 }
 </script>

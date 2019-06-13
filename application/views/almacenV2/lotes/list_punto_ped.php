@@ -1,8 +1,7 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
-<section class="content">
-  <div class="row">
-    <div class="col-xs-12">
-      <div class="box">
+<section>
+
+      <div class="box box-primary">
         <div class="box-header">
           <h3 class="box-title">Puntos de Pedido</h3>
         </div><!-- /.box-header -->
@@ -23,7 +22,6 @@
 
                 	foreach($list as $f)
       		        {
-                    if($f['cantidad_disponible']>$f['punto_pedido']) continue;
   	                echo '<tr>';
                     echo '<td>'.$f['descripcion'].'</td>';
                     echo '<td>'.$f['barcode'].'</td>';
@@ -38,8 +36,7 @@
           </table>
         </div><!-- /.box-body -->
       </div><!-- /.box -->
-    </div><!-- /.col -->
-  </div><!-- /.row -->
+   
 </section><!-- /.content -->
 
 <script>

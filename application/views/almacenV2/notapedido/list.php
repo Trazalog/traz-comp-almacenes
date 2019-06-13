@@ -1,33 +1,31 @@
 <section>
 
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Pedido Materiales</h3>
-                    <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
-                        onclick="linkTo('almacen/Notapedido/crearPedido')">Agregar</button>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-                    <table id="deposito" class="table table-bordered table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th width="1%">Acciones</th>
-                                <th width="10%">N° Pedido</th>
-                                <th width="20%" class="text-center">Fecha</th>
-                                <th>Detalle</th>
-                                <th class="<?php echo(!viewOT?"hidden":null)?>" width="10%">Ord.Trabajo</th>
-                                <th width="10%">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
+    <div class="box box-primary">
+        <div class="box-header">
+            <h3 class="box-title">Pedido Materiales</h3>
+            <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                onclick="linkTo('almacen/Notapedido/crearPedido')">Agregar</button>
+        </div><!-- /.box-header -->
+        <div class="box-body">
+            <table id="deposito" class="table table-bordered table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th width="1%">Acciones</th>
+                        <th width="10%">Pedido</th>
+                        <th width="20%" class="text-center">Fecha</th>
+                        <th>Detalle</th>
+                        <th class="<?php echo(!viewOT?"hidden":null)?>" width="10%">Ord.Trabajo</th>
+                        <th width="10%">Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
                             if($list) {
                                 foreach($list as $z)
                                 {
                                 $id = $z['id_notaPedido'];
                                 echo '<tr id="'.$id.'" class="'.$id.'">';
-                                echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer; margin-left: 15px;" title="Detalle Pedido Materiales"></i></td>';           
+                                echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;" title="Detalle Pedido Materiales"></i></td>';           
                                 echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
                                 echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
                                 echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
@@ -37,12 +35,11 @@
                                 }
                             }
                             ?>
-                        </tbody>
-                    </table>
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-    </div><!-- /.row -->
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
+    </div><!-- /.box -->
+
 </section><!-- /.content -->
 
 <script>
@@ -60,11 +57,11 @@ function ver(e) {
             $('#tabladetalle').DataTable().destroy();
             $('tr.celdas').remove();
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas'>" +
+                var tr = "<tr style='color:'>" +
                     "<td>" + data[i]['barcode'] + "</td>" +
                     "<td>" + data[i]['artDescription'] + "</td>" +
-                    "<td class='text-center' width='5%'>" + data[i]['cantidad'] + "</td>" +
-                    "<td class='text-center' width='20%'>" + data[i]['fecha'] + "</td>" +
+                    "<td class='text-center' width='15%'><b>" + data[i]['cantidad'] + "</b></td>" +
+                    "<td class='text-center' width='15%'><b>" + data[i]['entregado'] + "</b></td>" +
                     "</tr>";
                 $('#tabladetalle tbody').append(tr);
             }
@@ -110,8 +107,8 @@ DataTable('#deposito');
                                 <tr>
                                     <th>Cod. Artículo</th>
                                     <th>Descripción</th>
-                                    <th>Cant. Solicitada</th>
-                                    <th>Fecha Pedido</th>
+                                    <th>Pedido</th>
+                                    <th>Entregado</th>
                                 </tr>
                             </thead>
                             <tbody>

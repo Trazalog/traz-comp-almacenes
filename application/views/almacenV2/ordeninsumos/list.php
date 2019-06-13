@@ -20,7 +20,7 @@
                 <tbody>
                     <?php
           
-                           ?>
+                    ?>
                 </tbody>
             </table>
         </div><!-- /.box-body -->

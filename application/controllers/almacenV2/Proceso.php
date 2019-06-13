@@ -8,17 +8,10 @@ class Proceso extends CI_Controller
         parent::__construct();
 
         $this->load->library('BPMALM');
-
         $this->load->model(CMP_ALM.'/Ordeninsumos');
-
         $this->load->model(CMP_ALM.'/Notapedidos');
         $this->load->model(CMP_ALM.'/new/Pedidos_Materiales');
-
         $this->load->model(CMP_ALM.'/Pedidoextra');
-
-        // SUPERVISOR1 => 102 => Aprueba pedido de Recursos Materiales
-        // $data = ['userId' => 102, 'userName' => 'Fernando', 'userLastName' => 'Leiva', 'device' => '', 'permission' => 'Add-View-Del-Edit','id_empresa'=>1];
-        // $this->session->set_userdata('user_data', $data);
     }
 
     public function index()
@@ -123,6 +116,8 @@ class Proceso extends CI_Controller
        
                 $this->Ordeninsumos->insert_entrega_materiales($form);
 
+                $this->Pedidos_Materiales->setEstado($form['pema_id'],$form['completa']=="true"?'Entregado':'Ent. Parcial');
+
                 $contrato['entregaCompleta'] = $form['completa'];
 
                 return $contrato;
@@ -218,16 +213,23 @@ class Proceso extends CI_Controller
             case 'Comunica Rechazo':
 
                 $proceso = $tarea['processId'];
-
+                $res = null;
+                $obj = new stdClass();
                 if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
 
-                    $data['motivo'] = $this->Pedidoextra->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
+                    $res = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
+                    $obj->motivo = $res['motivo_rechazo'];
+                    $obj->pema_id = $res['pema_id'];
                 } else {
 
-                    $data['motivo'] = $this->Notapedidos->getXCaseId($tarea['rootCaseId'])['motivo_rechazo'];
+                    $res = $this->Notapedidos->getXCaseId($tarea['rootCaseId']);
 
+                    $obj->motivo = $res['motivo_rechazo'];
+                    $obj->pema_id = $res['pema_id'];
                 }
+
+                $data['view_generar_pedido'] = $this->load->view(CMP_ALM.'/proceso/tareas/components/pedidos_materiales',null,true);
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 

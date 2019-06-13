@@ -1,17 +1,21 @@
 <input id="pema_id" type="number" class="hidden">
 <input id="ortr_id" type="number" class="hidden" value="">
 <div class="box box-primary">
+    <div class="box-header">
+        <h3 class="box-title">Crear Pedido de Materiales</h3>
+    </div><!-- /.box-header -->
     <div class="box-body">
         <div class="row">
             <div class="col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
                 <div class="form-group">
                     <label>Justificacíon:</label>
-                    <input id="just" type="text" class="form-control" placeholder="Ingrese Justificación...">
+                    <textarea id="just" type="text" class="form-control"
+                        placeholder="Ingrese Justificación..."></textarea>
                 </div>
             </div>
             <div class="col-xs-6 col-sm-6 col-md-6">
                 <div class="form-group">
-                    <label>Seleccionar Articulo:</label>
+                    <label>Seleccionar Artículo:</label>
                     <?php $this->load->view('test'); ?>
                 </div>
             </div>
@@ -40,16 +44,17 @@
                     <table id="tabladetalle" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
+                                <th width="5%">Acciones</th>
                                 <th>Articulo</th>
                                 <th class="text-center">Cantidad</th>
-                                <th width="15%">Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                         </tbody>
                     </table>
 
-                    <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;" onclick="linkTo('almacen/Notapedido')">Hecho</button>
+                    <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;"
+                        onclick="linkTo('almacen/Notapedido')">Hecho</button>
 
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -119,7 +124,7 @@ get_detalle();
 function get_detalle() {
 
     var id = $('#pema_id').val();
-    if(id == null || id == ''){
+    if (id == null || id == '') {
         DataTable('#tabladetalle');
         return;
     }
@@ -137,11 +142,11 @@ function get_detalle() {
                 var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
                     ] + "'>" +
-                    "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
-                    "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td>" +
                     "<td class='text-light-blue'>" +
-                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 15px;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 15px;' title='Eliminar' onclick='del(this);'></i></td></tr>";
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 5px;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 5px;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
+                    "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
                 $('#tabladetalle tbody').append(tr);
             }
             DataTable('#tabladetalle');
@@ -155,7 +160,6 @@ function get_detalle() {
         dataType: 'json'
     });
 }
-
 </script>
 
 

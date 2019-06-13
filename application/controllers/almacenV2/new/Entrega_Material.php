@@ -8,9 +8,13 @@ class Entrega_Material extends CI_Controller {
    }
    function index(){
       $data['list'] = $this->Entregas_Materiales->listado();
-
-      #echo var_dump($data['list']);die;
       $this->load->view(CMP_ALM.'/new/entregas_materiales/list',$data);
+   }
+
+   public function detalle()
+   {
+      $id = $this->input->post('id');
+      echo json_encode($this->Entregas_Materiales->obtenerDetalles($id));
    }
 }
 ?>

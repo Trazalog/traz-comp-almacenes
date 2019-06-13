@@ -4,7 +4,7 @@
      <datalist id="articulos">
          <?php foreach($items as $o)
            {
-             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>";
+             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: 1000</option>";
              unset($o->json);
             }
             ?>
@@ -14,6 +14,8 @@
              <i class="glyphicon glyphicon-search"></i></button>
      </span>
  </div>
+ <br>
+ <label id="info" class="text-blue"></label>
 
 
  <div class="modal" id="modal_articulos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -70,8 +72,14 @@ $(document).off('click', '.tabla_articulos_nuevo').on('click', '.tabla_articulos
 
 function getItem(item) {
     if (item == null) return;
-    var json = JSON.stringify($('#articulos').find("[value='" + item.value + "']").data('json'));
+    var option = $('#articulos').find("[value='" + item.value + "']");
+    var json = JSON.stringify($(option).data('json'));
     selectItem = JSON.parse(json);
+    $('label#info').html($(option).html());
     if(existFunction('eventSelect'))eventSelect();
+}
+
+function clearSelect(){
+    $('#inputarti').val(null);
 }
  </script>
