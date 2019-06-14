@@ -16,4 +16,10 @@ if (!function_exists('info_header')) {
                 </div>
             </div>';
     }
+
+    function bolita($texto,$color,$detalle=null){
+        return
+
+        '<span data-toggle="tooltip" title="'.$detalle.'" class="badge bg-'.$color.' estado">'.$texto.'</span>';
+    }
 }

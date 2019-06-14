@@ -84,6 +84,18 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
+
+define('TAREAS_ASIGNAR', 'traz-comp');
+
+/*
+|--------------------------------------------------------------------------
+| Almacen
+|--------------------------------------------------------------------------
+|
+| Version de Componente de Almacen
+|
+*/
+define('CMP_ALM', 'almacenV2');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -93,8 +105,10 @@ defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest auto
 |
 */
 
-define('BONITA_URL', 'http://192.168.100.105/bonita/');  
-
+//define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
+define('BONITA_URL', 'http://holis:8080/bonita/');  
+define('BPM_ADMIN_USER', 'mantenedor1');
+define('BPM_ADMIN_PASS', 'bpm');
 
 /*
 |--------------------------------------------------------------------------
@@ -104,9 +118,14 @@ define('BONITA_URL', 'http://192.168.100.105/bonita/');
 | Id de proceso productivo (se usa para lanzar proceso)
 |
 */
- 
-define('BPM_PROCESS_ID', '6833268789089291878'); 
 
+//? PEDIDOS NORMALES
+ 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
+
+//? PEDIDOS EXTRAORDINATIOS
+
+define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 
 /*
 |--------------------------------------------------------------------------
@@ -130,3 +149,4 @@ define('ASP_0101', 'Error ASP_0101: No se pudo Asignar Usuario');
 define('ASP_0200', 'Error ASP_0200: Error de Base de Datos'); 
 
 
+define('viewOT',false);

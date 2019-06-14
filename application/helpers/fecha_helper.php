@@ -11,6 +11,14 @@ if(!function_exists('formato_fecha')){
         }
     }
 
+    function fecha($fecha){
+        if(strlen($fecha)==0) return '';
+        $date = explode("-",$fecha);
+        $date = $date[2].'/'.$date[1].'/'.$date[0];
+        return $date;
+        
+    }
+
     function resta_fechas($a,$b){
         $fecha1 = new DateTime($a);
         $fecha2 = new DateTime($b);

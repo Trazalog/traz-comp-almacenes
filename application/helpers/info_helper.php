@@ -62,4 +62,45 @@ if (!function_exists('info_orden')) {
                         </div>';
         }	
     }
+
+    function estadoPedido($estado){
+        switch ($estado) {
+            case 'Solicitado':
+                return bolita($estado ,'orange');
+                break;
+            case 'Aprobado':
+                return bolita($estado ,'green');
+                break;
+            case 'Rechazado':
+                return bolita($estado ,'red');
+                break;
+            case 'Ent. Parcial':
+                return bolita($estado ,'blue');
+                break;
+            case 'Entregado':
+                return bolita($estado ,'green');
+                break;
+            case 'Cancelado':
+                return bolita($estado ,'red');
+                break;
+            default:
+                return bolita('S/E' ,'');
+                break;
+        }
+    }
+
+    function empresa(){
+
+        $ci =& get_instance();			
+        $userdata  = $ci->session->userdata('user_data');
+		return  $userdata[0]['id_empresa'];
+    }
+
+    function msjStatus($status, $msj, $data=null){
+        return array(
+            'status'=> $status,
+            'msj'=> $msj,
+            'data'=> $data
+        );
+    }
 }

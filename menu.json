@@ -1,8 +1,9 @@
 {
-    "menu": [{
-            "nombre": "Proceso",
-            "icono": "fa-flus",
-            "link": "general/Proceso",
+    "menu": [
+        {
+            "nombre": "Mis Tareas",
+            "icono": "fa-list",
+            "link": "almacen/Proceso",
             "nivel": 1
         },
         {
@@ -10,50 +11,67 @@
             "icono": "fa-flus",
             "link": "",
             "nivel": 2,
-            "submenu": [{
+            "submenu": [
+                {
                     "nombre": "Artículos",
-                    "icono": "fa-flus",
+                    "icono": "fa-barcode",
                     "link": "almacen/Articulo"
                 },
                 {
                     "nombre": "Stock",
-                    "icono": "fa-flus",
+                    "icono": "fa-cubes",
                     "link": "almacen/Lote"
                 },
                 {
                     "nombre": "Entrega Materiales",
-                    "icono": "fa-flus",
-                    "link": "almacen/Ordeninsumo"
+                    "icono": "fa-check",
+                    "link": "almacen/new/Entrega_Material"
                 },
                 {
                     "nombre": "Recepcion Materiales",
-                    "icono": "fa-flus",
+                    "icono": "fa-paperclip",
                     "link": "almacen/Remito"
                 },
                 {
                     "nombre": "Punto de Pedido",
-                    "icono": "fa-flus",
+                    "icono": "fa-bookmark",
                     "link": "almacen/Lote/puntoPedList"
                 },
                 {
                     "nombre": "Pedido Materiales",
-                    "icono": "fa-flus",
+                    "icono": "fa-cart-plus",
                     "link": "almacen/Notapedido"
                 }
             ]
         },
         {
-            "nombre": "Header(Cabera)",
+            "nombre": "ABMs",
             "icono": "fa-flus",
-            "link": "general/Componente",
-            "nivel": 1
+            "link": "",
+            "nivel": 2,
+            "submenu": [
+                {
+                    "nombre": "Parametros",
+                    "icono": "fa-cubes",
+                    "link": ""
+                },
+                {
+                    "nombre": "Depositos",
+                    "icono": "fa-cubes",
+                    "link": ""
+                },
+                {
+                    "nombre": "Proveedores",
+                    "icono": "fa-cubes",
+                    "link": ""
+                }
+             ] 
         },
         {
-            "nombre": "ABM Tablas",
-            "icono": "fa-flus",
-            "link": "general/Tabla",
+            "nombre": "Componente Articulos",
+            "icono": "fa-cart-plus",
+            "link": "traz-comp/Tabla",
             "nivel": 1
         }
-
     ]
 }

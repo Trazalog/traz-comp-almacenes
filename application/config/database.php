@@ -75,9 +75,13 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => 'localhost',
-	'username' => 'root',
-	'password' => '',
+	// 'hostname' => 'localhost',
+	// 'username' => 'root',
+	// 'password' => '',
+	// 'database' => 'asset_almacen_v3',
+	'hostname' => 'holis',
+	'username' => 'glados',
+	'password' => 'glados',
 	'database' => 'asset_almacen_v3',
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',

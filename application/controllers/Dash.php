@@ -10,7 +10,10 @@ class Dash extends CI_Controller {
    function index(){
      
       $data['menu'] = menu(file_get_contents("C:/xampp/htdocs/traz-comp-almacenes/menu.json"));
-      //var_dump($data['menu']);die;
+
+      //!USUARIO HARDCODEADO
+      $session = ["usrId"=>"1","usrNick"=>"mantenedor1","usrName"=>"mantenedor","usrLastName"=>"mantenedor apellido","id_empresa"=>"6","descripcion"=>"Frankenstein","grpId"=>"1","usrimag"=>"","userBpm"=>"102","permission"=>"Add-Edit-Del-View"];
+      $this->session->set_userdata('user_data', array($session));
       $this->load->view('layout/Admin',$data);
    }
 }

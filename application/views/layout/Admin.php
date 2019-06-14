@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Almacen | Componentes</title>
+  <title>Trazalog | Almacen </title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -20,29 +20,20 @@
 
   <link rel="stylesheet" href="<?php base_url();?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
 
-  <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+  <link rel="stylesheet" href="<?php base_url()?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
-  <link rel="stylesheet" href="<?php base_url() ?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <link rel="stylesheet" href="<?php base_url()?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
-  <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+  <link rel="stylesheet" href="<?php base_url()?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 
   <!-- Bootstrap datetimepicker -->
   <link rel="stylesheet" href="<?php base_url();?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
 
 
-
-
-  <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-  <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-
   <!-- Google Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-  <?php $this->load->view('layout/general_scripts') ?>
+  <?php $this->load->view('layout/general_scripts')?>
 
 </head>
 
@@ -53,11 +44,11 @@
 
   <header class="main-header">
     <!-- Logo -->
-    <a href="lib/index2.html" class="logo">
+    <a href="#" class="logo" onclick="linkTo();">
       <!-- mini logo for sidebar mini 50x50 pixels -->
-      <span class="logo-mini"><b>A</b>LT</span>
+      <span class="logo-mini"><b>A</b>LM</span>
       <!-- logo for regular state and mobile devices -->
-      <span class="logo-lg"><b>Admin</b>LTE</span>
+      <span class="logo-lg"><b>Alma</b>ZEN</span>
     </a>
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top">
@@ -69,23 +60,20 @@
         <span class="icon-bar"></span>
       </a>
 
-      <?php 
-      
-        $this->load->view('layout/perfil');
-      
-      ?>
+      <?php
 
-     
+$this->load->view('layout/perfil');
+
+?>
+
+
     </nav>
   </header>
   <!-- Left side column. contains the logo and sidebar -->
   <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-      
-      <!-- sidebar menu: : style can be found in sidebar.less -->
-       <!-- <?php// $this->load->view('layout/menu'); ?> -->
-       <?php echo $menu?> 
+       <?php echo $menu ?>
     </section>
     <!-- /.sidebar -->
   </aside>
@@ -96,7 +84,7 @@
     <section id="content" class="content">
 
 
- 
+
 
     </section>
     <!-- /.content -->
@@ -307,10 +295,10 @@
 </div>
 <!-- ./wrapper -->
 <script>
-   
+
         var link = '';
-        linkTo('general/Proceso/detalleTarea/640002');
-        $('.menu a').on('click',function(){
+        linkTo('almacen/Remito');
+        $('.menu .link').on('click',function(){
             link = $(this).data('link');
             linkTo();
         });
@@ -318,7 +306,9 @@
         function linkTo(uri = ''){
             if(link == '' && uri == '') return;
             $('#content').empty();
-            $('#content').load('<?php base_url() ?>'+(uri==''?link:uri));
+            $('#content').load('<?php base_url()?>'+(uri==''?link:uri));
+            link = (uri==''?link:uri);
+
         }
 
         function collapse(e){
@@ -329,9 +319,9 @@
             }else{
                 $(e).addClass('collapsed-box');
             }
-            
+
         }
-        
+
 
         /* Abre cuadro cargando ajax */
         function WaitingOpen(texto){
