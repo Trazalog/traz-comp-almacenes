@@ -10,7 +10,7 @@
             ?>
      </datalist>
      <span class="input-group-btn">
-         <button class='btn btn-sm btn-primary' data-toggle="modal" data-target="#modal_articulos">
+         <button class='btn btn-primary' data-toggle="modal" data-target="#modal_articulos">
              <i class="glyphicon glyphicon-search"></i></button>
      </span>
  </div>
@@ -28,10 +28,11 @@
              </div>
 
              <div class="modal-body" id="modalBodyArticle">
-                 <div class="row">
-                     <div class="col-xs-12" id="modalarticulos">
+        
+             
+                     <div class="table-responsive" id="modalarticulos">
 
-                     </div>
+                   
                  </div>
              </div>
 
@@ -45,7 +46,7 @@
 
 
  <script>
-checkTabla("tabla_articulos", "modalarticulos", `<?php echo json_encode($items);?>`, "Add")
+checkTabla("tabla_articulos", "modalarticulos", `<?php echo json_encode($items);?>`, "Add");
 
 function checkTabla(idtabla, idrecipiente, json, acciones) {
     lenguaje = <?php echo json_encode($lang)?>;

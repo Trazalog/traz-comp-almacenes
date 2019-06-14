@@ -215,21 +215,18 @@ class Proceso extends CI_Controller
                 $proceso = $tarea['processId'];
                 $res = null;
                 $obj = new stdClass();
+                
                 if ($proceso == BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS) {
 
                     $res = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
-                    $obj->motivo = $res['motivo_rechazo'];
-                    $obj->pema_id = $res['pema_id'];
                 } else {
 
                     $res = $this->Notapedidos->getXCaseId($tarea['rootCaseId']);
 
-                    $obj->motivo = $res['motivo_rechazo'];
-                    $obj->pema_id = $res['pema_id'];
                 }
 
-                $data['view_generar_pedido'] = $this->load->view(CMP_ALM.'/proceso/tareas/components/pedidos_materiales',null,true);
+                $data['info'] = $obj;
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 

@@ -1,4 +1,4 @@
-<input id="pema_id" type="number" class="hidden">
+<input id="pema_id" type="number" class="hidden" value="<?php echo (isset($obj->pema_id)?$obj->pema_id:null)?>">
 <input id="ortr_id" type="number" class="hidden" value="">
 <div class="box box-primary">
     <div class="box-header">
@@ -9,7 +9,8 @@
             <div class="col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
                 <div class="form-group">
                     <label>Justificacíon:</label>
-                    <textarea id="just" type="text" class="form-control"
+                    <textarea id="just" type="text"
+                        class="form-control <?php echo (isset($obj->pema_id)?'hidden':null)?>"
                         placeholder="Ingrese Justificación..."></textarea>
                 </div>
             </div>
@@ -52,9 +53,11 @@
                         <tbody>
                         </tbody>
                     </table>
-
+                    <div class="modal-footer">
+                        <button class="btn" onclick="linkTo('almacen/Notapedido')">Cerrar</button>
+                    </div>
                     <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;"
-                        onclick="linkTo('almacen/Notapedido')">Hecho</button>
+                        onclick="lanzarPedido()">Hecho</button>
 
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
@@ -251,6 +254,7 @@ function set_pedido() {
         return;
     }
 
+    var peex_id = $('#peex_id').val();
     var justificacion = $('#just').val();
 
     WaitingOpen("Guardando pedido...");
@@ -260,7 +264,7 @@ function set_pedido() {
             idinsumos,
             cantidades,
             idOT,
-            peex_id: 1, //!HARDCODE,
+            peex_id,
             justificacion
         },
         type: 'POST',
@@ -279,6 +283,23 @@ function set_pedido() {
     });
 }
 
+function lanzarPedido(){
+    $.ajax({
+        data: {
+            id :  $('#pema_id').val();
+        },
+        type: 'POST',
+        dataType: 'json',
+        url: 'index.php/almacen/new/Pedido_Material/pedidoMaterial',
+        success: function(result) {
+          linkTo('almacen/Notapedido');
+        },
+        error: function(result) {
+            WaitingClose();
+            alert("Error al Lanzar Pedido");
+        },
+    });
+}
 
 function edit_pedido() {
 

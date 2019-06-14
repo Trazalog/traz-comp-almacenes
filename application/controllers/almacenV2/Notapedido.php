@@ -123,10 +123,6 @@ class Notapedido extends CI_Controller
 
     public function setNotaPedido()
     {
-
-        $userdata = $this->session->userdata('user_data');
-        $empId =  $userdata[0]['id_empresa'];
-
         $ids = $this->input->post('idinsumos');
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');
@@ -135,7 +131,7 @@ class Notapedido extends CI_Controller
         $cabecera = array(
             'fecha' => date('Y-m-d'),
             'ortr_id' => $idOT,
-            'empr_id' => $empId,
+            'empr_id' => empresa(),
             'justificacion' => $justificacion
         );
 
@@ -151,7 +147,6 @@ class Notapedido extends CI_Controller
             $deta[$i]['arti_id'] = $ids[$i];
             $deta[$i]['cantidad'] = $cantidades[$i];
             $deta[$i]['fecha_entrega'] = date('Y-m-d');
-            //$deta[$i]['estado'] = 'P';
         }
 
         $response = $this->Notapedidos->setDetaNota($deta);
