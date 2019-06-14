@@ -226,7 +226,14 @@ class Proceso extends CI_Controller
 
                 }
 
+                $obj->pema_id = $res['pema_id'];
+                $obj->motivo = $res['motivo_rechazo'];
+
+                $this->load->model('traz-comp/Componentes');
+                $data = $this->Componentes-> listaArticulos();
+
                 $data['info'] = $obj;
+
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 

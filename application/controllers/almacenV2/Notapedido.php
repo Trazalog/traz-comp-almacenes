@@ -151,8 +151,6 @@ class Notapedido extends CI_Controller
 
         $response = $this->Notapedidos->setDetaNota($deta);
         
-        $this->pedidoNormal($idnota);
-        
         echo json_encode(['pema_id'=>$idnota]);
     }
 

@@ -25,7 +25,7 @@
                                 {
                                 $id = $z['id_notaPedido'];
                                 echo '<tr id="'.$id.'" class="'.$id.'">';
-                                echo '<td><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;" title="Detalle Pedido Materiales"></i></td>';           
+                                echo '<td class="text-center"><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;" title="Detalle Pedido Materiales"></i></td>';           
                                 echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
                                 echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
                                 echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';

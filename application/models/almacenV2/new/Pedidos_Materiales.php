@@ -33,4 +33,11 @@ function __construct()
         $this->db->set('estado', $estado);
         $this->db->update($this->tabla);
     }
+
+    public function setCaseId($id, $case)
+    {
+        $this->db->set('case_id', $case);
+        $this->db->where('pema_id', $id);
+        $this->db->update('alm_pedidos_materiales');
+    }
 }
