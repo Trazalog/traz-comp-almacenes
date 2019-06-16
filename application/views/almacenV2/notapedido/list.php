@@ -24,7 +24,7 @@
                                 foreach($list as $z)
                                 {
                                 $id = $z['id_notaPedido'];
-                                echo '<tr id="'.$id.'" class="'.$id.'">';
+                                echo '<tr id="'.$id.'" class="'.$id.'" data-json=\''.json_encode($z).'\'>';
                                 echo '<td class="text-center"><i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;" title="Detalle Pedido Materiales"></i></td>';           
                                 echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
                                 echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
@@ -44,7 +44,9 @@
 
 <script>
 function ver(e) {
-    var id_nota = $(e).closest('tr').attr('id');
+    var tr = $(e).closest('tr')
+    var id_nota = $(tr).attr('id');
+    var json = JSON.parse(JSON.stringify($(tr).data('json')));
 
     if (id_nota == null) return;
     $.ajax({
@@ -65,9 +67,9 @@ function ver(e) {
                     "</tr>";
                 $('#tabladetalle tbody').append(tr);
             }
-
-
             DataTable('#tabladetalle');
+
+            rellenarCabecera(json);
 
             $('#detalle_pedido').modal('show');
         },
@@ -80,7 +82,13 @@ function ver(e) {
 
 }
 //Ver Orden
-
+function rellenarCabecera(json) {
+    $('#detalle_pedido .pedido').val(json.id_notaPedido );
+    $('#detalle_pedido .descrip').val(json.justificacion);
+    $('#detalle_pedido .fecha').val(json.fecha);
+    $('#detalle_pedido .estado').val(json.estado);
+    $('#detalle_pedido .orden').val(json.id_ordTrabajo);
+}
 
 DataTable('#tabladetalle');
 DataTable('#deposito');
@@ -97,9 +105,34 @@ DataTable('#deposito');
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
                         class="fa fa-plus-square text-light-blue"></span> Detalle Pedido Materiales</h4>
+                <br>
+
+                <div class="row">
+                    <div class="col-xs-12 col-sm-3 col-lg-3">
+                        <label for="">Pedido:</label>
+                        <input class="form-control pedido" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-lg-3 <?php echo (!viewOT ? "hidden" : null) ?>">
+                        <label for="">Orden de Trabajo:</label>
+                        <input class="form-control orden" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-lg-3">
+                        <label for="">Fecha:</label>
+                        <input class="form-control fecha" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-3 col-lg-3">
+                        <label for="">Estado:</label>
+                        <input class="form-control estado" type="text" value="???" readonly>
+                    </div><br>
+                    <div class="col-xs-12 col-sm-12 col-lg-12">
+                        <label for="">Descripcion:</label>
+                        <input class="form-control descrip" type="text" value="???" readonly>
+                    </div>
+                </div>
+
             </div> <!-- /.modal-header  -->
 
-            <div class="modal-body" id="modalBodyArticle">
+            <div class="modal-body table-responsive" id="modalBodyArticle">
                 <div class="row">
                     <div class="col-xs-12">
                         <table id="tabladetalle" class="table table-bordered table-striped table-hover">
@@ -107,8 +140,8 @@ DataTable('#deposito');
                                 <tr>
                                     <th>Cod. Artículo</th>
                                     <th>Descripción</th>
-                                    <th>Pedido</th>
-                                    <th>Entregado</th>
+                                    <th class="text-center">Pedido</th>
+                                    <th class="text-center">Entregado</th>
                                 </tr>
                             </thead>
                             <tbody>

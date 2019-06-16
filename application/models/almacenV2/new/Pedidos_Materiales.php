@@ -1,19 +1,34 @@
-<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 class Pedidos_Materiales extends CI_Model
 {
     private $tabla = 'alm_pedidos_materiales';
-    private $key = 'pema_id'; 
+    private $key = 'pema_id';
     private $columnas = '*';
 
-function __construct()
-{
-}
-    
-    public function list()
+    public function __construct()
     {
+        parent::__construct();
+    }
+
+    public function pedidoNormal($pemaId)
+    {
+        $this->load->library('BPMALM');
+
+        $contract = [
+            'pIdPedidoMaterial' => $pemaId
+        ];
+
+        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
+
+        $this->setCaseId($pemaId, $data['case_id']);
+    }
+
+    function list() {
         $this->db->select($this->columnas);
-        $this->db->where('eliminado',false);
+        $this->db->where('eliminado', false);
         return $this->db->get($this->tabla)->result_array();
     }
 
@@ -22,8 +37,8 @@ function __construct()
         $this->db->select('*');
         $this->db->from('alm_deta_pedidos_materiales T');
         $this->db->join('alm_articulos A', 'A.arti_id = T.arti_id');
-        $this->db->where($this->key,$id);
-        $this->db->where('T.eliminado',false);
+        $this->db->where($this->key, $id);
+        $this->db->where('T.eliminado', false);
         return $this->db->get()->result_array();
     }
 

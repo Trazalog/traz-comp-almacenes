@@ -10,7 +10,6 @@ class BPMALM
 
     $this->caseId = $idCase['caseId'];
     $this->CI =& get_instance();
-  //  $this->CI->load->model('Bonitas');
 	}
 	
 	// Lanza proceso en BPM

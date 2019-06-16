@@ -29,13 +29,19 @@ foreach ($list as $a) {
     $id = $a['arti_id'];
     echo '<tr  id="' . $id . '" >';
 
-    echo '<td>';
+    echo '<td class="text-center text-light-blue">';
+
+    echo '<i class="fa fa-search" style="cursor: pointer;margin: 5px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
+    
     if (strpos($permission, 'Edit') !== false) {
-        echo '<i class="fa fa-fw fa-pencil text-light-blue" style="cursor: pointer; margin-left: 10px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 5px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
     }
     if (strpos($permission, 'Del') !== false) {
-        echo '<i class="fa fa-fw fa-times-circle text-light-blue" style="cursor: pointer; margin-left: 10px;" title="Eliminar" onclick="seleccionar(this)"></i>';
+        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 5px;" title="Eliminar" onclick="seleccionar(this)"></i>';
     }
+
+   
+  
     echo '</td>';
 
     echo '<td>' . $a['barcode'] . '</td>';
@@ -137,52 +143,14 @@ $('#btnSave').click(function() {
     });
 });
 
-$('#articles').DataTable({
-    "aLengthMenu": [10, 25, 50, 100],
-    "columnDefs": [{
-            "targets": [0],
-            "searchable": false
-        },
-        {
-            "targets": [0],
-            "orderable": false
-        }
-    ],
-    "order": [
-        [1, "asc"]
-    ],
-    "language": {
-        "sProcessing": "Procesando...",
-        "sLengthMenu": "Mostrar _MENU_ registros",
-        "sZeroRecords": "No se encontraron resultados",
-        "sEmptyTable": "Ningún dato disponible en esta tabla",
-        "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-        "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
-        "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
-        "sInfoPostFix": "",
-        "sSearch": "Buscar:",
-        "sUrl": "",
-        "sInfoThousands": ",",
-        "sLoadingRecords": "Cargando...",
-        "oPaginate": {
-            "sFirst": "Primero",
-            "sLast": "Último",
-            "sNext": "Siguiente",
-            "sPrevious": "Anterior"
-        },
-        "oAria": {
-            "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
-            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-        }
-    }
-});
+DataTable('#articles');
 </script>
 
 <script>
 // Trae datos para llenar el modal Editar
 $(".fa-pencil").click(function(e) { // Ok
     var idartic = $(this).parent('td').parent('tr').attr('id');
-    console.log("ID de articulo es: " + idartic);
+
     ida = idartic;
     $('#artBarCode').val('');
     $('#artDescription').val('');
@@ -222,7 +190,7 @@ $(".fa-pencil").click(function(e) { // Ok
 
 // Llena campos del modal Editar
 function completarEdit(datos) { // Ok
-    console.table(datos);
+
     $('#artBarCode').val(datos['codigoart']);
     $('#artDescription').val(datos['descripart']);
 
@@ -355,6 +323,57 @@ function eliminar_articulo() {
 
     });
 }
+
+function ver_detalles(e) {
+    var idartic = $(e).closest('tr').attr('id');
+
+    $('#artBarCode').val('');
+    $('#artDescription').val('');
+    $('#artIsByBox').val('');
+    $('#artCantBox').val('');
+    $('#famId').html('');
+    $('#unidmed').html('');
+    $('#artEstado').val('');
+    $('#puntped').val('');
+    $.ajax({
+        data: {
+            idartic: idartic
+        },
+        dataType: 'json',
+        type: 'POST',
+        url: 'index.php/almacen/Articulo/getpencil',
+        success: function(data) {
+            datos = {
+                'codigoart': data[0]['barcode'],
+                'descripart': data[0]['descripcion'],
+                'artIsByBox': data[0]['es_caja'],
+                'artcant': data[0]['cantidad_caja'],
+                'estado_id': data[0]['estado'],
+                'idunidad': data[0]['unidadmedida'],
+                'unidadmedidades': data[0]['unidad_descripcion'],
+                'punto_pedido': data[0]['punto_pedido'],
+                'es_loteado': data[0]['es_loteado']
+            }
+            completarEdit(datos);
+            $('.btn-edit').hide();
+            $('#modaleditar input').prop('readonly', true);
+            $('#modaleditar select').prop('disabled', true);
+            $('titu').html('Detalles del Articulo');
+            $('#modaleditar').modal('show');
+        },
+        error: function(result) {
+            console.error("Error al traer datos para llenar Modal Editar");
+            console.table(result);
+        },
+    });
+}
+
+function reset() {
+    $('.btn-edit').show();
+    $('#modaleditar input').prop('readonly', false);
+    $('#modaleditar select').prop('disabled',false);
+    $('titu').html('Editar Articulo');
+}
 </script>
 
 <!-- Modal -->
@@ -413,8 +432,7 @@ function eliminar_articulo() {
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-fw fa-pencil text-light-blue"></span> Editar Artículo</h4>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"class="fa fa-fw fa-pencil text-light-blue"></span> <titu>Editar Artículo</titu></h4>
             </div> <!-- /.modal-header  -->
 
             <div class="modal-body" id="modalBodyArticle">
@@ -498,9 +516,9 @@ function eliminar_articulo() {
                     </div>
                 </div> <!-- /.modal-body -->
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal"
+                <div class="modal-footer ">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="reset()">Cancelar</button>
+                    <button type="button" class="btn btn-primary btn-edit" id="btnSave" data-dismiss="modal"
                         onclick="guardareditar()">Guardar</button>
                 </div> <!-- /.modal footer -->
 

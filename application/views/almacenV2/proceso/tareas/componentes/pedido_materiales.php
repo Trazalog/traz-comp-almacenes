@@ -13,7 +13,7 @@
     <div class="col-xs-6 col-sm-6 col-md-6">
         <div class="form-group">
             <label>Seleccionar Artículo:</label>
-            <?php $this->load->view('test'); ?>
+            <?php $this->load->view(CMP_ALM.'/articulo/componente'); ?>
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3">
@@ -29,7 +29,7 @@
 <table id="tabladetalle" class="table table-bordered table-striped table-hover">
     <thead>
         <tr>
-            <th width="5%">Acciones</th>
+            <th width="1%">Acciones</th>
             <th>Artículo</th>
             <th class="text-center">Cantidad</th>
         </tr>
@@ -119,12 +119,10 @@ function get_detalle() {
             $('#tabladetalle').find('tbody').empty();
 
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
-                        'arti_id'
-                    ] + "'>" +
+                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i]['arti_id'] + "'>" +
                     "<td class='text-light-blue'>" +
-                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 5px;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 5px;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
                 $('#tabladetalle tbody').append(tr);

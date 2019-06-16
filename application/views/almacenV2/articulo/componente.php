@@ -1,10 +1,10 @@
- <div class="input-group">
+<div class="input-group">
      <input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo"
          onchange="getItem(this)" autocomplete="off">
      <datalist id="articulos">
          <?php foreach($items as $o)
            {
-             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: 1000</option>";
+             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: ".$o->stock."</option>";
              unset($o->json);
             }
             ?>
@@ -28,8 +28,7 @@
              </div>
 
              <div class="modal-body" id="modalBodyArticle">
-        
-             
+    
                      <div class="table-responsive" id="modalarticulos">
 
                    
@@ -66,7 +65,9 @@ $(document).off('click', '.tabla_articulos_nuevo').on('click', '.tabla_articulos
     $('.modal').modal('hide');
     var item = $(this).closest('tr').data('json')[0];
     $('#inputarti').val(item.Codigo);
-    var json = JSON.stringify($('#articulos').find("[value='" + item.Codigo + "']").data('json'));
+    var option = $('#articulos').find("[value='" + item.Codigo + "']");
+    $('label#info').html($(option).html());
+    var json = JSON.stringify($(option).data('json'));
     selectItem = JSON.parse(json);
 });
 

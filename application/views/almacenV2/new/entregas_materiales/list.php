@@ -19,7 +19,7 @@
             <tbody>
                 <?php
                     foreach ($list as $o) {
-                        echo '<tr data-id='.$o['enma_id'].' data-pema="'.$o['pema_id'].'">'; 
+                        echo '<tr data-id='.$o['enma_id'].' data-pema="'.$o['pema_id'].'" data-json=\''.json_encode($o).'\'>'; 
                         echo '<td>';
                         echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer;" title="Imprimir"></i> ';
                         echo '<i class="fa fa-fw fa-search text-light-blue btn-buscar" style="cursor: pointer;" title="Consultar"></i> ';
@@ -61,8 +61,8 @@ $('.btn-estado').click(function() {
                 $(tabla).append(
                     '<tr>' +
                     '<td>' + e.barcode + '</td>' +
-                    '<td class="text-center">' + (e.cantidad - e.resto) + ' / ' + e
-                    .cantidad + '</td>' +
+                    '<td class="text-center"><b>'+ e.cantidad + '</b></td>' +
+                    '<td class="text-center"><b>'+ (e.cantidad - e.resto) +'</b></td>' +
                     '</tr>'
                 );
             });
@@ -78,7 +78,10 @@ $('.btn-estado').click(function() {
 });
 
 $('.btn-buscar').click(function() {
-    var id = $(this).closest('tr').data('id');
+    var tr = $(this).closest('tr');
+    var id = $(tr).data('id');
+    var json = JSON.parse(JSON.stringify($(tr).data('json')));
+
     $.ajax({
         type: 'POST',
         url: 'index.php/almacen/new/Entrega_Material/detalle',
@@ -87,6 +90,7 @@ $('.btn-buscar').click(function() {
         },
         success: function(result) {
             var tabla = $('#detalle_entrega table');
+            $(tabla).DataTable().destroy();
             $(tabla).find('tbody').empty();
             result.forEach(e => {
                 $(tabla).append(
@@ -99,7 +103,9 @@ $('.btn-buscar').click(function() {
                     '</tr>'
                 );
             });
+            DataTable(tabla);
 
+            rellenarCabecera(json);
             $('#detalle_entrega').modal('show');
         },
         error: function(result) {
@@ -108,6 +114,16 @@ $('.btn-buscar').click(function() {
         dataType: 'json'
     });
 });
+
+function rellenarCabecera(json) {
+    $('#detalle_entrega .enma_id').val(json.enma_id);
+    $('#detalle_entrega .pema_id').val(json.pema_id);
+    $('#detalle_entrega .orden').val(json.ortr_id);
+    $('#detalle_entrega .comprobante').val(json.comprobante);
+    $('#detalle_entrega .fecha').val(json.fecha);
+    $('#detalle_entrega .entregado').val(json.solicitante);
+    $('#detalle_entrega .estado').val(json.estado);
+}
 </script>
 
 <!-- Modal ver nota pedido-->
@@ -127,7 +143,8 @@ $('.btn-buscar').click(function() {
                             <thead>
                                 <tr>
                                     <th>Cod. Artículo</th>
-                                    <th class="text-center">Cant. Entregada / Cant. Pedida</th>
+                                    <th class="text-center">Cant. Pedida</th>
+                                    <th class="text-center">Cant. Pedida</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -153,7 +170,38 @@ $('.btn-buscar').click(function() {
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-plus-square text-light-blue"></span> Estado Pedido Materiales</h4>
+                        class="fa fa-search text-light-blue"></span> Detalle Pedido Materiales</h4>
+                <br>
+                <div class="row">
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label for="">Entrega:</label>
+                        <input class="form-control enma_id" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label for="">Pedido:</label>
+                        <input class="form-control pema_id" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4 <?php echo (!viewOT ? "hidden" : null) ?>">
+                        <label for="">Orden de Trabajo:</label>
+                        <input class="form-control orden" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label for="">Comprobante:</label>
+                        <input class="form-control comprobante" type="text" value="???" readonly>
+                    </div><br>
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label for="">Fecha:</label>
+                        <input class="form-control fecha" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label for="">Entregado a:</label>
+                        <input class="form-control entregado" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-lg-4">
+                        <label for="">Estado:</label>
+                        <input class="form-control estado" type="text" value="???" readonly>
+                    </div>
+                </div>
             </div> <!-- /.modal-header  -->
             <div class="modal-body">
                 <div class="row">

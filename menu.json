@@ -29,7 +29,7 @@
                 },
                 {
                     "nombre": "Recepcion Materiales",
-                    "icono": "fa-paperclip",
+                    "icono": "fa-truck",
                     "link": "almacen/Remito"
                 },
                 {

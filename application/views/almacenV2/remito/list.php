@@ -1,7 +1,7 @@
 <section >
   <div class="row">
     <div class="col-xs-12">
-      <div class="box">
+      <div class="box box-primary">
         <div class="box-header">
           <h3 class="box-title">Recepción de Materiales</h3>
           <?php
@@ -48,8 +48,7 @@
 
 <script>
 $('#modalvista').on('shown.bs.modal', function (e) {
-  $($.fn.dataTable.tables(true)).DataTable()
-    .columns.adjust();
+  $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
 });
 
 var comglob = "";
@@ -67,7 +66,6 @@ $(".fa-search").click(function (e) {
       type: 'POST',
       url: 'index.php/almacen/Remito/consultar',
       success: function(data){
-        console.table(data);
 
         $('#comprobanteV').val(data['datosRemito'][0]['comprobante']);
         $('#fechaV').val(data['datosRemito'][0]['fecha']);
