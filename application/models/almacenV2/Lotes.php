@@ -8,15 +8,11 @@ class Lotes extends CI_Model {
 	
 	function getList() // Ok
 	{
-		$userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
-		
 		$this->db->select('alm_lotes.*, alm_articulos.descripcion as artDescription, alm_articulos.barcode as artBarCode,alm_lotes.cantidad,alm_depositos.descripcion as depositodescrip,C.valor as lotestado');
 		$this->db->from('alm_lotes');
 		$this->db->join('alm_articulos', 'alm_lotes.arti_id = alm_articulos.arti_id');
 		$this->db->join('alm_depositos', ' alm_lotes.depo_id = alm_depositos.depo_id');
 		$this->db->join('utl_tablas C','alm_lotes.estado_id = C.tabl_id');
-		$this->db->where('alm_lotes.empr_id', $empresaId);
 
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)
@@ -129,15 +125,7 @@ class Lotes extends CI_Model {
 						return false;
 					} 
 					break;
-				
-				/*	
-				case 'Del':
-				 	//Eliminar Articulo
-				 	if($this->db->delete('admproducts', array('prodId'=>$id)) == false) {
-				 		return false;
-				 	}
-				 	break;
-				*/	
+
 			}
 			return true;
 
@@ -156,6 +144,15 @@ class Lotes extends CI_Model {
 			'empr_id'=>empresa()
 		);
 		return $this->db->insert('alm_lotes',$aux);
+	}
+
+	public function verificarExistencia($arti, $lote, $depo)
+	{
+		$this->db->where('codigo',$lote);
+		$this->db->where('depo_id',$depo);
+		$this->db->where('arti_id',$arti);
+		$this->db->where('empr_id', empresa());
+		return $this->db->get('alm_lotes')->num_rows()>0;
 	}
 	
 }

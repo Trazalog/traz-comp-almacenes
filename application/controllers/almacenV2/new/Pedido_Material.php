@@ -18,19 +18,7 @@ class Pedido_Material extends CI_Controller {
 
    public function pedidoNormal()
    {
-       $this->load->library('BPMALM');
-
-       $pemaId = $this->input->post('id');
-
-       //? DEBE EXISTIR LA NOTA DE PEDIDO 
-       $contract = [
-           'pIdPedidoMaterial' => $pemaId,
-       ];
-
-       $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
-
-       $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
+       $this->Pedidos_Materiales->pedidoNormal($this->input->post('id'));
    }
-
 }
 ?>

@@ -44,7 +44,7 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-12"><br>
                                                     <label for="lote">Seleccionar Articulo <strong
                                                             style="color: #dd4b39">*</strong>:</label>
-                                                    <?php $this->load->view('test'); ?>
+                                                    <?php $this->load->view(CMP_ALM.'/articulo/componente'); ?>
                                                 </div>
 
                                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
@@ -72,7 +72,7 @@
                                                 <div class="col-xs-12 col-sm-12 col-md-12"><br>
                                                     <br>
                                                     <button class="btn btn-primary " style="float:right;"
-                                                        id="agregar"><i class="fa fa-check"></i>Agregar</button>
+                                                       onclick="verificarExistenciaLote()"><i class="fa fa-check"></i>Agregar</button>
                                                 </div>
                                             </div><br>
 
@@ -122,7 +122,42 @@ function eventSelect() {
         $('#lote').prop('disabled', false);
         $('#lote').val('');
     }
-    traer_deposito($(e).data('id'));
+}
+
+function verificarExistenciaLote() {
+
+    if (!validar_campos()) {
+        alert('Campos Obligatorios(*) Incompletos');
+        return;
+    }
+
+    var lote = $('#lote').val();
+    var depo = $('#deposito').val();
+    var arti = selectItem.arti_id;
+
+    if (lote == null || lote == '') return;
+    if (depo == null || depo == '') return;
+    if (arti == null || arti == '') return;
+
+    $.ajax({
+        type: 'POST',
+        url: 'index.php/almacen/Lote/verificarExistencia',
+        data: {
+            lote,
+            depo,
+            arti
+        },
+        success: function(result) {
+            if(result){
+                $('#acumular').modal('show');
+            }else{
+                agregar();
+            }
+        },
+        error: function(result) {
+            alert('Error');
+        }
+    });
 }
 
 
@@ -276,12 +311,7 @@ function limpiar() {
 
 //agrega insumos a la tabla detainsumos
 var i = 1;
-$('#agregar').click(function(e) {
-
-    if (!validar_campos()) {
-        alert('Campos Obligatorios(*) Incompletos');
-        return;
-    }
+function agregar() {
 
     var lote = $('#lote').val();
     var vencimiento = $('#vencimiento').val();
@@ -348,12 +378,11 @@ $('#agregar').click(function(e) {
         $('#deposito').val('');
         $('#vencimiento').val('');
         $('#lote').prop('disabled', false);
-        $('#lote').prop('disabled', true);
-        $('#lote').val('S/L');
-     
+
+
     }
     clearSelect();
-});
+};
 
 function guardar() {
 
@@ -382,7 +411,7 @@ function guardar() {
         url: 'index.php/almacen/Remito/guardar_mejor', //index.php/
         success: function(data) {
 
-            linkTo('almacen/Remite');
+            linkTo('almacen/Remito');
         },
         error: function(result) {
             alert('Error');
@@ -429,6 +458,22 @@ function selectItemiculo(e) {
         $('#lote').prop('disabled', false);
         $('#lote').val('');
     }
-  //  traer_deposito($(e).data('id'));
+    //  traer_deposito($(e).data('id'));
 }
 </script>
+
+<!-- Modal -->
+<div class="modal fade" id="acumular" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body text-center">
+        <h4>El Nro de Lote ya existe en el Deposito Seleccionado</h4>
+        <h4>¿Desea acumular las cantidades?</h4>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="agregar()">Si</button>
+      </div>
+    </div>
+  </div>
+</div>

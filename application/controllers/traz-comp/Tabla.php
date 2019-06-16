@@ -17,6 +17,7 @@ class Tabla extends CI_Controller {
           $obj->id = $o->arti_id;
           $obj->descripcion = $o->descripcion;
           $obj->codigo = $o->barcode;
+          $obj->stock = $o->stock;
 
           array_push($aux, $obj);
       }
