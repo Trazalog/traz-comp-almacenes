@@ -3,7 +3,7 @@
         {
             "nombre": "Mis Tareas",
             "icono": "fa-list",
-            "link": "almacen/Proceso",
+            "link": "almacenV2/Proceso",
             "nivel": 1
         },
         {
@@ -15,32 +15,32 @@
                 {
                     "nombre": "Artículos",
                     "icono": "fa-barcode",
-                    "link": "almacen/Articulo"
+                    "link": "almacenV2/Articulo"
                 },
                 {
                     "nombre": "Stock",
                     "icono": "fa-cubes",
-                    "link": "almacen/Lote"
+                    "link": "almacenV2/Lote"
                 },
                 {
                     "nombre": "Entrega Materiales",
                     "icono": "fa-check",
-                    "link": "almacen/new/Entrega_Material"
+                    "link": "almacenV2/new/Entrega_Material"
                 },
                 {
                     "nombre": "Recepcion Materiales",
                     "icono": "fa-truck",
-                    "link": "almacen/Remito"
+                    "link": "almacenV2/Remito"
                 },
                 {
                     "nombre": "Punto de Pedido",
                     "icono": "fa-bookmark",
-                    "link": "almacen/Lote/puntoPedList"
+                    "link": "almacenV2/Lote/puntoPedList"
                 },
                 {
                     "nombre": "Pedido Materiales",
                     "icono": "fa-cart-plus",
-                    "link": "almacen/Notapedido"
+                    "link": "almacenV2/Notapedido"
                 }
             ]
         },
@@ -66,12 +66,6 @@
                     "link": ""
                 }
              ] 
-        },
-        {
-            "nombre": "Componente Articulos",
-            "icono": "fa-cart-plus",
-            "link": "traz-comp/Tabla",
-            "nivel": 1
         }
     ]
 }
