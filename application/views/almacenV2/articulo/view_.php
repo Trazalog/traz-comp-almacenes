@@ -81,17 +81,14 @@
 </div> <!-- /.modal-body -->
  
 <script>
-init();
-function init() {
-  $('.unidades').hide();
-}
+
 
 $('#artIsByBox').click(function() {
-  if($('#artIsByBox').is(':checked')){
-    $('.unidades').show();
+  if($(this).is(':checked')){
+    $('#artCantBox').prop('disabled',false);
   } else {
     $('#artCantBox').val('');
-    $('.unidades').hide();
+    $('#artCantBox').prop('disabled',true);
   }
 });
 
