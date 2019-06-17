@@ -7,7 +7,7 @@ if(!function_exists('menu')){
         $array =  json_decode($json);
        // var_dump($array->menu);die;
         $html = '<ul class="sidebar-menu menu" data-widget="tree">
-        <li class="header">MAIN NAVIGATION</li>';
+        <li class="header">MENU PRINCIPAL</li>';
         foreach ($array->menu as $i) {
 
             switch ($i->nivel) {

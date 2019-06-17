@@ -43,4 +43,12 @@ class Lote extends CI_Controller {
 			echo json_encode(true);	
 		}
 	}
+
+	function verificarExistencia()
+	{
+		$lote = $this->input->post('lote');
+		$depo = $this->input->post('depo');
+		$arti = $this->input->post('arti');
+		echo $this->Lotes->verificarExistencia($arti, $lote, $depo);
+	}
 }

@@ -29,7 +29,7 @@
                         <th class="text-center">Fec. Vencimiento</th>
                         <th>Depóstio</th>
                         <th>Cantidad</th>
-                        <th width="20%">a Extraer</th>
+                        <th width="20%">a Entregar</th>
                     </tr>
                 </thead>
                 <tbody id="lotes_depositos">

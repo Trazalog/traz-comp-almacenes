@@ -90,7 +90,7 @@ class Proceso extends CI_Controller
 
     
         //Cerrar Tarea
-        $this->bpmalm->cerrarTarea($task_id, $contrato);
+       $this->bpmalm->cerrarTarea($task_id, $contrato);
 
     }
 
@@ -138,6 +138,12 @@ class Proceso extends CI_Controller
 
             case 'Comunica Rechazo':
 
+                # ACCIONES ANTES DE CERRAR TAREA
+                if($form['result'] == "true") {
+                    $this->load->model('Pedidos_Materiales');
+                    $this->Pedidos_Materiales->pedidoNormal($form['pema_id']);
+                }
+                # CREAR CONTRATO
                 $contrato['motivo'] = $form['motivo'];
 
                 return $contrato;
@@ -226,7 +232,14 @@ class Proceso extends CI_Controller
 
                 }
 
+                $obj->pema_id = $res['pema_id'];
+                $obj->motivo = $res['motivo_rechazo'];
+
+                $this->load->model('traz-comp/Componentes');
+                $data = $this->Componentes-> listaArticulos();
+
                 $data['info'] = $obj;
+
 
                 return $this->load->view(CMP_ALM.'/proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 
@@ -263,6 +276,7 @@ class Proceso extends CI_Controller
                 $peex  = $this->Pedidoextra->getXCaseId($tarea['rootCaseId']);
 
                 $this->load->model('traz-comp/Componentes');
+
 		        $data = $this->Componentes-> listaArticulos();
 
                 $data['pema_id'] = $peex['pema_id'];

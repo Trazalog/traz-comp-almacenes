@@ -1,70 +1,47 @@
-<input id="pema_id" type="number" class="hidden" value="<?php echo (isset($obj->pema_id)?$obj->pema_id:null)?>">
+<input id="pema_id" type="number" class="hidden" value="<?php echo (isset($info->pema_id)?$info->pema_id:null)?>">
 <input id="ortr_id" type="number" class="hidden" value="">
-<div class="box box-primary">
-    <div class="box-header">
-        <h3 class="box-title">Crear Pedido de Materiales</h3>
-    </div><!-- /.box-header -->
-    <div class="box-body">
-        <div class="row">
-            <div class="col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
-                <div class="form-group">
-                    <label>Justificacíon:</label>
-                    <textarea id="just" type="text"
-                        class="form-control <?php echo (isset($obj->pema_id)?'hidden':null)?>"
-                        placeholder="Ingrese Justificación..."></textarea>
-                </div>
-            </div>
-            <div class="col-xs-6 col-sm-6 col-md-6">
-                <div class="form-group">
-                    <label>Seleccionar Artículo:</label>
-                    <?php $this->load->view('test'); ?>
-                </div>
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3">
-                <div class="form-group">
-                    <label>Cantidad:</label>
-                    <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
-                </div>
-            </div>
-            <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
-                <button class="btn btn-primary" onclick="guardar_pedido()"><i class="fa fa-check"></i>Agregar</button>
-            </div>
+
+<div class="row">
+    <div
+        class="<?php echo (isset($info->pema_id)?'hidden':null)?>  col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
+        <div class="form-group">
+            <label>Justificacíon:</label>
+            <textarea id="just" type="text" class="form-control <?php echo (isset($info->pema_id)?'hidden':null)?>"
+                placeholder="Ingrese Justificación..."></textarea>
         </div>
     </div>
+    <div class="col-xs-6 col-sm-6 col-md-6">
+        <div class="form-group">
+            <label>Seleccionar Artículo:</label>
+            <?php $this->load->view(CMP_ALM.'/articulo/componente'); ?>
+        </div>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="form-group">
+            <label>Cantidad:</label>
+            <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
+        </div>
+    </div>
+    <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
+        <button class="btn btn-primary" onclick="guardar_pedido();"><i class="fa fa-check"></i>Agregar</button>
+    </div>
 </div>
-
-<section>
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="box">
-                <div class="box-header">
-                    <h3 class="box-title">Detalle Pedido Materiales</h3>
-                </div><!-- /.box-header -->
-                <div class="box-body">
-
-                    <table id="tabladetalle" class="table table-bordered table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th width="5%">Acciones</th>
-                                <th>Articulo</th>
-                                <th class="text-center">Cantidad</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <div class="modal-footer">
-                        <button class="btn" onclick="linkTo('almacen/Notapedido')">Cerrar</button>
-                    </div>
-                    <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;"
-                        onclick="lanzarPedido()">Hecho</button>
-
-                </div><!-- /.box-body -->
-            </div><!-- /.box -->
-        </div><!-- /.col -->
-    </div><!-- /.row -->
-</section><!-- /.content -->
-
+<table id="tabladetalle" class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th width="1%">Acciones</th>
+            <th>Artículo</th>
+            <th class="text-center">Cantidad</th>
+        </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+<div class="modal-footer <?php echo (isset($info->pema_id)?'hidden':null)?>">
+    <button class="btn" onclick="linkTo('almacen/Notapedido')">Cerrar</button>
+    <button class="btn btn-primary <?php echo(viewOT?'hidden':null)?>" style="float:right;"
+        onclick="lanzarPedido()">Hecho</button>
+</div>
 <script>
 var selectRow = null;
 
@@ -142,12 +119,10 @@ function get_detalle() {
             $('#tabladetalle').find('tbody').empty();
 
             for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
-                        'arti_id'
-                    ] + "'>" +
+                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i]['arti_id'] + "'>" +
                     "<td class='text-light-blue'>" +
-                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer; margin-left: 5px;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer; margin-left: 5px;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
                 $('#tabladetalle tbody').append(tr);
@@ -283,21 +258,20 @@ function set_pedido() {
     });
 }
 
-function lanzarPedido(){
+function lanzarPedido() {
     $.ajax({
         data: {
-            id :  $('#pema_id').val();
+            id: $('#pema_id').val()
         },
         type: 'POST',
-        dataType: 'json',
-        url: 'index.php/almacen/new/Pedido_Material/pedidoMaterial',
+        url: 'index.php/almacen/new/Pedido_Material/pedidoNormal',
         success: function(result) {
-          linkTo('almacen/Notapedido');
+            linkTo('almacen/Notapedido');
         },
         error: function(result) {
             WaitingClose();
             alert("Error al Lanzar Pedido");
-        },
+        }
     });
 }
 
@@ -305,7 +279,6 @@ function edit_pedido() {
 
     var idinsumos = new Array();
     var cantidades = new Array();
-
 
     id = selectItem.arti_id;
     idinsumos.push(id);
@@ -339,7 +312,7 @@ function edit_pedido() {
         error: function(result) {
             WaitingClose();
             alert("Error en guardado...");
-        },
+        }
     });
 }
 
