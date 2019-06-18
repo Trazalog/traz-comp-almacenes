@@ -20,6 +20,10 @@
             {
                 "id": "cantidad",
                 "texto": "Cant. Pedida"
+            },
+            {
+                "id": "stock",
+                "texto": "Stock "
             }
         ]
     }

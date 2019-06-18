@@ -13,7 +13,7 @@ class Articulos extends CI_Model
 		$this->db->select('A.*, B.descripcion as medida,"AC" as valor, sum(C.cantidad) as stock');
 		$this->db->from('alm_articulos A');
 		$this->db->join('utl_tablas B', 'B.tabl_id = A.unidad_id','left');
-		$this->db->join('alm_lotes C', 'C.arti_id = A.arti_id');
+		$this->db->join('alm_lotes C', 'C.arti_id = A.arti_id','left');
 		$this->db->where('A.empr_id', empresa());
 		$this->db->where('not A.eliminado');
 		$this->db->group_by('arti_id');
@@ -99,7 +99,7 @@ class Articulos extends CI_Model
 		else
 		{
 			$userdata  = $this->session->userdata('user_data');
-			$empresaId = $userdata[0]['id_empresa'];
+			$empresaId = empresa();
 			$action    = $data['act'];
 			$idArt     = $data['id'];
 			$data      = array();
