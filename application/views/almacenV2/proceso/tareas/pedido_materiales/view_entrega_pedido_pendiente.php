@@ -23,8 +23,8 @@
     </div>
     <div class="col-sm-6">
         <div class="form-group">
-            <label for="solicitante">D.N.I<strong style="color: #dd4b39">*</strong>:</label>
-            <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="solicitante">
+            <label for="dni">D.N.I<strong style="color: #dd4b39">*</strong>:</label>
+            <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="dni">
         </div>
     </div>
 </div>
@@ -146,6 +146,7 @@
             comprobante: $('#comprobante').val(),
             fecha: $('#fecha_entrega').val(),
             solicitante: $('#solicitante').val(),
+            dni: $('#dni').val(),
             pema_id: $('#pema').val()
         });
     }
