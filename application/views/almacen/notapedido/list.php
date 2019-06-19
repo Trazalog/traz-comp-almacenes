@@ -57,7 +57,7 @@ function ver(e) {
         url: 'index.php/almacen/Notapedido/getNotaPedidoId',
         success: function(data) {
             $('#tabladetalle').DataTable().destroy();
-            $('tr.celdas').remove();
+            $('#tabladetalle tbody').html('');
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr style='color:'>" +
                     "<td>" + data[i]['barcode'] + "</td>" +
