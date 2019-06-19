@@ -95,7 +95,7 @@ define('TAREAS_ASIGNAR', 'traz-comp');
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'almacenV2');  
+define('CMP_ALM', 'almacen');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -149,4 +149,4 @@ define('ASP_0101', 'Error ASP_0101: No se pudo Asignar Usuario');
 define('ASP_0200', 'Error ASP_0200: Error de Base de Datos'); 
 
 
-define('viewOT', true);
+define('viewOT', false);

@@ -78,7 +78,7 @@ $this->load->view('layout/perfil');
         <section class="sidebar">
             <ul class="sidebar-menu menu tree" data-widget="tree">
                 <li class="header">MENU PRINCIPAL</li>
-                <li><a class="link" href="#" data-link="almacenV2/Proceso"><i class="fa fa-list"></i>Mis Tareas</a></li>
+                <li><a class="link" href="#" data-link="almacen/Proceso"><i class="fa fa-list"></i>Mis Tareas</a></li>
                 <li class="treeview menu-open">
                     <a href="#">
                         <i class="fa fa-fw fa-check"></i> <span>Almancenes</span>
@@ -87,17 +87,17 @@ $this->load->view('layout/perfil');
                         </span>
                     </a>
                     <ul class="treeview-menu" style="display: block;">
-                        <li><a class="link" href="#" data-link="almacenV2/Articulo"><i
+                        <li><a class="link" href="#" data-link="almacen/Articulo"><i
                                     class="fa fa-fw fa-barcode"></i>Artículos</a></li>
-                        <li><a class="link" href="#" data-link="almacenV2/Lote"><i
+                        <li><a class="link" href="#" data-link="almacen/Lote"><i
                                     class="fa fa-fw fa-cubes"></i>Stock</a></li>
-                        <li><a class="link" href="#" data-link="almacenV2/new/Entrega_Material"><i
+                        <li><a class="link" href="#" data-link="almacen/new/Entrega_Material"><i
                                     class="fa fa-fw fa-check"></i>Entrega Materiales</a></li>
-                        <li><a class="link" href="#" data-link="almacenV2/Remito"><i
+                        <li><a class="link" href="#" data-link="almacen/Remito"><i
                                     class="fa fa-fw fa-truck"></i>Recepcion Materiales</a></li>
-                        <li><a class="link" href="#" data-link="almacenV2/Lote/puntoPedList"><i
+                        <li><a class="link" href="#" data-link="almacen/Lote/puntoPedList"><i
                                     class="fa fa-fw fa-bookmark"></i>Punto de Pedido</a></li>
-                        <li><a class="link" href="#" data-link="almacenV2/Notapedido"><i
+                        <li><a class="link" href="#" data-link="almacen/Notapedido"><i
                                     class="fa fa-fw fa-cart-plus"></i>Pedido Materiales</a></li>
                     </ul>
                 </li>

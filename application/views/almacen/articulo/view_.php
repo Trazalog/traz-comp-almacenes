@@ -84,6 +84,7 @@
 
 
 $('#artIsByBox').click(function() {
+ 
   if($(this).is(':checked')){
     $('#artCantBox').prop('disabled',false);
   } else {

@@ -188,6 +188,8 @@ $(".fa-pencil").click(function(e) { // Ok
     });
 });
 
+
+
 // Llena campos del modal Editar
 function completarEdit(datos) { // Ok
 
@@ -209,6 +211,16 @@ function completarEdit(datos) { // Ok
     traer_unidad(datos['idunidad']);
     $('#puntped').val(datos['punto_pedido']);
     $('#es_loteado').attr('checked', datos['es_loteado'] == 1 ? true : false);
+
+    $('#artIsByBox').click(function() {
+ 
+ if($(this).is(':checked')){
+   $('#artCantBox').prop('disabled',false);
+ } else {
+   $('#artCantBox').val('');
+   $('#artCantBox').prop('disabled',true);
+ }
+});
 }
 
 // Trae estado de artículo y llena select
