@@ -31,13 +31,13 @@ foreach ($list as $a) {
 
     echo '<td class="text-center text-light-blue">';
 
-    echo '<i class="fa fa-search" style="cursor: pointer;margin: 5px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
+    echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver_detalles(this);"></i>';
     
     if (strpos($permission, 'Edit') !== false) {
-        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 5px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
+        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" data-toggle="modal" data-target="#modaleditar"></i>';
     }
     if (strpos($permission, 'Del') !== false) {
-        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 5px;" title="Eliminar" onclick="seleccionar(this)"></i>';
+        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="seleccionar(this)"></i>';
     }
 
    
