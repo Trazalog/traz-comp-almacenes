@@ -389,7 +389,8 @@ $this->load->view('layout/perfil');
 <!-- ./wrapper -->
 <script>
 var link = '';
-linkTo('almacen/Remito');
+
+linkTo('<?php echo escritorio ?>');
 $('.menu .link').on('click', function() {
     link = $(this).data('link');
     linkTo();
