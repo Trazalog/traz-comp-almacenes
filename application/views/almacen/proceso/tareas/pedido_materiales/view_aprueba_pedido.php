@@ -95,7 +95,7 @@ function cerrarTarea() {
         url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
         success: function(data) {
             //WaitingClose();
-            linkTo('Tarea');
+            linkTo('almacen/Proceso');
 
         },
         error: function(data) {
