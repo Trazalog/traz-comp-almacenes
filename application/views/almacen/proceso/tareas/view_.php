@@ -151,7 +151,7 @@
 
 
             <div class="modal-footer">
-                <button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('Tarea');">Cerrar</button>
+                <button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('almacen/Proceso');">Cerrar</button>
                 <button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()">Hecho</button>
             </div> <!-- /.modal footer -->
 
