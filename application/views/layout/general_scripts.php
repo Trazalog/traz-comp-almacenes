@@ -41,20 +41,19 @@ $.widget.bridge('uibutton', $.ui.button);
        <script>
 function DataTable(tabla, acciones = true) {
 
-    var accion =
-         [{
-                "targets": [0],
-                "searchable": false
-            },
-            {
-                "targets": [0],
-                "orderable": false
-            }
-        ];
+    var accion = [{
+            "targets": [0],
+            "searchable": false
+        },
+        {
+            "targets": [0],
+            "orderable": false
+        }
+    ];
 
     $(tabla).DataTable({
         "aLengthMenu": [10, 25, 50, 100],
-        "columnDefs": acciones?accion:'',
+        "columnDefs": acciones ? accion : '',
         "order": [],
         "language": {
             "sProcessing": "Procesando...",
@@ -88,4 +87,16 @@ function existFunction(nombre) {
     var fn = window[nombre];
     return typeof fn === 'function';
 }
-       </script>
+
+function fecha(date) {
+  
+ date = new Date(date);
+
+ return date.getDate()+ '/' + date.getMonth()+1 + '/' + date.getFullYear();
+
+}
+
+function fecha_hora(fecha) {
+    return date.getDate()+ '/' + date.getMonth()+1 + '/' + date.getFullYear() date.getHours() + ":" + date.getMinutes();
+}
+</script>

@@ -97,7 +97,7 @@ define('TAREAS_ASIGNAR', 'traz-comp');
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'almacen');  
+define('CMP_ALM', 'traz-comp-almacen');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url

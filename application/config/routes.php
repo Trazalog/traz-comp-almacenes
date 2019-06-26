@@ -61,5 +61,3 @@ $route['translate_uri_dashes'] = FALSE;
 #$route['almacen/(:any)/(:any)/(:any)/(:any)/(:any)'] = CMP_ALM.'/$1/$2/$3/$4/$5';
 
 
-//!HARDCODE
-#$route['Tarea'] =  CMP_ALM.'/Proceso';
