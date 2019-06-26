@@ -252,7 +252,7 @@
 			$.ajax({
 					type:'POST',
 					data:{'processInstanceId':id, 'content':comentario},
-					url:'index.php/almacen/Proceso/guardarComentario',
+					url:'<?php echo base_url(CMP_ALM) ?>Proceso/guardarComentario',
 					success:function(result){
 						console.log("Submit");
 						var lista =  $('#listaComentarios');
@@ -270,7 +270,7 @@
 			//alert(idTarBonita);
 			$.ajax({
 					type: 'POST',
-					url: 'index.php/almacen/Proceso/tomarTarea/'+idTarBonita,
+					url: '<?php echo base_url(CMP_ALM) ?>Proceso/tomarTarea/'+idTarBonita,
 					success: function(data) {
 						
 									if(data['status']){
@@ -289,7 +289,7 @@
 			var idTarBonita = $('#idTarBonita').val();
 			$.ajax({
 					type: 'POST',
-					url: 'index.php/almacen/Proceso/soltarTarea/'+idTarBonita,
+					url: '<?php echo base_url(CMP_ALM) ?>Proceso/soltarTarea/'+idTarBonita,
 					success: function(data) {
 						
 									// toma a tarea exitosamente

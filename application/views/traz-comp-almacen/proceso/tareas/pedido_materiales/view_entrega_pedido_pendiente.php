@@ -32,7 +32,7 @@
 <hr>
 <div class="table-responsive">
 <h3>Pedido Materiales <small>Detalles del Pedido</small></h3>
-<table class="table table-striped">
+<table class="table table-striped table-bordered table-hover">
     <thead>
         <th>Código Articulo</th>
         <th>Descripción</th>
@@ -79,7 +79,7 @@
         var id = $(select_row).data('id');
 
         $('#modal_view .view').empty();
-        $('#modal_view .view').load("almacen/Articulo/getLotes/" + id);
+        $('#modal_view .view').load("<?php echo base_url(CMP_ALM) ?>Articulo/getLotes/" + id);
         $('#modal_view').modal('show');
     }
 
@@ -129,10 +129,10 @@
         $.ajax({
             type: 'POST',
             data: {completa, info_entrega: get_info_entrega(), detalles, cantidades, pema_id},
-            url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
+            url: '<?php echo base_url(CMP_ALM) ?>Proceso/cerrarTarea/' + id,
             success: function (data) {
 
-               linkTo('Tarea');
+               linkTo('<?php echo base_url(CMP_ALM) ?>Proceso');
 
             },
             error: function (data) {

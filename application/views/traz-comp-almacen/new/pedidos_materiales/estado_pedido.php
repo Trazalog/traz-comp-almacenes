@@ -42,7 +42,7 @@ $('.btn-estado').click(function() {
     if (id == '' || id == null) return;
     $.ajax({
         type: 'POST',
-        url: 'index.php/almacen/new/Pedido_Material/estado',
+        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/estado',
         data: {
             id
         },

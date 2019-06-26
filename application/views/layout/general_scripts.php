@@ -97,6 +97,6 @@ function fecha(date) {
 }
 
 function fecha_hora(fecha) {
-    return date.getDate()+ '/' + date.getMonth()+1 + '/' + date.getFullYear() date.getHours() + ":" + date.getMinutes();
+    return date.getDate()+ '/' + date.getMonth()+1 + '/' + date.getFullYear() + " "+ date.getHours() + ":" + date.getMinutes();
 }
 </script>

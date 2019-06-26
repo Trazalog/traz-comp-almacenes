@@ -3,10 +3,10 @@
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
             <button class="btn btn-block btn-primary <?php echo (isset($autoLanzar)&&$autoLanzar==true?'hidden':null)?>" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('almacen/Notapedido/crearPedido<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
+                onclick="linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido/crearPedido<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
 
                 <button class="btn btn-block btn-primary <?php echo(isset($autoLanzar)&&$autoLanzar==true?null:'hidden')?>" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('almacen/Notapedido/crearPedido2<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
+                onclick="linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido/crearPedido2<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
                 
         </div><!-- /.box-header -->
         <div class="box-body">
@@ -62,7 +62,7 @@ function ver(e) {
         data: {
             id: id_nota
         },
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId',
+        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/getNotaPedidoId',
         success: function(data) {
          //   $('#tabladetalle').DataTable().destroy();
             $('#tabladetalle tbody').html('');
@@ -91,7 +91,7 @@ function ver(e) {
 }
 
 function getEntregasPedido(pema) {
-    $('#tab_2').load('<?php echo base_url()?>almacen/new/Entrega_Material/getEntregasPedido/'+pema);
+    $('#tab_2').load('<?php echo base_url(CMP_ALM) ?>new/Entrega_Material/getEntregasPedido/'+pema);
 }
 //Ver Orden
 function rellenarCabecera(json) {

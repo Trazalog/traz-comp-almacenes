@@ -119,7 +119,7 @@ function guardar_entrega() {
 
 function actualizar_entregas() {
     $.ajax({
-        url: 'almacen/Notapedido/getTablaDetalle/' + $('#pema').val(),
+        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/getTablaDetalle/' + $('#pema').val(),
         type: 'POST',
         success: function(data) {
             $('#entregas').empty();

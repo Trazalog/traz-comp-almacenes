@@ -92,7 +92,7 @@
 
       <!-- I removed `in` class here so it will have a fade in effect when showed -->
       <div class="tab-pane fade" id="two">
-          <?php $this->load->view('almacen/notapedido/viewPedidoEspecial_')?>
+          <?php $this->load->view(CMP_ALM.'notapedido/viewPedidoEspecial_')?>
 
       </div>
 
@@ -120,7 +120,7 @@ $('.cant_insumos').prop('disabled',true);
   $("#listado").click(function (e) {
     WaitingOpen();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?>index.php/almacen/Notapedido/index/<?php echo $permission; ?>");
+    $("#content").load("<?php echo base_url(); ?><?php echo base_url(CMP_ALM) ?>Notapedido/index/<?php echo $permission; ?>");
     WaitingClose();
   });
 
@@ -196,7 +196,7 @@ $('.cant_insumos').prop('disabled',true);
           data: { idinsumos, cantidades, idOT },
           type: 'POST',
           dataType: 'json',
-          url: 'index.php/almacen/Notapedido/setNotaPedido',
+          url: '<?php echo base_url(CMP_ALM) ?>Notapedido/setNotaPedido',
           success: function (result) {
             WaitingClose();
             cargarPedidos();
@@ -222,7 +222,7 @@ $('.cant_insumos').prop('disabled',true);
         justif,
         ot
       },
-      url: 'index.php/almacen/Notapedido/setPedidoEspecial',
+      url: '<?php echo base_url(CMP_ALM) ?>Notapedido/setPedidoEspecial',
       success: function (data) {
         cargarPedidos();
         $('.modal').modal('hide');

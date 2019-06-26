@@ -6,7 +6,7 @@
           <h3 class="box-title">Recepción de Materiales</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\'almacen/Remito/cargarlista\')">Agregar</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\''.CMP_ALM.'Remito/cargarlista\')">Agregar</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -64,7 +64,7 @@ $(".fa-search").click(function (e) {
       data: { idremito: idremito},
       dataType: 'json',
       type: 'POST',
-      url: 'index.php/almacen/Remito/consultar',
+      url: '<?php echo base_url(CMP_ALM) ?>Remito/consultar',
       success: function(data){
 
         $('#comprobanteV').val(data['datosRemito'][0]['comprobante']);
@@ -141,7 +141,7 @@ var table = $('#tablaconsulta').DataTable( {
 
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus text-light-blue"></span> Consulta de Remito</h4>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus text-light-blue"></span> Detalle Recepción de Materiales</h4>
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">

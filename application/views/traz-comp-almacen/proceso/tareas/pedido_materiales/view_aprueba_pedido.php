@@ -53,7 +53,7 @@ function cargarPedidos() {
         data: {
             id: $('#pemaId').val()
         },
-        url: 'index.php/almacen/new/Pedido_Material/obtener',
+        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/obtener',
         success: function(data) {
 
             $('tr.celdas').remove();
@@ -96,10 +96,10 @@ function cerrarTarea() {
         cache: false,
         contentType: false,
         processData: false,
-        url: '<?php base_url() ?>index.php/almacen/Proceso/cerrarTarea/' + id,
+        url: '<?php echo base_url(CMP_ALM) ?>Proceso/cerrarTarea/'+id,
         success: function(data) {
             //WaitingClose();
-            linkTo('Tarea');
+            linkTo('<?php echo base_url(CMP_ALM) ?>Proceso');
 
         },
         error: function(data) {
