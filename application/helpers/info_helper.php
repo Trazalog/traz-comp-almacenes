@@ -106,4 +106,11 @@ if (!function_exists('info_orden')) {
             'data'=> $data
         );
     }
+
+    function usuario_bpm(){
+
+        $ci =& get_instance();			
+        $userdata  = $ci->session->userdata('user_data');
+		return  $userdata[0]['userBpm'];
+    }
 }

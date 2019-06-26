@@ -52,7 +52,7 @@ $('.btn-buscar').click(function() {
 
     $.ajax({
         type: 'POST',
-        url: 'index.php/almacen/new/Entrega_Material/detalle',
+        url: '<?php echo base_url(CMP_ALM) ?>new/Entrega_Material/detalle',
         data: {
             id
         },

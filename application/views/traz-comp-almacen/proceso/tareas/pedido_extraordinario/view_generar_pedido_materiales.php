@@ -17,10 +17,10 @@ function cerrarTarea() {
             pema_id,
             peex_id
         },
-        url: '<?php base_url()?>index.php/almacen/Proceso/cerrarTarea/' + id,
+        url: '<?php echo base_url(CMP_ALM) ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
 
-            linkTo('Tarea');
+            linkTo('<?php echo base_url(CMP_ALM) ?>Proceso');
 
         },
         error: function(data) {

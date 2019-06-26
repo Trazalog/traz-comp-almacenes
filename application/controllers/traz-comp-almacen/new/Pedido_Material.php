@@ -10,6 +10,17 @@ class Pedido_Material extends CI_Controller {
       echo var_dump($this->Pedidos_Materiales->obtener(1));
    }
 
+   public function obtener($pema = null){
+
+    $pema = $pema?$pema:$this->input->post('id');
+
+    if(!$pema) { echo 'ID Pedido Material Nulo'; return; }
+    
+    $res = $this->Pedidos_Materiales->obtener($pema,true);
+    
+    echo json_encode($res);
+   }
+
    public function estado()
    {
        $id = $this->input->post('id');

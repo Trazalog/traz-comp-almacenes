@@ -131,14 +131,7 @@ $this->load->view('layout/perfil');
             <ul class="sidebar-menu menu tree" data-widget="tree">
                 <li class="header">MENU PRINCIPAL</li>
                 <li><a class="link" href="#" data-link="<?php echo CMP_ALM?>/Proceso"><i class="fa fa-list"></i>Mis Tareas</a></li>
-                <li class="treeview menu-open">
-                    <a href="#">
-                        <i class="fa fa-fw fa-check"></i> <span>Almancenes</span>
-                        <span class="pull-right-container">
-                            <i class="fa fa-angle-left pull-right"></i>
-                        </span>
-                    </a>
-                    <ul class="treeview-menu" style="display: block;">
+               
                         <li><a class="link" href="#" data-link="<?php echo CMP_ALM?>/Articulo"><i
                                     class="fa fa-fw fa-barcode"></i>Artículos</a></li>
                         <li><a class="link" href="#" data-link="<?php echo CMP_ALM?>/Lote"><i
@@ -151,8 +144,7 @@ $this->load->view('layout/perfil');
                                     class="fa fa-fw fa-bookmark"></i>Punto de Pedido</a></li>
                         <li><a class="link" href="#" data-link="<?php echo CMP_ALM?>/Notapedido"><i
                                     class="fa fa-fw fa-cart-plus"></i>Pedido Materiales</a></li>
-                    </ul>
-                </li>
+                   
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-fw fa-check"></i> <span>ABMs</span>

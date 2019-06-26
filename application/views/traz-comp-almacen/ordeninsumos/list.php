@@ -77,7 +77,7 @@ $(".fa-search-plus").click(function(e) {
         data: {
             idor: idor
         },
-        url: 'index.php/almacen/Ordeninsumo/consultar',
+        url: '<?php echo base_url(CMP_ALM) ?>Ordeninsumo/consultar',
         success: function(data) {
 
             // datos={

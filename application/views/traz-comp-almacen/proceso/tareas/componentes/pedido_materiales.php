@@ -38,7 +38,7 @@
     </tbody>
 </table>
 <div class="modal-footer <?php echo (isset($info->pema_id)?'hidden':null)?>">
-    <button class="btn" onclick="linkTo('almacen/Notapedido')">Cerrar</button>
+    <button class="btn" onclick="linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido')">Cerrar</button>
     <button class="btn btn-primary <?php echo(viewOT&&$hecho==false?'hidden':null)?>" style="float:right;"
         onclick="lanzarPedido()">Hecho</button>
 </div>
@@ -58,7 +58,7 @@ function del_detalle() {
             data: {
                 id: $(selectRow).data('id')
             },
-            url: 'index.php/almacen/Notapedido/eliminarDetalle',
+            url: '<?php echo base_url(CMP_ALM) ?>Notapedido/eliminarDetalle',
             success: function(data) {
                 $('#eliminar').modal('hide');
                 get_detalle();
@@ -80,7 +80,7 @@ function edit() {
             id,
             cantidad
         },
-        url: 'index.php/almacen/Notapedido/editarDetalle',
+        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/editarDetalle',
         success: function(data) {
             get_detalle();
             selectRow = null;
@@ -114,7 +114,7 @@ function get_detalle() {
         data: {
             id
         },
-        url: 'index.php/almacen/Notapedido/getNotaPedidoId',
+        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/getNotaPedidoId',
         success: function(data) {
             $('#tabladetalle').DataTable().destroy();
             $('#tabladetalle').find('tbody').empty();
@@ -244,7 +244,7 @@ function set_pedido() {
         },
         type: 'POST',
         dataType: 'json',
-        url: 'index.php/almacen/Notapedido/setNotaPedido',
+        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/setNotaPedido',
         success: function(result) {
             $('#pema_id').val(result.pema_id);
             WaitingClose();
@@ -264,9 +264,9 @@ function lanzarPedido() {
             id: $('#pema_id').val()
         },
         type: 'POST',
-        url: 'index.php/almacen/new/Pedido_Material/pedidoNormal',
+        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
-            linkTo('almacen/Notapedido');
+            linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido');
         },
         error: function(result) {
             WaitingClose();
@@ -303,7 +303,7 @@ function edit_pedido() {
         },
         type: 'POST',
         dataType: 'json',
-        url: 'index.php/almacen/Notapedido/editPedido',
+        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/editPedido',
         success: function(result) {
             WaitingClose();
             get_detalle();

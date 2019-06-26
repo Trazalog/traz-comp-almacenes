@@ -84,7 +84,7 @@ defined('EXIT_DATABASE')       OR define('EXIT_DATABASE', 8); // database error
 defined('EXIT__AUTO_MIN')      OR define('EXIT__AUTO_MIN', 9); // lowest automatically-assigned error code
 defined('EXIT__AUTO_MAX')      OR define('EXIT__AUTO_MAX', 125); // highest automatically-assigned error code
 
-define('escritorio', 'almacen/Proceso');
+define('escritorio', 'traz-comp-almacen/Proceso');
 
 
 define('TAREAS_ASIGNAR', 'traz-comp');
@@ -97,7 +97,7 @@ define('TAREAS_ASIGNAR', 'traz-comp');
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'traz-comp-almacen');  
+define('CMP_ALM', 'traz-comp-almacen/');  
 /*
 |--------------------------------------------------------------------------
 | Bonita url
