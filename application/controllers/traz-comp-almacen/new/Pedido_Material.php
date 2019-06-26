@@ -7,18 +7,7 @@ class Pedido_Material extends CI_Controller {
       $this->load->model(CMP_ALM.'/new/Pedidos_Materiales'); 
    }
    function index(){
-     
-   }
-
-   public function obtener($pema = null){
-
-    $pema = $pema?$pema:$this->input->post('id');
-
-    if(!$pema) { echo 'ID Pedido Material Nulo'; return; }
-    
-    $res = $this->Pedidos_Materiales->obtener($pema,true);
-    
-    echo json_encode($res);
+      echo var_dump($this->Pedidos_Materiales->obtener(1));
    }
 
    public function estado()
@@ -30,6 +19,13 @@ class Pedido_Material extends CI_Controller {
    public function pedidoNormal()
    {
        $this->Pedidos_Materiales->pedidoNormal($this->input->post('id'));
+   }
+
+   public function getPedidos($ot = null)
+   {
+     $data['list'] = $this->Pedidos_Materiales->getListado($ot);
+     $data['permission'] = 'View';
+     $this->load->view(CMP_ALM.'/notapedido/list', $data);
    }
 }
 ?>

@@ -65,6 +65,9 @@ if (!function_exists('info_orden')) {
 
     function estadoPedido($estado){
         switch ($estado) {
+            case 'Creada':
+              return bolita($estado ,'purple');
+              break;
             case 'Solicitado':
                 return bolita($estado ,'orange');
                 break;
