@@ -11,7 +11,7 @@ class Componentes extends CI_Model
 
     public function listaArticulos()
     {
-        $this->load->model(CMP_ALM.'/Articulos');
+        $this->load->model(CMP_ALM.'Articulos');
 
         $list = json_decode(json_encode($this->Articulos->getList()));
 		$aux = array();

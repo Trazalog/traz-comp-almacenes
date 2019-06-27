@@ -13,7 +13,7 @@
     <div class="col-xs-6 col-sm-6 col-md-6">
         <div class="form-group">
             <label>Seleccionar Artículo:</label>
-            <?php $this->load->view(CMP_ALM.'/articulo/componente'); ?>
+            <?php $this->load->view(CMP_ALM.'articulo/componente'); ?>
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3">

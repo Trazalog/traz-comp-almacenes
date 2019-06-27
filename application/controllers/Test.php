@@ -8,7 +8,7 @@ class Test extends CI_Controller {
    }
    function index(){
       
-		$this->load->model(CMP_ALM.'/Articulos');
+		$this->load->model(CMP_ALM.'Articulos');
 	
 		echo var_dump($this->Articulos->getList());
    }

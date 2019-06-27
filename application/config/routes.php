@@ -53,11 +53,5 @@ $route['default_controller'] = 'dash';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
-// RUTAS PARA REDIRECCIONAR A LA VERSION CONFIGURADA DE ALMACENES almacenV2
-#$route['almacen/(:any)'] = CMP_ALM.'/$1';
-#$route['almacen/(:any)/(:any)'] = CMP_ALM.'/$1/$2';
-#$route['almacen/(:any)/(:any)/(:any)'] = CMP_ALM.'/$1/$2/$3';
-#$route['almacen/(:any)/(:any)/(:any)/(:any)'] = CMP_ALM.'/$1/$2/$3/$4';
-#$route['almacen/(:any)/(:any)/(:any)/(:any)/(:any)'] = CMP_ALM.'/$1/$2/$3/$4/$5';
 
 

@@ -165,5 +165,5 @@ function rellenarCabecera(json) {
 <!-- / Modal -->
 
 <?php
-    $this->load->view(CMP_ALM.'/new/pedidos_materiales/estado_pedido');            
+    $this->load->view(CMP_ALM.'new/pedidos_materiales/estado_pedido');            
 ?>
