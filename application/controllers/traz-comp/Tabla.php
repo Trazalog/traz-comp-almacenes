@@ -31,7 +31,7 @@ class Tabla extends CI_Controller {
            $lenguaje = array_merge($lenguaje,$aux);
        }
        $data['lang'] =$lenguaje;
-      @$this->load->view('test', $data);
+      $this->load->view('test', $data);
    }
 
    function armaTabla()

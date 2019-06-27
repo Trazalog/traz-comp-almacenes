@@ -242,12 +242,12 @@ class Notapedidos extends CI_Model
         foreach ($data as $key => $value) {
             if($value['processId']==BPM_PROCESS_ID_PEDIDOS_NORMALES){
                 $res = $this->db->get_where('alm_pedidos_materiales',['case_id'=>$value['caseId']])->row();
-                $data[$key]['pema_id'] = $res->pema_id;
+                $data[$key]['pema_id'] = isset($res->pema_id)?$res->pema_id:null;
             }
 
             if($value['processId']==BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS){
                 $res = $this->db->get_where('alm_pedidos_extraordinario',['case_id'=>$value['caseId']])->row();
-                $data[$key]['pema_id'] = $res->peex_id;
+                $data[$key]['pema_id'] = isset($res->peex_id)?$res->pema_id:null;
 
             } 
         }
