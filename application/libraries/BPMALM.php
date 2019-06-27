@@ -25,7 +25,7 @@ class BPMALM
 		$resource = 'API/bpm/process/';
 		$url = BONITA_URL.$resource;
 		$com = '/instantiation';			
-		$body = @file_get_contents($url.$processId.$com, false, $param);
+		$body = file_get_contents($url.$processId.$com, false, $param);
 
 		//Interpretar Responce
 		$response = $this->parseHeaders( $http_response_header);
@@ -53,7 +53,7 @@ class BPMALM
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
 		$url = BONITA_URL.$resource.$userId;
-		$body = @file_get_contents($url, false, $param);
+		$body = file_get_contents($url, false, $param);
 
 		//Interpretar Responce
 		$response = $this->parseHeaders( $http_response_header);
@@ -204,7 +204,7 @@ class BPMALM
 		$resource = 'API/bpm/humanTask/';
 		$url = BONITA_URL.$resource.$tarea_id;
 
-		$body = @file_get_contents($url, false, $param);
+		$body = file_get_contents($url, false, $param);
 		$response = $this->parseHeaders($http_response_header);
 
 		$code = $response['response_code'];
@@ -228,7 +228,7 @@ class BPMALM
 		$method = '/execution';
 		$resource = 'API/bpm/userTask/';
 		$url = BONITA_URL.$resource.$idTarBonita.$method;
-		$body = @file_get_contents($url, false, $param);
+		$body = file_get_contents($url, false, $param);
 		$response = $this->parseHeaders( $http_response_header);
 
 		$code = $response['response_code'];
@@ -381,7 +381,7 @@ class BPMALM
 		$method = '/contract';
 		$resource = 'API/bpm/userTask/';
 		$url = BONITA_URL.$resource.$task.$method;
-		$body = @file_get_contents($url, false, $param);
+		$body = file_get_contents($url, false, $param);
 		$response = $this->parseHeaders( $http_response_header);
 
 		$code = $response['response_code'];

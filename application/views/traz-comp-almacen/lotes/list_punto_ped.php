@@ -4,6 +4,7 @@
             <h3 class="box-title">Puntos de Pedido</h3>
         </div><!-- /.box-header -->
         <div class="box-body">
+       
             <table id="stock" class="table table-bordered table-hover">
                 <thead>
                     <tr>
@@ -16,8 +17,8 @@
                 </thead>
                 <tbody>
                     <?php
-                  if(!$list) return;             
-
+                  if(!$list) {return;}             
+                  else{
                 	foreach($list as $f)
       		        {
   	                echo '<tr>';
@@ -28,16 +29,15 @@
                     echo '<td class="text-center '.($f['cantidad_disponible']<0?"text-danger":"").'">'.$f['cantidad_disponible'].'</td>';
   	                echo '</tr>';
       		        }
-                
+                  }
               ?>
                 </tbody>
             </table>
         </div><!-- /.box-body -->
     </div><!-- /.box -->
+    <script>
 
+DataTable('#stock');
+</script>
 </section><!-- /.content -->
 
-<script>
-alert('lalala');
-//DataTable('table#stock');
-</script>
