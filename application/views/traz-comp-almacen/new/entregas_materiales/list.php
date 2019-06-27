@@ -1,4 +1,4 @@
-<section class="content">
+<section>
 <div class="box box-primary">
     <div class="box-header">
         <h3 class="box-title">Entrega Materiales</h3>

@@ -24,7 +24,7 @@
       </div>
   </div>
 </div>
-<section class="content">
+<section>
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
