@@ -37,34 +37,59 @@
         </div>
         <!-- /.login-logo -->
         <div class="login-box-body">
-            <p class="login-box-msg">Inicio de Sesion</p>
+            <p class="login-box-msg">Inicio de Sesión</p>
 
-            <form action="Login/validarUsuario" method="post">
-                <div class="form-group has-feedback">
-                    <input type="text" class="form-control" placeholder="Nick" name="nick">
-                    <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                </div>
-                <div class="form-group has-feedback">
-                    <input type="password" class="form-control" placeholder="Password" name="pass">
-                    <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                </div>
-                <div class="row">
-                    <div class="col-xs-8">
 
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-xs-4">
-                        <button type="submit" class="btn btn-primary btn-block btn-flat">Ingresar</button>
-                    </div>
-                    <!-- /.col -->
+            <div class="form-group has-feedback">
+                <input id="nick" type="text" class="form-control" placeholder="Nick" name="nick">
+                <span class="glyphicon glyphicon-user form-control-feedback"></span>
+            </div>
+            <div class="form-group has-feedback">
+                <input id="pass" type="password" class="form-control" placeholder="Password" name="pass">
+                <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+            </div>
+            <div class="row">
+                <div class="col-xs-8">
+
                 </div>
-            </form>
+                <!-- /.col -->
+                <div class="col-xs-4">
+                    <button onclick="login()" class="btn btn-primary btn-block btn-flat">Ingresar</button>
+                </div>
+                <!-- /.col -->
+            </div>
+
 
         </div>
         <!-- /.login-box-body -->
     </div>
     <!-- /.login-box -->
 
+    <script>
+    function login() {
+        var nick = $('#nick').val();
+        var pass = $('#pass').val();
+        $.ajax({
+            data: {
+                nick,
+                pass
+            },
+            dataType: 'json',
+            type: 'POST',
+            url: '<?php echo base_url() ?>Login/validarUsuario',
+            success: function(data) {
+                if(data.status){
+                    window.location.replace('<?php echo base_url() ?>Dash',);
+                }else{
+                    alert('yayayaay');
+                }
+            },
+            error: function(result) {
+                alert('Error');
+            }
+        });
+    }
+    </script>
     <!-- jQuery 3 -->
     <script src="<?php echo base_url('lib')?>/bower_components/jquery/dist/jquery.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
