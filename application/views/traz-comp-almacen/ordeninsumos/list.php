@@ -18,9 +18,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-          
-                    ?>
+                    
                 </tbody>
             </table>
         </div><!-- /.box-body -->
@@ -79,14 +77,6 @@ $(".fa-search-plus").click(function(e) {
         },
         url: '<?php echo base_url(CMP_ALM) ?>Ordeninsumo/consultar',
         success: function(data) {
-
-            // datos={
-            //   'id':data['datos'][0]['enma_id'],
-            //   'fecha':data['datos'][0]['fecha'],
-            //   'solicitante':data['datos'][0]['solicitante'],
-            //   'comprobante':data['datos'][0]['comprobante'],
-            //   'id_ot':data['datos'][0]['ortr_id'],
-            // }
 
             $('#total').val(data['total'][0]['cantidad']);
             $('#orden').val(data['datos'][0]['enma_id']);

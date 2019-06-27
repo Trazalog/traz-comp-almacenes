@@ -1,5 +1,5 @@
 <!-- Modal ver nota pedido-->
-<div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal_estado_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-12">
-                        <table class="table table-bordered table-striped table-hover">
+                        <table id="estado_pedido" class="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>Cod. Artículo</th>
@@ -47,7 +47,7 @@ $('.btn-estado').click(function() {
             id
         },
         success: function(result) {
-            var tabla = $('#detalle_pedido table');
+            var tabla = $('table#estado_pedido');
             $(tabla).DataTable().destroy();
             $(tabla).find('tbody').html('');
             result.forEach(e => {
@@ -65,7 +65,7 @@ $('.btn-estado').click(function() {
             });
 
             //DataTable(tabla);
-            $('#detalle_pedido').modal('show');
+            $('#modal_estado_pedido').modal('show');
         },
         error: function(result) {
             alert('Error');

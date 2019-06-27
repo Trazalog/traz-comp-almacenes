@@ -1,4 +1,4 @@
-<section class="content">
+<section>
     <div class="box box-primary">
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
@@ -10,6 +10,7 @@
                 
         </div><!-- /.box-header -->
         <div class="box-body">
+            <div class="table-responsive">
             <table id="deposito" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
@@ -43,6 +44,7 @@
                             ?>
                 </tbody>
             </table>
+            </div>
         </div><!-- /.box-body -->
     </div><!-- /.box -->
 
