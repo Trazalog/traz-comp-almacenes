@@ -64,7 +64,7 @@
                      
                     echo '<td class="celda tareaDesc">'.substr($f['displayDescription'],0,500).'</td>';         
                    
-                    echo '<td class="text-center">'.bolita($f['pema_id'],'blue').'</td>';
+                    echo '<td class="text-center">'.(isset($f['pema_id'])?bolita($f['pema_id'],'blue'):null).'</td>';
 
                     echo '<td '.($device == 'android' ? 'class= "celda nomTarea hidden tddate"' :'class= "celda nomTarea tddate"').'>'.formato_fecha_hora($f['assigned_date']).'</td>'; 
 

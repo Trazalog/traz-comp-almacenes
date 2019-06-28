@@ -92,25 +92,11 @@ if (!function_exists('info_orden')) {
         }
     }
 
-    function empresa(){
-
-        $ci =& get_instance();			
-        $userdata  = $ci->session->userdata('user_data');
-		return  $userdata[0]['id_empresa'];
-    }
-
     function msjStatus($status, $msj, $data=null){
         return array(
             'status'=> $status,
             'msj'=> $msj,
             'data'=> $data
         );
-    }
-
-    function usuario_bpm(){
-
-        $ci =& get_instance();			
-        $userdata  = $ci->session->userdata('user_data');
-		return  $userdata[0]['userBpm'];
     }
 }

@@ -38,6 +38,14 @@
         <!-- /.login-logo -->
         <div class="login-box-body">
             <p class="login-box-msg">Inicio de Sesión</p>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+                        <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                        Revise los datos de acceso ingresados
+                    </div>
+                </div>
+            </div>
 
 
             <div class="form-group has-feedback">
@@ -78,14 +86,14 @@
             type: 'POST',
             url: '<?php echo base_url() ?>Login/validarUsuario',
             success: function(data) {
-                if(data.status){
-                    window.location.replace('<?php echo base_url() ?>Dash',);
-                }else{
-                    alert('yayayaay');
+                if (data.status) {
+                    window.location.replace('<?php echo base_url() ?>Dash', );
+                } else {
+                    $('#error').fadeIn('slow');
                 }
             },
             error: function(result) {
-                alert('Error');
+                $('#error').fadeIn('slow');
             }
         });
     }
