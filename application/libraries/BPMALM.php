@@ -256,12 +256,12 @@ class BPMALM
 
   // TODO: SACAR DE ACA Y ACCEDER A TRAVES DE MODELO BONITAS
   /* FUNCIONES DE BPM */
-  function LoggerAdmin(){	
+  function LoggerAdmin($metodo = 'GET'){	
 	
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
 		  'http'=>array(
-		    'method'=>"POST",
+		    'method'=>$metodo,
 		    'header'=>"Path=/bonita". 
 		               "HttpOnly"						 			
 		  )
@@ -308,15 +308,15 @@ class BPMALM
 			return $parametros;	
 	}
   /* ./ FUNCIONES DE BPM */
-  function conexiones(){	
+  function conexiones($metodo='GET'){	
 
-		$userdata = //$this->CI->session->userdata('user_data');
-		$usrNick= 'mantenedor1';//$userdata[0]["usrNick"];
+		$userdata = $this->CI->session->userdata('user_data');
+		$usrNick= $userdata[0]["nick"];
 
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
 		  'http'=>array(
-		    'method'=>"POST",
+		    'method'=>$metodo,
 		    'header'=>"Path=/bonita". 
 		               "HttpOnly"						 			
 		  )
@@ -341,10 +341,6 @@ class BPMALM
 		        $cookies += $tmp;
 		    }
 		}
-
-		// parametro con cokies para comprobar
-			// $jsoncokies = json_encode($cookies);
-			// var_dump($jsoncokies);	
 
 		// extrae cookies para que sea dinamico el cambio
 			$idsesion      = $cookies['JSESSIONID'];
@@ -390,5 +386,27 @@ class BPMALM
 		}else {
 			return ['status'=>false, 'msj'=> ASP_0100.' | '.json_decode($body), 'code'=>'ERROR_BPM('.$code.')'];
 		}
+	}
+
+	public function getUser($user)
+	{
+		$list = $this->getUsuariosBPM();
+		foreach ($list as $o) {
+			if($o['userName']==$user) return $o['id'];
+		}
+		return null;
+	}
+
+	public function getUsuariosBPM(){
+		 
+		$parametros = $this->LoggerAdmin();
+		$parametros["http"]["method"] = "GET";		 
+		$param = stream_context_create($parametros);
+
+		$resource = 'API/identity/user?p=0&c=50';	 	
+	 	$url = BONITA_URL.$resource;
+		$usrs = file_get_contents($url, false, $param);
+
+		return json_decode($usrs,true);
 	}
 }

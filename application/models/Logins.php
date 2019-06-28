@@ -13,7 +13,7 @@ class Logins extends CI_Model
     {
         $this->db->where('pass', $data['pass']);
         $this->db->where('nick', $data['nick']);
-        return $this->db->get('sys_usuarios')->num_rows() > 0;
+        return $this->db->get('sys_usuarios')->row_array();
     }
 
 }

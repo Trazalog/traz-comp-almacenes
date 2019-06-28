@@ -108,7 +108,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 */
 
 //define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
-define('BONITA_URL', 'http://holis:8080/bonita/');  
+define('BONITA_URL', 'http://35.185.29.245:8080/bonita/');  
 define('BPM_ADMIN_USER', 'mantenedor1');
 define('BPM_ADMIN_PASS', 'bpm');
 
@@ -123,7 +123,7 @@ define('BPM_ADMIN_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6501852364564235148'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 

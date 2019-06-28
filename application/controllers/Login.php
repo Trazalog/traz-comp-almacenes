@@ -8,23 +8,32 @@ class Login extends CI_Controller
         parent::__construct();
         $this->load->model('Logins');
         $this->load->helper('menu_helper');
-      $this->load->helper('file');
+        $this->load->helper('file');
+        $this->load->library('BPMALM');
+    }
+
+    public function index()
+    {
+        $this->load->view('general/login');
     }
 
     public function validarUsuario()
     {
-
         $data = $this->input->post();
-
-        if ($this->Logins->validarUsuario($data)) {
-         $data['menu'] = menu(file_get_contents(base_url("menu.json")));
-
-         //!USUARIO HARDCODEADO
-         $session = ["usrId"=>"1","usrNick"=>"mantenedor1","usrName"=>"mantenedor","usrLastName"=>"mantenedor apellido","id_empresa"=>"6","descripcion"=>"Frankenstein","grpId"=>"1","usrimag"=>"","userBpm"=>"102","permission"=>"Add-Edit-Del-View"];
-         $this->session->set_userdata('user_data', array($session));
-         $this->load->view('layout/Admin',$data);
-        }else{
-           redirect('Dash');
+        $user =$this->Logins->validarUsuario($data);
+        if (!$user) {
+            echo  json_encode(array('status'=>false));
+        } else {
+            $user['userBpm'] = $this->bpmalm->getUser($user["nick"]);		
+            $this->session->set_userdata('user_data', array($user));
+            
+            echo  json_encode(array('status'=>true));
         }
+    }
+
+    public function logout()
+    {   
+        $this->session->unset_userdata('user_data');
+        redirect('Login');
     }
 }

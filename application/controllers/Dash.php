@@ -9,13 +9,12 @@ class Dash extends CI_Controller {
    }
    function index(){
 
-     // $data['menu'] = menu(file_get_contents(base_url("menu.json")));
+      $user = $this->session->userdata('user_data');
+      if(!$user){
+         $this->load->view('general/login', array('status'=>false)); return;
+      }
 
-      //!USUARIO HARDCODEADO
-     # $this->session->sess_destroy();
-      $session = ["usrId"=>"1","usrNick"=>"mantenedor1","usrName"=>"mantenedor","usrLastName"=>"mantenedor apellido","id_empresa"=>"6","descripcion"=>"Frankenstein","grpId"=>"1","usrimag"=>"","userBpm"=>"102","permission"=>"Add-Edit-Del-View"];
-      $this->session->set_userdata('user_data', array($session));
-      $this->load->view('layout/Admin');
+      $this->load->view('layout/Admin',$user[0]);
    }
 
 }
