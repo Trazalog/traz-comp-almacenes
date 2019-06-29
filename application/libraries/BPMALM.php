@@ -88,9 +88,13 @@ class BPMALM
 
 		$code = $response['response_code'];
 		if($code<300){
-			return ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'body'=>json_decode($body,true)];
+			$res = ['status'=>true, 'msj'=>'OK', 'code'=>$code, 'body'=>json_decode($body,true)];
+			log_message('DEBUG','TRAZA | BPMALM >>  getTarea rsp: '.json_encode($res));
+			return $res;
 		}else {
-			return ['status'=>false, 'msj'=> ASP_0100, 'code'=>'ERROR_BPM('.$code.')','body'=>json_decode($body)];
+			$res = ['status'=>false, 'msj'=> ASP_0100, 'code'=>'ERROR_BPM('.$code.')','body'=>json_decode($body)];
+			log_message('DEBUG','TRAZA | BPMALM >>  getTarea rsp: '.json_encode($res));
+			return $res;
 		}
 	}
   // Gestiona Actividaddes desde BPM
