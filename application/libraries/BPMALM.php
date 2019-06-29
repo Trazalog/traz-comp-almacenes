@@ -41,14 +41,16 @@ class BPMALM
 
 	// trae tareas por ID de usuario
 	function getToDoList(){
-
+		
 		//Preparar Ambiente
-		$parametros = $this->conexiones();
+		$parametros = $this->LoggerAdmin();
 		$param = stream_context_create($parametros);
 		
 		//Datos Usuario
 		$userdata = $this->CI->session->userdata('user_data');
 		$userId= $userdata[0]["userBpm"];		
+
+		log_message('DEBUG','TRAZA | BPMALM >> getTodoList userBpm: '.$userId);
 
 		//Enviar Request
 		$resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
@@ -261,7 +263,8 @@ class BPMALM
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
 		  'http'=>array(
-		    'method'=>$metodo,
+			'method'=>$metodo,
+			'timeout'=>20,
 		    'header'=>"Path=/bonita". 
 		               "HttpOnly"						 			
 		  )
@@ -295,7 +298,8 @@ class BPMALM
 
 			$parametros = array(
 			  'http'=>array(
-			    'method'=>"GET",
+				'method'=>"GET",
+				'timeout'=>20,
 			    'header'=> 	
 				"X-Bonita-API-Token: ".$apiToken."\r\n".
 			    "Cookie: JSESSIONID=".$idsesion."\r\n".
@@ -304,7 +308,9 @@ class BPMALM
 							"Content-Type: application/json"."\r\n"	
 			  )
 			);
-			
+
+			log_message('DEBUG','TRAZA | BPMALM >> LoggerAdmin '.$metodo.' | usernick: '.BPM_ADMIN_USER.' | pass: '.BPM_ADMIN_PASS);
+
 			return $parametros;	
 	}
   /* ./ FUNCIONES DE BPM */
@@ -316,7 +322,8 @@ class BPMALM
 		// Array de parametros (cabecera HTTP)
 		$opciones = array(
 		  'http'=>array(
-		    'method'=>$metodo,
+			'method'=>$metodo,
+			'timeout'=>20,
 		    'header'=>"Path=/bonita". 
 		               "HttpOnly"						 			
 		  )
@@ -326,7 +333,7 @@ class BPMALM
 
 			$data = array(
 					'username'=>$usrNick,
-					'password'=>'bpm',
+					'password'=>BPM_USER_PASS,
 					'redirect'=>'false'
 					);
 			$url = http_build_query( $data );
@@ -349,7 +356,8 @@ class BPMALM
 
 			$parametros = array(
 			  'http'=>array(
-			    'method'=>"GET",
+				'method'=>"GET",
+				'timeout'=>20,
 			    'header'=> 	
 				"X-Bonita-API-Token: ".$apiToken."\r\n".
 			    "Cookie: JSESSIONID=".$idsesion."\r\n".
@@ -359,6 +367,7 @@ class BPMALM
 			  )
 			);
 			
+			log_message('DEBUG','TRAZA | BPMALM >> conexiones '.$metodo.' | usernick: '.$usrNick.' | pass: '.BPM_USER_PASS);
 			return $parametros;
 	}
 
@@ -390,6 +399,7 @@ class BPMALM
 
 	public function getUser($user)
 	{
+		log_message('DEBUG','TRAZA | BPMALM >> getUser >> '.$user);
 		$list = $this->getUsuariosBPM();
 		foreach ($list as $o) {
 			if($o['userName']==$user) return $o['id'];
@@ -398,7 +408,9 @@ class BPMALM
 	}
 
 	public function getUsuariosBPM(){
-		 
+		
+		log_message('DEBUG','TRAZA | BPMALM >> getUsuariosBPM');
+
 		$parametros = $this->LoggerAdmin();
 		$parametros["http"]["method"] = "GET";		 
 		$param = stream_context_create($parametros);
