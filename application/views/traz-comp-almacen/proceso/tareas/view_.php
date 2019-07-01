@@ -1,5 +1,6 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <?php if(viewOT)info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
+<?php info_header('Pedido Material N° '.$pema_id, info_pedido($pema_id)); ?>
 
 <div class="row">
     <div class="col-xs-12">
@@ -32,17 +33,18 @@
 													
 													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";											
 													echo "</br>"; 
-													echo "</br>"; 			
+														
 												?>
 
-                                        <div class="panel-body">
+                                        <div class="panel-body">    
+                                            <?php echo '<h3><a href="#">Pedido Materiales |</a> '.$TareaBPM['displayName'].'</h3>'?>
 
                                             <!-- botones Tomar y soltar tareas -->
 
 
                                             <input type="text" class="form-control hidden" id="asignado"
                                                 value="<?php echo $TareaBPM["assigned_id"] ?>">
-                                            <form>
+                                            <form class="<?php echo (viewOT?null:'hidden')?>">
                                                 <div class="panel panel-default">
                                                     <!-- <h4 class="panel-heading">INFORMACION:</h4> -->
                                                     <div class="panel-heading">INFORMACION:</div>
@@ -108,6 +110,8 @@
 
 
                                             </form>
+
+                                          
 
 
                                         </div>

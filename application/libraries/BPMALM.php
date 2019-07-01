@@ -406,7 +406,7 @@ class BPMALM
 		log_message('DEBUG','TRAZA | BPMALM >> getUser >> '.$user);
 		$list = $this->getUsuariosBPM();
 		foreach ($list as $o) {
-			if($o['userName']==$user) return $o['id'];
+			if($o['userName']==$user) return $o;
 		}
 		return null;
 	}

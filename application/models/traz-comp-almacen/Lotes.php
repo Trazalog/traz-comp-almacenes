@@ -32,9 +32,8 @@ class Lotes extends CI_Model {
 		  $this->db->select('arti_id, IFNULL(sum(resto),0) as cant_reservada');
 		  $this->db->from('alm_deta_pedidos_materiales');
 		  $this->db->join('alm_pedidos_materiales', 'alm_deta_pedidos_materiales.pema_id = alm_pedidos_materiales.pema_id');
-		  $this->db->where('estado!=','Entregado');
-		  $this->db->where('estado!=','Rechazado');
-		  $this->db->where('estado!=','Cancelado');
+		  $this->db->where('estado=','Aprobado');
+		  $this->db->where('estado=','Entrega_Parcial');
 		  $this->db->where('alm_pedidos_materiales.empr_id', empresa());
 		  $this->db->group_by('arti_id');
 		  $C = '(' . $this->db->get_compiled_select() . ') C';
