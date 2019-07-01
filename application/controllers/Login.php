@@ -24,7 +24,11 @@ class Login extends CI_Controller
         if (!$user) {
             echo  json_encode(array('status'=>false));
         } else {
-            $user['userBpm'] = $this->bpmalm->getUser($user["nick"]);		
+            $bpmUser = $this->bpmalm->getUser($user["nick"]);
+            $user['userBpm'] = $bpmUser['id'];		
+            $user['usrId'] = $bpmUser['id'];		
+            $user['usrName'] = $bpmUser['firstname'];		
+            $user['usrLastName'] = $bpmUser['lastname'];		
             $this->session->set_userdata('user_data', array($user));
             
             echo  json_encode(array('status'=>true));

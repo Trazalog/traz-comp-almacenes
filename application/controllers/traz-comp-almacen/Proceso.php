@@ -256,7 +256,7 @@ class Proceso extends CI_Controller
                 $data = $this->Componentes-> listaArticulos();
 
                 $data['info'] = $obj;
-
+                $data['pema_id'] = $res['pema_id'];
 
                 return $this->load->view(CMP_ALM.'proceso/tareas/pedido_materiales/view_comunica_rechazo', $data, true);
 

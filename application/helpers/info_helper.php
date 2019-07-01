@@ -63,6 +63,33 @@ if (!function_exists('info_orden')) {
         }	
     }
 
+    function info_pedido($pema){
+        $ci =& get_instance();			
+        $ci->load->database();	
+
+        $data = $ci->db->get_where('alm_pedidos_materiales',array('pema_id'=>$pema))->row_array();
+
+        return  
+        '<div class="col-xs-12 col-sm-12">
+            <div class="form-group">
+                    <label style="margin-top: 7px;">Justificación: </label>
+                    <textarea class="form-control" disabled>'.$data['justificacion'].'</textarea>
+            </div>						
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                    <label style="margin-top: 7px;">Fecha: </label>
+                    <input type="text" id="ot" class="form-control" value="'.$data['fecha'].'" disabled/>
+            </div>						
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div class="form-group">
+                    <label style="margin-top: 7px;">Estado: </label>
+                    <input type="text" class="form-control" value="'.$data['estado'].'" disabled/>
+            </div>						
+        </div>';
+    }
+
     function estadoPedido($estado){
         switch ($estado) {
             case 'Creada':
