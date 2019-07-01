@@ -8,25 +8,25 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
-    <link rel="stylesheet" href="lib/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/bootstrap/dist/css/bootstrap.min.css">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="lib/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
-    <link rel="stylesheet" href="lib/bower_components/Ionicons/css/ionicons.min.css">
+    <link rel="stylesheet" href="<?php base_url() ?>lib/bower_components/Ionicons/css/ionicons.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="lib/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="<?php base_url() ?>lib/dist/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins
        folder instead of downloading all of them to reduce the load. -->
-    <link rel="stylesheet" href="lib/dist/css/skins/_all-skins.min.css">
+    <link rel="stylesheet" href="<?php base_url() ?>lib/dist/css/skins/_all-skins.min.css">
 
-    <link rel="stylesheet" href="<?php base_url();?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="<?php base_url() ?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
 
     <link rel="stylesheet"
-        href="<?php base_url()?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+        href="<?php echo base_url()?>lib/bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
 
-    <link rel="stylesheet" href="<?php base_url()?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+    <link rel="stylesheet" href="<?php echo base_url()?>lib/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
 
-    <link rel="stylesheet" href="<?php base_url()?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="<?php echo base_url()?>lib/bower_components/bootstrap-daterangepicker/daterangepicker.css">
 
     <!-- Bootstrap datetimepicker -->
     <link rel="stylesheet" href="<?php base_url();?>lib/plugins/datetimepicker/css/bootstrap-datetimepicker.min.css">
@@ -184,7 +184,7 @@ $this->load->view('layout/perfil');
             <div class="pull-right hidden-xs">
                 <b>Version</b> 2.4.0
             </div>
-            <strong>Copyright &copy; 2014-2016 <a href="https://adminlte.io">Almsaeed Studio</a>.</strong> All rights
+            <strong>Copyright &copy; 2014-2016 <a href="https://trazalog.com.ar">Trazalog SAS</a>.</strong> All rights
             reserved.
         </footer>
 
@@ -396,7 +396,7 @@ $this->load->view('layout/perfil');
     function linkTo(uri = '') {
         if (link == '' && uri == '') return;
         $('#content').empty();
-        $('#content').load('<?php base_url()?>' + (uri == '' ? link : uri));
+        $('#content').load('<?php echo base_url()?>' + (uri == '' ? link : uri));
         link = (uri == '' ? link : uri);
 
     }
