@@ -99,7 +99,7 @@ function cerrarTarea() {
         url: '<?php echo base_url(CMP_ALM) ?>Proceso/cerrarTarea/'+id,
         success: function(data) {
             //WaitingClose();
-            linkTo('<?php echo base_url(CMP_ALM) ?>Proceso');
+            linkTo('<?php echo CMP_ALM ?>Proceso');
 
         },
         error: function(data) {

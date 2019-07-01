@@ -109,7 +109,7 @@
 
     var id = $(this).attr('id');
     
-    linkTo('<?php echo base_url(CMP_ALM) ?>Proceso/detalleTarea/' + id);  
+    linkTo('<?php echo CMP_ALM ?>Proceso/detalleTarea/' + id);  
 
   });
 

@@ -3,10 +3,10 @@
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
             <button class="btn btn-block btn-primary <?php echo (isset($autoLanzar)&&$autoLanzar==true?'hidden':null)?>" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido/crearPedido<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
+                onclick="linkTo('<?php echo CMP_ALM ?>Notapedido/crearPedido<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
 
                 <button class="btn btn-block btn-primary <?php echo(isset($autoLanzar)&&$autoLanzar==true?null:'hidden')?>" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido/crearPedido2<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
+                onclick="linkTo('<?php echo CMP_ALM ?>Notapedido/crearPedido2<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
                 
         </div><!-- /.box-header -->
         <div class="box-body">

@@ -38,7 +38,7 @@
     </tbody>
 </table>
 <div class="modal-footer <?php echo (isset($info->pema_id)?'hidden':null)?>">
-    <button class="btn" onclick="linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido')">Cerrar</button>
+    <button class="btn" onclick="linkTo('<?php echo CMP_ALM ?>Notapedido')">Cerrar</button>
     <button class="btn btn-primary <?php echo(viewOT&&$hecho==false?'hidden':null)?>" style="float:right;"
         onclick="lanzarPedido()">Hecho</button>
 </div>
@@ -266,7 +266,7 @@ function lanzarPedido() {
         type: 'POST',
         url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
-            linkTo('<?php echo base_url(CMP_ALM) ?>Notapedido');
+            linkTo('<?php echo CMP_ALM ?>Notapedido');
         },
         error: function(result) {
             WaitingClose();
