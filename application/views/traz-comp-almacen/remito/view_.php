@@ -415,7 +415,7 @@ function guardar() {
         url: '<?php echo base_url(CMP_ALM) ?>Remito/guardar_mejor', //index.php/
         success: function(data) {
 
-            linkTo('<?php echo base_url(CMP_ALM) ?>Remito');
+            linkTo('<?php echo CMP_ALM ?>Remito');
         },
         error: function(result) {
             alert('Error');
