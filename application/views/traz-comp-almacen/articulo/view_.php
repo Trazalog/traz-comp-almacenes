@@ -32,13 +32,13 @@
     <label style="margin-top: 7px;">Se Compra x Caja: </label>
   </div>
   <div class="col-xs-2 col-sm-1">
-    <input type="checkbox" id="artIsByBox" style="margin-top:10px;" <?php echo($data['article']['es_caja'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+    <input type="checkbox" id="artIsByBox_add" style="margin-top:10px;" <?php echo($data['article']['es_caja'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
   </div>
   <div class="col-xs-12 col-sm-3">
     <label style="margin-top: 7px;" class="unidades">Unidades <strong style="color: #dd4b39">*</strong>: </label>
   </div>
   <div class="col-xs-12 col-sm-4">
-    <input type="text" class="form-control unidades" id="artCantBox" value="<?php echo $data['article']['cantidad_caja'];?>" <?php echo (($data['article']['es_caja'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
+    <input type="text" class="form-control unidades" id="artCantBox_add" value="<?php echo $data['article']['cantidad_caja'];?>" <?php echo (($data['article']['es_caja'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
   </div>
 </div><br>
 <div class="row hidden">
@@ -83,12 +83,12 @@
 <script>
 
 
-$('#artIsByBox').click(function() {
+$('#artIsByBox_add').click(function() {
   if($(this).is(':checked')){
-    $('#artCantBox').prop('disabled',false);
+    $('#artCantBox_add').prop('disabled',false);
   } else {
-    $('#artCantBox').val('');
-    $('#artCantBox').prop('disabled',true);
+    $('#artCantBox_add').val('');
+    $('#artCantBox_add').prop('disabled',true);
   }
 });
 
