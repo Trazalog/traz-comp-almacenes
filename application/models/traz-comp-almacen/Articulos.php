@@ -46,14 +46,12 @@ class Articulos extends CI_Model
 	
 	function getpencil($id) // Ok
     {
-    	$userdata  = $this->session->userdata('user_data');
-		$empresaId = $userdata[0]['id_empresa'];
 
 		$this->db->select('A.*, B.tabl_id as unidadmedida,B.descripcion as unidad_descripcion');
 		$this->db->from('alm_articulos A');
 		$this->db->join('utl_tablas B','A.unidad_id = B.tabl_id','left');
 		$this->db->where('arti_id',$id);
-		$this->db->where('empr_id',$empresaId);
+		$this->db->where('empr_id',empresa());
 
 
 	    $query = $this->db->get();

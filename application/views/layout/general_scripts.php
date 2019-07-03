@@ -99,4 +99,10 @@ function fecha(date) {
 function fecha_hora(fecha) {
     return date.getDate()+ '/' + date.getMonth()+1 + '/' + date.getFullYear() + " "+ date.getHours() + ":" + date.getMinutes();
 }
+
+function validarCantidad(e) {
+    var num = $(e).val();
+    if(num == '') return;
+    if(num<=0){alert('Las Cantidades deben ser Mayor a Cero');$(e).val(null); return;}
+}
 </script>

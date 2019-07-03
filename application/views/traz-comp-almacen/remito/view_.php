@@ -62,7 +62,7 @@
                                                     <label for="cantidad">Cantidad <strong
                                                             style="color: #dd4b39">*</strong> :</label>
                                                     <input type="number" id="cantidad" name="cantidad"
-                                                        placeholder="Ingrese Cantidad..." class="form-control">
+                                                        placeholder="Ingrese Cantidad..." class="form-control" onkeyup="validarCantidad(this)">
                                                 </div>
                                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
                                                     <label for="deposito">Depósito <strong
@@ -390,20 +390,23 @@ function agregar() {
 
 function guardar() {
 
+
     var info = get_info_remito();
 
     if (info == null) return;
 
     var detalles = [];
 
+    var ban = false;
     $("#tablainsumo tbody tr").each(function(index) {
 
         detalles.push($(this).data('json'));
+        ban = true ;
 
     });
 
-    if (detalles.lenght == 0) {
-        alert('No hay datos cargados');
+    if (!ban) {
+        alert('No hay datos cargados');return;
     }
 
     $.ajax({
