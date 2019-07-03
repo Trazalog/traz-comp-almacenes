@@ -7,3 +7,4 @@ TRUNCATE alm_pedidos_extraordinario;
 TRUNCATE alm_pedidos_materiales;
 TRUNCATE alm_proveedores_articulos;
 TRUNCATE alm_recepcion_materiales;
+TRUNCATE alm_articulos;
