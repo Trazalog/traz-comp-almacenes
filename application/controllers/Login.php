@@ -9,7 +9,6 @@ class Login extends CI_Controller
         $this->load->model('Logins');
         $this->load->helper('menu_helper');
         $this->load->helper('file');
-        $this->load->library('BPMALM');
     }
 
     public function index()
@@ -20,13 +19,25 @@ class Login extends CI_Controller
     public function validarUsuario()
     {
         $data = $this->input->post();
+
         $user =$this->Logins->validarUsuario($data);
+        
         if (!$user) {
+
             echo  json_encode(array('status'=>false));
+
         } else {
-            $bpmUser = $this->bpmalm->getUser($user["nick"]);
+
+            $rsp =  $this->bpm->getUser($user["nick"]);
+
+            if(!$rsp['status']){
+                 echo  json_encode(array('status'=>false));
+            }
+
+            $bpmUser = $rsp['data'];
             $user['userBpm'] = $bpmUser['id'];		
             $user['usrId'] = $bpmUser['id'];		
+            $user['usrNick'] = $bpmUser['userName'];
             $user['usrName'] = $bpmUser['firstname'];		
             $user['usrLastName'] = $bpmUser['lastname'];		
             $this->session->set_userdata('user_data', array($user));

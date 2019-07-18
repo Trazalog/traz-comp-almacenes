@@ -29,7 +29,9 @@ class Pedido_Material extends CI_Controller {
 
    public function pedidoNormal()
    {
-       $this->Pedidos_Materiales->pedidoNormal($this->input->post('id'));
+      $rsp =  $this->Pedidos_Materiales->pedidoNormal($this->input->post('id'));
+
+      echo json_encode($rsp);  
    }
 
    public function getPedidos($ot = null)

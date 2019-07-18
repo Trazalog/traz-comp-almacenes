@@ -108,7 +108,7 @@ define('CMP_ALM', 'traz-comp-almacen/');
 */
 
 //define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
-define('BONITA_URL', 'http://35.185.29.245:8080/bonita/');  
+define('BONITA_URL', 'http://localhost:8080/bonita/');  
 define('BPM_ADMIN_USER', 'mantenedor1');
 define('BPM_ADMIN_PASS', 'bpm');
 define('BPM_USER_PASS', 'bpm');
@@ -124,7 +124,7 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6501852364564235148'); 
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
 
 //? PEDIDOS EXTRAORDINATIOS
 
@@ -139,17 +139,22 @@ define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 |
 |
 */
-//Errores 100 <200 de Bonita
-//No se puedo Cerrar Tarea
-define('ASP_0100', 'Error ASP_0100: No se pudo cerrar la Tarea'); 
+// ERRORES DE BONITA
+define('ASP_100', 'Fallo Conexión BPM');
+define('ASP_101', 'Error al Inciar Proceso');
+define('ASP_102', 'Error al Tomar Tarea');
+define('ASP_103', 'Error al Soltar Tarea');
+define('ASP_104', 'Error al Cerrar Tarea');
+define('ASP_105', 'Error al Obtener Vista Global');
+define('ASP_106', 'Error al Obtener Usuarios');
+define('ASP_107', 'Error al Asignar Usuario');
+define('ASP_108', 'Error al Guardar Comentarios');
+define('ASP_109', 'Error de Loggin');
+define('ASP_110', 'Error al Obtener Detalle Tarea');
+define('ASP_111', 'Error al Obtener Bandeja de Tareas');
+define('ASP_112', 'Error al Obtener Comentarios');
+define('ASP_113', 'Usuario No Encontrado');
 
-
-//No se pudo Asignar Usuario
-define('ASP_0101', 'Error ASP_0101: No se pudo Asignar Usuario'); 
-
-
-//Errores 200 < 300 de MySql
-define('ASP_0200', 'Error ASP_0200: Error de Base de Datos'); 
 
 
 define('viewOT', false);

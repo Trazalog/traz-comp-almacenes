@@ -7,7 +7,6 @@ class Proceso extends CI_Controller
 
         parent::__construct();
 
-        $this->load->library('BPMALM');
         $this->load->model(CMP_ALM.'Ordeninsumos');
         $this->load->model(CMP_ALM.'Notapedidos');
         $this->load->model(CMP_ALM.'new/Pedidos_Materiales');
@@ -19,7 +18,7 @@ class Proceso extends CI_Controller
 
         //$this->pedidoExtraordinario();
         $data['device'] = "";
-        $res = $this->bpmalm->getToDoList();
+        $res = $this->bpm->getToDoList();
         $data['list'] = $this->Notapedidos->agregarInfo($res['data']);
         $this->load->view(CMP_ALM.'proceso/tareas/list', $data);
 
@@ -37,8 +36,15 @@ class Proceso extends CI_Controller
         $data['device'] = "";
 
         //INFORMACION DE TAREA
-        $tarea = $this->bpmalm->getTarea($task_id)['body'];
+        $rsp = $this->bpm->getTarea($task_id);
 
+        if(!$rsp['status']){
+            $this->load->view('404');
+            return;
+        }
+
+        $tarea = $rsp['data'];
+        
         //INFORMACION DE TAREA
         $data['idTarBonita'] = $task_id;
         
@@ -57,10 +63,10 @@ class Proceso extends CI_Controller
         }
 
         //LINEA DE TIEMPO
-        $data['timeline'] = $this->bpmalm->ObtenerLineaTiempo($tarea['processId'],$tarea['rootCaseId']);
+        $data['timeline'] = $this->bpm->ObtenerLineaTiempo($tarea['processId'],$tarea['rootCaseId']);
 
         //COMENTARIOS
-        $data_aux = ['case_id' => $tarea['rootCaseId'], 'comentarios' => $this->bpmalm->ObtenerComentarios($tarea['rootCaseId'])];
+        $data_aux = ['case_id' => $tarea['rootCaseId'], 'comentarios' => $this->bpm->ObtenerComentarios($tarea['rootCaseId'])['data']];
         $data['comentarios'] = $this->load->view(CMP_ALM.'proceso/tareas/componentes/comentarios', $data_aux, true);
 
         //DESPLEGAR VISTA
@@ -70,19 +76,26 @@ class Proceso extends CI_Controller
 
     public function tomarTarea($id)
     {
-        echo json_encode($this->bpmalm->setUsuario($id, usuario_bpm()));
+        echo json_encode($this->bpm->setUsuario($id, userId()));
     }
 
     public function soltarTarea($id)
     {
-        echo json_encode($this->bpmalm->setUsuario($id, usuario_bpm()));   
+        echo json_encode($this->bpm->setUsuario($id, userId()));   
     }
 
     public function cerrarTarea($task_id)
     {
 
         //Obtener Infomracion de Tarea
-        $tarea = $this->bpmalm->getTarea($task_id)['body'];
+        $rsp = $this->bpm->getTarea($task_id);
+
+        if(!$rsp['status']){
+            echo json_encode($rsp);
+            return;
+        }
+
+        $tarea = $rsp['data'];
 
         //Formulario desde la Vista
         $form = $this->input->post();
@@ -92,7 +105,7 @@ class Proceso extends CI_Controller
 
     
         //Cerrar Tarea
-       $this->bpmalm->cerrarTarea($task_id, $contrato);
+       $this->bpm->cerrarTarea($task_id, $contrato);
 
     }
 
@@ -317,7 +330,7 @@ class Proceso extends CI_Controller
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
+        $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES,$contract);
 
         $this->Notapedidos->setCaseId($pemaId, $data['case_id']);
 
@@ -333,7 +346,7 @@ class Proceso extends CI_Controller
             'pedidoExtraordinario' =>   $pedidoExtra
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
+        $data = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS,$contract);
 
         $peex['case_id'] = $data['case_id'];
         $peex['fecha'] = date("Y-m-d");
@@ -346,6 +359,7 @@ class Proceso extends CI_Controller
 
     public function guardarComentario()
     {
-        echo $this->bpmalm->guardarComentario($this->input->post());
+        $data = $this->input->post();
+        echo $this->bpm->guardarComentario($data["processInstanceId"], $data["content"]);
     }
 }

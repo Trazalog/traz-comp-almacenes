@@ -31,17 +31,21 @@ class Pedidos_Materiales extends CI_Model
 
     public function pedidoNormal($pemaId)
     {
-        $this->load->library('BPMALM');
-
         $contract = [
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $data = $this->bpmalm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
+        $rsp = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
 
-        $this->setCaseId($pemaId, $data['case_id']);
+        if(!$rsp['status']){
+            return $rsp;
+        }
 
-        return $this->setEstado($pemaId,'Solicitado');
+        $this->setCaseId($pemaId, $rsp['data']['caseId']);
+
+        $this->setEstado($pemaId,'Solicitado');
+
+        return $rsp;
     }
 
     function listado() {
