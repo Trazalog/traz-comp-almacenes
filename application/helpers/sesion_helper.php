@@ -1,5 +1,33 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+if(!function_exists('userId')){
+
+    function userId()
+    {
+        $ci =& get_instance();			
+        $userdata  = $ci->session->userdata('user_data');
+		return  $userdata[0]['usrId'];
+    }
+}
+
+if(!function_exists('userNick')){
+
+    function userNick()
+    {
+        $ci =& get_instance();			
+        $userdata  = $ci->session->userdata('user_data');
+		return  $userdata[0]['usrNick'];
+    }
+}
+
+if(!function_exists('userPass')){
+
+    function userPass()
+    {
+        return BPM_USER_PASS;
+    }
+}
+
 if(!function_exists('empresa')){
     function empresa(){
         return 6; //!HARDCODE
@@ -7,11 +35,4 @@ if(!function_exists('empresa')){
         $userdata  = $ci->session->userdata('user_data');
 		return  $userdata[0]['id_empresa'];
     }
-}
-
-function usuario_bpm(){
-
-    $ci =& get_instance();			
-    $userdata  = $ci->session->userdata('user_data');
-    return  $userdata[0]['userBpm'];
 }
