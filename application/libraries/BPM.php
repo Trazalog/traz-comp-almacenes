@@ -1,18 +1,20 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') or exit('No direct script access allowed');
 class BPM
 {
-    private $CI;	
+    private $CI;
     private $REST;
 
     public function __construct()
     {
 
-        $this->REST =& get_instance()->rest;
+        $this->REST = &get_instance()->rest;
 
-	}
-    
+    }
+
     public function getTodoList()
     {
+
+        log_message('DEBUG', '#TRAZA | #BPM >> Obtener Bandeja de Entrada userID: ' . userId());
 
         $resource = 'API/bpm/humanTask?p=0&c=1000&f=user_id%3D';
 
@@ -22,13 +24,13 @@ class BPM
 
         if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_111);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_111);
 
             return msj(false, ASP_111);
 
         }
 
-        return msj(true,'OK', json_decode($rsp['data'],true));
+        return msj(true, 'OK', json_decode($rsp['data'], true));
     }
 
     public function getTarea($id)
@@ -40,18 +42,19 @@ class BPM
 
         if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_110);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_110);
 
             return msj(false, ASP_110);
-            
+
         }
 
-        return msj(true,'OK', json_decode($rsp['data'],true));
+        return msj(true, 'OK', json_decode($rsp['data'], true));
     }
 
-    public function ObtenerTaskidXNombre($caseId, $nombre) //!FALTA TERMINAR
+    public function ObtenerTaskidXNombre($proccesId, $caseId, $nombre) //!FALTA TERMINAR
+
     {
-        $actividades = $this->ObtenerActividades($caseId, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+        $actividades = $this->ObtenerActividades($proccesId, $caseId);
 
         if ($actividades == null) {
             return 0;
@@ -66,10 +69,6 @@ class BPM
             }
         }
 
-        // foreach ($actividades as $value) {
-        //     if($value->displayName == $nombre)
-        // }
-        
         return 0;
     }
 
@@ -82,16 +81,16 @@ class BPM
         $url = BONITA_URL . $resource . $idTarBonita . $method;
 
         $rsp = $this->REST->callAPI('POST', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
-        
+
         if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_104);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_104);
 
-            return msj(false, ASP_104);        
+            return msj(false, ASP_104);
 
         }
 
-        return msj(true,'OK');
+        return msj(true, 'OK');
     }
 
     // Lanza proceso en BPM
@@ -105,13 +104,13 @@ class BPM
 
         if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_101);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_101);
 
-            return msj(false, ASP_101);      
+            return msj(false, ASP_101);
 
         }
 
-        return msj(true,'OK', json_decode($rsp['data'],true));
+        return msj(true, 'OK', json_decode($rsp['data'], true));
     }
 
     public function ObtenerLineaTiempo($processId, $caseId)
@@ -121,16 +120,24 @@ class BPM
         $data['listAct'] = $this->ObtenerActividades($processId, $caseId, $param);
 
         $data['listArch'] = $this->ObtenerActividadesArchivadas($processId, $caseId, $param);
-        
+
         return $data;
     }
 
     // Obtiene Actividades desde BPM por id de caso
-    public function ObtenerActividades($processId, $caseId, $param)
+    public function ObtenerActividades($processId, $caseId)
     {
         $url = BONITA_URL . 'API/bpm/activity?p=0&c=200&f=processId%3D' . $processId . '&f=rootCaseId%3D' . $caseId . '&d=assigned_id';
 
-        $rsp = $this->REST->callAPI('GET', $url, false, $param);
+        $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_105 . ' | proccesId: ' . $processId . ' | caseId: ' . $caseId);
+
+            return msj(false, ASP_105);
+
+        }
 
         $array = json_decode($rsp['data'], true);
 
@@ -154,11 +161,11 @@ class BPM
     }
 
     // Obtiene Actividades Archivadas desde BPM por id de caso
-    public function ObtenerActividadesArchivadas($processId, $caseId, $param)
+    public function ObtenerActividadesArchivadas($processId, $caseId)
     {
         $url = BONITA_URL . 'API/bpm/archivedActivity?p=0&c=200&f=processId%3D' . $processId . '&f=rootCaseId%3D' . $caseId . '&d=assigned_id';
 
-        $rsp = $this->REST->callAPI('GET', $url, false, $param);
+        $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
         $array = json_decode($rsp['data'], true);
 
@@ -189,37 +196,103 @@ class BPM
 
         $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
-        if(!$rsp['status']){
+        if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_112);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_112);
 
-            return msj(false, ASP_112);   
+            return msj(false, ASP_112);
 
         }
 
-        return msj(true,'OK', json_decode($rsp['data'],true));
+        return msj(true, 'OK', json_decode($rsp['data'], true));
     }
 
     public function guardarComentario($caseId, $comentario)
     {
         $data = array(
-            'processInstanceId'=> $caseId, 
-            'content'=>$comentario
+            'processInstanceId' => $caseId,
+            'content' => $comentario,
         );
 
-        $url = BONITA_URL .  'API/bpm/comment';
+        $url = BONITA_URL . 'API/bpm/comment';
 
         $rsp = $this->REST->callAPI('POST', $url, $data, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
-        if(!$rsp['status']){
-            
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_108);
+        if (!$rsp['status']) {
 
-            return msj(false, ASP_108);   
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_108);
+
+            return msj(false, ASP_108);
 
         }
 
-        return msj(true,'OK', json_decode($rsp['data'],true));
+        return msj(true, 'OK', json_decode($rsp['data'], true));
+    }
+
+    public function actualizarIdOT($caseId, $ot)
+    {
+
+        $contract = array(
+            "type" => "java.lang.Integer",
+            "value" => (integer) $ot,
+        );
+
+        $variableName = '/execution';
+        $resource = 'API/bpm/caseVariable/';
+        $variableName = 'gIdOT';
+        $url = BONITA_URL . $resource . $caseId . "/" . $variableName;
+
+        $rsp = $this->REST->callAPI('PUT', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_114 . ' | Variable: ' . $variableName . ' | Contract: ' . json_encode($contract));
+
+            return msj(false, ASP_114);
+
+        }
+
+        return msj(true, 'OK');
+
+    }
+
+    public function getCaseVariable($caseId, $var)
+    {
+
+        $var = '/' . $var;
+
+        $url = BONITA_URL . 'API/bpm/caseVariable/' . $caseId . $var;
+
+        $rsp = $this->REST->callAPI('GET', $url, null, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_115 . ' | Variable: ' . $var . ' | caseId: ' . $caseId);
+
+            return msj(false, ASP_115);
+
+        }
+
+        return msj(true, 'OK', $rsp['body']['value']);
+    }
+
+    public function getActivityVariable($taskId, $var)
+    {
+
+        $urlResource = 'API/bpm/activityVariable/' . $taskId . '/' . $var;
+
+        $rsp = $this->REST->callAPI('GET', BONITA_URL . $urlResource, null, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
+
+        if (!$rsp['status']) {
+
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_115 . ' | Variable: ' . $var . ' | taskId: ' . $taskId);
+
+            return msj(false, ASP_115);
+
+        }
+
+        return msj(true, 'OK', $rsp['body']['value']);
+
     }
 
     public function setUsuario($task, $user)
@@ -234,39 +307,39 @@ class BPM
 
         $rsp = $this->REST->callAPI('PUT', $url, $contract, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
-        if(!$rsp['status']){
-            
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_107 .' | Task: '.$task.' | Contract: '.json_encode($contract));
+        if (!$rsp['status']) {
 
-            return msj(false, ASP_107);   
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_107 . ' | Task: ' . $task . ' | Contract: ' . json_encode($contract));
+
+            return msj(false, ASP_107);
 
         }
 
-        return msj(true,'OK');
+        return msj(true, 'OK');
     }
 
     public function getUser($user)
     {
-        $list = $this->getUsuariosBPM();
+        $list = $this->getUsuarios();
 
-        if(!$list['status']){return msj(false, ASP_106);}
+        if (!$list['status']) {return msj(false, ASP_106);}
 
         foreach ($list['data'] as $o) {
 
             if ($o['userName'] == $user) {
 
-                return msj(true,'OK', $o);
+                return msj(true, 'OK', $o);
 
             }
 
         }
 
-        log_message('DEBUG','#TRAZA | #BPM >> '.ASP_113);
+        log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_113);
 
         return msj(false, ASP_113);
     }
 
-    public function getUsuariosBPM()
+    public function getUsuarios()
     {
         $resource = 'API/identity/user?p=0&c=50';
 
@@ -274,15 +347,31 @@ class BPM
 
         $rsp = $this->REST->callAPI('GET', $url, false, $this->loggin(BPM_ADMIN_USER, BPM_ADMIN_PASS));
 
-        if(!$rsp['status']){
+        if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_106);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_106);
 
             return msj(false, ASP_106);
-            
+
         }
 
-        return msj(true,'OK', json_decode($rsp['data'],true));
+        return msj(true, 'OK', json_decode($rsp['data'], true));
+    }
+
+    // Con usrId local devuelve usr en BPM
+    public function getInfoSisUseren($usrId)
+    {
+
+        $CI = &get_instance();
+        $CI->load->database();
+        $CI->db->select('sisusers.usrNick');
+        $CI->db->from('sisusers');
+        $CI->db->where('sisusers.usrId', $usrId);
+        $query = $CI->db->get();
+        $usrNick = $query->row('usrNick');
+
+        $idUsrBPM = $this->getUser($usrNick);
+        return $idUsrBPM;
     }
 
     public function loggin($user, $pass)
@@ -297,9 +386,9 @@ class BPM
 
         $rsp = $this->REST->callAPI('GET', $url, $data, false);
 
-        if(!$rsp['status']){
+        if (!$rsp['status']) {
 
-            log_message('DEBUG','#TRAZA | #BPM >> '.ASP_109);
+            log_message('DEBUG', '#TRAZA | #BPM >> ' . ASP_109);
 
             return false;
 

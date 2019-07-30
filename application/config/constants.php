@@ -154,6 +154,9 @@ define('ASP_110', 'Error al Obtener Detalle Tarea');
 define('ASP_111', 'Error al Obtener Bandeja de Tareas');
 define('ASP_112', 'Error al Obtener Comentarios');
 define('ASP_113', 'Usuario No Encontrado');
+define('ASP_114', 'Error al Actualizar Variable');
+define('ASP_115', 'Error al Leer Variable');
+
 
 
 
