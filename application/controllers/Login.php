@@ -20,30 +20,30 @@ class Login extends CI_Controller
     {
         $data = $this->input->post();
 
-        $user =$this->Logins->validarUsuario($data);
+        //$user =$this->Logins->validarUsuario($data);
         
-        if (!$user) {
+        // if (!$user) {
 
-            echo  json_encode(array('status'=>false));
+        //     echo  json_encode(array('status'=>false));
 
-        } else {
+        // } else {
 
-            $rsp =  $this->bpm->getUser($user["nick"]);
+            // $rsp =  $this->bpm->getUser($user["nick"]);
 
-            if(!$rsp['status']){
-                 echo  json_encode(array('status'=>false));
-            }
+            // if(!$rsp['status']){
+            //      echo  json_encode(array('status'=>false));
+            // }
 
-            $bpmUser = $rsp['data'];
-            $user['userBpm'] = $bpmUser['id'];		
-            $user['usrId'] = $bpmUser['id'];		
-            $user['usrNick'] = $bpmUser['userName'];
-            $user['usrName'] = $bpmUser['firstname'];		
-            $user['usrLastName'] = $bpmUser['lastname'];		
-            $this->session->set_userdata('user_data', array($user));
+            // $bpmUser = $rsp['data'];
+            // $user['userBpm'] = $bpmUser['id'];
+            // $user['usrId'] = $bpmUser['id'];
+            // $user['usrNick'] = $bpmUser['userName'];
+            // $user['usrName'] = $bpmUser['firstname'];
+            // $user['usrLastName'] = $bpmUser['lastname'];
+            // $this->session->set_userdata('user_data', array($user));
             
             echo  json_encode(array('status'=>true));
-        }
+        //}
     }
 
     public function logout()

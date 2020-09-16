@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Articulo extends CI_Controller {
 
-	function __construct() 
+	function __construct()
     {
 		parent::__construct();
 
