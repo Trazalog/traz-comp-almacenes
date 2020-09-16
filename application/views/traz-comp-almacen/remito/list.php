@@ -6,7 +6,7 @@
           <h3 class="box-title">Recepción de Materiales</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\''.CMP_ALM.'Remito/cargarlista\')">Agregar</button>';
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" onclick="linkTo(\''.ALM.'Remito/cargarlista\')">Agregar</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -57,14 +57,15 @@ var edit    = 0;
 var datos   = Array();
 
 $(".fa-search").click(function (e) { 
-    console.log("Estoy Consultando"); 
+   // console.log("Estoy Consultando"); 
     var idremito = $(this).parent('td').parent('tr').attr('id');
-    console.log("id de remito: "+idremito);
+   // console.log("id de remito: "+idremito);
+    wo();
     $.ajax({
       data: { idremito: idremito},
       dataType: 'json',
       type: 'POST',
-      url: '<?php echo base_url(CMP_ALM) ?>Remito/consultar',
+      url: 'index.php/<?php echo ALM ?>Remito/consultar',
       success: function(data){
 
         $('#comprobanteV').val(data['datosRemito'][0]['comprobante']);
@@ -73,10 +74,11 @@ $(".fa-search").click(function (e) {
 
         tabla = $('#tablaconsulta').DataTable(); 
         tabla.clear().draw();
+        if(data['datosDetaRemitos'] == null) return;
         for (var i = 0; i < data['datosDetaRemitos'].length; i++) { 
           $('#tablaconsulta').DataTable().row.add( [
-            data['datosDetaRemitos'][i]['artBarCode'],
-            data['datosDetaRemitos'][i]['artDescription'],
+            data['datosDetaRemitos'][i]['codigo'],
+            data['datosDetaRemitos'][i]['artdescription'],
             data['datosDetaRemitos'][i]['cantidad'],
             data['datosDetaRemitos'][i]['depositodescrip'],
           ]).draw();
@@ -88,7 +90,9 @@ $(".fa-search").click(function (e) {
       error: function(result){
         alert("Error al traer datos de remito")
         console.table(result);
-      },
+      },complete: function(){
+        wc();
+      }
     });   
 });
 

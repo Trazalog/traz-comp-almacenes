@@ -1,5 +1,5 @@
 <!-- Modal ver nota pedido-->
-<div class="modal fade" id="modal_estado_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="detalle_pedido2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,7 +11,7 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-12">
-                        <table id="estado_pedido" class="table table-bordered table-striped table-hover">
+                        <table id="tablapedido" class="table table-bordered table-striped table-hover">
                             <thead>
                                 <tr>
                                     <th>Cod. Artículo</th>
@@ -36,18 +36,16 @@
 <!-- / Modal -->
 
 <script>
-$('.btn-estado').click(function() {
+function EstadoPedido(e)
+ {
 
-    var id = $(this).closest('tr').data('pema');
+    var id = $(e).closest('tr').data('pema');
     if (id == '' || id == null) return;
     $.ajax({
-        type: 'POST',
-        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/estado',
-        data: {
-            id
-        },
+        type: 'GET',
+        url: 'index.php/<?php echo ALM ?>new/Pedido_Material/estado?id='+id,
         success: function(result) {
-            var tabla = $('table#estado_pedido');
+            var tabla = $('#tablapedido');
             $(tabla).DataTable().destroy();
             $(tabla).find('tbody').html('');
             result.forEach(e => {
@@ -64,13 +62,13 @@ $('.btn-estado').click(function() {
                 );
             });
 
-            //DataTable(tabla);
-            $('#modal_estado_pedido').modal('show');
+            $('#detalle_pedido2').modal('show');
         },
         error: function(result) {
             alert('Error');
         },
         dataType: 'json'
     });
-});
+    DataTable('#tablapedido');
+ }
 </script>

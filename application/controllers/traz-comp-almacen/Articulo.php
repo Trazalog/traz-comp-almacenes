@@ -7,19 +7,43 @@ class Articulo extends CI_Controller {
     {
 		parent::__construct();
 
-		$this->load->model(CMP_ALM.'Articulos');
-		$this->load->model(CMP_ALM.'Lotes');
+		$this->load->model(ALM.'Articulos');
+		$this->load->model(ALM.'Lotes');
+		$this->load->model('Tablas');
 
 	}
 
 	// Muestra listado de articulos
-	public function index($permission='Add-Edit-Del-View')
+	public function index()
 	{
 		$data['list'] = $this->Articulos->getList();
-		$data['permission'] = $permission;
-		$this->load->view(CMP_ALM.'articulo/list', $data);
+		$data['unidades_medida'] = $this->Tablas->obtener('unidades_medida');
+		$data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+		$this->load->view(ALM.'articulo/list', $data);
 	}
-		
+
+	public function obtener($opt = false){
+		$url =  REST . 'articulos';
+		$data = $this->rest->callApi('GET',$url);
+		if($data['status']) $data['data'] = json_decode($data['data'])->materias->materia;
+		if($opt) $data['data'] = selectBusquedaAvanzada(false, false, $data['data'], 'id', 'barcode',array('descripcion'));
+		echo json_encode($data);
+	}
+
+	public function guardar()
+	{
+		$data = $this->input->post();
+		$data = $this->Articulos->guardar($data);
+		echo json_encode($data);
+	}
+
+	public function editar()
+	{
+		$data = $this->input->post();
+		$data = $this->Articulos->editar($data);
+		echo json_encode($data);
+	}
+
 	public function getdatosart() // Ok
 	{
 		$art = $this->Articulos->getUnidadesMedidas();
@@ -39,7 +63,7 @@ class Articulo extends CI_Controller {
 	public function getArticle() // Ok
 	{
 		$data['data']   = $this->Articulos->getArticle($this->input->post());
-		$response['html'] = $this->load->view(CMP_ALM.'articulo/view_', $data, true);
+		$response['html'] = $this->load->view(ALM.'articulo/view_', $data, true);
 
 		echo json_encode($response);
 	}
@@ -126,7 +150,7 @@ class Articulo extends CI_Controller {
 
 		$data['list'] = $this->Articulos->getLotes($id);
 			
-		$this->load->view(CMP_ALM.'proceso/tareas/componentes/tabla_lote_deposito', $data);
+		$this->load->view(ALM.'proceso/tareas/componentes/tabla_lote_deposito', $data);
 	}
 
 }

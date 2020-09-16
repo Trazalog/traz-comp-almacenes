@@ -161,24 +161,25 @@
     }
     $('.check').prop('checked',false);
     if(idinsumos.length==0){$('.modal').modal('hide');return;}
-    WaitingOpen("Guardando pedido...");
+    wo("Guardando pedido...");
 
     $.ajax({
       data: { idinsumos, cantidades, idOT: $('#ot').val(), peex_id: $('#peex_id').val()},
       type: 'POST',
       dataType: 'json',
-      url: '<?php echo base_url(CMP_ALM) ?>Notapedido/setNotaPedido',
+      url: 'index.php/<?php echo ALM ?>Notapedido/setNotaPedido',
       success: function (result) {
         $('#pema_id').val(result.pema_id);
-        WaitingClose();
         get_detalle();
         $('.modal').modal('hide');
         $('input.check').attr('checked', false);
       },
       error: function (result) {
-        WaitingClose();
         alert("Error en guardado...");
       },
+        complete:function() {
+            wc();
+        }
     });
   }
 
@@ -226,23 +227,25 @@
 
     $('.check').prop('checked',false);
     if(idinsumos.length==0){$('.modal').modal('hide');return;}
-    WaitingOpen("Guardando pedido...");
+    wo("Guardando pedido...");
 
     $.ajax({
       data: { idinsumos, cantidades, idOT, pema: $('#pema_id').val()},
       type: 'POST',
       dataType: 'json',
-      url: '<?php echo base_url(CMP_ALM) ?>Notapedido/editPedido',
+      url: 'index.php/<?php echo ALM ?>Notapedido/editPedido',
       success: function (result) {
-        WaitingClose();
         get_detalle();
         $('.modal').modal('hide');
         $('input.check').attr('checked', false);
       },
       error: function (result) {
-        WaitingClose();
         alert("Error en guardado...");
       },
+        complete:function() {
+            wc();
+        }
+      
     });
   }
   $('#tbl_insumos').DataTable();

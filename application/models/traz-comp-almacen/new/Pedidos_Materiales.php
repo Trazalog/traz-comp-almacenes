@@ -4,7 +4,7 @@
 
 class Pedidos_Materiales extends CI_Model
 {
-    private $tabla = 'alm_pedidos_materiales';
+    private $tabla = 'alm.alm_pedidos_materiales';
     private $key = 'pema_id';
     private $columnas = '*';
 
@@ -15,9 +15,10 @@ class Pedidos_Materiales extends CI_Model
 
     public function getListado($ot = null)
     {
-        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,orden_trabajo.descripcion,T.justificacion, T.estado');
-        $this->db->from('alm_pedidos_materiales T');
-        $this->db->join('orden_trabajo', 'T.ortr_id = orden_trabajo.id_orden','left');
+        $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,T.justificacion, T.estado');
+        if($ot) $this->db->select('orden_trabajo.descripcion');
+        $this->db->from('alm.alm_pedidos_materiales T');
+        if($ot)$this->db->join('orden_trabajo', 'T.ortr_id = orden_trabajo.id_orden','left');
         $this->db->where('T.empr_id', empresa());
         if($ot)  $this->db->where('orden_trabajo.id_orden', $ot);
         $query = $this->db->get();
@@ -31,21 +32,23 @@ class Pedidos_Materiales extends CI_Model
 
     public function pedidoNormal($pemaId)
     {
+        
         $contract = [
             'pIdPedidoMaterial' => $pemaId,
         ];
 
-        $rsp = $this->bpm->LanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
+        $rsp = $this->bpm->lanzarProceso(BPM_PROCESS_ID_PEDIDOS_NORMALES, $contract);
 
-        if(!$rsp['status']){
+        if (!$rsp['status']) {
             return $rsp;
         }
 
         $this->setCaseId($pemaId, $rsp['data']['caseId']);
 
-        $this->setEstado($pemaId,'Solicitado');
+        $this->setEstado($pemaId, 'Solicitado');
 
         return $rsp;
+
     }
 
     function listado() {
@@ -54,21 +57,11 @@ class Pedidos_Materiales extends CI_Model
         return $this->db->get($this->tabla)->result_array();
     }
 
-    public function obtener($id, $stock=false)
+    public function obtener($id)
     {
-        if($stock){
-            $this->db->select('DEPE.arti_id, IFNULL(sum(LOTE.cantidad),0) as stock');
-            $this->db->from('alm_deta_pedidos_materiales DEPE');
-            $this->db->join('alm_lotes LOTE', 'LOTE.arti_id = DEPE.arti_id', 'left');
-            $this->db->where('pema_id', $id);
-            $this->db->group_by('DEPE.arti_id');
-            $aux = '('.$this->db->get_compiled_select().') AUX';
-        }
-
         $this->db->select('*');
-        $this->db->from('alm_deta_pedidos_materiales T');
-        $this->db->join('alm_articulos A', 'A.arti_id = T.arti_id');
-        if($stock) $this->db->join($aux, 'AUX.arti_id = T.arti_id');
+        $this->db->from('alm.alm_deta_pedidos_materiales T');
+        $this->db->join('alm.alm_articulos A', 'A.arti_id = T.arti_id');
         $this->db->where($this->key, $id);
         $this->db->where('T.eliminado', false);
         return $this->db->get()->result_array();
@@ -77,10 +70,10 @@ class Pedidos_Materiales extends CI_Model
     public function eliminar($id)
     {
         $this->db->where('pema_id', $id);
-        $this->db->delete('alm_deta_pedidos_materiales');
+        $this->db->delete('alm.alm_deta_pedidos_materiales');
 
         $this->db->where('pema_id', $id);
-        return $this->db->delete('alm_pedidos_materiales');
+        return $this->db->delete('alm.alm_pedidos_materiales');
 
     }
 
@@ -114,7 +107,7 @@ class Pedidos_Materiales extends CI_Model
     {
         $this->db->set('case_id', $case);
         $this->db->where('pema_id', $id);
-        $this->db->update('alm_pedidos_materiales');
+        $this->db->update('alm.alm_pedidos_materiales');
     }
 
     public function getInsumosOT($ot)
@@ -142,7 +135,7 @@ class Pedidos_Materiales extends CI_Model
                 'cantidad' => $o->cantidad,
                 'resto' => $o->cantidad
             );
-            $this->db->insert('alm_deta_pedidos_materiales', $detalle);
+            $this->db->insert('alm.alm_deta_pedidos_materiales', $detalle);
         }
 
         return $pema_id;

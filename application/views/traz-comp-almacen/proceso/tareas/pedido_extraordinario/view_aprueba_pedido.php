@@ -32,7 +32,7 @@
 
         if($('#rechazo').prop('checked') && $('#motivo .form-control').val() == ''){alert('Completar Motivo de Rechazo'); return;}
 
-        var id = $('#idTarBonita').val();
+        var id = $('#taskId').val();
 
         var dataForm = new FormData($('#generic_form')[0]);
 
@@ -44,10 +44,10 @@
             cache: false,
 			contentType: false,
 			processData: false,
-            url: '<?php echo base_url(CMP_ALM) ?>Proceso/cerrarTarea/'+id,
+            url: '<?php base_url() ?>index.php/<?php echo ALM ?>Proceso/cerrarTarea/'+id,
             success: function (data) {
-                //WaitingClose();
-                linkTo('<?php echo CMP_ALM ?>Proceso');
+                //wc();
+                back();
 
             },
             error: function (data) {

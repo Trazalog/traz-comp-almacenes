@@ -1,25 +1,31 @@
-<section>
     <div class="box box-primary">
         <div class="box-header">
             <h3 class="box-title">Pedido Materiales</h3>
-            <button class="btn btn-block btn-primary <?php echo (isset($autoLanzar)&&$autoLanzar==true?'hidden':null)?>" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('<?php echo CMP_ALM ?>Notapedido/crearPedido<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
-
-                <button class="btn btn-block btn-primary <?php echo(isset($autoLanzar)&&$autoLanzar==true?null:'hidden')?>" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo('<?php echo CMP_ALM ?>Notapedido/crearPedido2<?php echo'/'.(isset($ot)?$ot:null) ?>')">Agregar</button>
-                
+            <?php
+            if(!viewOT)
+            {
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                onclick="linkTo(\''.ALM.'Notapedido/crearPedido\')">Agregar</button>';
+            }else{
+                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
+                onclick="AbrirModal()">Agregar</button>';
+            }
+            if(isset($descripcionOT))
+            {
+                echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
+            }
+                ?>
         </div><!-- /.box-header -->
-        <div class="box-body">
-            <div class="table-responsive">
+        <div class="box-body" id="deposito_contenedor">
             <table id="deposito" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
-                        <th width="1%">Acciones</th>
-                        <th width="10%">Pedido</th>
-                        <th width="10%" class="<?php echo(!viewOT?"hidden":null)?>">Ord.Trabajo</th>
-                        <th width="10%" class="text-center">Fecha</th>
+                        <th>Acciones</th>
+                        <th>Pedido</th>
+                        <th class="<?php echo(!viewOT?"hidden":null)?>">Ord.Trabajo</th>
+                        <th class="text-center">Fecha</th>
                         <th>Detalle</th>
-                        <th width="10%">Estado</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,30 +50,36 @@
                             ?>
                 </tbody>
             </table>
-            </div>
         </div><!-- /.box-body -->
     </div><!-- /.box -->
 
-</section><!-- /.content -->
-
 <script>
+  var tablaDetalle=$('#tabladetalle').DataTable({}); 
+  function AbrirModal()
+  {
+    tablaDetalle2.clear().draw();
+    document.getElementById('info').innerHTML="";
+    document.getElementById('inputarti').value="";
+    document.getElementById('add_cantidad').value="";
+    $('#agregar_pedido').modal('show');
+  }
 function ver(e) {
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
     rellenarCabecera(json);
-    getEntregasPedido(id_nota);
-
-    if (id_nota == null) return;
+    getEntregasPedidoOffline(id_nota);
+    if (id_nota == null) {
+        alert('PEMA_ID: '+id_nota);
+        return;
+    }
+ 
     $.ajax({
-        type: 'POST',
-        data: {
-            id: id_nota
-        },
-        url: '<?php echo base_url(CMP_ALM) ?>Notapedido/getNotaPedidoId',
+        type: 'GET',
+        url: 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota='+id_nota,
         success: function(data) {
-         //   $('#tabladetalle').DataTable().destroy();
-            $('#tabladetalle tbody').html('');
+          
+            tablaDetalle.clear().draw();
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr style='color:'>" +
                     "<td>" + data[i]['barcode'] + "</td>" +
@@ -75,12 +87,9 @@ function ver(e) {
                     "<td class='text-center' width='15%'><b>" + data[i]['cantidad'] + "</b></td>" +
                     "<td class='text-center' width='15%'><b>" + data[i]['entregado'] + "</b></td>" +
                     "</tr>";
-                $('#tabladetalle tbody').append(tr);
+                    tablaDetalle.row.add($(tr)).draw();
             }
             //DataTable('#tabladetalle');
-
-            
-
             $('#detalle_pedido').modal('show');
         },
         error: function(result) {
@@ -91,12 +100,88 @@ function ver(e) {
     });
 
 }
+function ConsultarEntrega(e)
+{zaqxsq
+    var tr = $(e).closest('tr');
+    var id = $(tr).data('id');
+    var json = JSON.parse(JSON.stringify($(tr).data('json')));
+    rellenarCabeceraEntrega(json);
+    $.ajax({
+        type: 'GET',
+        url: 'index.php/<?php echo ALM ?>new/Entrega_Material/detalle?id='+id,
+        success: function(result) {
+            var tabla = $('#modal_detalle_entrega table');
+    
+            $(tabla).find('tbody').html('');
+            result.forEach(e => {
+                $(tabla).append(
+                    '<tr>' +
+                    '<td>' + e.barcode + '</td>' +
+                    '<td>' + e.descripcion + '</td>' +
+                    '<td>' + e.lote + '</td>' +
+                    '<td>' + e.deposito + '</td>' +
+                    '<td class="text-center">' + e.cantidad + '</td>' +
+                    '</tr>'
+                );
+            });
+         
+            $('#modal_detalle_entrega').modal('show');
+           
+        },
+        error: function(result) {
+            alert('Error');
+        },
+        dataType: 'json'
+    });
+}
+function EstadoPedido(e)
+ {
 
-function getEntregasPedido(pema) {
-    $('#tab_2').load('<?php echo base_url(CMP_ALM) ?>new/Entrega_Material/getEntregasPedido/'+pema);
+    var id = $(e).closest('tr').data('pema');
+    if (id == '' || id == null) return;
+    $.ajax({
+        type: 'GET',
+        url: 'index.php/<?php echo ALM ?>new/Pedido_Material/estado?id='+id,
+        success: function(result) {
+            var tabla = $('#tablapedido');
+            $(tabla).DataTable().destroy();
+            $(tabla).find('tbody').html('');
+            result.forEach(e => {
+                $(tabla).append(
+                    '<tr>' +
+                    '<td>' + e.barcode + '</td>' +
+                    '<td class="text-center"><b>' + e.cantidad + '</b></td>' +
+                    '<td class="text-center"><b>' + (e.cantidad - e.resto) +
+                    '</b></td>' +
+                    '<td class="text-center"><i class="fa '+
+                    (e.resto == 0?'fa-battery-full':(e.resto < e.cantidad?'fa-battery-2':(e.resto == e.cantidad?'fa-battery-0':'')))+
+                    '"></i></td>'+
+                    '</tr>'
+                );
+            });
+
+            $('#detalle_pedido2').modal('show');
+        },
+        error: function(result) {
+            alert('Error');
+        },
+        dataType: 'json'
+    });
+    DataTable('#tablapedido');
+ }
+function getEntregasPedidoOffline(pema) {
+    $.ajax({
+        type: 'GET',
+        url: 'index.php/<?php echo ALM ?>new/Entrega_Material/getEntregasPedidoOffline?pema='+pema,
+        success: function(data) {
+         
+          document.getElementById('tab_2').innerHTML =data;
+          DataTable('#entregas');
+        }
+    });
 }
 //Ver Orden
-function rellenarCabecera(json) {
+function rellenarCabecera(json) { 
     $('#detalle_pedido .pedido').val(json.id_notaPedido);
     $('#detalle_pedido .descrip').val(json.justificacion);
     $('#detalle_pedido .fecha').val(json.fecha);
@@ -104,11 +189,36 @@ function rellenarCabecera(json) {
     $('#detalle_pedido .orden').val(json.id_ordTrabajo);
 }
 
-DataTable('#tabladetalle');
-DataTable('#deposito');
+function rellenarCabeceraEntrega(json){
+    $('#detalle_pedido .enma_id').val(json.enma_id);
+    $('#detalle_pedido .pema_id').val(json.pema_id);
+    $('#detalle_pedido .fecha').val(json.fecha);
+    $('#detalle_pedido .estado').val(json.estado);
+    $('#detalle_pedido .comprobante').val(json.comprobante);
+    $('#detalle_pedido .entregado').val(json.solicitante);
+    $('#detalle_pedido .orden').val(json.ortr_id);
+}
+
+
+var tablaDeposito = $('#deposito').DataTable({});
 </script>
 
-
+<!-- Modal Agregar -->
+<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" >
+        <div class="modal-content">
+            <div class="modal-header">
+            </div> <!-- /.modal-header  -->
+             <div class="modal-body table-responsive" id="modalBodyArticle">
+                <?php 
+                
+                $this->load->view(ALM.'notapedido/generar_pedido');?>
+            </div> <!-- /.modal-body -->
+                        
+                    </div> <!-- /.modal-content -->
+                </div>
+    </div> <!-- /.modal-dialog modal-lg -->
+<!-- Fin Modal Agregar -->
 <!-- Modal ver nota pedido-->
 <div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" >

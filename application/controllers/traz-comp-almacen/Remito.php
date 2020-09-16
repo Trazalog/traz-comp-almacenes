@@ -8,25 +8,33 @@ class Remito extends CI_Controller {
     {
 		parent::__construct();
 		
-		$this->load->model(CMP_ALM.'Remitos');
-		$this->load->model(CMP_ALM.'Articulos');
-		$this->load->model(CMP_ALM.'Lotes');
+		$this->load->model(ALM.'Remitos');
+		$this->load->model(ALM.'Articulos');
+		$this->load->model(ALM.'Lotes');
+		$this->load->model(ALM.'Proveedores');
+		$this->load->model(ALM.'Depositos');
     }
 
     public function index() // Ok
     {
-		 
-      	$data['permission'] = $this->permission;
+
+		$data['permission'] = $this->permission;
       	$data['list'] = $this->Remitos->getRemitosList();
-		$this->load->view(CMP_ALM.'remito/list',$data);
+		$this->load->view(ALM.'remito/list',$data);
     }
 
     public function cargarlista() // Ok
     { 
 		$this->load->model('traz-comp/Componentes');
-		$data = $this->Componentes-> listaArticulos();
+		
+		#COMPONENTE ARTICULOS
+		$data['proveedores'] = $this->Proveedores->obtener();
+		$data['depositos'] = $this->Depositos->obtener();
+		$data['items'] = $this->Componentes->listaArticulos();
+		$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+
 		$data['permission'] = $this->permission;
-        $this->load->view(CMP_ALM.'remito/view_',$data);
+        $this->load->view(ALM.'remito/view_',$data);
 	}
 	
 	public function getcodigo($json=true)
@@ -107,7 +115,7 @@ class Remito extends CI_Controller {
 		if($result)
 		{	
 			$arre['datosRemito'] = $result;
-			$datosDetaRemitos       = $this->Remitos->getDetaRemitos($id);
+			$datosDetaRemitos  = $this->Remitos->getDetaRemitos($id);
 			if($datosDetaRemitos)
 			{
 				$arre['datosDetaRemitos'] = $datosDetaRemitos;
@@ -192,12 +200,14 @@ class Remito extends CI_Controller {
 		$info = $this->input->post('info');
 
 		$detalles = $this->input->post('detalles');
+		
+		log_message('DEBUG','#Remito >> guardar_mejor > info: '.json_encode($info).' | detalles: '.json_encode($detalles));
 
-		$this->Remitos->insert_orden($info);
+		$id = $this->Remitos->insert_orden($info);
 
-		$id = $this->db->insert_id();
+		if(!$id){ log_message('ERROR','#Remito | MSJ: No se genero Registro de Entrega'); return false;}
 
-		$this->Remitos->guardar_detalles($id,$detalles);
+		if(!$this->Remitos->guardar_detalles($id,$detalles)){log_message('ERROR','#Remito | MSJ: No se Registro Detalle de Entrega');}
 
 		return $data;
 	}

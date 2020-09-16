@@ -92,7 +92,7 @@
 
       <!-- I removed `in` class here so it will have a fade in effect when showed -->
       <div class="tab-pane fade" id="two">
-          <?php $this->load->view(CMP_ALM.'notapedido/viewPedidoEspecial_')?>
+          <?php $this->load->view(ALM.'notapedido/viewPedidoEspecial_')?>
 
       </div>
 
@@ -118,10 +118,10 @@ $('.cant_insumos').prop('disabled',true);
 
   //va a listado de nota de pedido
   $("#listado").click(function (e) {
-    WaitingOpen();
+    wo();
     $('#content').empty();
-    $("#content").load("<?php echo base_url(); ?><?php echo base_url(CMP_ALM) ?>Notapedido/index/<?php echo $permission; ?>");
-    WaitingClose();
+    $("#content").load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>Notapedido/index/<?php echo $permission; ?>");
+    wc();
   });
 
 
@@ -177,9 +177,9 @@ $('.cant_insumos').prop('disabled',true);
           $('#error').fadeIn('slow');
           return;
         }
-        WaitingOpen("Guardando pedido...");
+        wo("Guardando pedido...");
 
-        if(!navigator.onLine){//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
+        if(!conexion()){//SI NO HAY CONEXION LO GUARDA EN SESSION STORAGE
           console.log("Sin Conexión");
           var aux = sessionStorage.getItem('list_pedidos_'+idOT);
           if(aux==null)aux=[];else aux = JSON.parse(aux);
@@ -196,17 +196,18 @@ $('.cant_insumos').prop('disabled',true);
           data: { idinsumos, cantidades, idOT },
           type: 'POST',
           dataType: 'json',
-          url: '<?php echo base_url(CMP_ALM) ?>Notapedido/setNotaPedido',
+          url: 'index.php/<?php echo ALM ?>Notapedido/setNotaPedido',
           success: function (result) {
-            WaitingClose();
             cargarPedidos();
             $('.modal').modal('hide');
             $('input.check').attr('checked',false);
           },
           error: function (result) {
-            WaitingClose();
             alert("Error en guardado...");
           },
+          complete:function() {
+              wc();
+          }
         });
   }
 
@@ -222,7 +223,7 @@ $('.cant_insumos').prop('disabled',true);
         justif,
         ot
       },
-      url: '<?php echo base_url(CMP_ALM) ?>Notapedido/setPedidoEspecial',
+      url: 'index.php/<?php echo ALM ?>Notapedido/setPedidoEspecial',
       success: function (data) {
         cargarPedidos();
         $('.modal').modal('hide');
