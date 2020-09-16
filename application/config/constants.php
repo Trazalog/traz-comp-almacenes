@@ -97,7 +97,12 @@ define('TAREAS_ASIGNAR', 'traz-comp');
 | Version de Componente de Almacen
 |
 */
-define('CMP_ALM', 'traz-comp-almacen/');  
+define('CMP_ALM', 'traz-comp-almacen/');
+#COMPONENTE ALMACENES
+define('ALM', 'traz-comp-almacen/');
+define('REST_ALM', 'http://10.142.0.3:8280/services/ALMDataService/');
+define('REST_CORE', 'http://10.142.0.3:8280/services/COREDataService/');
+define('viewOT', false);
 /*
 |--------------------------------------------------------------------------
 | Bonita url
@@ -107,11 +112,21 @@ define('CMP_ALM', 'traz-comp-almacen/');
 |
 */
 
-//define('BONITA_URL', 'http://192.168.0.7:8080/bonita/');  
-define('BONITA_URL', 'http://localhost:8080/bonita/');  
-define('BPM_ADMIN_USER', 'mantenedor1');
-define('BPM_ADMIN_PASS', 'bpm');
-define('BPM_USER_PASS', 'bpm');
+#TRAZ-COMP-BPM
+define('BPM', 'traz-comp-bpm/');
+
+define('BONITA_URL', 'http://10.142.0.7:8080/bonita/');
+
+define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '8803232493891311406');
+
+define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6866538875650512673');
+
+define('BPM_PROCESS_ID_TAREAS', '7148440093058377088');
+define('TST', 'traz-comp-tareasestandar/');
+
+define('BPM_ADMIN_USER', 'almacen.tools');
+define('BPM_ADMIN_PASS', '123');
+define('BPM_USER_PASS', '123');
 
 /*
 |--------------------------------------------------------------------------
@@ -124,11 +139,11 @@ define('BPM_USER_PASS', 'bpm');
 
 //? PEDIDOS NORMALES
  
-define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878'); 
+//define('BPM_PROCESS_ID_PEDIDOS_NORMALES', '6833268789089291878');
 
 //? PEDIDOS EXTRAORDINATIOS
 
-define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
+//define('BPM_PROCESS_ID_PEDIDOS_EXTRAORDINARIOS', '6013058915384903051');
 
 /*
 |--------------------------------------------------------------------------
@@ -159,5 +174,9 @@ define('ASP_115', 'Error al Leer Variable');
 
 
 
-
-define('viewOT', false);
+define('BPM_PROCESS', json_encode(array(
+  BPM_PROCESS_ID_PEDIDOS_NORMALES => ['nombre' => 'Ped. Materiales', 'color' => '#F39C12', 'proyecto' => ALM, 'model' => 'ALM_Tareas'],
+ '6013058915384903051' => ['nombre' => 'Ped. Materiales Ext', 'color' => '#F39C12', 'proyecto' => ALM, 'model' => 'ALM_Tareas'],
+ '8664799170016058315' => ['nombre' => 'Proc. Mantenimiento', 'color' => '#00A65A', 'proyecto' => 'traz-comp-mantenimiento/', 'model' => 'MAN_Tareas'],
+  BPM_PROCESS_ID_TAREAS => ['nombre' => 'Proc. Tareas', 'color' => '#ff7701', 'proyecto' => TST, 'model' => 'TST_Tareas']
+)));

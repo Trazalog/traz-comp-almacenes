@@ -2,14 +2,13 @@
 <input type="number" class="hidden" value="<?php echo $pema_id ?>" id="pemaId">
 <h3>Pedido Materiales <small>Detalle</small></h3>
 <div id="nota_pedido">
-    <table id="tabladetalle" class="table table-striped table-hover table-bordered">
+    <table id="tabladetalle" class="table table-striped table-hover">
         <thead>
             <tr>
-                <th>Código</th>
-                <th>Descripción</th>
+                <!-- <th>Código</th> -->
+                <th>Descripcion</th>
                 <th class="text-center">Cantidad</th>
                 <th class="text-center">Fecha Nota</th>
-                <th class="text-center">Stock</th>
             </tr>
         </thead>
         <tbody>
@@ -48,26 +47,22 @@ $('#hecho').prop('disabled', true);
 cargarPedidos();
 
 function cargarPedidos() {
+    var id = $('#pemaId').val();
     $.ajax({
         type: 'POST',
-        data: {
-            id: $('#pemaId').val()
-        },
-        url: '<?php echo base_url(CMP_ALM) ?>new/Pedido_Material/obtener',
+        url: 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
 
             $('tr.celdas').remove();
             for (var i = 0; i < data.length; i++) {
                 var tr = "<tr class='celdas'>" +
-                    "<td>" + data[i]['barcode'] + "</td>" +
-                    "<td>" + data[i]['descripcion'] + "</td>" +
+                    "<td>" + data[i]['artDescription'] + "</td>" +
                     "<td class='text-center'>" + data[i]['cantidad'] + "</td>" +
-                    "<td class='text-center'>" + fecha(data[i]['fec_alta']) + "</td>" +
-                    "<td class='text-center'>"+data[i]['stock']+"</td>" +
+                    "<td class='text-center'>" + data[i]['fecha'] + "</td>" +
                     "</tr>";
                 $('table#tabladetalle tbody').append(tr);
             }
-            DataTable('table#tabladetalle',false);
+            $('.table').DataTable();
         },
         error: function(result) {
 
@@ -84,7 +79,7 @@ function cerrarTarea() {
         return;
     }
 
-    var id = $('#idTarBonita').val();
+    var id = $('#taskId').val();
 
     var dataForm = new FormData($('#generic_form')[0]);
 
@@ -96,10 +91,10 @@ function cerrarTarea() {
         cache: false,
         contentType: false,
         processData: false,
-        url: '<?php echo base_url(CMP_ALM) ?>Proceso/cerrarTarea/'+id,
+        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
-            //WaitingClose();
-            linkTo('<?php echo CMP_ALM ?>Proceso');
+            //wc();
+            back();
 
         },
         error: function(data) {

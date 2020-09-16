@@ -1,6 +1,5 @@
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <?php if(viewOT)info_header('Orden de Trabajo N°'.$ot,info_orden($ot)); ?>
-<?php info_header('Pedido Material N° '.$pema_id, info_pedido($pema_id)); ?>
 
 <div class="row">
     <div class="col-xs-12">
@@ -33,18 +32,17 @@
 													
 													echo "<button class='btn btn-block btn-danger grupNoasignado' id='btonsoltr' style='width: 100px; margin-top: 10px; display: inline-block;' onclick='soltarTarea()'>Soltar tarea</button>";											
 													echo "</br>"; 
-														
+													echo "</br>"; 			
 												?>
 
-                                        <div class="panel-body">    
-                                            <?php echo '<h3><a href="#">Pedido Materiales |</a> '.$TareaBPM['displayName'].'</h3>'?>
+                                        <div class="panel-body">
 
                                             <!-- botones Tomar y soltar tareas -->
 
 
                                             <input type="text" class="form-control hidden" id="asignado"
                                                 value="<?php echo $TareaBPM["assigned_id"] ?>">
-                                            <form class="<?php echo (viewOT?null:'hidden')?>">
+                                            <form>
                                                 <div class="panel panel-default">
                                                     <!-- <h4 class="panel-heading">INFORMACION:</h4> -->
                                                     <div class="panel-heading">INFORMACION:</div>
@@ -111,15 +109,13 @@
 
                                             </form>
 
-                                          
-
 
                                         </div>
                                     </div>
                                     <div id="view" class="oculto" style="margin-left:3%;">
-
+                                     
                                         <?php echo $view ?>
-
+                       
                                     </div>
                                 </div>
 
@@ -156,7 +152,7 @@
 
             <div class="modal-footer">
             <?php echo (isset($estadoOT) && $estadoOT==false?'<h4 class="text-danger text-center">La Orden de Trabajo Asociada al Pedido de Materiales ha sido Cerrada</h4><h5 class="text-center">No se podran realizar mas Entregas</h5>':null) ?>  
-              <button type="button" id="cerrar" class="btn btn-primary" onclick="linkTo('<?php echo CMP_ALM ?>Proceso');">Cerrar</button>
+              <button type="button" id="cerrar" class="btn btn-primary" onclick="back();">Cerrar</button>
                 <button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estadoOT==false?'disabled':null) ?> >Hecho</button>
             </div> <!-- /.modal footer -->
 
@@ -165,7 +161,7 @@
 </div><!-- /.col -->
 </div><!-- /.row -->
 
-<?php $this->load->view(CMP_ALM.'proceso/tareas/scripts/tarea_std'); ?>
+<?php $this->load->view(ALM.'proceso/tareas/scripts/tarea_std'); ?>
 <script>
 $('.fecha').datepicker({
     autoclose: true

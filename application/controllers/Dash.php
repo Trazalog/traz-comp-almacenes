@@ -9,12 +9,13 @@ class Dash extends CI_Controller {
    }
    function index(){
 
-      $user = $this->session->userdata('user_data');
-      if(!$user){
-         $this->load->view('general/login', array('status'=>false)); return;
-      }
+      // $user = $this->session->userdata('user_data');
+      // if(!$user){
+      //    $this->load->view('general/login', array('status'=>false)); return;
+      // }
 
-      $this->load->view('layout/Admin',$user[0]);
+      // $this->load->view('layout/Admin',$user[0]);
+      $this->load->view('layout/Admin');
    }
 
 }

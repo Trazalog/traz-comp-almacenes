@@ -74,27 +74,24 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
-	// 'hostname' => 'localhost',
-	// 'username' => 'root',
-	// 'password' => '',
-	// 'database' => 'asset_almacen_v3',
-	'hostname' => 'holis',
-	'username' => 'glados',
-	'password' => 'glados',
-	'database' => 'asset_almacen_v3',
-	'dbdriver' => 'mysqli',
+	'hostname' => '10.142.0.3',
+	'username' => 'postgres',
+	'password' => '!Password00',
+	'database' =>  'tools_prod_t',
+	'dbdriver' => 'pdo', //mysqli
 	'dbprefix' => '',
-	'pconnect' => FALSE,
+	'pconnect' => false,
 	'db_debug' => (ENVIRONMENT !== 'production'),
-	'cache_on' => FALSE,
+	'cache_on' => false,
 	'cachedir' => '',
 	'char_set' => 'utf8',
 	'dbcollat' => 'utf8_general_ci',
 	'swap_pre' => '',
-	'encrypt' => FALSE,
-	'compress' => FALSE,
-	'stricton' => FALSE,
+	'encrypt' => false,
+	'compress' => false,
+	'stricton' => false,
 	'failover' => array(),
-	'save_queries' => TRUE
+	'save_queries' => true,
+	'port' => '5432',
+	'dsn' => 'pgsql:host=10.142.0.3;port=5432;dbname=tools_prod_t'
 );

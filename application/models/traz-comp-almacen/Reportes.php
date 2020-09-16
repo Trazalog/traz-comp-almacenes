@@ -4,13 +4,12 @@ class Reportes extends CI_Model {
 
 	function __construct()
 	{
-		parent::__construct();
+        parent::__construct();
 	}
 	
 	function getRepOrdServicio($data)
     {
-        $userdata  = $this->session->userdata('user_data');
-        $empresaId = $userdata[0]['id_empresa'];
+        $empresaId = empresa();
         
 		if (($data['desde'] !== "") || ($data['hasta'] !== "")) {
             $datDesde = $data['desde'];

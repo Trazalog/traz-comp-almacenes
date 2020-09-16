@@ -135,7 +135,7 @@
         'type': "POST",
         'global': false,
         'dataType': 'json',
-        'url': "<?php echo base_url(CMP_ALM) ?>Ordeninsumo/getcodigo",
+        'url': "index.php/<?php echo ALM ?>Ordeninsumo/getcodigo",
         'success': function (data) {
 
           tmp = data;
@@ -184,7 +184,7 @@
         'type': "POST",
         'global': false,
         'dataType': 'json',
-        'url': "<?php echo base_url(CMP_ALM) ?>Ordeninsumo/getOT",
+        'url': "index.php/<?php echo ALM ?>Ordeninsumo/getOT",
         'success': function (data) {
           tmp = data;
           console.table(tmp);
@@ -199,7 +199,7 @@
       $.ajax({
         type: 'POST',
         data: { artId: artId },
-        url: '<?php echo base_url(CMP_ALM) ?>Ordeninsumo/getdeposito',
+        url: 'index.php/<?php echo ALM ?>Ordeninsumo/getdeposito',
         success: function (data) {
           var opcion = "<option value='-1'>Seleccione...</option>";
           $('#deposito').append(opcion);
@@ -287,11 +287,12 @@
       alert($('#solicitante').val());
 
       if (!(parametros != 0 && idsinsumo != 0 && $('#comprobante').val() != "" && $('#fecha_orden').val() != "" && $('#solicitante').val() != "")) {alert('Campos Obligatorios Incompletos');return;}
-     
+
+        wo();
         $.ajax({
           type: 'POST',
           data: { data: parametros, comp: comp, idslote: idslote, depo: depo, art: art },
-          url: '<?php echo base_url(CMP_ALM) ?>Ordeninsumo/guardar',  //index.php/
+          url: 'index.php/<?php echo ALM ?>Ordeninsumo/guardar',  //index.php/
           success: function (data) {
         
            $('.modal').modal('hide');
@@ -299,6 +300,9 @@
           error: function (result) {
             alert('Error al Guardar');
           },
+          complete:function() {
+              wc();
+          }
           // dataType: 'json'
         });
         limpiar();
@@ -338,7 +342,7 @@
         $.ajax({
           type: 'POST',
           data: { id_her: id_her, id_deposito: id_deposito },
-          url: '<?php echo base_url(CMP_ALM) ?>Ordeninsumo/alerta',
+          url: 'index.php/<?php echo ALM ?>Ordeninsumo/alerta',
           success: function (data) {
             console.log("exito en la alerta");
             console.log(data);
@@ -382,10 +386,10 @@
     });
 
     function regresa() {
-      WaitingOpen();
+      wo();
       $('#content').empty();
-      $("#content").load("<?php echo base_url(); ?><?php echo base_url(CMP_ALM) ?>Ordeninsumo/index/<?php echo $permission; ?>");
-      WaitingClose();
+      $("#content").load("<?php echo base_url(); ?>index.php/<?php echo ALM ?>Ordeninsumo/index/<?php echo $permission; ?>");
+      wc();
     }
 
     function filtrar() {

@@ -1,4 +1,4 @@
-<section>
+
 <div class="box box-primary">
     <div class="box-header">
         <h3 class="box-title">Entrega Materiales</h3>
@@ -23,8 +23,8 @@
                         echo '<tr data-id='.$o['enma_id'].' data-pema="'.$o['pema_id'].'" data-json=\''.json_encode($o).'\'>'; 
                         echo '<td>';
                         echo '<i class="fa fa-fw fa-print text-light-blue" style="cursor: pointer; margin:2px" title="Imprimir"></i> ';
-                        echo '<i class="fa fa-fw fa-search text-light-blue btn-buscar" style="cursor: pointer; margin:2px" title="Consultar"></i> ';
-                        echo '<i class="fa fa-fw  fa-battery text-light-blue btn-estado" style="cursor: pointer; margin:2px" title="Estado Pedido"></i> ';
+                        echo '<i class="fa fa-fw fa-search text-light-blue btn-buscar" style="cursor: pointer; margin:2px" onclick="ConsultarEntrega(this)"title="Consultar"></i> ';
+                        echo '<i class="fa fa-fw  fa-battery text-light-blue btn-estado" style="cursor: pointer; margin:2px"onclick="EstadoPedido(this)" title="Estado Pedido"></i> ';
                         echo '</td>';
                         echo '<td class="text-center">'.bolita($o['pema_id'],'blue').'</td>';
                         echo '<td class="text-center">'.bolita($o['enma_id'],'aqua').'</td>';
@@ -40,22 +40,19 @@
         </table>
     </div><!-- /.box-body -->
 </div><!-- /.box -->
-</section>
-<script>
-DataTable('#entregas');
 
-$('.btn-buscar').click(function() {
-    var tr = $(this).closest('tr');
+<script>
+DataTable($('#entregas'));
+
+function ConsultarEntrega(e)
+{
+    var tr = $(e).closest('tr');
     var id = $(tr).data('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
     rellenarCabecera(json);
-
     $.ajax({
-        type: 'POST',
-        url: '<?php echo base_url(CMP_ALM) ?>new/Entrega_Material/detalle',
-        data: {
-            id
-        },
+        type: 'GET',
+        url: 'index.php/<?php echo ALM ?>new/Entrega_Material/detalle?id='+id,
         success: function(result) {
             var tabla = $('#modal_detalle_entrega table');
     
@@ -80,7 +77,7 @@ $('.btn-buscar').click(function() {
         },
         dataType: 'json'
     });
-});
+}
 
 function rellenarCabecera(json) {
     $('#modal_detalle_entrega .enma_id').val(json.enma_id);
@@ -165,5 +162,5 @@ function rellenarCabecera(json) {
 <!-- / Modal -->
 
 <?php
-    $this->load->view(CMP_ALM.'new/pedidos_materiales/estado_pedido');            
+    $this->load->view(ALM.'new/pedidos_materiales/estado_pedido');            
 ?>
