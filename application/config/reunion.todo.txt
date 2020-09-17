@@ -1,7 +1,0 @@
-Reunion con Rodo 15/06/2019
-
-In the morning : asset, almacen y trazasoft
-
--Pantalla de Ajuste de Stock solo para el almacenero.
--Dar de alta stock y baja , ajustar cantidad y justificacion.
--Ajuste por fraccionamiento.
