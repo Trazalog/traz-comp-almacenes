@@ -23,7 +23,7 @@ class Entregas_Materiales extends CI_Model
         $this->db->where('T.empr_id',empresa());
 
         if($ot) $this->db->where('A.ortr_id', $ot);
-
+        
         return $this->db->get()->result_array();
     }
 
