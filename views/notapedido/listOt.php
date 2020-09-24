@@ -3,7 +3,7 @@
   <div class="row">
     <div class="col-xs-12">
       <div class="box">
-        <div class="box-header">
+        <div class="box-header with-border">
           <h3 class="box-title">Notas de Pedido de OT <?php echo $list[0]['id_ordTrabajo']." - ".$list[0]['descripcion']; ?></h3>
         </div><!-- /.box-header -->
         <div class="box-body">

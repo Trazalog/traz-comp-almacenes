@@ -1,22 +1,25 @@
     <div class="box box-primary">
-        <div class="box-header">
+        <div class="box-header with-border">
             <h3 class="box-title">Pedido Materiales</h3>
-            <?php
-            if(!viewOT)
-            {
-            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
-                onclick="linkTo(\''.ALM.'Notapedido/crearPedido\')">Agregar</button>';
-            }else{
-                echo '<button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;"
-                onclick="AbrirModal()">Agregar</button>';
-            }
-            if(isset($descripcionOT))
-            {
-                echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
-            }
-                ?>
+
         </div><!-- /.box-header -->
         <div class="box-body" id="deposito_contenedor">
+
+						<?php
+							if(!viewOT)
+							{
+							echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
+									onclick="linkTo(\''.ALM.'Notapedido/crearPedido\')">Agregar</button>';
+							}else{
+									echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
+									onclick="AbrirModal()">Agregar</button>';
+							}
+							if(isset($descripcionOT))
+							{
+									echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
+							}
+						?>
+
             <table id="deposito" class="table table-bordered table-striped table-hover">
                 <thead>
                     <tr>
