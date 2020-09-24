@@ -265,7 +265,7 @@ function set_pedido() {
         url: 'index.php/<?php echo ALM ?>Notapedido/setNotaPedido',
         success: function(result) {
             console.log('setNotaPedido: ');
-            
+
             console.log(result);
             
             $('#pema_id').val(result.pema_id);

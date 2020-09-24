@@ -1,10 +1,11 @@
 <div class="box box-primary">
-    <div class="box-header">
+    <div class="box-header with-border">
         <h3 class="box-title">Listado de Artículos</h3>
-        <button class="btn btn-block btn-primary" style="width: 100px; margin-top: 10px;" data-toggle="modal"
-            data-target="#new_articulo" data->Agregar</button>
+
     </div><!-- /.box-header -->
     <div class="box-body">
+		<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;" data-toggle="modal"
+            data-target="#new_articulo" data->Agregar</button>
         <table id="articles" class="table table-bordered table-hover">
             <thead>
                 <tr>
