@@ -2,7 +2,7 @@
     exit('No direct script access allowed');
 }
 
-class Entregas_Materiales extends CI_Model
+class Entregasmateriales extends CI_Model
 {
     private $tabla = 'alm.alm_entrega_materiales';
     private $key = 'enma_id';

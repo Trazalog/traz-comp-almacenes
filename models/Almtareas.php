@@ -10,7 +10,7 @@ class Almtareas extends CI_Model
 
         $this->load->model(ALM . 'Ordeninsumos');
         $this->load->model(ALM . 'Notapedidos');
-        $this->load->model(ALM . 'new/Pedidos_Materiales');
+        $this->load->model(ALM . 'new/Pedidosmateriales');
         $this->load->model(ALM . 'Pedidoextra');
 
     }
@@ -211,7 +211,7 @@ class Almtareas extends CI_Model
 
                 $this->Notapedidos->setMotivoRechazo($form['pema_id'], $form['motivo_rechazo']);
 
-                $this->Pedidos_Materiales->setEstado($form['pema_id'], $form['result'] == "true" ? 'Aprobado' : 'Rechazado');
+                $this->Pedidosmateriales->setEstado($form['pema_id'], $form['result'] == "true" ? 'Aprobado' : 'Rechazado');
 
                 $contrato['apruebaPedido'] = $form['result'];
 
@@ -225,7 +225,7 @@ class Almtareas extends CI_Model
 
                 $this->Ordeninsumos->insert_entrega_materiales($form);
 
-                $this->Pedidos_Materiales->setEstado($form['pema_id'], $form['completa'] == "true" ? 'Entregado' : 'Ent. Parcial');
+                $this->Pedidosmateriales->setEstado($form['pema_id'], $form['completa'] == "true" ? 'Entregado' : 'Ent. Parcial');
 
                 $contrato['entregaCompleta'] = $form['completa'];
 
@@ -249,8 +249,8 @@ class Almtareas extends CI_Model
 
                 # ACCIONES ANTES DE CERRAR TAREA
                 if ($form['result'] == "true") {
-                    $this->load->model('Pedidos_Materiales');
-                    $this->Pedidos_Materiales->pedidoNormal($form['pema_id']);
+                    $this->load->model('Pedidosmateriales');
+                    $this->Pedidosmateriales->pedidoNormal($form['pema_id']);
                 }
                 # CREAR CONTRATO
                 $contrato['motivo'] = $form['motivo'];
@@ -321,7 +321,7 @@ class Almtareas extends CI_Model
 
         $this->Notapedidos->setCaseId($pemaId, $rsp['data']['caseId']);
 
-        return $this->Pedidos_Materiales->setEstado($pemaId, 'Creada');
+        return $this->Pedidosmateriales->setEstado($pemaId, 'Creada');
     }
 
     public function pedidoExtraordinario($ot = 1)
