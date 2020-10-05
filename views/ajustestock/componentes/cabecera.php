@@ -45,7 +45,7 @@
 $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: 'general/Tipoajuste/obtenerAjuste',
+    url: '<?php echo base_url(PRD) ?>general/Tipoajuste/obtenerAjuste',
     success: function(result) {
 
         if (!result.status) {
@@ -73,7 +73,7 @@ $("#establecimiento").on('change', function() {
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: 'general/Establecimiento/obtenerDepositos?esta_id=' + idestablecimiento,
+        url: '<?php echo base_url(PRD) ?>general/Establecimiento/obtenerDepositos?esta_id=' + idestablecimiento,
         success: function(result) {
             if (result != null) {
                 //console.log(result);
