@@ -216,7 +216,7 @@ class Lotes extends CI_Model
             $batch_req['_post_lote_recipiente_cambiar_batch_req']['_post_lote_recipiente_cambiar'][] = $aux;
         }
 
-        $url = REST . 'lote/recipiente/cambiar_batch_req';
+        $url = REST_PRD . '/lote/recipiente/cambiar_batch_req';
         $rsp = $this->rest->callApi('POST', $url, $batch_req);
         wso2Msj($rsp);
         if (!$rsp['status']) {
