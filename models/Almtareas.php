@@ -295,9 +295,9 @@ class Almtareas extends CI_Model
 
     public function getInfoPedMateriales($caseId)
     {
-        $resource = 'pedidoMateriales';
+        $resource = '/pedidoMateriales';
 
-        $url = REST . $resource . '/' . $caseId;
+        $url = REST_ALM . $resource . '/' . $caseId;
 
         $rsp = $this->rest->callAPI('GET', $url);
 

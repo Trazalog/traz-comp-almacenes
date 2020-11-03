@@ -11,12 +11,8 @@ class Articulos extends CI_Model
 	public function obtenerXTipo($tipo)
 	{
 		$resource = "/articulos/tipo/$tipo";
-        $url = REST2 . $resource;
-        $rsp = $this->rest->callAPI("GET", $url);
-        if($rsp['status']){
-            $rsp['data'] = json_decode($rsp['data'])->articulos->articulo;
-        }
-        return $rsp;
+        $url = REST_ALM . $resource;
+        return wso2($url);
 	}
 
 	public function obtenerXTipos($tipos)
@@ -366,7 +362,7 @@ class Articulos extends CI_Model
 
 	public function getArtiService()
 	{
-		$url =  REST . 'articulos';
+		$url =  REST_ALM . '/articulos';
 		$data = $this->rest->callApi('GET', $url);
 		if ($data['status']) {
 			$data['data'] = json_decode($data['data'])->materias->materia;

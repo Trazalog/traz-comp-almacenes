@@ -15,7 +15,7 @@ if(!function_exists('lang_get')){
         $parametros["http"]["method"] = "GET";		 
         $param = stream_context_create($parametros);
        	
-        $url = REST.$resource;
+        $url = REST_PRD.$resource;
         $lang = file_get_contents($url, false, $param);
         $lang = json_decode($lang,true);
         $lang = $lang['labels']['label'];
