@@ -280,4 +280,10 @@ class Notapedido extends CI_Controller
         $this->pedidoNormal($idnota);
         echo json_encode($response);
     }
+    public function eliminarDetalle()
+    {
+        $depe_id = $this->input->post('id');
+        $response = $this->Notapedidos->eliminarDetalle($depe_id);
+        echo json_encode($response);
+    }
 }
