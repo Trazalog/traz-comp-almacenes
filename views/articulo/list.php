@@ -122,7 +122,7 @@ function ver(e) {
 }
 
 function editar(e) {
-    $('#arti_id').prop('disabled', false);
+    // $('#arti_id').prop('disabled', false);
     var json = JSON.parse(JSON.stringify($(e).closest('tr').data('json')));
     Object.keys(json).forEach(function(key, index) {
         $('[name="' + key + '"]').val(json[key]);
@@ -198,7 +198,7 @@ DataTable($('table'));
                 </div>
 
                 <form id="frm-articulo">
-                    <input id="arti_id" name="arti_id" type="text" class="hidden" disabled>
+                    <!-- <input id="arti_id" name="arti_id" type="text" class="hidden" disabled> -->
                     <fieldset id="read-only">
                         <div class="row">
                             <!-- Código de Articulo -->
@@ -206,6 +206,7 @@ DataTable($('table'));
                                 <div class="form-group">
                                     <label>Código <strong class="text-danger">*</strong>: </label>
                                     <input type="text" class="form-control" id="artBarCode" name="barcode">
+                                    <input id="arti_id" name="arti_id" type="text" class="form-control" style="display:none;">
                                 </div>
                             </div>
                             <div class="col-md-6">

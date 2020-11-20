@@ -33,6 +33,7 @@ class Articulo extends CI_Controller {
 	public function guardar()
 	{
 		$data = $this->input->post();
+		unset($data['arti_id']);
 		$data = $this->Articulos->guardar($data);
 		echo json_encode($data);
 	}
