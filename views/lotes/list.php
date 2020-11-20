@@ -13,8 +13,10 @@
                         <th class="text-center">N° Lote</th>
                         <th>Código</th>
                         <th>Producto</th>
-                        <th class="text-center">Cantidad</th>
-                        <th class="text-center">Vencimiento</th>
+                        <th class="text-center">Stock</th>
+                        <th class="text-center">Unidad de Medida</th>
+                        <th class="text-center">Recipiente</th>
+                        <th class="text-center">Fecha Creacion</th>
                         <th>Depósito</th>
                         <th>Estado</th>
                     </thead>
@@ -28,7 +30,9 @@
                             echo '<td>'.$f['artBarCode'].'</td>';
                             echo '<td>'.$f['artDescription'].'</td>';
                             echo '<td class="text-center">'.$f['cantidad'].'</td>';
-                            echo "<td class='text-center'>".fecha($f['fec_vencimiento'])."</td>";
+                            echo '<td class="text-center">'.$f['un_medida'].'</td>';
+                            echo '<td class="text-center">'.$f['nom_reci'].'</td>';
+                            echo "<td class='text-center'>".fecha(substr($f['fec_alta'], 0, 10))."</td>";
                             echo '<td>'.$f['depositodescrip'].'</td>';
                             echo '<td class="text-center">'.estado($f['estado']).'</td>';
                             echo '</tr>';

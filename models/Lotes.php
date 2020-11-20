@@ -12,10 +12,12 @@ class Lotes extends CI_Model
     public function getList() // Ok
 
     {
-        $this->db->select('alm.alm_lotes.*, alm.alm_articulos.descripcion as artDescription, alm.alm_articulos.barcode as artBarCode,alm.alm_lotes.cantidad,alm.alm_depositos.descripcion as depositodescrip');
+        $this->db->select('alm.alm_lotes.*, alm.alm_articulos.descripcion as artDescription, alm.alm_articulos.barcode as artBarCode,alm.alm_lotes.cantidad,alm.alm_depositos.descripcion as depositodescrip, alm.alm_articulos.unidad_medida as un_medida, prd.recipientes.nombre as nom_reci');
         $this->db->from('alm.alm_lotes');
         $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
         $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
+        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id');
+        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id');
         $this->db->where('cantidad !=',0);
         $this->db->where('alm.alm_lotes.empr_id', empresa());
         //$this->db->join('alm.alm.utl_tablas C','alm.alm_lotes.estado_id = C.tabl_id');
