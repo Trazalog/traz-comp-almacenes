@@ -104,7 +104,7 @@ function ver(e) {
 
 }
 function ConsultarEntrega(e)
-{zaqxsq
+{
     var tr = $(e).closest('tr');
     var id = $(tr).data('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
@@ -139,7 +139,6 @@ function ConsultarEntrega(e)
 }
 function EstadoPedido(e)
  {
-
     var id = $(e).closest('tr').data('pema');
     if (id == '' || id == null) return;
     $.ajax({
