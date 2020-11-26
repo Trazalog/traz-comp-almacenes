@@ -69,16 +69,24 @@
                                         class="form-control">
                                 </div>
                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
-                                    <label for="deposito">Depósito <strong style="color: #dd4b39">*</strong>
+                                    <label for="establecimiento">Establecimientos <strong style="color: #dd4b39">*</strong>
                                         :</label>
-                                    <select id="deposito" name="deposito" class="form-control">
+                                    <select onchange="seleccionesta(this)" id="establecimiento" class="form-control">
                                         <option value="false"> - Seleccionar - </option>
                                         <?php 
-                                            foreach ($depositos as $o) {
-                                                echo "<option value='$o->depo_id'>$o->descripcion</option>";
+                                            foreach ($establecimientos as $o) {
+                                                echo "<option value='$o->esta_id'>$o->nombre</option>";
                                             }
                                         ?>
                                     </select>
+                                </div>
+                                <div class="col-xs-12 col-sm-3 col-md-3"><br>
+                                    <label for="deposito">Depósito <strong style="color: #dd4b39">*</strong>
+                                        :</label>
+                                    <select id="deposito" name="deposito" class="form-control" readonly>
+                                        <option value="" disabled selected> - Seleccionar - </option>
+                                    </select>
+                                   
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12"><br>
                                     <br>
@@ -134,7 +142,30 @@ function eventSelect() {
         $('#lote').val('');
     }
 }
-
+function seleccionesta(opcion){
+    // alert("dentro");
+    var id_esta = $("#establecimiento").val();
+    console.table(id_esta);
+    $.ajax({
+            type: 'POST',
+            data: {id_esta},
+            url: 'index.php/<?php echo ALM?>Deposito/getdepositosxestaid',
+            success: function(data) {
+                var resp = JSON.parse(data);
+                console.table(resp);
+                console.table(resp[0].depo_id);
+                $('#deposito').empty();
+                for(var i=0; i<resp.length; i++)
+                {
+                    $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
+                }
+                $("#deposito").removeAttr('readonly');
+            },
+            error: function(data) {
+                alert('Error');
+            }
+        });
+}
 function verificarExistenciaLote() {
 
     if (!validar_campos()) {

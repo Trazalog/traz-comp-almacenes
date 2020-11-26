@@ -30,6 +30,7 @@ class Remito extends CI_Controller {
 		#COMPONENTE ARTICULOS
 		$data['proveedores'] = $this->Proveedores->obtener();
 		$data['depositos'] = $this->Depositos->obtener();
+		$data['establecimientos'] = $this->Depositos->obtenerEstablecimientos();
 		$data['items'] = $this->Componentes->listaArticulos();
 		$data['lang'] = lang_get('spanish', 'Ejecutar OT');
 
@@ -209,7 +210,7 @@ class Remito extends CI_Controller {
 
 		if(!$this->Remitos->guardar_detalles($id,$detalles)){log_message('ERROR','#Remito | MSJ: No se Registro Detalle de Entrega');}
 
-		return $data;
+		return $id;
 	}
 
 }

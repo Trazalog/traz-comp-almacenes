@@ -111,15 +111,16 @@ class Remitos extends CI_Model {
     function getDetaRemitos($idRemito)
     {
         $empresaId = empresa();
-        
+
         $sql = "SELECT T.dere_id as detaremitoid, T.rema_id as id_remito, T.lote_id as loteid, T.cantidad, 
             art.barcode as codigo, alm.alm_lotes.depo_id as depositoid, 
             art.arti_id as artId, art.barcode as artBarCode, art.descripcion as artDescription, 
-            alm.alm_depositos.descripcion as depositodescrip
+            alm.alm_depositos.descripcion as depositodescrip, prd.establecimientos.nombre as nomesta
             FROM alm.alm_deta_recepcion_materiales as T
             JOIN alm.alm_lotes ON alm.alm_lotes.lote_id = T.lote_id
             JOIN alm.alm_articulos art ON art.arti_id = alm.alm_lotes.arti_id
             JOIN alm.alm_depositos ON alm.alm_depositos.depo_id = alm.alm_lotes.depo_id
+            JOIN prd.establecimientos ON prd.establecimientos.esta_id = alm.alm_depositos.esta_id
             WHERE T.rema_id = $idRemito
             AND art.empr_id = $empresaId
             ";
