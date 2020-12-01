@@ -68,6 +68,11 @@ class Almtareas extends CI_Model
             $aux->texto = "Fecha: ".formatFechaPG($data['fecha']);
             $array['info'][] = $aux;
 
+            $aux = new StdClass();
+            $aux->color = 'default';
+            $aux->texto = "Justificacion: ".$data['justificacion'];
+            $array['info'][] = $aux;
+
         }
 
 
@@ -76,7 +81,8 @@ class Almtareas extends CI_Model
 
     public function desplegarCabecera($tarea)
     {
-        # code...
+        $resp = infoproceso($tarea);
+        return $resp;
     }
 
     public function desplegarVista($tarea)
