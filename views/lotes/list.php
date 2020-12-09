@@ -4,7 +4,7 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Movimientos de Stock</h3>
+                <h3 class="box-title">Stock</h3>
             </div><!-- /.box-header -->
 
             <div class="box-body">
@@ -18,7 +18,8 @@
                         <th class="text-center">Recipiente</th>
                         <th class="text-center">Fecha Creacion</th>
                         <th>Depósito</th>
-                        <th>Estado</th>
+                       <th>Recipiente</th>
+			 <th>Estado</th>
                     </thead>
                     <tbody>
                         <?php
@@ -34,7 +35,8 @@
                             echo '<td class="text-center">'.$f['nom_reci'].'</td>';
                             echo "<td class='text-center'>".fecha(substr($f['fec_alta'], 0, 10))."</td>";
                             echo '<td>'.$f['depositodescrip'].'</td>';
-                            echo '<td class="text-center">'.estado($f['estado']).'</td>';
+                           echo '<td>'.$f['recipiente'].'</td>';
+			    echo '<td class="text-center">'.estado($f['estado']).'</td>';
                             echo '</tr>';
                           }
                         
