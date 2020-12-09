@@ -9,7 +9,19 @@ class Depositos extends CI_Model
 
     public function obtener($id = false)
     {
-        if($id) $this->db->where('depo_id', $id);
-        return $this->db->get('alm.alm_depositos')->result();
+        if ($id) {
+            $this->db->where('depo_id', $id);
+            return $this->db->get('alm.alm_depositos')->result();
+        } else {
+
+						$empr_id = empresa();
+            $query = $this->db->get_where('alm.alm_depositos', array('empr_id' => $empr_id));
+            if ($query->num_rows() > 0) {
+                return $query->result();
+            } else {
+                return false;
+            }
+        }
+
     }
 }
