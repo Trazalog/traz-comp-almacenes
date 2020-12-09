@@ -321,11 +321,12 @@ class Remitos extends CI_Model {
         }
     }
 
-    function insert_lote($data3)
+    function insert_lote($data)
     {
-        $data3['empr_id'] = empresa();
-        $query   = $this->db->insert("alm.alm_lotes",$data3);
-        return $query;
+        $data['empr_id'] = empresa();
+        $data['fec_vencimiento'] = strlen($data['fec_vencimiento']) == 0? '3000-01-01':$data['fec_vencimiento'];
+        $query = $this->db->insert("alm.alm_lotes",$data);
+        if($query) return $this->db->insert_id();
     }
 
 
@@ -404,7 +405,11 @@ class Remitos extends CI_Model {
             $o['lote_id'] = $this->verificar_lote($o);
             $o['rema_id'] = $id;
             unset($o['codigo']);unset($o['depo_id']);unset($o['fec_vencimiento']);unset($o['loteado']);
-            $this->db->insert('alm.alm_deta_recepcion_materiales', $o);
+            if($o['lote_id']) 
+                $this->db->insert('alm.alm_deta_recepcion_materiales', $o);
+            else{
+                log_message('ERROR', '#TRAZA | '.__METHOR__.' | DATA:'.json_encode($o));
+            }
         };
 
         return true;
@@ -434,9 +439,9 @@ class Remitos extends CI_Model {
         //? SI NO EXISTE LOTE LO CREA
         unset($data['loteado']);
 
-        $this->insert_lote($data);
+        $newId = $this->insert_lote($data);
 
-        return $this->db->insert_id();
+        return $newId;
     }
 
     public function actualizar_lote($id, $data)
