@@ -41,8 +41,8 @@ class Articulo extends CI_Controller {
 	public function editar()
 	{
 		$data = $this->input->post();
-		$data = $this->Articulos->editar($data);
-		echo json_encode($data);
+		$rsp = $this->Articulos->editar($data);
+		echo json_encode($rsp);
 	}
 
 	public function getdatosart() // Ok

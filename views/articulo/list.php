@@ -82,7 +82,7 @@ function guardarArticulo() {
 
 function editarArticulo() {
 
-    var formData = new FormData($('#frm-articulo')[0]);
+    var formData = getForm('#frm-articulo');
 
     if (!validarForm()) return;
     wo();
@@ -92,12 +92,9 @@ function editarArticulo() {
         dataType: 'JSON',
         url: 'index.php/<?php echo ALM ?>Articulo/editar',
         data: formData,
-        cache: false,
-        contentType: false,
-        processData: false,
         success: function(rsp) {
-
             mdlClose('new_articulo');
+            hecho();
             linkTo();
         },
         error: function(rsp) {
