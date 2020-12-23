@@ -2,7 +2,8 @@
 
 <h3>Entrega Materiales <small>Información</small></h3>
 
-<div class="row">
+<?php echo getFormXEmpresa('Entrega Materiales', empresa()) ?>
+<!-- <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
             <label for="comprobante">N° Comprobante <strong style="color: #dd4b39">*</strong>:</label>
@@ -27,7 +28,7 @@
             <input class="form-control required" type="text" placeholder="Ingresar Solcitante..." id="dni">
         </div>
     </div>
-</div>
+</div> -->
 
 <hr>
 <div class="table-responsive">
