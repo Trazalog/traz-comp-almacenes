@@ -8,6 +8,12 @@ class Articulos extends CI_Model
 		parent::__construct();
 	}
 
+	public function obtenerTodos()
+	{
+		$url = REST_ALM.'/articulos/'.empresa();
+		return wso2($url);
+	}
+
 	public function obtenerXTipo($tipo)
 	{
 		$resource = "/articulos/tipo/$tipo";

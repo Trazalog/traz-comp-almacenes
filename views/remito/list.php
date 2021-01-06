@@ -82,6 +82,7 @@ $(".fa-search").click(function (e) {
             data['datosDetaRemitos'][i]['artdescription'],
             data['datosDetaRemitos'][i]['cantidad'],
             data['datosDetaRemitos'][i]['depositodescrip'],
+            data['datosDetaRemitos'][i]['nomesta'],
           ]).draw();
         }
 
@@ -178,6 +179,7 @@ var table = $('#tablaconsulta').DataTable( {
                   <th>Descripción</th>
                   <th>Cantidad</th>
                   <th>Depósito</th>
+                  <th>Establecimiento</th>
                 </tr>
               </thead>
               <tbody>

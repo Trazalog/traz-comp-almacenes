@@ -36,6 +36,7 @@
 
                     <?php
 foreach ($list as $o) {
+    if($o['cantidad'] == 0) continue;
     echo '<tr>';
     echo '<td>' . ($o['codigo']==1?'S/L':$o['codigo']) . '<input class="lote_depo hidden" value=\'' . json_encode(['lote_id' => $o['lote_id'], 'depo_id' => $o['depo_id'], 'arti_id' => $o['arti_id'], 'prov_id' => $o['prov_id'], 'empr_id' => $o['empr_id']]) . '\'></td>';
     echo '<td class="text-center">' . fecha($o['fec_vencimiento']) . '</td>';
