@@ -26,7 +26,7 @@ class Articulo extends CI_Controller {
 		$url =  REST_ALM . '/articulos/'.empresa();
 		$data = wso2($url);
 		if($data['status']){
-			if($opt) $data['data'] = selectBusquedaAvanzada(false, false, $data['data'], 'id', 'barcode',array('descripcion'));
+			if($opt) $data['data'] = selectBusquedaAvanzada(false, false, $data['data'], 'arti_id', 'barcode',array('descripcion'));
 			echo json_encode($data);
 		}
 	}
