@@ -1,5 +1,5 @@
 <div class="box box-primary tag-descarga">
-    <div class="box-header">
+    <div class="box-header with-border">
         <h3 class="box-title">Ajuste de Stock</h3>
     </div>
     <div class="box-body">
@@ -45,7 +45,7 @@
 $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: '<?php echo base_url(PRD) ?>general/Tipoajuste/obtenerAjuste',
+    url: '<?php echo base_url(ALM) ?>/general/Tipoajuste/obtenerAjuste',
     success: function(result) {
 
         if (!result.status) {
@@ -66,10 +66,11 @@ $.ajax({
 });
 
 $("#establecimiento").on('change', function() {
-    //console.log($("#establecimiento>option:selected").attr("data-json"));
+
+		wo('Buscando Depositos...');
     json = JSON.parse($("#establecimiento>option:selected").attr("data-json"));
     idestablecimiento = json.esta_id;
-    //console.log(idestablecimiento);
+
     $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -87,9 +88,11 @@ $("#establecimiento").on('change', function() {
                 var option_depo = '<option value="" disabled selected>Sin depositos</option>';
                 $('#deposito').html(option_depo);
                 console.log("El establecimiento no tiene depositos");
-            }
+						}
+						wc();
         },
         error: function() {
+						wc();
             alert('Error');
         }
     });

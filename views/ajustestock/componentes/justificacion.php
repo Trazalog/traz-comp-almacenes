@@ -1,5 +1,5 @@
 <div class="box box-primary tag-descarga">
-    <div class="box-body">
+    <div class="box-body with-border">
         <div class="form-group">
             <label for="">Justificacion:</label>
             <textarea style="resize: none;" type="text" class="form-control input-sm" rows="5" id="justificacion"
