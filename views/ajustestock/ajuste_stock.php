@@ -5,7 +5,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <?php 
+            <?php
                 $this->load->view(ALM.'ajustestock/componentes/entrada');
             ?>
         </div>
@@ -30,12 +30,11 @@ function obtenerArticulos() {
         dataType: 'JSON',
         url: 'index.php/<?php echo ALM ?>Articulo/obtener',
         success: function(rsp) {
-            //console.log(rsp);
 
             if (!rsp.status) {
                 alert('No hay Articulos Disponibles');
                 return;
-            }
+						}
             rsp.data.forEach(function(e, i) {
                 $('.articulos').append(
                     `<option value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
@@ -58,19 +57,21 @@ $("#articulosal").on('change', function() {
     $("#unidadsal").val($("#articulosal>option:selected").attr("data"));
 });
 
+// Trae lotes por articulo de Salida
 $("#articulosal").on('change', function() {
-    $idarticulo = $("#articulosal>option:selected").val();
-    $iddeposito = $("#deposito>option:selected").val();
-    // codigo referido a la muestra de lotes por articulos
-    $.ajax({
+		wo('Buscando lotes activos...');
+		var dato = $("#unidadsal").val();
+    var $idarticulo = $("#articulosal option:selected").val();
+    var $iddeposito = $("#deposito option:selected").val();
+
+		$.ajax({
         type: 'GET',
         dataType: 'json',
         url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' +
             $iddeposito,
         success: function(result) {
             if (result == null) {
-                var option_lote = '<option value="" disabled selected>Sin lotes</option>';
-                // $('#deposito').html(option_depo);
+                var option_lote = '<option value="" disabled selected>-Sin lotes-</option>';
                 console.log("Sin lotes");
             } else {
                 var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
@@ -80,18 +81,23 @@ $("#articulosal").on('change', function() {
                         '</option>';
                 }
             }
-            $('#lotesal').html(option_lote);
+						$('#lotesal').html(option_lote);
+						wc();
         },
         error: function() {
+						wc();
             alert('Error');
         }
     });
 });
 
 $("#articuloent").on('change', function() {
+
+		wo('Buscando lotes activos...');
+
     $idarticulo = $("#articuloent>option:selected").val();
     $iddeposito = $("#deposito>option:selected").val();
-    // codigo referido a la muestra de lotes por articulos
+
     $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -100,8 +106,6 @@ $("#articuloent").on('change', function() {
         success: function(result) {
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
-                // $('#deposito').html(option_depo);
-                console.log("Sin lotes");
             } else {
                 var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
                 for (let index = 0; index < result.length; index++) {
@@ -110,67 +114,40 @@ $("#articuloent").on('change', function() {
                         '</option>';
                 }
             }
-            $('#loteent').html(option_lote);
+						$('#loteent').html(option_lote);
+						wc();
         },
         error: function() {
+						wc();
             alert('Error');
         }
     });
 });
 
 function guardar(){
-    //esta funcion guarda el ajuste y espera un id_ajuste para luego llamar a otra funcion con este id que va a ser la encargada de guardar los datos especificos del lote (dependiendo si es entrada o salida) 
-    var formdata = new FormData($("#formTotal")[0]);
-    var formobj = formToObject(formdata);
-    // console.log(formobj);
-    $.ajax({
-        type: 'POST',
+		wo();
+		var formdata = new FormData($("#formTotal")[0]);
+		var formobj = formToObject(formdata);
+		formobj.tipo_ent_sal  = $("#tipoajuste>option:selected").attr("data");
+
+		$.ajax({
+				type: 'POST',
+				dataType: 'json',
         data: {
             data: formobj
         },
         url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
         success: function(rsp) {
-            if(!rsp){
-                alert("error");
-                return;
-            }else{
-                rsp = JSON.parse(rsp);
-                //console.log(rsp);
-                guardaAjusteDetalle(rsp,formobj);
-            }
+						wc();
+						debugger;
+						alertify.success(rsp.data);
         },
         error: function(rsp) {
-            alert('Error: ' + rsp.msj);
-            console.log(rsp.msj);
+						wc();
+           	alertify.error(rsp.data);
         },
         complete: function() {}
     });
 }
 
-function guardaAjusteDetalle($rsp, $formobj){
-    $formobj['ajus_id'] = $rsp.respuesta.ajus_id;
-    $formobj['tipo_ent_sal'] = $("#tipoajuste>option:selected").attr("data");
-    console.log($formobj);
-    $.ajax({
-        type: 'POST',
-        data: {
-            data: $formobj
-        },
-        url: '<?php echo ALM ?>Ajustestock/guardarDetalleAjuste',
-        success: function(rsp) {
-            if(!rsp){
-                alert("error");
-                return;
-            }else{
-                alert("Accion realizada con exito");
-                setTimeout("linkTo()",1700);
-            }
-        },
-        error: function(rsp) {
-            alert('Error: ' + rsp.msj);
-            console.log(rsp.msj);
-        },
-        complete: function() {}
-    });
-}
 </script>
