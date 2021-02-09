@@ -41,4 +41,15 @@ class Ajustestock extends CI_Controller
         echo json_encode(['status' => false, 'data' => 'Ajuste Stock Guardado Exitosamente ...']);
     }
 
+		/**
+		* Trae listado de depositos por id de Estabelcimiento
+		* @param int id establecimiento
+		* @return array listado de depositos
+		*/
+		public function traerDepositos()
+		{
+			$id = $this->input->post('id_esta');
+			$resp = $this->Establecimientos->obtenerDepositos($id);
+			echo json_encode($resp->depositos->deposito);
+		}
 }

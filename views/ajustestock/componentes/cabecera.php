@@ -1,5 +1,5 @@
 <div class="box box-primary tag-descarga">
-    <div class="box-header with-border">
+    <div class="box-header">
         <h3 class="box-title">Ajuste de Stock</h3>
     </div>
     <div class="box-body">
@@ -8,7 +8,7 @@
                 <div class="form-group">
                     <label>Establecimiento:</label>
                     <select class="form-control" id="establecimiento"
-                        name="establecimiento" required>
+                        name="establecimiento" onchange="seleccionesta(this)" required>
                         <option value="" disabled selected>-Seleccione opcion-</option>
                         <?php                                               
                         foreach ($establecimientos as $i) {
@@ -33,6 +33,7 @@
                     <label>Tipo de ajuste:</label>
                     <select class="form-control" id="tipoajuste" name="tipoajuste"
                         required>
+                        <!-- si no me equivoco le falta asignar el atributo data-->
                         <option value="" disabled selected>-Seleccione opcion-</option>
                     </select>
                 </div>
@@ -45,7 +46,7 @@
 $.ajax({
     type: 'GET',
     dataType: 'json',
-    url: '<?php echo base_url(ALM) ?>/general/Tipoajuste/obtenerAjuste',
+    url: 'index.php/<?php echo ALM?>general/Tipoajuste/obtenerAjuste',
     success: function(result) {
 
         if (!result.status) {
@@ -53,10 +54,10 @@ $.ajax({
             return;
         }
         result = result.data;
+        // console.log(result);
         var option_ajuste = '<option value="" disabled selected>-Seleccione opcion-</option>';
         for (let index = 0; index < result.length; index++) {
-            option_ajuste += '<option value="' + result[index].nombre + '" data="' + result[index].tipo + '">' + result[index].nombre +
-                '</option>';
+            option_ajuste += '<option value="' + result[index].nombre + '" data="' + result[index].tipo + '">' + result[index].nombre + '</option>';
         }
         $('#tipoajuste').html(option_ajuste);
     },
@@ -65,38 +66,41 @@ $.ajax({
     }
 });
 
-$("#establecimiento").on('change', function() {
+// Al seleccionar establecimiento, busca depositos
+function seleccionesta(opcion){
 
-		wo('Buscando Depositos...');
-    json = JSON.parse($("#establecimiento>option:selected").attr("data-json"));
-    idestablecimiento = json.esta_id;
+WaitingOpen('Buscando Depositos...');
+var id_esta = $("#establecimiento").val();
+json = JSON.parse($("#establecimiento>option:selected").attr("data-json"));
+id_esta = json.esta_id;
 
-    $.ajax({
-        type: 'GET',
-        dataType: 'json',
-        url: '<?php echo base_url(PRD) ?>general/Establecimiento/obtenerDepositos?esta_id=' + idestablecimiento,
-        success: function(result) {
-            if (result != null) {
-                //console.log(result);
-                var option_depo = '<option value="" disabled selected>-Seleccione opcion-</option>';
-                for (let index = 0; index < result.length; index++) {
-                    option_depo += '<option value="' + result[index].depo_id + '">' + result[index].descripcion +
-                        '</option>'
-                }
-                $('#deposito').html(option_depo);
-            } else {
-                var option_depo = '<option value="" disabled selected>Sin depositos</option>';
-                $('#deposito').html(option_depo);
-                console.log("El establecimiento no tiene depositos");
+$.ajax({
+				type: 'POST',
+				data: {id_esta},
+				url: 'index.php/<?php echo ALM?>MovimientoDepoSal/traerDepositos',
+				success: function(data) {
+
+						var resp = JSON.parse(data);
+						WaitingClose();
+						$('#deposito').empty();
+						$("#deposito").removeAttr('readonly');
+						if (resp == null) {
+								$('#deposito').append('<option value="" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
+						} else {
+							$('#deposito').append('<option value="" disabled selected>-Seleccione Depósito-</option>');
+								for(var i=0; i<resp.length; i++)
+								{
+										$('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
+								}
 						}
-						wc();
-        },
-        error: function() {
-						wc();
-            alert('Error');
-        }
-    });
+				},
+				error: function(data) {
+						alert('Error');
+						WaitingClose();
+				}
 });
+}
+
 
 
 $("#boxEntrada :input").prop("disabled", true);
