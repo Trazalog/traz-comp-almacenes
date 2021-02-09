@@ -228,7 +228,7 @@
 			$.ajax({
 					type: 'POST',
 					data: {arti_id: arti_id, depo_id: depo_id},
-					url: 'index.php/<?php echo ALM?>MovimientoDepoSal/traerLotes',
+					url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerLotes',
 					success: function(data) {
 
 							$('#lote_id').empty();
@@ -262,7 +262,7 @@
 			$.ajax({
 							type: 'POST',
 							data: {id_esta},
-							url: 'index.php/<?php echo ALM?>MovimientoDepoSal/traerDepositos',
+							url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerDepositos',
 							success: function(data) {
 
 									var resp = JSON.parse(data);
@@ -378,7 +378,7 @@
 							type: 'POST',
 							data:{cabecera, detalle},
 							dataType: 'json',
-							url: 'index.php/<?php echo ALM?>MovimientoDepoSal/guardar',
+							url: 'index.php/<?php echo ALM?>Movimientodeposalida/guardar',
 							success: function(result) {
 								WaitingClose();
 								$('#btn_guardar').attr("disabled", "");
@@ -431,7 +431,7 @@
 					type: 'POST',
 					data:{cabecera, detalle},
 					dataType: 'json',
-					url: 'index.php/<?php echo ALM?>MovimientoDepoSal/imprimir',
+					url: 'index.php/<?php echo ALM?>Movimientodeposalida/imprimir',
 					success: function(data) {
 						WaitingClose();
 						debugger;

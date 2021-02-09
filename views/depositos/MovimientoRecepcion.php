@@ -361,7 +361,7 @@
 		$.ajax({
 				type: 'POST',
 				data: {arti_id:arti_id, depo_id:depo_id},
-				url: 'index.php/<?php echo ALM?>MovimientoDepoRecep/traerLotes',
+				url: 'index.php/<?php echo ALM?>Movimientodeporecepcion/traerLotes',
 				success: function(data) {
 
 							$('#cod_lote').empty();
@@ -428,7 +428,7 @@
 		$.ajax({
 				type: 'POST',
 				data: {id_esta_dest, id_depo_dest},
-				url: 'index.php/<?php echo ALM?>MovimientoDepoRecep/traerRecepciones',
+				url: 'index.php/<?php echo ALM?>Movimientodeporecepcion/traerRecepciones',
 				success: function(data) {
 
 								WaitingClose();
@@ -500,7 +500,7 @@
 							type: 'POST',
 							data:{cabecera, detalle},
 							dataType: 'json',
-							url: '<?php echo ALM ?>MovimientoDepoRecep/guardar',
+							url: '<?php echo ALM ?>Movimientodeporecepcion/guardar',
 							success: function(result) {
 
 								$('#btn_guardar').attr("disabled", "");
@@ -560,7 +560,7 @@
 			$.ajax({
 					type: 'POST',
 					data: {id_esta},
-					url: 'index.php/<?php echo ALM?>MovimientoDepoRecep/traerDepositos',
+					url: 'index.php/<?php echo ALM?>Movimientodeporecepcion/traerDepositos',
 					success: function(data) {
 
 							var resp = JSON.parse(data);

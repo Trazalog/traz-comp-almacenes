@@ -5,12 +5,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 *
 * @autor Hugo Gallardo
 */
-class MovimientoDepoSal extends CI_Controller {
+class Movimientodeposalida extends CI_Controller {
 
 	function __construct()
   {
 		parent::__construct();
-    $this->load->model(ALM.'/MovimientoDepositosSal');
+    $this->load->model(ALM.'/Movimientodeposalida');
 		$this->load->model('general/Establecimientos');
 		$this->load->model('traz-comp/Componentes');
 		$this->load->model('Tablas');
@@ -52,7 +52,7 @@ class MovimientoDepoSal extends CI_Controller {
 
 		$arti_id = $this->input->post('arti_id');
 		$depo_id = $this->input->post('depo_id');
-		$resp = $this->MovimientoDepositosSal->traerLotes($arti_id, $depo_id);
+		$resp = $this->Movimientodeposalida->traerLotes($arti_id, $depo_id);
 		echo json_encode($resp);
 	}
 
@@ -66,19 +66,19 @@ class MovimientoDepoSal extends CI_Controller {
 		$data['_post_movimientointerno'] = $this->input->post('cabecera');
 		$data['_post_movimientointerno']['empr_id'] = empresa();
 		$data['_post_movimientointerno']['usuario_app'] = userNick();
-		log_message('DEBUG','#TRAZA|ALM|MOVIMIENTOSALIDA|guardar()  $data >> '.json_encode($data));
-		$moin_id = (string) $this->MovimientoDepositosSal->guardarCabecera($data);
+		log_message('DEBUG','#TRAZA|ALM|MOVIMIENTODEPOSALIDAIDA|guardar()  $data >> '.json_encode($data));
+		$moin_id = (string) $this->Movimientodeposalida->guardarCabecera($data);
 		if ($moin_id == null) {
-			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSAL|guardar() >> ERROR EN GUARDADO DE CABECERA');
+			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSALIDA|guardar() >> ERROR EN GUARDADO DE CABECERA');
 			echo json_encode(['status' => false, 'data' => 'Error al guardar Cabecera de Movimiento...']);
 			return;
 		}
 
 		$post_detalle = $this->input->post('detalle');
 		$detalle = $this->armarDetalle($post_detalle, $moin_id);
-		$resp = $this->MovimientoDepositosSal->guardarDetalle($detalle);
+		$resp = $this->Movimientodeposalida->guardarDetalle($detalle);
 		if (!$resp) {
-			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSAL|guardar() >> ERROR EN GUARDADO DE DETALLE');
+			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSALIDA|guardar() >> ERROR EN GUARDADO DE DETALLE');
 			echo json_encode(['status' => false, 'data' => 'Error al guardar Detalle de Movimiento...']);
 			return ;
 		}
@@ -122,10 +122,10 @@ class MovimientoDepoSal extends CI_Controller {
 			$tmp['cantidad'] = $a->cantidad;
 			$tmp['lote_id'] = $a->lote_id_origen;
 			$item[] = $tmp;
-			$resp_det = $this->MovimientoDepositosSal->descontarEnLote($item);
+			$resp_det = $this->Movimientodeposalida->descontarEnLote($item);
 			if (!$resp_det) {
 				return $resp_det;
-				log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACENES|MOVIMIENTODEPOSAL|descontarLote($detalle) >> ERROR: No desconto en lote la cantidad enviada ');
+				log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACENES|MOVIMIENTODEPOSALIDA|descontarLote($detalle) >> ERROR: No desconto en lote la cantidad enviada ');
 			}
 			unset($item);
 		}
@@ -140,7 +140,7 @@ class MovimientoDepoSal extends CI_Controller {
 	*/
 	function imprimir()
 	{     
-		log_message('INFO','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSAL|IMPRIMIR  >> ');
+		log_message('INFO','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSALIDA|IMPRIMIR  >> ');
 
 		$datos['cabecera'] = $this->input->post('cabecera');
 		$datos['detalle'] = $this->input->post('detalle');

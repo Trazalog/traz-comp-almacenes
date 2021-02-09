@@ -4,7 +4,7 @@
 *
 * @autor Hugo Gallardo
 */
-class MovimientoDepositosSal extends CI_Model {
+class Movimientodeposalida extends CI_Model {
 
 	function __construct()
 	{
