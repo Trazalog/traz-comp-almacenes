@@ -19,8 +19,8 @@ class Establecimientos extends CI_Model
     {
         $resource = 'establecimiento';
         $url = REST.$resource;
-        $array = $this->rest->callAPI("GET",$url); 
-        $resp =  json_decode($array['data']);		
+        $array = $this->rest->callAPI("GET",$url);
+        $resp =  json_decode($array['data']);
         return $resp;
     }
     public function obtenerDepositos($idestablecimiento)

@@ -26,7 +26,8 @@ class Movimientodeporecepcion extends CI_Controller {
 	public function index()
 	{
     $data['items'] = $this->Componentes->listaArticulos();
-		$data['establecimiento'] = ($this->Establecimientos->listar())->establecimientos->establecimiento;
+		$estabList = $this->Establecimientos->listar();
+		$data['establecimiento'] = $estabList->establecimientos->establecimiento;
 		$data['depositos'] = $this->Establecimientos->obtenerDepositoPorEmp();
 		$unidades = $this->Tablas->obtenerTabla('unidades_medida');
 		$data['unidades'] = $unidades['data'];

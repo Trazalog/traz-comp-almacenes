@@ -297,7 +297,7 @@
       <param name="empr_id" sqlType="STRING"/>
    </query>
    <query id="setDetaMovimientoInterno" useConfig="ToolsDataSource">
-      <sql>INSERT&#xd;	INTO&#xd;	alm.deta_movimientos_internos (	&#xd;	codigo,&#xd;	cantidad_cargada,&#xd;	usuario,&#xd;	usuario_app,&#xd;	arti_id,&#xd;	lote_id_origen,&#xd;	moin_id)&#xd;VALUES(	:codigo,&#xd;	cast(:cantidad as DECIMAL(9,2)),&#xd;	current_user,&#xd;	:usuario_app,&#xd;	CAST(:arti_id AS INTEGER),&#xd;	CAST(:lote_id_origen AS INTEGER),&#xd;	CAST(:moin_id AS INTEGER)&#xd;)</sql>
+      <sql>INSERT&#xd;	INTO&#xd;	alm.deta_movimientos_internos (	&#xd;	codigo,&#xd;	cantidad_cargada,	&#xd;	usuario_app,&#xd;	arti_id,&#xd;	lote_id_origen,&#xd;	moin_id)&#xd;VALUES(	:codigo,&#xd;	cast(:cantidad as FLOAT4),	&#xd;	:usuario_app,&#xd;	CAST(:arti_id AS INTEGER),&#xd;	CAST(:lote_id_origen AS INTEGER),&#xd;	CAST(:moin_id AS INTEGER)&#xd;)</sql>
       <param name="codigo" sqlType="STRING"/>
       <param name="cantidad" sqlType="STRING"/>
       <param name="usuario_app" sqlType="STRING"/>
@@ -365,6 +365,15 @@
       <sql>select descripcion,direccion,gps,depo_id&#xd;from alm.alm_depositos&#xd;where empr_id = cast(:empr_id as integer)</sql>
       <result outputType="json">{"depositos": {&#xd;   "deposito":[&#xd;       {&#xd;        "descripcion":"$descripcion"&#xd;        ,"direccion":"$direccion"&#xd;        ,"gps":"$gps"&#xd;        ,"depo_id":"$depo_id"&#xd;       }&#xd;     ]&#xd;}&#xd;}</result>
       <param name="empr_id" sqlType="STRING"/>
+   </query>
+   <query id="getLoteId" useConfig="ToolsDataSource">
+      <sql>select lote_id &#xd;from alm.alm_lotes&#xd;where prov_id=cast(:prov_id as integer)&#xd;and arti_id=cast(:arti_id as integer)&#xd;and depo_id=cast(:depo_id as integer)&#xd;and empr_id=cast(:empr_id as integer)&#xd;and codigo=:cod_lote</sql>
+      <result outputType="json">{&#xd; "lote": {&#xd; "lote_id": "$lote_id"&#xd; }&#xd;}</result>
+      <param name="prov_id" sqlType="STRING"/>
+      <param name="arti_id" sqlType="STRING"/>
+      <param name="depo_id" sqlType="STRING"/>
+      <param name="empr_id" sqlType="STRING"/>
+      <param name="cod_lote" sqlType="STRING"/>
    </query>
    <resource method="GET" path="/articulos/{empr_id}">
       <call-query href="getArticulos">
@@ -756,6 +765,15 @@
    <resource method="GET" path="/empresa/{empr_id}/depositos/list">
       <call-query href="getDepositosPorEmpresa">
          <with-param name="empr_id" query-param="empr_id"/>
+      </call-query>
+   </resource>
+   <resource method="GET" path="/lote/id/prov_id/{prov_id}/arti_id/{arti_id}/depo_id/{depo_id}/empr_id/{empr_id}/cod_lote/{cod_lote}">
+      <call-query href="getLoteId">
+         <with-param name="prov_id" query-param="prov_id"/>
+         <with-param name="arti_id" query-param="arti_id"/>
+         <with-param name="depo_id" query-param="depo_id"/>
+         <with-param name="empr_id" query-param="empr_id"/>
+         <with-param name="cod_lote" query-param="cod_lote"/>
       </call-query>
    </resource>
 </data>
