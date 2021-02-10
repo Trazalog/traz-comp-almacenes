@@ -7,14 +7,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 */
 class Movimientodeporecepcion extends CI_Controller {
 
-	function __construct() 
+	function __construct()
 	{
 		parent::__construct();
 
-		$this->load->model(ALM.'/Movimientodeporecepcion');
+		//$this->load->model(ALM.'/Movimientodeporecepcion');
 		$this->load->model('general/Establecimientos');
 		$this->load->model('traz-comp/Componentes');
-    $this->load->model('Tablas');
+		$this->load->model('Tablas');
+		$this->load->model('Movimdeporecepcion');
 	}
 
 	/**
@@ -55,7 +56,7 @@ class Movimientodeporecepcion extends CI_Controller {
 	{
 		$id_dest_esta = $this->input->post('id_esta_dest');
 		$id_dest_depo = $this->input->post('id_depo_dest');
-		$otralist = $this->Movimientodeporecepcion->Get_Recpciones($id_dest_esta, $id_dest_depo);
+		$otralist = $this->Movimdeporecepcion->Get_Recpciones($id_dest_esta, $id_dest_depo);
 		$movim = $otralist[0]->detallesMovimientosInternos->detalleMovimientoInterno;
 		echo json_encode($otralist);
 	}
@@ -63,7 +64,7 @@ class Movimientodeporecepcion extends CI_Controller {
 	public function traerLotes(){
 		$arti_id = $this->input->post('arti_id');
 		$depo_id = $this->input->post('depo_id');
-		$resp = $this->Movimientodeporecepcion->traerLotes($arti_id, $depo_id);
+		$resp = $this->Movimdeporecepcion->traerLotes($arti_id, $depo_id);
 		echo json_encode($resp);
 	}
 	/**
@@ -75,7 +76,7 @@ class Movimientodeporecepcion extends CI_Controller {
 
 		// actualizacion cabecera movimiento
 		$cabecera = $this->input->post("cabecera");
-		$resp = $this->Movimientodeporecepcion->guardarCabecera($cabecera);
+		$resp = $this->Movimdeporecepcion->guardarCabecera($cabecera);
 		if (!$resp) {
 			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPORECEP|guardar() >> ERROR de no actualizó la cabecera de movimiento de deposito');
 			echo json_encode(['status' => $resp, 'data' => 'Error en guardado de cabecera...']);
@@ -106,14 +107,14 @@ class Movimientodeporecepcion extends CI_Controller {
 
 			// actualiza lotes
 			$lotes = $this->armarDatosLote($value);// probablemente no ande pide fecha-hora
-			$resp_set_lote = $this->Movimientodeporecepcion->actualizarLotes($lotes);
+			$resp_set_lote = $this->Movimdeporecepcion->actualizarLotes($lotes);
 			if(!$resp_set_lote){
 				log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPORECEP|updateLotesDetalles($detalote) >> ERROR: no actualizo lote en modelo');
 				$resp = array('status' => $resp, 'data' => 'Error No Actualizó Lote...');
 				$error = 1;
 				break;
 			}
-			//FIXME: ACA NO TRAE EL LOTE GENERADO Y SE CORTA
+
 			//traer id de lote
 			$lote_id = $this->getLoteIdGenerado($value);// cuando no encuentra devuelve null
 			if ($lote_id == null) {
@@ -125,7 +126,7 @@ class Movimientodeporecepcion extends CI_Controller {
 
 			// armar detalle
 			$detalle = $this->armarDatosDetalle($lote_id, $value);
-			$resp_detalle = $this->Movimientodeporecepcion->guardarDetalle($detalle);
+			$resp_detalle = $this->Movimdeporecepcion->guardarDetalle($detalle);
 			if (!$resp_detalle) {
 				log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPORECEP|updateLotesDetalles($detalote) >> ERROR: no guardo detalle de movimiento...');
 				$resp = array('status' => $resp, 'data' => 'Error en Guardado detalle de Movimiento Interno...');
@@ -169,7 +170,7 @@ class Movimientodeporecepcion extends CI_Controller {
 		$arti_id = $data['arti_id'];
 		$depo_id = $data['depo_id'];
 		$cod_lote = $data['cod_lote'];
-		$lote_id = $this->Movimientodeporecepcion->getLoteIdGenerado($prov_id, $arti_id, $depo_id, $cod_lote);
+		$lote_id = $this->Movimdeporecepcion->getLoteIdGenerado($prov_id, $arti_id, $depo_id, $cod_lote);
 		if ($lote_id == null) {
 				log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPORECEP|getLoteIdGenerado($data) >> ERROR NO DEVOLVIO $lote_id desde servicio');
 		}

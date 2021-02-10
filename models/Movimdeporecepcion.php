@@ -4,7 +4,7 @@
 *
 * @autor Hugo Gallardo
 */
-class Movimientodeporecepcion extends CI_Model {
+class Movimdeporecepcion extends CI_Model {
 
 	function __construct()
 	{

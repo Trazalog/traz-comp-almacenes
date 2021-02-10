@@ -77,7 +77,7 @@ id_esta = json.esta_id;
 $.ajax({
 				type: 'POST',
 				data: {id_esta},
-				url: 'index.php/<?php echo ALM?>MovimientoDepoSal/traerDepositos',
+				url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerDepositos',
 				success: function(data) {
 
 						var resp = JSON.parse(data);

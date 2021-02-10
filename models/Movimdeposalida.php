@@ -4,7 +4,7 @@
 *
 * @autor Hugo Gallardo
 */
-class Movimientodeposalida extends CI_Model {
+class Movimdeposalida extends CI_Model {
 
 	function __construct()
 	{
@@ -13,7 +13,7 @@ class Movimientodeposalida extends CI_Model {
 
 	/**
 	* Trae lotes de un articulo en un determinado deposito
-	* @param strin art_id y depo_id
+	* @param string art_id y depo_id
 	* @return array con info de lotes encontrados
 	*/
 	function traerLotes($arti_id, $depo_id){

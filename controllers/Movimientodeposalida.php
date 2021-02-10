@@ -10,10 +10,11 @@ class Movimientodeposalida extends CI_Controller {
 	function __construct()
   {
 		parent::__construct();
-    $this->load->model(ALM.'/Movimientodeposalida');
-		$this->load->model('general/Establecimientos');
-		$this->load->model('traz-comp/Componentes');
-		$this->load->model('Tablas');
+    // $this->load->model(ALM.'Movimientodeposalida');
+		 $this->load->model('general/Establecimientos');
+		 $this->load->model('traz-comp/Componentes');
+		 $this->load->model('Tablas');
+		 $this->load->model('Movimdeposalida');
 	}
 
 	/**
@@ -52,7 +53,7 @@ class Movimientodeposalida extends CI_Controller {
 
 		$arti_id = $this->input->post('arti_id');
 		$depo_id = $this->input->post('depo_id');
-		$resp = $this->Movimientodeposalida->traerLotes($arti_id, $depo_id);
+		$resp = $this->Movimdeposalida->traerLotes($arti_id, $depo_id);
 		echo json_encode($resp);
 	}
 
@@ -67,7 +68,7 @@ class Movimientodeposalida extends CI_Controller {
 		$data['_post_movimientointerno']['empr_id'] = empresa();
 		$data['_post_movimientointerno']['usuario_app'] = userNick();
 		log_message('DEBUG','#TRAZA|ALM|MOVIMIENTODEPOSALIDAIDA|guardar()  $data >> '.json_encode($data));
-		$moin_id = (string) $this->Movimientodeposalida->guardarCabecera($data);
+		$moin_id = (string) $this->Movimdeposalida->guardarCabecera($data);
 		if ($moin_id == null) {
 			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSALIDA|guardar() >> ERROR EN GUARDADO DE CABECERA');
 			echo json_encode(['status' => false, 'data' => 'Error al guardar Cabecera de Movimiento...']);
@@ -76,7 +77,7 @@ class Movimientodeposalida extends CI_Controller {
 
 		$post_detalle = $this->input->post('detalle');
 		$detalle = $this->armarDetalle($post_detalle, $moin_id);
-		$resp = $this->Movimientodeposalida->guardarDetalle($detalle);
+		$resp = $this->Movimdeposalida->guardarDetalle($detalle);
 		if (!$resp) {
 			log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSALIDA|guardar() >> ERROR EN GUARDADO DE DETALLE');
 			echo json_encode(['status' => false, 'data' => 'Error al guardar Detalle de Movimiento...']);
@@ -122,7 +123,7 @@ class Movimientodeposalida extends CI_Controller {
 			$tmp['cantidad'] = $a->cantidad;
 			$tmp['lote_id'] = $a->lote_id_origen;
 			$item[] = $tmp;
-			$resp_det = $this->Movimientodeposalida->descontarEnLote($item);
+			$resp_det = $this->Movimdeposalida->descontarEnLote($item);
 			if (!$resp_det) {
 				return $resp_det;
 				log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACENES|MOVIMIENTODEPOSALIDA|descontarLote($detalle) >> ERROR: No desconto en lote la cantidad enviada ');
