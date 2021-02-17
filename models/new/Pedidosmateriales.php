@@ -111,14 +111,14 @@ class Pedidosmateriales extends CI_Model
         $this->db->where('pema_id', $id);
         $this->db->update('alm.alm_pedidos_materiales');
     }
+		//ahora es funcion de libreria BOM Lanzar predido
+    // function setCaseEmpresa($caseid){
 
-    function setCaseEmpresa($caseid){
-
-			$data = array("case_id"=>$caseid,
-										"empr_id"=>empresa());
-			$resp = $this->db->insert('core.case_empresa', $data);
-			return $resp;
-		}
+		// 	$data = array("case_id"=>$caseid,
+		// 								"empr_id"=>empresa());
+		// 	$resp = $this->db->insert('core.case_empresa', $data);
+		// 	return $resp;
+		// }
 
     public function getInsumosOT($ot)
     {
