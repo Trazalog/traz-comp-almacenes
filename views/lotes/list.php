@@ -10,6 +10,7 @@
             <div class="box-body">
                 <table id="stock" class="table table-bordered table-hover">
                     <thead>
+                        <th class="text-center">Acciones</th>
                         <th class="text-center">N° Lote</th>
                         <th>Código</th>
                         <th>Producto</th>
@@ -18,15 +19,16 @@
                         <th class="text-center">Recipiente</th>
                         <th class="text-center">Fecha Creacion</th>
                         <th>Depósito</th>
-                       <th>Recipiente</th>
-			 <th>Estado</th>
+                        <th>Recipiente</th>
+			            <th>Estado</th>
                     </thead>
                     <tbody>
                         <?php
                
                           foreach($list as $f)
                           {
-                            echo '<tr>';
+                            echo "<tr data-json='".json_encode($f)."'>";
+                            echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
                             echo '<td class="text-center">'.($f['codigo']==1?'S/L':$f['codigo']).'</td>';
                             echo '<td>'.$f['artBarCode'].'</td>';
                             echo '<td>'.$f['artDescription'].'</td>';
@@ -35,8 +37,8 @@
                             echo '<td class="text-center">'.$f['nom_reci'].'</td>';
                             echo "<td class='text-center'>".fecha(substr($f['fec_alta'], 0, 10))."</td>";
                             echo '<td>'.$f['depositodescrip'].'</td>';
-                           echo '<td>'.$f['recipiente'].'</td>';
-			    echo '<td class="text-center">'.estado($f['estado']).'</td>';
+                            echo '<td>'.$f['recipiente'].'</td>';
+			                echo '<td class="text-center">'.estado($f['estado']).'</td>';
                             echo '</tr>';
                           }
                         
@@ -47,7 +49,171 @@
         </div><!-- /.box -->
     </div><!-- /.col -->
 </div><!-- /.row -->
+<!---///////--- MODAL EDICION E INFORMACION ---///////--->
+<div class="modal fade bs-example-modal-lg" id="modalinfo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+
+    <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+
+        <div class="modal-header bg-blue">
+            <button type="button" class="close close_modal_edit" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white;">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body ">
+            <form class="formEdicion" id="formEdicion">
+            <div class="form-horizontal">
+                <div class="row">
+                <form class="frm_stock_edit" id="frm_stock_edit">
+
+                <input type="text" class="form-control habilitar hidden" name="lote_id" id="lote_id_edit">
+
+                    <div class="col-sm-6">
+                    <!--_____________ N° Lote _____________-->
+                        <div class="form-group">
+                            <label for="codigo_edit" class="col-sm-4 control-label">N° Lote:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar requerido" name="codigo" id="codigo_edit">
+                            </div>
+                        </div>
+                    <!--___________________________-->
+
+                    <!--_____________ Código _____________-->
+                        <div class="form-group">
+                            <label for="artBarCode_edit" class="col-sm-4 control-label">Código:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="artBarCode" id="artBarCode_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                    <!--_____________ Producto _____________-->
+                        <div class="form-group">
+                            <label for="artDescription_edit" class="col-sm-4 control-label">Producto:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="artDescription" id="artDescription_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                    <!--_____________ Stock _____________-->
+                        <div class="form-group">
+                            <label for="cantidad_edit" class="col-sm-4 control-label">Stock:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="cantidad" id="cantidad_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                     <!--_____________ Unidad de Medida _____________-->
+                        <div class="form-group">
+                            <label for="un_medida_edit" class="col-sm-4 control-label">Unidad de Medida:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="un_medida" id="un_medida_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                    </div><!-- /.col-sm-6 -->
+
+                    <div class="col-sm-6">
+
+                    <!--_____________ Recipiente _____________-->
+                        <div class="form-group">
+                            <label for="nom_reci_edit" class="col-sm-4 control-label">Recipiente:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="nom_reci" id="nom_reci_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                    <!--_____________ Fecha Creación _____________-->
+                        <div class="form-group">
+                            <label for="fec_alta_edit" class="col-sm-4 control-label">Fecha Creación:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="fec_alta" id="fec_alta_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                    <!--_____________ Depósito _____________-->
+                        <div class="form-group">
+                            <label for="depositodescrip_edit" class="col-sm-4 control-label">Depósito:</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control habilitar" name="depositodescrip" id="depositodescrip_edit">
+                            </div>
+                        </div>
+                    <!--__________________________-->
+
+                    <!--_____________ Recipiente _____________-->
+                    <div class="form-group">
+                        <label for="recipiente_edit" class="col-sm-4 control-label">Recipiente:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control habilitar" name="recipiente" id="recipiente_edit">
+                        </div>
+                    </div>
+                    <!--__________________________-->
+
+                    </div><!-- /.col-sm-6 -->
+
+                </form>
+                </div>
+            </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+
+            <div class="form-group text-right">
+                <!-- <button type="" class="btn btn-primary habilitar" data-dismiss="modal" id="btnsave_edit" onclick="guardar('editar')">Guardar</button> -->
+                <button type="" class="btn btn-default cerrarModalEdit" id="" data-dismiss="modal">Cerrar</button>
+            </div>
+
+        </div>
+
+    </div>
+    </div>
+
+</div>
+<!---///////--- FIN MODAL EDICION E INFORMACION ---///////--->
 <script>
 DataTable($('table#stock'),false,1);
+
+// extrae datos de la tabla
+$(".btnInfo").on("click", function(e) {
+    $(".modal-header h4").remove();
+    //guardo el tipo de operacion en el modal
+    $("#operacion").val("Info");
+    //pongo titulo al modal
+    $(".modal-header").append('<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil"></span> Info Movimiento </h4>');
+    data = $(this).parents("tr").attr("data-json");
+    datajson = JSON.parse(data);
+    blockEdicion();
+    llenarModal(datajson);
+});
+
+// llena modal para edicion y muestra
+function llenarModal(datajson){
+    $('#lote_id_edit').val(datajson.lote_id);
+    if(datajson.codigo == 1){
+        $('#codigo_edit').val("S/L");
+    }else{
+        $('#codigo_edit').val(datajson.codigo);
+    }
+    $('#artBarCode_edit').val(datajson.artBarCode);
+    $('#artDescription_edit').val(datajson.artDescription);
+    $('#cantidad_edit').val(datajson.cantidad);
+    $('#un_medida_edit').val(datajson.un_medida);
+    $('#nom_reci_edit').val(datajson.nom_reci);
+    var fecha = datajson.fec_alta.substring(0,10);
+    $('#fec_alta_edit').val(fecha);
+    $('#depositodescrip_edit').val(datajson.depositodescrip);
+    $('#recipiente_edit').val(datajson.recipiente);
+}
+  // deshabilita botones, selects e inputs de modal
+function blockEdicion(){
+    $(".habilitar").attr("readonly","readonly");
+}
 </script>
 
