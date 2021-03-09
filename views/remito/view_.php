@@ -433,7 +433,7 @@ function get_info_remito() {
 }
 
 function validar_campos() {
-    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == 'false')
+    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == 'false' || $('#lote').val() == '' || $('#cantidad').val() == '' || $('#establecimiento').val() == 'false' || $('#deposito').val() == 'false')
 }
 </script>
 
