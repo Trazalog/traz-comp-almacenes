@@ -10,7 +10,7 @@
                     <select class="form-control" id="establecimiento"
                         name="establecimiento" onchange="seleccionesta(this)" required>
                         <option value="" disabled selected>-Seleccione opcion-</option>
-                        <?php                                               
+                        <?php
                         foreach ($establecimientos as $i) {
                             echo '<option value="'.$i->nombre.'" class="emp" data-json=\''.json_encode($i).'\'>'.$i->nombre.'</option>';                            
                         }
