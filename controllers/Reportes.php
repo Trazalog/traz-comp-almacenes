@@ -2,9 +2,10 @@
 defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . '/modules/'.ALM."reports/historico_articulos/Historico_articulos.php";
+require APPPATH . '/modules/'.ALM."reports/articulos_vencidos/Articulos_vencidos.php";
 
 /**
-* - Controller general
+* - Controller general para todos los reportes del submodulo
 *
 * @autor Hugo Gallardo
 */
@@ -82,4 +83,31 @@ class Reportes extends CI_Controller
     $reporte->run()->render();
   }
 
+
+  /**
+  * - Trae tipos de articulos
+  * @param
+  * @return array con tipos de articulos
+  */
+  function getTiposArticulos()
+  {
+    $this->load->model(ALM.'general/Tablas');
+    $resp = $this->Tablas->getTabla('tipo_articulo');
+    echo json_encode($resp);
+  }
+
+  /**
+  * - Levanta vista reporte de Articulos Vencidos
+  * - Recarga vista con datos filtrados
+  * @param
+  * @return view articulos Vencidos
+  */
+  function articulosVencidos()
+  {     
+    log_message('INFO','#TRAZA|REPORTES|articulosVencidos() >> ');
+    $data = $this->input->post('data');
+    $json = $this->Opcionesfiltros->getArticulosVencidos($data);
+    $reporte = new Articulos_vencidos($json);
+    $reporte->run()->render();
+  }
 }
