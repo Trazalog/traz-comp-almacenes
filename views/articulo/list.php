@@ -127,7 +127,6 @@ function editar(e) {
     $('#mdl-titulo').html('Editar Artículo');
     $('#btn-accion').attr('onclick', 'editarArticulo()');
     $('#new_articulo').modal('show');
-
 }
 
 // Eliminar Articulo
@@ -162,7 +161,7 @@ $("#new_articulo").on("hide.bs.modal", function() {
     $('#btn-accion').show();
     $('#frm-articulo')[0].reset();
     $('#read-only').prop('disabled', false);
-    $('#arti_id').prop('disabled', true);
+    // $('#arti_id').prop('disabled', true);
 });
 
 function validarForm() {
@@ -195,7 +194,7 @@ DataTable($('table'));
                 </div>
 
                 <form id="frm-articulo">
-                    <!-- <input id="arti_id" name="arti_id" type="text" class="hidden" disabled> -->
+                    <input id="arti_id" name="arti_id" type="text" class="hidden">
                     <fieldset id="read-only">
                         <div class="row">
                             <!-- Código de Articulo -->
@@ -203,7 +202,6 @@ DataTable($('table'));
                                 <div class="form-group">
                                     <label>Código <strong class="text-danger">*</strong>: </label>
                                     <input type="text" class="form-control" id="artBarCode" name="barcode">
-                                    <input id="arti_id" name="arti_id" type="text" class="form-control" style="display:none;">
                                 </div>
                             </div>
                             <div class="col-md-6">
