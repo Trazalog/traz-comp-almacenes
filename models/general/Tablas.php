@@ -6,6 +6,21 @@ class Tablas extends CI_Model
 		parent::__construct();
     }
 
+		/**
+		* - Devuelve valores de tabla segun parametro reecibido
+		* @param string tabl_id
+		* @return array con valores devueltos
+		*/
+		function getTabla($tabla)
+		{
+			log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACENES|GENERAL|TABLAS|getTabla() $tabla: >> '.json_encode($tabla));
+
+			$aux = $this->rest->callAPI("GET",REST_CORE."/tablas/".$tabla);
+			$aux =json_decode($aux["data"]);
+			return $aux->tablas->tabla;
+
+		}
+
     public function get()
     {
         $this->db->select('tabla');
