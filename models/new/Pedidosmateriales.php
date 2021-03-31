@@ -47,8 +47,6 @@ class Pedidosmateriales extends CI_Model
 
         $this->setEstado($pemaId, 'Solicitado');
 
-        //$this->setCaseEmpresa($rsp['data']['caseId']);
-
         return $rsp;
 
     }
