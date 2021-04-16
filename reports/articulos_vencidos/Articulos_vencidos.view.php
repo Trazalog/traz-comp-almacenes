@@ -30,14 +30,14 @@
                 </div>
               </div>
 
-
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
                 <label>Hasta</label>
                 <div class="input-group date">
-                  <input type="date" class="form-control" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
-                  <a class="input-group-addon" style="cursor: pointer;" onclick="filtro()" title="Más filtros">
-
+                  <a class="input-group-addon" id="daterange-btn" title="Más fechas">
+                    <i class="fa fa-magic"></i>
+                    <span></span>
                   </a>
+                  <input type="date" class="form-control" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
                 </div>
               </div>
 
@@ -131,25 +131,25 @@
           // "showHeader" => false,
 
           "columns" => array(
-            "referencia" => array(
+            "desc_tipo_articulo" => array(
               "label" => "Tipo de Artículo"
             ),
-            "codigo" => array(
+            "barcode" => array(
               "label" => "Código"
             ),
             "descripcion" => array(
-              "label" => "Descripción."
+              "label" => "Descripción"
             ),
             "cantidad" => array(
               "label" => "Cantidad Stock"
             ),
-            "fec_alta" => array(
+            "fec_vencimiento" => array(
               "label" => "Fecha Vto."
             ),
             "deposito" => array(
               "label" => "Depósito"
             ),
-            "tipo_mov" => array(
+            "estado" => array(
               "label" => "Estado"
             )
           ),
@@ -160,14 +160,19 @@
         ));
         ?>
       </div>
-
+      <div id="acciones" class="" style="float: right !important;">
+        <button type="button" class="btn btn-primary" onclick="exportarPDF()">Imprimir</button>
+        <button type="button" class="btn btn-primary" onclick="exportarExcel()">Exportar</button>
+      </div>
     </div>
-
   </div>
 </div>
 
 
 <script>
+  //variables que van a mantener el estado para poder generar el excel
+  var fec1;var fec2;var depo;var arti;var tpoArt;var estado;
+
 
   // carga select de Establecimientos, componente Articulos y llama configuracion selects de fecha
   $(function() {
@@ -291,34 +296,78 @@
 
   // filtrado de datos
   function filtrar() {
+    check = checkCampos();
+    if(check == true){
+      wo();
+      var data = {};
+      data.desde = $("#datepickerDesde").val();
+      fec1 = $("#datepickerDesde").val();
+      data.hasta = $("#datepickerHasta").val();
+      fec2 = $("#datepickerHasta").val();
+      //data.esta_id = $("#establecimiento").val();
+      data.depo_id = $("#depo_id").val();
+      depo = $("#depo_id").val();
+      data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+      arti = selectItem.arti_id;
+      data.tipo = $("#tipo>option:selected").val();
+      tpoArt = $("#tipo>option:selected").val();
+      data.estado = $("#estado>option:selected").val();
+      estado = $("#estado>option:selected").val();
 
-    wo();
-    var data = {};
-    data.desde = $("#datepickerDesde").val();
-    data.hasta = $("#datepickerHasta").val();
-    //data.esta_id = $("#establecimiento").val();
-    data.depo_id = $("#depo_id").val();
-    data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-    data.tipo = $("#tipo>option:selected").val();
-    data.estado = $("#estado>option:selected").val();
-
-    $.ajax({
-      type: 'POST',
-      data: {data},
-      url: '<?php echo base_url(ALM) ?>Reportes/articulosVencidos',
-      success: function(result) {
-              $('#reportContent').empty();
-              $('#reportContent').html(result);
-              wc();
-      },
-      error: function() {
-        alert('Error');
-        wc();
-      },
-      complete: function(result) {
-        wc();
-      }
-    });
+      $.ajax({
+        type: 'POST',
+        data: {data},
+        url: '<?php echo base_url(ALM) ?>Reportes/articulosVencidos',
+        success: function(result) {
+                $('#reportContent').empty();
+                $('#reportContent').html(result);
+                wc();
+        },
+        error: function() {
+          alert('Error');
+          wc();
+        },
+        complete: function(result) {
+          wc();
+        }
+      });
+    }else{
+      alert(check);
+    }
   }
 
+  function exportarExcel(){
+
+    window.open("<?php echo base_url(ALM); ?>Reportes/excelTest?fec1="+fec1+"&fec2="+fec2+"&depo="+depo+"&arti="+arti+"&tpoArt="+tpoArt+"&estado="+estado);
+
+  }
+
+  function exportarPDF(){
+    $(function(){    
+      $('').printThis({
+          debug: false,
+          importCSS: true,
+          importStyle: true,
+          loadCSS: "<?php echo base_url('lib/bower_components/bootstrap/dist/css/bootstrap.min.css')?>",
+          // loadCSS: "lib/bower_components/bootstrap/dist/css/bootstrap.min.css",
+          copyTagClasses: true,
+          pageTitle : "TRAZALOG TOOLS",
+          header: "<h1 style='text-align: center;'>Reporte Articulos Vencidos</h1>",        
+          footer: $("#reportContent").clone().children().find('table').css('display','block').get(0),
+          beforePrint: function(){
+            $("table.dataTable thead .sorting:after").attr('display','none');
+          },
+          afterPrint: function(){
+            $("table.dataTable thead .sorting:after").attr('display','block');
+          }
+      });
+    });
+  }
+  function checkCampos(){
+    if($("#datepickerDesde").val() == ''){return "Debe seleccionar una fecha Desde!";}
+    if($("#datepickerHasta").val() == ''){return "Debe seleccionar una fecha Hasta!";}
+    if(!selectItem){return "Debe seleccionar un Artículo!";}
+    if($("#tipo>option:selected").val() == ''){return "Debe seleccionar un Tipo de Artículo!";}
+    return true;
+  }
 </script>
