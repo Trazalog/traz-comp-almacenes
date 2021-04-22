@@ -205,10 +205,8 @@ class Reportes extends CI_Controller
     $data['tipo_mov'] = $this->input->get('tpoMov');
     $data['estado'] = $this->input->get('estado'); //FALTA EN LA CONSULTA
 
-    log_message('DEBUG','#TRAZA | REPORTES | exportaExcelHistorico() >> '. json_encode($data));
     $json = $this->Opcionesfiltros->getHistoricoArticulos($data);
     
-
     $spreadsheet = new Spreadsheet(); // Creo la instancia de Spreadsheet
     $sheet = $spreadsheet->getActiveSheet(); // Me posiciono en la hoja activa
 
@@ -245,14 +243,18 @@ class Reportes extends CI_Controller
     //Relleno la Tabla
     $i = 4;
     foreach ($json as $key => $value) {
+
+      $aux = explode("T",$value->fec_alta);
+      $fecha = date("d-m-Y",strtotime($aux[0]));
+      
       $sheet->setCellValue('A'.$i, $value->referencia);
       $sheet->setCellValue('B'.$i, $value->codigo);
       $sheet->setCellValue('C'.$i, $value->descripcion);
       // $sheet->setCellValue('D'.$i, $value->lote); Se debe agregar en el service
       $sheet->setCellValue('E'.$i, $value->cantidad);
       $sheet->setCellValue('F'.$i, $value->stock_actual);
-      $sheet->setCellValue('G'.$i, $value->deposito);
-      $sheet->setCellValue('H'.$i, $value->fec_alta);
+      $sheet->setCellValue('G'.$i, $value->deposito);  
+      $sheet->setCellValue('H'.$i, $fecha);
       $sheet->setCellValue('I'.$i, $value->tipo_mov);
       $i++; 
     }
