@@ -150,8 +150,14 @@
             "deposito" => array(
               "label" => "Depósito"
             ),
-            "fec_alta" => array(
-              "label" => "Fecha"
+            array(
+              "label" => "Fecha",
+              "value" => function($row) {
+                $aux = explode("T",$row["fec_alta"]);
+                $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
+                return $row["fec_alta"];
+              },
+              "type" => "date"
             ),
             "tipo_mov" => array(
               "label" => "Tipo Movim."
@@ -164,7 +170,9 @@
         ));
         ?>
       </div>
-
+      <div id="acciones" class="" style="float: right !important;">
+        <button type="button" class="btn btn-primary" onclick="exportarExcel()">Exportar</button>
+      </div>
     </div>
 
   </div>
@@ -172,6 +180,8 @@
 
 
 <script>
+  //variables que van a mantener el estado para poder generar el excel
+  var fec1;var fec2;var tpoMov;var esta;var depo;var artic;var lote;
 
   // carga select de Establecimientos, componente Articulos y llama configuracion selects de fecha
   $(function() {
@@ -337,16 +347,21 @@
 
   // filtrado de datos
   function filtrar() {
-debugger;
+// debugger;
     wo();
     var data = {};
     data.desde = $("#datepickerDesde").val();
+    fec1 = $("#datepickerDesde").val();
     data.hasta = $("#datepickerHasta").val();
+    fec2 = $("#datepickerHasta").val();
     data.tipo_mov = $("#tipoajuste>option:selected").val();
+    tpoMov = $("#tipoajuste>option:selected").val();
     data.esta_id = $("#establecimiento").val();
     data.depo_id = $("#depo_id").val();
+    depo = $("#depo_id").val();
     data.lote_id = $("#lote_id>option:selected").val();
     data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+    artic = selectItem.arti_id;
 
     $.ajax({
       type: 'POST',
@@ -367,4 +382,7 @@ debugger;
     });
   }
 
+  function exportarExcel(){
+    window.open("<?php echo base_url(ALM); ?>Reportes/exportarExcelHistorico?fec1="+fec1+"&fec2="+fec2+"&depo="+depo+"&arti="+artic+"&tpoMov="+tpoMov);
+}
 </script>

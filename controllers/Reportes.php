@@ -185,15 +185,86 @@ class Reportes extends CI_Controller
     header('Cache-Control: max-age=0');
         
     $writer->save('php://output');	// descargamos el excel generado
-  //   $writer->save($urlExcel);
-
-  //   $response = array(
-  //     'success' => true,
-  //     'url' => $urlExcel
-  //   );
-
-  // echo json_encode($response);
-  // exit();
   }
+  
+   /**
+  * - Genera Archivo Excel con la data filtrada en la vista
+  * - Descarga el excel automaticamente
+  * - NOTA: Se genera de esta manera debido a que no se puede descargar un archivo
+  * - directamente como respuesta de un ajax porque infringe politicas de seguridad
+  * @param
+  * @return view Historico Articulos
+  */
+  public function exportarExcelHistorico() {
+
+    // $data = $this->input->post("data");
+    $data['desde'] = $this->input->get('fec1');
+    $data['hasta'] = $this->input->get('fec2');
+    $data['depo_id'] = $this->input->get('depo');
+    $data['arti_id'] = $this->input->get('artic');
+    $data['tipo_mov'] = $this->input->get('tpoMov');
+    $data['estado'] = $this->input->get('estado'); //FALTA EN LA CONSULTA
+
+    log_message('DEBUG','#TRAZA | REPORTES | exportaExcelHistorico() >> '. json_encode($data));
+    $json = $this->Opcionesfiltros->getHistoricoArticulos($data);
     
+
+    $spreadsheet = new Spreadsheet(); // Creo la instancia de Spreadsheet
+    $sheet = $spreadsheet->getActiveSheet(); // Me posiciono en la hoja activa
+
+    //Formateo del Excel con la data de la consulta
+    //Formateo titulo
+    $sheet->setCellValue('A1', 'Reporte de Artículos Vencidos');
+    $sheet->getStyle('A1')->getFont()->setSize(20);
+    $sheet->getStyle('A1')->getFont()->setBold(true);
+    $sheet->getStyle('A1:C1')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('B4C6E7');
+
+    
+    //Formateo Headers tabla y rellenado
+    $sheet->getStyle('A3:I3')->getFont()->setBold(true);
+    $sheet->setCellValue('A3', "Referencia");
+    $sheet->setCellValue('B3', "Código Artículo");
+    $sheet->setCellValue('C3', "Descripción");
+    $sheet->setCellValue('D3', "Lote");
+    $sheet->setCellValue('E3', "Cantidad");
+    $sheet->setCellValue('F3', "Stock");
+    $sheet->setCellValue('G3', "Depósito");
+    $sheet->setCellValue('H3', "Fecha");
+    $sheet->setCellValue('I3', "Tipo Movimiento");
+    $sheet->getColumnDimension('A')->setWidth(13);
+    $sheet->getColumnDimension('B')->setAutoSize(true);
+    $sheet->getColumnDimension('C')->setAutoSize(true);
+    $sheet->getColumnDimension('D')->setAutoSize(true);
+    $sheet->getColumnDimension('E')->setAutoSize(true);
+    $sheet->getColumnDimension('F')->setAutoSize(true);
+    $sheet->getColumnDimension('G')->setAutoSize(true);
+    $sheet->getColumnDimension('H')->setAutoSize(true);
+    $sheet->getColumnDimension('I')->setAutoSize(true);
+    $sheet->getStyle('A3:I3')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setRGB('D9D9D9');
+
+    //Relleno la Tabla
+    $i = 4;
+    foreach ($json as $key => $value) {
+      $sheet->setCellValue('A'.$i, $value->referencia);
+      $sheet->setCellValue('B'.$i, $value->codigo);
+      $sheet->setCellValue('C'.$i, $value->descripcion);
+      // $sheet->setCellValue('D'.$i, $value->lote); Se debe agregar en el service
+      $sheet->setCellValue('E'.$i, $value->cantidad);
+      $sheet->setCellValue('F'.$i, $value->stock_actual);
+      $sheet->setCellValue('G'.$i, $value->deposito);
+      $sheet->setCellValue('H'.$i, $value->fec_alta);
+      $sheet->setCellValue('I'.$i, $value->tipo_mov);
+      $i++; 
+    }
+        
+    $writer = new Xlsx($spreadsheet); // instancio Xlsx
+ 
+    $filename = 'Reporte_Histórico_Artículos'; // Nombre del archivo con el cual sera descargado
+ 
+    header('Content-Type: application/vnd.ms-excel'); // generamos las cabeceras para que el navegador interprete de que tipo de archivo se trata
+    header('Content-Disposition: attachment;filename="'. $filename."_". date('d-m-Y') .'.xlsx"'); 
+    header('Cache-Control: max-age=0');
+        
+    $writer->save('php://output');	// descargamos el excel generado
+  }
 }
