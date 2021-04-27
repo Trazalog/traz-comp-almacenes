@@ -113,7 +113,7 @@
         </div>
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Productos a cargar</h3>
+                <h3 class="box-title">Productos a descargar</h3>
             </div>
             <div class="box-body">
                 <div class="row">

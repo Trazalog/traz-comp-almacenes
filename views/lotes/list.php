@@ -286,7 +286,7 @@ $(".btnInfo").on("click", function(e) {
     //guardo el tipo de operacion en el modal
     $("#operacion").val("Info");
     //pongo titulo al modal
-    $(".modal-header").append('<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil"></span> Info Movimiento </h4>');
+    $(".modal-header").append('<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-pencil"></span> Detalle Stock </h4>');
     data = $(this).parents("tr").attr("data-json");
     datajson = JSON.parse(data);
     blockEdicion();

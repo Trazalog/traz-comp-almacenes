@@ -9,13 +9,13 @@
 								<div class="row">
 										<div class="col-md-3">
 												<div class="form-group">
-														<label>Nro. Comprobante</label>
+														<label>Nro. Comprobante <strong class="text-danger">*</strong> :</label>
 														<input type="number" id="nroCompr" class="form-control" placeholder="Ingrese Numero de comprobante">
 												</div>
 										</div>
 										<div class="col-md-3">
 												<div class="form-group">
-														<label>Fecha</label>
+														<label>Fecha <strong class="text-danger">*</strong> :</label>
 														<div class="input-group date">
 																<div class="input-group-addon">
 																		<i class="fa fa-calendar"></i>
@@ -25,7 +25,7 @@
 												</div>
 										</div>
 										<div class="col-md-3">
-												<label>Establecimiento destino</label>
+												<label>Establecimiento destino <strong class="text-danger">*</strong> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
 													<option value="" disabled selected>-Seleccione opcion-</option>
 													<?php
@@ -36,7 +36,7 @@
 												</select>
 										</div>
 										<div class="col-md-3">
-												<label>Deposito destino</label>
+												<label>Deposito destino <strong class="text-danger">*</strong> :</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="depo_id" readonly>
 													<option value="" disabled selected>-Seleccione opcion-</option>
 												</select>
@@ -82,8 +82,8 @@
 						<div class="box-body">
 								<div class="row">
 										<div class="col-md-4">
-												<label>Deposito origen</label>
-												<select  class="form-control select2 select2-hidden-accesible" id="depo_origen_id" required>
+												<label>Deposito origen <strong class="text-danger">*</strong> :</label>
+												<select  class="form-control select2 select2-hidden-accesible" id="depo_origen_id" required onchange="">
 													<option value="" disabled selected>-Seleccione opcion-</option>
 														<?php
 															foreach ($depositos as $b) {
@@ -93,11 +93,11 @@
 												</select>
 										</div>
 										<div class="col-md-4">
-												<label>Codigo</label>
+												<label>Codigo <strong class="text-danger">*</strong> :</label>
 												<?php $this->load->view(ALM . '/articulo/componente');?>
 										</div>
 										<div class="col-md-4">
-												<label>Lote Origen</label>
+												<label>Lote Origen <strong class="text-danger">*</strong> :</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" readonly>
 													<option value="" disabled selected>-Seleccione opcion-</option>
 												</select>
@@ -105,11 +105,11 @@
 								</div>
 								<div class="row">
 									<div class="col-md-4">
-											<label>Cantidad</label>
+											<label>Cantidad <strong class="text-danger">*</strong> :</label>
 											<input type="number" id="cant_id" class="form-control" placeholder="Ingrese cantidad">
 									</div>
-									<div class="col-md-4">
-											<label>Unidad de Medida</label>
+									<!-- <div class="col-md-4">
+											<label>Unidad de Medida <strong class="text-danger">*</strong> :</label>
 											<select  class="form-control select2 select2-hidden-accesible" id="id_un" required>
 												<option value="" disabled selected>-Seleccione opcion-</option>
 													<?php
@@ -119,7 +119,7 @@
 													?>
 
 											</select>
-									</div>
+									</div> -->
 								</div>
 								<br>
 								<div class="row">
@@ -289,21 +289,10 @@
 	function agregarProducto()
 	{
 			var aux = 0;
-			if($("#depo_origen_id").val()!=null)
-			{
-					if($("#inputarti").val()!="")
-					{
-							if($("#cant_id").val()!="")
-							{
-									if($("#id_un").val()!=null)
-									{
-											aux = 1;
-									}
+			//Informamos el campo vacio 
+			var reporte = validarCamposProducto("agregar");
 									
-							}
-					}
-			}
-			if(aux != 0)
+			if(reporte == '')
 			{
 					var depoOrigen_id = $("#depo_origen_id").val();
 					var descDepo = $("#depo_origen_id option:selected").text();
@@ -312,6 +301,7 @@
 					var codigoArt = $("#inputarti").val();
 					var idarti = selectItem.arti_id;// se completa en traz-comp-almacen/articulo/componente.php
 					idarti = idarti.toString();
+					var um = selectItem.unidad_medida;// se completa en traz-comp-almacen/articulo/componente.php
 					var aux = $("#info").text();
 					var descArt = "";
 					//le saco el stock para mostrar solo el nombre del articulo
@@ -325,7 +315,7 @@
 							}
 					}
 					var cant = $("#cant_id").val();
-					var um = $("#id_un option:selected").text();
+					// var um = $("#id_un option:selected").text(); debe utilizar la cargada en el articulo
 
 					var datos = {};
 					datos.codigo = lote_codigo;
@@ -351,26 +341,17 @@
 					$("#totalCont").val(contaux);
 
 			}else{
-					alert("ATENCION!!! HAY CAMPOS DE PRODUCTOS A CARGAR VACIOS");
+					alert(reporte);
 			}
 	}
 	// guarda info de movimiento de salida
 	function guardar()
 	{
-			WaitingOpen('Guardando...');
-			var auxe = 0;
-			if($("#nroCompr").val()!=null)
+			var reporte = validarCamposProducto("guardar");
+			
+			if(reporte == '')
 			{
-					if($("#depo_id").val()!=null)
-					{
-							if(  $('#tbl_productos').DataTable().data().any() )
-							{
-									auxe = 1;
-							}
-					}
-			}
-			if(auxe!=0)
-			{
+				WaitingOpen('Guardando...');
 				var cabecera = armarCabecera();
 				var detalle = armarDetalle();
 
@@ -392,7 +373,7 @@
 					});
 
 			}else{
-					alert("ATENCION REVISE QUE HAYA CARGADO: Nro comprobante/deposito destino/productos");
+				alert(reporte);
 			}
 	}
 	// procesa datos para enviar a gardar cabecera
@@ -408,7 +389,7 @@
 			cabecera.depo_id_destino = $("#depo_id").val().toString();
 			return cabecera;
 	}
-	// procesa datso para guardar detalle
+	// procesa datos para guardar detalle
 	function armarDetalle(){
 
 			var datos = [];
@@ -459,4 +440,35 @@
 	$('#datepicker').datepicker({
 			autoclose: true
 	});
+
+	//Valido los campos de productos a cargar
+	function validarCamposProducto(accion){
+		var valida = '';
+		if($("#cant_id").val() == ""){
+			valida = "COMPLETE EL CAMPO CANTIDAD!";
+		}
+		if($("#lote_id").val() == null){
+			valida = "COMPLETE EL CAMPO LOTE ORIGEN!";
+			}
+		if($("#inputarti").val() == ""){
+			valida = "SELECCIONE UN ARTÍCULO!";
+		}
+		if($("#depo_origen_id").val() == null){
+			valida = "SELECCIONE CAMPO DEPÓSITO ORIGEN!";
+		}
+		//El campo DEPÓSITO ORIGEN no debe ser el mismo que DEPÓSITO DESTINO. Validamos primero que se cargo deposito destino
+		if($("#depo_id").val() == null){
+			valida = "SELECCIONE CAMPO DEPÓSITO DESTINO!";
+		}
+		if ($("#nroCompr").val() == '') {
+			valida = "COMPLETE CAMPO NÚMERO DE COMPROBANTE!";
+		}
+		if (!$('#tbl_productos').DataTable().data().any() && accion != "agregar") {
+			valida = "ATENCIÓN: NO SE CARGO NINGUN PRODUCTO!";
+		}
+		if($("#depo_origen_id").val() == $("#depo_id").val()){
+			valida = "ERROR: DEPÓSITO DESTINO IGUAL A DEPÓSITO ORIGEN!";
+		}
+		return valida;
+	}
 </script>
