@@ -8,7 +8,7 @@
 
     <div class="box-header with-border">
         <div class="box-tittle">
-            <h4>Reporte Histórico de Artículos</h4>
+            <h4>Movimientos de Stock</h4>
         </div>
     </div>
 
