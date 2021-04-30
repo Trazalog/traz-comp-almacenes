@@ -477,31 +477,9 @@
 			var valida = '';
 			var barcode = '';
 			//VALIDADOR DE SI ESTA VACIO LA TABLA DE PRODUCTOS A CARGAR
-			if(  $('#tbl_productos_recepcion').DataTable().data().any() )
-			{
-							//VALIDADOR DE VACIO DE ULTIMAS 3 COLUMNAS DE TABLA PRODUCTOS A CARGAR
-							// var a = $('#tbl_productos_recepcion tbody tr').length;
-							// var idcant="";
-							// var iddepodes="";
-							// var idestado="";
-							// for(var i=0; i<a-1; i++)
-							// {
-							// 		idcant="#cant"+i;
-							// 		iddepodes="#depodesc"+i;
-							// 		idestado="#estado"+i;
-							// 		if($(idcant).val()!="")
-							// 		{
-							// 				if($(iddepodes).val()!="")
-							// 				{
-							// 						if($(idestado).val()!="")
-							// 						{
-							// 								auxe=auxe+1;
-							// 						}
-							// 				}
-							// 		}
+			if(  $('#tbl_productos_recepcion').DataTable().data().any() ){
+				//VALIDADOR DE VACIO DE ULTIMAS 3 COLUMNAS DE TABLA PRODUCTOS A CARGAR
 
-							// }
-							//FIN VALIDADOR
 				var tabla = $('#tbl_productos_recepcion tbody tr');
 				$(tabla).each( function () {
 					barcode = $(this).find(".barcode").text();
@@ -520,9 +498,11 @@
 					};
 				});
 			}
+			//FIN VALIDADOR
 
 			if(valida == '')
 			{
+				WaitingOpen('Guardando...');
 					var cabecera = armarCabecera();
 					var detalle = armarDetalle();
 
@@ -532,7 +512,7 @@
 							dataType: 'json',
 							url: '<?php echo ALM ?>Movimientodeporecepcion/guardar',
 							success: function(result) {
-
+								WaitingClose();
 								$('#btn_guardar').attr("disabled", "");
 								alertify.success(result.data);
 							},
@@ -540,7 +520,7 @@
 								alertify.error(result.data);
 							},
 							complete: function(){
-												
+								WaitingClose();					
 							}
 					});
 			}else{
