@@ -7,7 +7,7 @@
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Establecimiento receptor</label>
+                        <label>Establecimiento receptor <strong class="text-danger">*</strong> :</label>
                         <!-- -- -->
                         <select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
 												<option value="" disabled selected>-Seleccione Su establacimiento-</option>
@@ -20,7 +20,7 @@
                         <!-- -- -->
                     </div>
                     <div class="col-md-4">
-                        <label>Deposito receptor</label>
+                        <label>Deposito receptor <strong class="text-danger">*</strong> :</label>
                         <!-- -- -->
                         <select  class="form-control select2 select2-hidden-accesible" id="depo_id" readonly>
 													<option value="" disabled selected>-Seleccione Su deposito-</option>
@@ -247,7 +247,7 @@
 							<div class="col-xs-12 col-sm-6 col-lg-6">
 								<input class="form-control hidden" id="t_row"type="text">
 								<input class="form-control hidden" id="arti_id"type="text">
-								<label for="">Depósito Destino:</label>
+								<label for="">Depósito Destino <strong class="text-danger">*</strong> :</label>
 								<!-- <select onchange="lotesPorArtyDeposito()" class="form-control" id="deposito_dest_id" required> -->
 								<select class="form-control" id="deposito_dest_id" required>
 									<option value="" disabled selected>-Seleccione depósito de entrada-</option>
@@ -260,13 +260,13 @@
 								<!-- -- -->
 							</div>
 							<div class="col-xs-12 col-sm-6 col-lg-6">
-									<label for="">Cantidad a Ingresar:</label>
+									<label for="">Cantidad a Ingresar <strong class="text-danger">*</strong> :</label>
 									<input class="form-control" id="cant_recibida"type="text">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-xs-12 col-sm-6 col-lg-6">
-								<label>Fecha de Vencimiento</label>
+								<label>Fecha de Vencimiento <strong class="text-danger">*</strong> :</label>
 								<input type="date" class="form-control pull-right" value="<?php echo date('Y-m-d');?>" id="fec_vencimiento" placeholder="Seleccione Fecha">
 							</div>
 						</div>
@@ -282,7 +282,8 @@
 
 
 <script>
-
+	// guardo la cantidad ingresada para verificar
+	var cant_enviada;
 	// llena modal para ver detalle de movimiento
 	$(document).on("click",".fa-search",function() {
 			event.preventDefault();
@@ -314,7 +315,7 @@
 			tablaProductos(data.detallesMovimientosInternos.detalleMovimientoInterno);
 	});
 
-	//levanta modal para carga de cantidaddes y depositos
+	//levanta modal para carga de cantidades y depositos
 	$(document).on("click",".fa-pencil-square-o",function(event) {
 
 			event.preventDefault();
@@ -323,6 +324,14 @@
 			$("#t_row").val(row);
 			//guardo art_id en modal
 			var dataArticulo = JSON.parse( $(this).closest("tr").attr("data-articulo") );
+			var dataJSON = JSON.parse( $(this).closest("tr").attr("data-json") );
+			//cargo el deposito destino
+			var depo_destino_id = $("#depo_id").val();
+			$('#deposito_dest_id option[value="'+ depo_destino_id +'"]').attr("selected", true);
+			//cargo la cantidad enviada
+			cant_enviada = dataJSON.cantidad_cargada;
+			$("#cant_recibida").val(dataJSON.cantidad_cargada);
+
 			$("#arti_id").val(dataArticulo.arti_id);
 			//levanta modal de carga
 			$("#depoDescarga").modal("show");
@@ -337,8 +346,10 @@
 
 					//busca id de fila y al encontrarlo, guarda en inputs la info elegida en modal
 					if ($(this).attr("id") == t_row) {
+						
+						var cant_recibida = $("#cant_recibida").val();
+						if(parseInt(cant_recibida) <= parseInt(cant_enviada)){
 
-							var cant_recibida = $("#cant_recibida").val();
 							var deposito_dest_id = $("#deposito_dest_id option:selected").val();
 							var deposito_dest_nomb = $("#deposito_dest_id option:selected").text();
 							var fec_vencimiento = $("#fec_vencimiento").val();
@@ -346,8 +357,9 @@
 							$(this).find("input.depo_id_modal").val(deposito_dest_id);
 							$(this).find("input.depo_desc_nomb").val(deposito_dest_nomb);
 							$(this).find("input.fec_vencimiento").val(fec_vencimiento);
-					}else{
-						console.log('error en id de tabla...!!!');
+						}else{
+							alert("No se puede INGRESAR una cantidad mayor a la ENVIADA");
+						}
 					}
 			});
 	}
@@ -411,7 +423,7 @@
 											<td class="">${value.cantidad_cargada}</td>
 											<td><input class='cantidad' style='border: 0;' readonly></input></td>
 											<td><input class='depo_desc_nomb' style='border: 0;' readonly></input></td>
-											<td><input class='depo_id_modal hidden'></input></td>
+											<td style="display: none"><input class='depo_id_modal hidden'></input></td>
 											<td><input class='fec_vencimiento' style='border: 0;' readonly></input></td>
 										</tr>`;
 					table.row.add($(row)).draw();
@@ -435,7 +447,7 @@
 								$("#tbl_recepciones").removeAttr('style');
 								var table = $('#tbl_recepciones').DataTable();
 								table.rows().remove().draw();
-								if (data != null) {
+								if (data != 'null') {
 									var resp = JSON.parse(data);
 									for(var i=0; i<resp.length; i++){
 										var movimCabecera = resp[i];
@@ -459,39 +471,57 @@
 		});
 	}
 
-	// guarda movimiento de rececpcion
+	// guarda movimiento de recepcion
 	function guardar()
 	{
-			var auxe = 0;
+			var valida = '';
+			var barcode = '';
 			//VALIDADOR DE SI ESTA VACIO LA TABLA DE PRODUCTOS A CARGAR
 			if(  $('#tbl_productos_recepcion').DataTable().data().any() )
 			{
 							//VALIDADOR DE VACIO DE ULTIMAS 3 COLUMNAS DE TABLA PRODUCTOS A CARGAR
-							var a = $('#tbl_productos_recepcion tr').length;
-							var idcant="";
-							var iddepodes="";
-							var idestado="";
-							for(var i=0; i<a-1; i++)
-							{
-									idcant="#cant"+i;
-									iddepodes="#depodesc"+i;
-									idestado="#estado"+i;
-									if($(idcant).val()!="")
-									{
-											if($(iddepodes).val()!="")
-											{
-													if($(idestado).val()!="")
-													{
-															auxe=auxe+1;
-													}
-											}
-									}
+							// var a = $('#tbl_productos_recepcion tbody tr').length;
+							// var idcant="";
+							// var iddepodes="";
+							// var idestado="";
+							// for(var i=0; i<a-1; i++)
+							// {
+							// 		idcant="#cant"+i;
+							// 		iddepodes="#depodesc"+i;
+							// 		idestado="#estado"+i;
+							// 		if($(idcant).val()!="")
+							// 		{
+							// 				if($(iddepodes).val()!="")
+							// 				{
+							// 						if($(idestado).val()!="")
+							// 						{
+							// 								auxe=auxe+1;
+							// 						}
+							// 				}
+							// 		}
 
-							}
+							// }
 							//FIN VALIDADOR
+				var tabla = $('#tbl_productos_recepcion tbody tr');
+				$(tabla).each( function () {
+					barcode = $(this).find(".barcode").text();
+					// console.log("For index: " + index+ ", data value is " + value);
+					if($(this).find("input.cantidad").val() == ''){
+						valida = "El artículo con código: '"+ barcode +"' no se cargó la CANTIDAD";
+					};
+					if($(this).find("input.depo_id_modal").val() == ''){
+						valida = "El artículo con código: '"+ barcode +"' no se cargó el CODIGO DEPÓSITO";
+					};
+					if($(this).find("input.depo_desc_nomb").val() == ''){
+						valida = "El artículo con código: '"+ barcode +"' no se cargó el DEPÓSITO";
+					};
+					if($(this).find("input.fec_vencimiento").val() == ''){
+						valida = "El artículo con código: '"+ barcode +"' no se cargó la FECHA VENCIMIENTO";
+					};
+				});
 			}
 
-			if((auxe!=0) && (auxe==a-1))
+			if(valida == '')
 			{
 					var cabecera = armarCabecera();
 					var detalle = armarDetalle();
@@ -514,7 +544,7 @@
 							}
 					});
 			}else{
-					alert("ATENCION REVISE QUE HAYA COMPLETATDO cantidad de recepcion/ deposito a descargar/ estado");
+					alert(valida);
 			}
 	}
 
@@ -587,5 +617,4 @@
 	$('#datepicker').datepicker({
 			autoclose: true
 	});
-
 </script>
