@@ -20,7 +20,7 @@
             <div class="form-group">
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                <label style="padding-left: 20%;">Desde</label>
+                <label style="padding-left: 20%;">Desde <strong class="text-danger">*</strong> :</label>
                 <div class="input-group date">
                   <a class="input-group-addon" id="daterange-btn" title="Más fechas">
                     <i class="fa fa-magic"></i>
@@ -32,7 +32,7 @@
 
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                <label>Hasta</label>
+                <label>Hasta  <strong class="text-danger">*</strong> :</label>
                 <div class="input-group date">
                   <input type="date" class="form-control" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
                   <a class="input-group-addon" style="cursor: pointer;" onclick="filtro()" title="Más filtros">
@@ -42,7 +42,7 @@
               </div>
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                  <label for="tipoajuste" class="form-label">Tipo Movimiento:</label>
+                  <label for="tipoajuste" class="form-label">Tipo Movimiento  <strong class="text-danger">*</strong>  :</label>
                   <select class="form-control select2 select2-hidden-accesible" id="tipoajuste" name="tipoajuste">
                       <option value="-1" disabled selected>-Seleccione-</option>
                       <option value="TODOS">Todos</option>
@@ -71,7 +71,7 @@
             <div class="form-group">
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                <label for="establecimiento" class="form-label">Establecimiento:</label>
+                <label for="establecimiento" class="form-label">Establecimiento  <strong class="text-danger">*</strong> :</label>
                 <select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="establecimiento" name="establecimiento" />
               </div>
 
@@ -81,7 +81,7 @@
               </div>
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0 habilitado" >
-                  <label for="zona" class="form-label">Artículo:</label>
+                  <label for="zona" class="form-label">Artículo  <strong class="text-danger">*</strong> :</label>
                 <div id="list_articulos"> </div>
               </div>
 
@@ -94,7 +94,7 @@
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0 habilitado">
                   <label for="lote_id" class="form-label">Lote:</label>
-                  <select class="form-control select2 select2-hidden-accesible" id="lote_id" name="lote_id" />
+                  <select class="form-control select2 select2-hidden-accesible" id="lote_id" name="lote_id"  disabled />
               </div>
 
             </div>
@@ -303,12 +303,13 @@
             } else {
               console.table(resp);
               console.table(resp[0].lote_id);
-              $('#lote_id').append('<option value="" disabled selected>-Seleccione opcion-</option>');
+              // $('#lote_id').append('<option value="" disabled selected>-Seleccione opcion-</option>');
+              $('#lote_id').append('<option value="TODOS">Todos</option>');
               for(var i=0; i<resp.length; i++)
               {
                   $('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
               }
-              $("#lote_id").removeAttr('readonly');
+              $("#lote_id").removeAttr('disabled');
             }
             wc();
         },
