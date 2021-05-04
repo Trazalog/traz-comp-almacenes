@@ -65,4 +65,16 @@ class Movimdeposalida extends CI_Model {
 		$aux =json_decode($aux["data"]);
 		return $aux->UpdatedRowCount->Value;
 	}
+	
+	/**
+	* Trae todos los articulos para un determinado deposito seleccionado
+	* @param string depo_id
+	* @return array de articulos encontrados para un deposito
+	*/
+	function getArticulosDeposito($depo_id){
+		$url = REST_ALM.'/stock/articulo/TODOS/deposito/'.$depo_id.'/tipo/TODOS';
+		$aux = $this->rest->callAPI("GET",$url);
+		$aux = json_decode($aux['data']);
+		return $aux->stock->articulo;
+	}
 }

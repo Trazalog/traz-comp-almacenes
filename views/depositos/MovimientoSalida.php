@@ -93,12 +93,24 @@
 												</select>
 										</div>
 										<div class="col-md-4">
-												<label>Codigo <strong class="text-danger">*</strong> :</label>
-												<?php $this->load->view(ALM . '/articulo/componente');?>
+											<label>Codigo <strong class="text-danger">*</strong> :</label>
+											<div class="input-group">
+												<input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo"
+													onchange="getItem(this)" autocomplete="off">
+												<datalist id="articulos">
+													
+												</datalist>
+												<span class="input-group-btn">
+													<button class='btn btn-primary' data-toggle="modal" data-target="#modal_articulos">
+														<i class="glyphicon glyphicon-search"></i></button>
+												</span>
+											</div>
+											<br>
+											<label id="info" class="text-blue"></label>
 										</div>
 										<div class="col-md-4">
 												<label>Lote Origen <strong class="text-danger">*</strong> :</label>
-												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" readonly>
+												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
 													<option value="" disabled selected>-Seleccione opcion-</option>
 												</select>
 										</div>
@@ -108,18 +120,6 @@
 											<label>Cantidad <strong class="text-danger">*</strong> :</label>
 											<input type="number" id="cant_id" class="form-control" placeholder="Ingrese cantidad">
 									</div>
-									<!-- <div class="col-md-4">
-											<label>Unidad de Medida <strong class="text-danger">*</strong> :</label>
-											<select  class="form-control select2 select2-hidden-accesible" id="id_un" required>
-												<option value="" disabled selected>-Seleccione opcion-</option>
-													<?php
-														foreach ($unidades as $u) {
-															echo '<option value="'.$u->tabl_id.'">'.$u->descripcion.'</option>';
-														}
-													?>
-
-											</select>
-									</div> -->
 								</div>
 								<br>
 								<div class="row">
@@ -185,6 +185,57 @@
     </div>
 </div>
 
+<!-- MODAL ARTICULOS -->
+<div class="modal" id="modal_articulos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+     <div class="modal-dialog" role="document">
+         <div class="modal-content">
+             <div class="modal-header">
+                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                         aria-hidden="true">&times;</span></button>
+                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Listado de Articulos</h4>
+             </div>
+
+             <div class="modal-body" id="modalBodyArticle">
+    
+                     <div class="table-responsive" id="modalarticulos">
+
+                   
+                 </div>
+             </div>
+
+             <div class="modal-footer">
+                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+             </div>
+         </div>
+     </div>
+ </div>
+<!-- FIN MODAL ARTICULOS -->
+<script>
+//MODULO SCRIPTS COMBO ARTICULOS
+var selectItem = null;
+
+function getItem(item) {
+    if (item == null) return;
+	if (item.value == ''){
+		$("#lote_id").attr('disabled',true);
+		$("#lote_id").val('');
+		$("#info").text('');
+		selectItem = null; //Al ser variable global, debo limpiarla para evitar errores en caso que no se seleccione ningun artículo
+		return;	
+	} 
+    var option = $('#articulos').find("[value='" + item.value + "']");
+    var json = JSON.stringify($(option).data('json'));
+    selectItem = JSON.parse(json);
+    $('label#info').html($(option).html());
+    if(existFunction('eventSelect'))eventSelect();
+}
+
+function clearSelect(){
+    $('#inputarti').val(null);
+    selectItem = null;
+}
+//FIN MODULO SCRIPTS COMBO ARTICULOS
+</script>
 <script>
 	$(document).ready(function() {
 		$("#totalCont").val(0);
@@ -208,29 +259,70 @@
 		$('#tbl_productos').DataTable().row( $(this).closest('tr') ).remove().draw();
 						
 	});
+
 	// seleccionando deposito habilita combo articulos
+	// Rellena combo con articulos para el deposito seleccionado
 	$('#depo_origen_id').on("change", function() {
+
+		var depo_id = $('#depo_origen_id option:selected').val();
 		$("#inputarti").attr("disabled", false);
-	})
+		WaitingOpen('Buscando Artículos...');
+
+		$.ajax({
+			type: 'POST',
+			data: {depo_id: depo_id},
+			url: 'index.php/<?php echo ALM?>Movimientodeposalida/getArticulosDeposito',
+			success: function(data) {
+
+				$('#articulos').empty();
+				var resp = JSON.parse(data);
+
+				if (resp == null) {
+					alert("Sin artículos disponibles para este depósito!");
+					$("#inputarti").val('');
+					$("#info").text('');
+					$("#inputarti").attr("placeholder", "Sin artículos disponibles para este depósito");
+					$("#lote_id").attr("readonly", true);
+					$("#lote_id").val("");
+					$("#inputarti").attr("disabled", true);
+				} else {
+					$("#inputarti").attr("placeholder", "Seleccionar Artículo");
+					for(var i=0; i<resp.length; i++)
+					{
+						json = JSON.stringify(resp[i]);
+						$('#articulos').append("<option value='" + resp[i].barcode + "' data-json='"+ json +"'>"+ resp[i].descripcion +" | "+ resp[i].cantidad +"</option");
+					}
+					$("#articulos").removeAttr('readonly');
+				}
+				WaitingClose();
+			},
+			error: function(data) {
+					alert('Error');
+					WaitingClose();
+			}
+		});
+	});
+
 	// al seleccionar articulo trae los lotes existentes en el deposito seleccionado previamente
 	$('#inputarti').on("change", function() {
 
 			var depo_id = $('#depo_origen_id option:selected').val();
+			if(selectItem == null) return; // Limpio la variable en la funcion getItem() 
 			var arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-
+			$("#cant_id").val(''); // Limpio cantidad al cambiar de artículo
+			
 			if(depo_id == ""){
 				alert('Por favor seleccione deposito...');
 				return;
 			}
 
 			WaitingOpen('Buscando Lotes...');
-
 			$.ajax({
 					type: 'POST',
 					data: {arti_id: arti_id, depo_id: depo_id},
 					url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerLotes',
 					success: function(data) {
-
+							
 							$('#lote_id').empty();
 							var resp = JSON.parse(data);
 							if (resp == null) {
@@ -243,7 +335,7 @@
 								{
 										$('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
 								}
-								$("#lote_id").removeAttr('readonly');
+								$("#lote_id").attr('disabled',false);
 							}
 							WaitingClose();
 					},
