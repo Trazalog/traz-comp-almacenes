@@ -18,13 +18,13 @@ class Movimientodeposalida extends CI_Controller {
 	}
 
 	/**
-	* Dibuja pantalla Salida de Deposito
+	* Dibuja pantalla Salida de Deposito con stock de articulos por deposito
 	* @param
 	* @return view salida de depositos
 	*/
 	public function index()
 	{
-    $data['items'] = $this->Componentes->listaArticulos();
+    	$data['items'] = $this->Componentes->listaArticulos();
 		$estabList = $this->Establecimientos->listar();
 		$data['establecimiento'] = $estabList->establecimientos->establecimiento;
 		$data['depositos'] = $this->Establecimientos->obtenerDepositoPorEmp();
@@ -148,5 +148,17 @@ class Movimientodeposalida extends CI_Controller {
 		$datos['detalle'] = $this->input->post('detalle');
 
 		$this->load->view(ALM.'/notapedido/printSalidaDeposito');
+	}
+
+	/**
+	* Trae todos los articulos para deposito seleccionado con su stock correspondiente
+	* @param strin depo_id
+	* @return array de articulos encontrados para un deposito
+	*/
+	public function getArticulosDeposito(){
+
+		$depo_id = $this->input->post('depo_id');
+		$resp = $this->Movimdeposalida->getArticulosDeposito($depo_id);
+		echo json_encode($resp);
 	}
 }
