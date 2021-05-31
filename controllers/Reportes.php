@@ -197,13 +197,12 @@ class Reportes extends CI_Controller
   */
   public function exportarExcelHistorico() {
 
-    // $data = $this->input->post("data");
     $data['desde'] = $this->input->get('fec1');
     $data['hasta'] = $this->input->get('fec2');
     $data['depo_id'] = $this->input->get('depo');
-    $data['arti_id'] = $this->input->get('artic');
+    $data['arti_id'] = $this->input->get('arti');
     $data['tipo_mov'] = $this->input->get('tpoMov');
-    $data['estado'] = $this->input->get('estado'); //FALTA EN LA CONSULTA
+    $data['lote_id'] = $this->input->get('lote');
 
     $json = $this->Opcionesfiltros->getHistoricoArticulos($data);
     
@@ -250,7 +249,7 @@ class Reportes extends CI_Controller
       $sheet->setCellValue('A'.$i, $value->referencia);
       $sheet->setCellValue('B'.$i, $value->codigo);
       $sheet->setCellValue('C'.$i, $value->descripcion);
-      // $sheet->setCellValue('D'.$i, $value->lote); Se debe agregar en el service
+      $sheet->setCellValue('D'.$i, $value->lote);
       $sheet->setCellValue('E'.$i, $value->cantidad);
       $sheet->setCellValue('F'.$i, $value->stock_actual);
       $sheet->setCellValue('G'.$i, $value->deposito);  
