@@ -361,6 +361,7 @@
     data.depo_id = $("#depo_id").val();
     depo = $("#depo_id").val();
     data.lote_id = $("#lote_id>option:selected").val();
+    lote = $("#lote_id>option:selected").val();
     data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
     artic = selectItem.arti_id;
 
@@ -384,6 +385,6 @@
   }
 
   function exportarExcel(){
-    window.open("<?php echo base_url(ALM); ?>Reportes/exportarExcelHistorico?fec1="+fec1+"&fec2="+fec2+"&depo="+depo+"&arti="+artic+"&tpoMov="+tpoMov);
+    window.open("<?php echo base_url(ALM); ?>Reportes/exportarExcelHistorico?fec1="+fec1+"&fec2="+fec2+"&depo="+depo+"&arti="+artic+"&tpoMov="+tpoMov+"&lote="+lote);
 }
 </script>
