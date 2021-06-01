@@ -3,6 +3,7 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 require APPPATH . '/modules/'.ALM."reports/historico_articulos/Historico_articulos.php";
 require APPPATH . '/modules/'.ALM."reports/articulos_vencidos/Articulos_vencidos.php";
+require_once('vendor/autoload.php');
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
