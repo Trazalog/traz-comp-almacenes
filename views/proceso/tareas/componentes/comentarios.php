@@ -34,6 +34,21 @@
 <script>
 	//Funcion COMENTARIOS
 	function guardarComentario() {
+		debugger;
+    var comentario = $('#comentario').val();
+    if (comentario.length == 0 ) {
+					
+	Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'Asegurate de escribir un comentario!',
+				footer: ''
+				});
+		
+		return;
+
+                }
+				else{
 		console.log("Guardar Comentarios...");
 		var id = $('#case_id').val();
 		var nombUsr = $('#usrName').val();
@@ -54,4 +69,5 @@
 			}
 		});
 	}
+}
 </script>

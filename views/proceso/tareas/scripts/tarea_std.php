@@ -261,6 +261,20 @@
   }
   //Funcion COMENTARIOS
   function guardarComentario() {
+    var comentario = $('#comentario').val();
+if (comentario.length == 0 ) {
+				
+Swal.fire({
+			icon: 'error',
+			title: 'Error...',
+			text: 'Asegurate de escribir un comentario!',
+			footer: ''
+			});
+	
+	return;
+
+			}
+			else{
     console.log("Guardar Comentarios...");
     var id = $('#case_id').val();
     var comentario = $('#comentario').val();
@@ -285,6 +299,7 @@
         console.log("Error");
       }
     });
+  }
   }
   // Toma tarea en BPM
   function tomarTarea() {
