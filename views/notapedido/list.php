@@ -232,6 +232,9 @@ var tablaDeposito = $('#deposito').DataTable({});
                 <li><a href="#tab_2" data-toggle="tab">
                         <h4><span class="fa fa-check text-light-blue"></span>Entrega Asociadas al Pedido</h4>
                     </a></li>
+                    <li><a href="#tab_3" data-toggle="tab">
+                        <h4><span class="fa fa-check text-light-blue"></span>Trazabilidad</h4>
+                    </a></li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane active" id="tab_1">
@@ -290,6 +293,10 @@ var tablaDeposito = $('#deposito').DataTable({});
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
+
+                </div>
+
+                <div class="tab-pane" id="tab_3">
 
                 </div>
                 <!-- /.tab-pane -->

@@ -167,9 +167,16 @@ $("#new_articulo").on("hide.bs.modal", function() {
 function validarForm() {
     console.log('Validando');
 
-    var ban = ($('#unidmed').val() != 'false' && $('#unidmed').val() != '' && $('#artBarCode').val() != null && $(
-        '#artBarCode').val() != '' && $('#artDescription').val() != null && $('#artDescription').val() != '');
-    if (!ban) alert('Complete los Campos Obligatorios (*)');
+    var ban = ($('#unidmed').val() != 'false' && $('#unidmed').val() != '' 
+    && $('#artBarCode').val() != null && $('#artBarCode').val() != ''
+     && $('#artDescription').val() != null && $('#artDescription').val() != ''
+     && $('#tipo').val() != null && $('#tipo').val() != '');
+    if (!ban) 
+    	Swal.fire(
+						'Oops...',
+						'Debes completar los campos Obligatorios (*)',
+						'error'
+					);
     return ban;
 }
 
@@ -207,7 +214,7 @@ DataTable($('table'));
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Tipo <strong class="text-danger">*</strong>: </label>
-                                    <select name="tipo" class="form-control">
+                                    <select name="tipo" id="tipo" class="form-control">
                                         <option value="" selected disabled> - Seleccionar - </option>
                                         <?php 
                                             foreach ($tipoArticulos as $key => $o) {
