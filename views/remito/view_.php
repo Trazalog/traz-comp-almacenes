@@ -213,14 +213,14 @@ var idslote = {};
 var j = 0;
 
 $(".datetime").datetimepicker({
-    format: 'YYYY-MM-DD HH:mm',
+    format: 'DD-MM-YYYY HH:mm',
     locale: 'es',
     date: new Date()
 });
 
 $(".date").datetimepicker({
-    format: 'YYYY-MM-DD',
-    locale: 'en'
+    format: 'DD-MM-YYYY',
+    locale: 'ES'
 });
 
 

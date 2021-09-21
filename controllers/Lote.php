@@ -97,6 +97,11 @@ class Lote extends CI_Controller
         if(!empty($this->input->post('fec_alta'))){
             $data['fec_alta'] = $this->input->post('fec_alta');
         }
+     
+         //Arcticulos con stock 0
+         if(!empty($this->input->post('stock0'))){
+            $data['stock0'] = $this->input->post('stock0');
+        }
         
         $response = $this->Lotes->filtrarListado($data);
         log_message('DEBUG','#TRAZA | STOCK | filtrarListado() $response >> '.json_encode($response));

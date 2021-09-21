@@ -261,7 +261,7 @@ class Lotes extends CI_Model
         $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
         $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
         $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
-        $this->db->where('cantidad !=',0);
+       // $this->db->where('cantidad !=',0);
         $this->db->where('alm.alm_lotes.empr_id', empresa());
         //FILTRADO
         //Nombre Articulo
@@ -286,8 +286,14 @@ class Lotes extends CI_Model
         }
         //Nombre Recipiente
         if(!empty($data['nom_reci'])){
-            $this->db->where('prd.recipientes.reci_id',$data['nom_reci']);
+            $this->db->where('prd.recipientes.reci_id',$data['nombre']);
         }
+         //ARticulo con stock 0
+         if(!empty($data['stock0'])){
+            $this->db->where('alm.alm_lotes.cantidad',$data['stock0']);
+        }
+
+        
 
         $query = $this->db->get();
         if ($query->num_rows() != 0) {

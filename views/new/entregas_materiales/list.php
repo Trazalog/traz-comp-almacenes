@@ -42,7 +42,65 @@
 </div><!-- /.box -->
 
 <script>
-DataTable($('#entregas'));
+//DataTable($('#entregas'));
+
+//Funcion de datatable para extencion de botones exportar
+//excel, pdf, copiado portapapeles e impresion
+
+$(document).ready(function() {
+    $('#entregas').DataTable({
+        responsive: true,
+        language: {
+            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+        },
+        dom: 'lBfrtip',
+        buttons: [{
+                //Botón para Excel
+                extend: 'excel',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7]
+                },
+                footer: true,
+                title: 'Entrega Materiales',
+                filename: 'Entrega Materiales',
+
+                //Aquí es donde generas el botón personalizado
+                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+            },
+            // //Botón para PDF
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7]
+                },
+                footer: true,
+                title: 'Entrega Materiales',
+                filename: 'Entrega Materiales',
+                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+            },
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7]
+                },
+                footer: true,
+                title: 'Entrega Materiales',
+                filename: 'Entrega Materiales',
+                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7]
+                },
+                footer: true,
+                title: 'Entrega Materiales',
+                filename: 'Entrega Materiales',
+                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+            }
+        ]
+    });
+});
 
 function ConsultarEntrega(e)
 {
