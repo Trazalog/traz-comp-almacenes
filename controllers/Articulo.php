@@ -23,11 +23,12 @@ class Articulo extends CI_Controller {
 	}
 
 	public function obtener($opt = false){
-		$url =  REST_ALM . '/articulos';
-		$data = $this->rest->callApi('GET',$url);
-		if($data['status']) $data['data'] = json_decode($data['data'])->materias->materia;
-		if($opt) $data['data'] = selectBusquedaAvanzada(false, false, $data['data'], 'id', 'barcode',array('descripcion'));
-		echo json_encode($data);
+		$url =  REST_ALM . '/articulos/'.empresa();
+		$data = wso2($url);
+		if($data['status']){
+			if($opt) $data['data'] = selectBusquedaAvanzada(false, false, $data['data'], 'arti_id', 'barcode',array('descripcion'));
+			echo json_encode($data);
+		}
 	}
 
 	public function guardar()

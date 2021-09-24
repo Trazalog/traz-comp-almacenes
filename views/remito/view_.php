@@ -213,14 +213,14 @@ var idslote = {};
 var j = 0;
 
 $(".datetime").datetimepicker({
-    format: 'YYYY-MM-DD HH:mm',
+    format: 'DD-MM-YYYY HH:mm',
     locale: 'es',
     date: new Date()
 });
 
 $(".date").datetimepicker({
-    format: 'YYYY-MM-DD',
-    locale: 'en'
+    format: 'DD-MM-YYYY',
+    locale: 'ES'
 });
 
 
@@ -433,7 +433,7 @@ function get_info_remito() {
 }
 
 function validar_campos() {
-    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == 'false')
+    return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == 'false' || $('#lote').val() == '' || $('#cantidad').val() == '' || $('#establecimiento').val() == 'false' || $('#deposito').val() == 'false')
 }
 </script>
 

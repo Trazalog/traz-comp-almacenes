@@ -17,17 +17,39 @@ class Ajustestock extends CI_Controller
 
     public function guardarAjuste()
     {
-        $data = $this->input->post('data');
-        $rsp = $this->Ajustestocks->guardarAjustes($data);
-        echo json_encode($rsp);
+				$data = $this->input->post('data');
+
+				$cabecera = $data;
+				unset($cabecera['ajus_id']);
+				unset($cabecera['tipo_ent_sal']);
+				$rsp = $this->Ajustestocks->guardarAjustes($cabecera);
+
+				if($rsp == null){
+					log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACENES|AJUSTESTOCK|guardarAjuste() >> ERROR no guardo cabecera de ajuste de stock');
+					echo json_encode(['status' => false, 'data' => 'Error al guardar Cabecera Ajuste Stock...']);
+					return;
+				}
+
+				$data['ajus_id'] = (string)$rsp;
+				$rsp_deta = $this->Ajustestocks->guardarDetalleAjustes($data);
+				if($rsp == null){
+					log_message('ERROR','#TRAZA|TRAZ-COMP-ALMACENES|AJUSTESTOCK|guardarAjuste() >> ERROR no guardo detalle de ajuste de stock');
+					echo json_encode(['status' => false, 'data' => 'Error al guardar Detalle Ajuste Stock...']);
+					return;
+				}
+
+        echo json_encode(['status' => false, 'data' => 'Ajuste Stock Guardado Exitosamente ...']);
     }
 
-    public function guardarDetalleAjuste()
-    {
-        $data = $this->input->post('data');
-        $rsp = $this->Ajustestocks->guardarDetalleAjustes($data);
-        echo json_encode($rsp);
-    }
-
-
+		/**
+		* Trae listado de depositos por id de Estabelcimiento
+		* @param int id establecimiento
+		* @return array listado de depositos
+		*/
+		public function traerDepositos()
+		{
+			$id = $this->input->post('id_esta');
+			$resp = $this->Establecimientos->obtenerDepositos($id);
+			echo json_encode($resp->depositos->deposito);
+		}
 }

@@ -16,8 +16,8 @@ class Lotes extends CI_Model
         $this->db->from('alm.alm_lotes');
         $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
         $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
-        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id');
-        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id');
+        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
         $this->db->where('cantidad !=',0);
         $this->db->where('alm.alm_lotes.empr_id', empresa());
         //$this->db->join('alm.alm.utl_tablas C','alm.alm_lotes.estado_id = C.tabl_id');
@@ -234,9 +234,72 @@ class Lotes extends CI_Model
     public function listarPorArticulos($idarticulo,$iddeposito){
 
         log_message('DEBUG', '#MODEL > listarPorArticulos | ID_ARTICULO: ' .$idarticulo);
-        $resource = 'deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list'; 	
-        $url = REST0.$resource;
-        $array = file_get_contents($url, false, http('GET'));
-        return json_decode($array);                
+        $url = REST_ALM.'/deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list';
+		$array = $this->rest->callAPI("GET",$url);
+		$resp =  json_decode($array['data']);
+		return $resp;
+    }
+
+    public function filtrarListado($data)
+    {
+        // $post = "";
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | MODEL | filtrarListado() $data: >> '.json_encode($data));
+        $this->db->select('
+            alm.alm_lotes.*,
+            alm.alm_articulos.descripcion as artDescription,
+            alm.alm_articulos.barcode as artBarCode,
+            alm.alm_lotes.cantidad,
+            alm.alm_depositos.depo_id,
+            alm.alm_depositos.descripcion as depositodescrip,
+            alm.alm_articulos.unidad_medida as un_medida,
+            prd.recipientes.reci_id,
+            prd.recipientes.nombre as nom_reci,
+            alm.alm_articulos.tipo as artType
+        ');
+        $this->db->from('alm.alm_lotes');
+        $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
+        $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
+        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+       // $this->db->where('cantidad !=',0);
+        $this->db->where('alm.alm_lotes.empr_id', empresa());
+        //FILTRADO
+        //Nombre Articulo
+        if(!empty($data['artDescrip'])){
+            $this->db->where('alm.alm_articulos.descripcion',$data['artDescrip']);
+        }
+        //Codigo del Articulo
+        if(!empty($data['artBarCode'])){
+            $this->db->where('alm.alm_articulos.barcode',$data['artBarCode']);
+        }
+        //Tipo Articulo
+        if(!empty($data['artType'])){
+            $this->db->where('alm.alm_articulos.tipo',$data['artType']);
+        }
+        //Fecha Creación
+        if(!empty($data['fec_alta'])){
+            $this->db->where('DATE(alm.alm_lotes.fec_alta)',$data['fec_alta']);
+        }
+        //Nombre del Deposito
+        if(!empty($data['depositodescrip'])){
+            $this->db->where('alm.alm_depositos.depo_id',$data['depositodescrip']);
+        }
+        //Nombre Recipiente
+        if(!empty($data['nom_reci'])){
+            $this->db->where('prd.recipientes.reci_id',$data['nombre']);
+        }
+         //ARticulo con stock 0
+         if(!empty($data['stock0'])){
+            $this->db->where('alm.alm_lotes.cantidad',$data['stock0']);
+        }
+
+        
+
+        $query = $this->db->get();
+        if ($query->num_rows() != 0) {
+            return $query->result_array();
+        } else {
+            return false;
+        }
     }
 }

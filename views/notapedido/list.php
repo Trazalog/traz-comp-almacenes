@@ -202,7 +202,63 @@ function rellenarCabeceraEntrega(json){
 }
 
 
-var tablaDeposito = $('#deposito').DataTable({});
+//Funcion de datatable para extencion de botones exportar
+//excel, pdf, copiado portapapeles e impresion
+
+var tablaDeposito =  $('#deposito').DataTable({
+        responsive: true,
+        language: {
+            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+        },
+        dom: 'lBfrtip',
+        buttons: [{
+                //Botón para Excel
+                extend: 'excel',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+
+                //Aquí es donde generas el botón personalizado
+                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+            },
+            // //Botón para PDF
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+            },
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+            }
+        ]
+    });
+
+
 </script>
 
 <!-- Modal Agregar -->
@@ -231,6 +287,9 @@ var tablaDeposito = $('#deposito').DataTable({});
                     </a></li>
                 <li><a href="#tab_2" data-toggle="tab">
                         <h4><span class="fa fa-check text-light-blue"></span>Entrega Asociadas al Pedido</h4>
+                    </a></li>
+                    <li><a href="#tab_3" data-toggle="tab">
+                        <h4><span class="fa fa-check text-light-blue"></span>Trazabilidad</h4>
                     </a></li>
             </ul>
             <div class="tab-content">
@@ -290,6 +349,10 @@ var tablaDeposito = $('#deposito').DataTable({});
                 </div>
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
+
+                </div>
+
+                <div class="tab-pane" id="tab_3">
 
                 </div>
                 <!-- /.tab-pane -->

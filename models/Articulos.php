@@ -16,7 +16,7 @@ class Articulos extends CI_Model
 
 	public function obtenerXTipo($tipo)
 	{
-		$resource = "/articulos/tipo/$tipo";
+		$resource = "/articulos/tipo/$tipo/".empresa();
         $url = REST_ALM . $resource;
         return wso2($url);
 	}
@@ -368,12 +368,11 @@ class Articulos extends CI_Model
 
 	public function getArtiService()
 	{
-		$url =  REST_ALM . '/articulos';
-		$data = $this->rest->callApi('GET', $url);
-		if ($data['status']) {
-			$data['data'] = json_decode($data['data'])->materias->materia;
+		$url =  REST_ALM . '/articulos/'.empresa();
+		$data = wso2($url);
+		if ($data['status']) {	
+			return $data['data'];
 		}
-		return $data['data'];
 	}
 
 	#FLEIVA

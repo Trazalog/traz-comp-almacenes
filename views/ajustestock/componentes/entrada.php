@@ -1,5 +1,5 @@
 <div class="box box-default tag-descarga" id="boxEntrada" style="opacity: 0.5;">
-    <div class="box-header">
+    <div class="box-header with-border">
         <i class="fa fa-sign-in"></i>
         <h3 class="box-title"> ENTRADA</h3>
     </div>

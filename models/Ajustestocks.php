@@ -8,21 +8,26 @@ class Ajustestocks extends CI_Model {
 
    function guardarAjustes($data)
    {
-        $data = array(
-         'ajuste' => array(
-            'empr_id' => strval(empresa()),
-            'usuario_app' => userNick(),
-            'justificacion' => $data['justificacion'],
-            'tipo_ajuste' => $data['tipoajuste']
-           )
-         );
+			$data = array(
+				'ajuste' => array(
+					'empr_id' => strval(empresa()),
+					'usuario_app' => userNick(),
+					'justificacion' => $data['justificacion'],
+					'tipo_ajuste' => $data['tipoajuste']
+					)
+			);
 
-        log_message('DEBUG', 'Ajustestocks/guardarAjuste (datos)-> '.json_encode($data));
-        $resource = 'stock/ajuste';
-        $url = REST0.$resource;
-        $array = $this->rest->callAPI("POST", $url, $data); 
-        return json_decode($array['data']);
-   }
+			log_message('DEBUG', 'Ajustestocks/guardarAjuste (datos)-> '.json_encode($data));
+			$resource = '/stock/ajuste';
+			$url = REST_ALM.$resource;
+			$array = $this->rest->callAPI("POST", $url, $data);
+			$data = json_decode($array['data']);
+			$id = $data->GeneratedKeys->Entry[0]->ID;
+
+			return $id;
+	 }
+
+
    function guardarDetalleAjustes($data)
    {
       $data = $data;
@@ -60,9 +65,9 @@ class Ajustestocks extends CI_Model {
       }
 
       log_message('DEBUG', 'Ajustestocks/guardarDetalleAjustes (datos)-> '.json_encode($data));
-      $resource = 'stock/ajuste/detalle_batch_req';
-      $url = REST0.$resource;
-      $array = $this->rest->callAPI("POST", $url, $dato); 
+      $resource = '/stock/ajuste/detalle_batch_req';
+      $url = REST_ALM.$resource;
+      $array = $this->rest->callAPI("POST", $url, $dato);
       return json_decode($array['status']);
    }
 }

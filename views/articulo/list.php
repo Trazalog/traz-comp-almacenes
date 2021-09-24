@@ -127,7 +127,6 @@ function editar(e) {
     $('#mdl-titulo').html('Editar Artículo');
     $('#btn-accion').attr('onclick', 'editarArticulo()');
     $('#new_articulo').modal('show');
-
 }
 
 // Eliminar Articulo
@@ -162,19 +161,85 @@ $("#new_articulo").on("hide.bs.modal", function() {
     $('#btn-accion').show();
     $('#frm-articulo')[0].reset();
     $('#read-only').prop('disabled', false);
-    $('#arti_id').prop('disabled', true);
+    // $('#arti_id').prop('disabled', true);
 });
 
 function validarForm() {
     console.log('Validando');
 
-    var ban = ($('#unidmed').val() != 'false' && $('#unidmed').val() != '' && $('#artBarCode').val() != null && $(
-        '#artBarCode').val() != '' && $('#artDescription').val() != null && $('#artDescription').val() != '');
-    if (!ban) alert('Complete los Campos Obligatorios (*)');
+    var ban = ($('#unidmed').val() != 'false' && $('#unidmed').val() != '' 
+    && $('#artBarCode').val() != null && $('#artBarCode').val() != ''
+     && $('#artDescription').val() != null && $('#artDescription').val() != ''
+     && $('#tipo').val() != null && $('#tipo').val() != '');
+    if (!ban) 
+    	Swal.fire(
+						'Oops...',
+						'Debes completar los campos Obligatorios (*)',
+						'error'
+					);
     return ban;
 }
 
-DataTable($('table'));
+//DataTable($('table'));
+
+//Funcion de datatable para extencion de botones exportar
+//excel, pdf, copiado portapapeles e impresion
+
+$(document).ready(function() {
+    debugger;
+    $('#articles').DataTable({
+        responsive: true,
+        language: {
+            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+        },
+        dom: 'lBfrtip',
+        buttons: [{
+                //Botón para Excel
+                extend: 'excel',
+                exportOptions: {
+                    columns: [1, 2, 3, 4]
+                },
+                footer: true,
+                title: 'Listado de Artículos',
+                filename: 'Listado de Artículos',
+
+                //Aquí es donde generas el botón personalizado
+                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+            },
+            // //Botón para PDF
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [1, 2, 3, 4]
+                },
+                footer: true,
+                title: 'Listado de Artículos',
+                filename: 'Listado de Artículos',
+                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+            },
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4]
+                },
+                footer: true,
+                title: 'Listado de Artículos',
+                filename: 'Listado de Artículos',
+                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [1, 2, 3, 4]
+                },
+                footer: true,
+                title: 'Listado de Artículos',
+                filename: 'Listado de Artículos',
+                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+            }
+        ]
+    });
+});
 </script>
 
 <!-- Modal -->
@@ -195,7 +260,7 @@ DataTable($('table'));
                 </div>
 
                 <form id="frm-articulo">
-                    <!-- <input id="arti_id" name="arti_id" type="text" class="hidden" disabled> -->
+                    <input id="arti_id" name="arti_id" type="text" class="hidden">
                     <fieldset id="read-only">
                         <div class="row">
                             <!-- Código de Articulo -->
@@ -203,13 +268,12 @@ DataTable($('table'));
                                 <div class="form-group">
                                     <label>Código <strong class="text-danger">*</strong>: </label>
                                     <input type="text" class="form-control" id="artBarCode" name="barcode">
-                                    <input id="arti_id" name="arti_id" type="text" class="form-control" style="display:none;">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Tipo <strong class="text-danger">*</strong>: </label>
-                                    <select name="tipo" class="form-control">
+                                    <select name="tipo" id="tipo" class="form-control">
                                         <option value="" selected disabled> - Seleccionar - </option>
                                         <?php 
                                             foreach ($tipoArticulos as $key => $o) {
