@@ -91,7 +91,13 @@ function validar_campos_obligatorios() {
     });
 
     if (!ban) {
-        alert('Campos Obligatorios Incompletos (*)');
+      
+        Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'Campos Obligatorios Incompletos (*)',
+				footer: ''
+				});
         return false;
     }
 
@@ -100,8 +106,19 @@ function validar_campos_obligatorios() {
 </script>
 
 <script>
-function cerrarTarea() {
+$(function() {
+    debugger;
+    // tarea en view etrega pedido pendiente
+ $(document).on('click', 'input[type="button"]', function(event) {
+    let id = this.id;
+	console.log("Se presionó el Boton con Id :"+ id)
+  });
+});
 
+
+function cerrarTarea() {
+debugger;
+//cerrar tarea en view etrega pedido pendiente
     if (!validar_campos_obligatorios()) return;
 
     var id = $('#taskId').val();
@@ -113,6 +130,8 @@ function cerrarTarea() {
     var detalles = [];
 
     var completa = true;
+
+    var parcial = false;
 
     $('#entregas tr').each(function() {
         const row = $(this).data('json');
@@ -132,7 +151,12 @@ function cerrarTarea() {
     });
 
     if (detalles == null || detalles.length == 0) {
-        alert('No se Registraron Entregas');
+        Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'No se Registraron Entregas!',
+				footer: ''
+				});
         return;
     }
 
@@ -152,6 +176,86 @@ function cerrarTarea() {
 
                 if ($('#miniView').length == 1) {
                     closeView();
+                } else {
+
+                    linkTo('<?php echo BPM ?>Proceso');
+                }
+            }
+        },
+        error: function(data) {
+            alert("Error");
+        },
+        complete: function() {
+            wbox();
+        }
+    });
+}
+
+function cerrarTareaParcial() {
+debugger;
+
+
+//cerrar tarea en view etrega pedido pendiente
+    if (!validar_campos_obligatorios()) return;
+
+    var id = $('#taskId').val();
+
+    var pema_id = $('#pema').val();
+
+    var cantidades = [];
+
+    var detalles = [];
+
+    var completa = false;
+
+    var parcial = true;
+
+    $('#entregas tr').each(function() {
+        const row = $(this).data('json');
+        completa = completa && (parseInt($(this).find('.pedido').html()) == (parseInt($(this).find('.entregado')
+            .html()) + parseInt($(this).find('.extraer').html() == '-' ? 0 : $(this).find(
+            '.extraer').html())));
+
+        if (row == null) return;
+        row.forEach(element => {
+            detalles.push(element);
+        });
+
+        cantidades.push({
+            arti_id: $(this).data('id'),
+            resto: $(this).attr('resto')
+        });
+    });
+
+    if (detalles == null || detalles.length == 0) {
+        Swal.fire({
+				icon: 'error',
+				title: 'Error...',
+				text: 'No se Registraron Entregas!',
+				footer: ''
+				});
+        return;
+    }
+
+    wbox('#view');
+    $.ajax({
+        type: 'POST',
+        data: {
+            completa,
+            parcial,
+            info_entrega: get_info_entrega(),
+            detalles,
+            cantidades,
+            pema_id
+        },
+        url: '<?php echo BPM ?>Proceso/cerrarTarea/' + id,
+        success: function(data) {
+            if (!existFunction('actualizarEntrega')) {
+
+                if ($('#miniView').length == 1) {
+                    closeView();
+
+                    linkTo('<?php echo BPM ?>Proceso');
                 } else {
 
                     linkTo('<?php echo BPM ?>Proceso');

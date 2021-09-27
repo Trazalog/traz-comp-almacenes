@@ -59,7 +59,7 @@
                                 </div>
                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
                                     <label for="vencimiento">Fecha Vencimiento:</label>
-                                    <input type="text" id="vencimiento" name="vencimiento" placeholder="dd/mm/yyyy"
+                                    <input type="text" id="vencimiento" name="vencimiento" placeholder="dd/mm/yyyy" data-date-format="YYYY-MM-DD"
                                         class="form-control date">
                                 </div>
                                 <div class="col-xs-12 col-sm-3 col-md-3"><br>
@@ -213,13 +213,13 @@ var idslote = {};
 var j = 0;
 
 $(".datetime").datetimepicker({
-    format: 'DD-MM-YYYY HH:mm',
+    format: 'YYYY-MM-DD HH:mm',
     locale: 'es',
     date: new Date()
 });
 
 $(".date").datetimepicker({
-    format: 'DD-MM-YYYY',
+    format: 'YYYY-MM-DD',
     locale: 'ES'
 });
 
@@ -307,7 +307,7 @@ function limpiar() {
 var i = 1;
 
 function agregar() {
-
+debugger;
     var lote = $('#lote').val();
     var vencimiento = $('#vencimiento').val();
     var codigo = selectItem.barcode;

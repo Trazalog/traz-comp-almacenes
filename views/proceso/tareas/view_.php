@@ -154,6 +154,7 @@
             <?php echo (isset($estadoOT) && $estadoOT==false?'<h4 class="text-danger text-center">La Orden de Trabajo Asociada al Pedido de Materiales ha sido Cerrada</h4><h5 class="text-center">No se podran realizar mas Entregas</h5>':null) ?>  
               <button type="button" id="cerrar" class="btn btn-primary" onclick="back();">Cerrar</button>
                 <button type="button" class="btn btn-success" id="hecho" onclick="cerrarTarea()" <?php echo (isset($estadoOT) && $estadoOT==false?'disabled':null) ?> >Hecho</button>
+                <button type="button" class="btn btn-primary" id="btncerrarTarea" style="display:none;" onclick="BtnCerrarTarea()">Cerrar Tarea con Finalizado Parcial</button>
             </div> <!-- /.modal footer -->
 
         </div><!-- /.box body -->
@@ -163,6 +164,15 @@
 
 <?php $this->load->view(ALM.'proceso/tareas/scripts/tarea_std'); ?>
 <script>
+$(document).ready(function(event){
+    debugger;
+	if($("#tarea").val()=="Entrega pedido pendiente")
+		{
+			$("#btncerrarTarea").removeAttr("style");
+		}
+	});
+
+
 $('.fecha').datepicker({
     autoclose: true
 }).on('change', function(e) {
@@ -171,26 +181,86 @@ $('.fecha').datepicker({
     $('#genericForm').data('bootstrapValidator').resetField($(this), false);
     $('#genericForm').data('bootstrapValidator').validateField($(this));
 });
+
+function BtnCerrarTarea()
+  {
+	  $("#modalaviso").modal("show");
+  }
+
+
+  function CerrarTarea()
+  {
+	var caseid = $("#caseid").val();
+	var taskid = $("#idTarBonita").val();
+	$.ajax({
+        type: 'POST',
+        data: {
+			'IdtarBonita': taskid,
+			'caseid':caseid
+        },
+        url: 'index.php/Tarea/CerrarTarea',
+        success: function(result) {
+		  debugger;
+		  if(result==" ok")
+		  {
+			$("#modalaviso").modal("hide");
+			alert("Tarea Cerrada Exitosamente");
+		  }else{
+			$("#modalaviso").modal("hide");
+			alert("Error al cerrar Tarea");
+		  }
+        },
+        error: function(result) {
+			debugger;
+        }
+    });
+  }
 </script>
 
-
-<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog"
-    aria-labelledby="myLargeModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="row">
-                <div class="col-sm-12">
-                    <div class="box">
-                        <div class="box-body">
-                            <div class="row">
-                                <div class="col-sm-12 col-md-12" id="contFormSubtarea">
-
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="modal fade bs-example-modal-lg" id="modalFormSubtarea" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="box">
+						<div class="box-body">
+							<div class="row">
+								<div class="col-sm-12 col-md-12" id="contFormSubtarea">
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
+
+<!---///////--- MODAL AVISO ---///////--->
+<div class="modal fade" id="modalaviso">		
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header bg-blue">
+				
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true" >&times;</span>
+				</button>
+				<h5 class="modal-title" id="exampleModalLabel">AVISO</h5>
+			</div>
+			<input id="circuito_delete" style="display: none;">
+			<div class="modal-body">
+				<center>
+				<h4><p>¿ DESEA CERRAR LA TAREA ?</p></h4>
+				</center>
+			</div>
+			<div class="modal-footer">
+				<center>
+				<button type="button" class="btn btn-primary" onclick="CerrarTarea()">SI</button>
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">NO</button>
+				</center>
+			</div>
+		</div>
+	</div>
+</div>
+<!---///////--- FIN MODAL AVISO ---///////--->
