@@ -173,7 +173,7 @@ function validarForm() {
      && $('#tipo').val() != null && $('#tipo').val() != '');
     if (!ban) 
     	Swal.fire(
-						'Oops...',
+						'Error...',
 						'Debes completar los campos Obligatorios (*)',
 						'error'
 					);

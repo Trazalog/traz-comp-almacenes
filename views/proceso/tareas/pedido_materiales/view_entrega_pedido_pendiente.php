@@ -54,7 +54,7 @@
                 echo '<td class="entregado" style="text-align:center">' . $o['cant_entregada'] . '</td>';
                 echo '<td class="disponible" style="text-align:center">'.($o['cant_disponible']<0?0:$o['cant_disponible']).'</td>';
                 echo '<td class="extraer" style="text-align:center">-</td>';
-                echo '<td style="text-align:center"><a href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . '" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';
+                echo '<td style="text-align:center"><a href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] ||$o['cant_pedida'] == $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . '" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';
                 echo '</tr>';
             }
 
@@ -91,13 +91,13 @@ function validar_campos_obligatorios() {
     });
 
     if (!ban) {
-      
+
         Swal.fire({
-				icon: 'error',
-				title: 'Error...',
-				text: 'Campos Obligatorios Incompletos (*)',
-				footer: ''
-				});
+            icon: 'error',
+            title: 'Error...',
+            text: 'Campos Obligatorios Incompletos (*)',
+            footer: ''
+        });
         return false;
     }
 
@@ -109,16 +109,16 @@ function validar_campos_obligatorios() {
 $(function() {
     debugger;
     // tarea en view etrega pedido pendiente
- $(document).on('click', 'input[type="button"]', function(event) {
-    let id = this.id;
-	console.log("Se presionó el Boton con Id :"+ id)
-  });
+    $(document).on('click', 'input[type="button"]', function(event) {
+        let id = this.id;
+        console.log("Se presionó el Boton con Id :" + id)
+    });
 });
 
 
 function cerrarTarea() {
-debugger;
-//cerrar tarea en view etrega pedido pendiente
+    debugger;
+    //cerrar tarea en view etrega pedido pendiente
     if (!validar_campos_obligatorios()) return;
 
     var id = $('#taskId').val();
@@ -151,12 +151,11 @@ debugger;
     });
 
     if (detalles == null || detalles.length == 0) {
-        Swal.fire({
-				icon: 'error',
-				title: 'Error...',
-				text: 'No se Registraron Entregas!',
-				footer: ''
-				});
+        Swal.fire(
+            'Error...',
+            'No se Registro Entrega!',
+            'error'
+        )
         return;
     }
 
@@ -176,6 +175,12 @@ debugger;
 
                 if ($('#miniView').length == 1) {
                     closeView();
+                    Swal.fire(
+                        'Guardado!',
+                        'El Pedido se Finalizo con Entrega Parcial Correctamente',
+                        'success'
+                    )
+                    linkTo('<?php echo BPM ?>Proceso/');
                 } else {
 
                     linkTo('<?php echo BPM ?>Proceso');
@@ -192,10 +197,10 @@ debugger;
 }
 
 function cerrarTareaParcial() {
-debugger;
+    debugger;
 
 
-//cerrar tarea en view etrega pedido pendiente
+    //cerrar tarea en view etrega pedido pendiente
     if (!validar_campos_obligatorios()) return;
 
     var id = $('#taskId').val();
@@ -228,17 +233,36 @@ debugger;
     });
 
     if (detalles == null || detalles.length == 0) {
-        Swal.fire({
-				icon: 'error',
-				title: 'Error...',
-				text: 'No se Registraron Entregas!',
-				footer: ''
-				});
-        return;
-    }
+        // Swal.fire(
+        // 	'Error...',
+        // 	'No se Registro Entrega!',
+        // 	'error'
+        // 	)
+        // return;
 
-    wbox('#view');
-    $.ajax({
+         const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Estas Seguro de Finalizar el Pedido?',
+            text: "Este paso no se puede revertir!",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'SI, Estoy Seguro!',
+            cancelButtonText: 'No, Cancelar!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                debugger;
+        console.log('result trae:' + result.value)
+              wbox('#view');
+           
+              $.ajax({
         type: 'POST',
         data: {
             completa,
@@ -250,26 +274,61 @@ debugger;
         },
         url: '<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
-            if (!existFunction('actualizarEntrega')) {
+               if (!existFunction('actualizarEntrega')) {
 
                 if ($('#miniView').length == 1) {
-                    closeView();
-
                     linkTo('<?php echo BPM ?>Proceso');
+                    closeView();
+                    Swal.fire(
+                        'Guardado!',
+                        'El Pedido se Finalizo con Entrega Parcial Correctamente',
+                        'success'
+                    )
+                    linkTo('<?php echo BPM ?>Proceso/');
+
                 } else {
 
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: 'Error Inesperado, contacta el Soporte Técnico',
+                        footer: ''
+                    });
                     linkTo('<?php echo BPM ?>Proceso');
                 }
             }
         },
         error: function(data) {
-            alert("Error");
+            Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: 'Error De Red',
+                        footer: ''
+                    });
         },
         complete: function() {
             wbox();
         }
     });
+           
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    'No se Finalizo Pedido',
+                    'warning'
+                )
+            }
+        })
+     
+    }
+
+   
 }
+
+
 
 function get_info_entrega() {
     return JSON.stringify(obj = {
