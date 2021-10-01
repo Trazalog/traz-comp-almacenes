@@ -12,7 +12,14 @@ class Lotes extends CI_Model
     public function getList() // Ok
 
     {
-        $this->db->select('alm.alm_lotes.*, alm.alm_articulos.descripcion as artDescription, alm.alm_articulos.barcode as artBarCode,alm.alm_lotes.cantidad,alm.alm_depositos.descripcion as depositodescrip, alm.alm_articulos.unidad_medida as un_medida, prd.recipientes.nombre as nom_reci');
+        $this->db->select('alm.alm_lotes.*,
+         alm.alm_articulos.descripcion as artDescription,
+         alm.alm_articulos.barcode as artBarCode,
+         alm.alm_articulos.tipo as artType,
+         alm.alm_lotes.cantidad,
+         alm.alm_depositos.descripcion as depositodescrip,
+         alm.alm_articulos.unidad_medida as un_medida,
+         prd.recipientes.nombre as nom_reci');
         $this->db->from('alm.alm_lotes');
         $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
         $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
@@ -40,6 +47,7 @@ class Lotes extends CI_Model
         $this->db->where('estado!=', 'Entregado');
         $this->db->where('estado!=', 'Rechazado');
         $this->db->where('estado!=', 'Cancelado');
+        $this->db->where('estado!=', 'Finalizado Ent. Parcial');       
         $this->db->where('alm.alm_pedidos_materiales.empr_id', empresa());
         $this->db->group_by('arti_id');
         $C = '(' . $this->db->get_compiled_select() . ') as "C"';
@@ -246,19 +254,20 @@ class Lotes extends CI_Model
         log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | MODEL | filtrarListado() $data: >> '.json_encode($data));
         $this->db->select('
             alm.alm_lotes.*,
+            alm.alm_articulos.tipo as artType,
             alm.alm_articulos.descripcion as artDescription,
             alm.alm_articulos.barcode as artBarCode,
+            alm.alm_articulos.unidad_medida as un_medida,
             alm.alm_lotes.cantidad,
             alm.alm_depositos.depo_id,
             alm.alm_depositos.descripcion as depositodescrip,
-            alm.alm_articulos.unidad_medida as un_medida,
             prd.recipientes.reci_id,
-            prd.recipientes.nombre as nom_reci,
-            alm.alm_articulos.tipo as artType
+            prd.recipientes.nombre as nom_reci
+           
         ');
         $this->db->from('alm.alm_lotes');
-        $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
-        $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
+        $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id', 'left');
+        $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id', 'left');
         $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
         $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
        // $this->db->where('cantidad !=',0);
