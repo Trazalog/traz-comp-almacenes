@@ -80,6 +80,8 @@ function cerrarTarea() {
     }
 
     var id = $('#taskId').val();
+    
+    var pema_id = $('#pemaId').val();
 
     var dataForm = new FormData($('#generic_form')[0]);
 
@@ -93,9 +95,13 @@ function cerrarTarea() {
         processData: false,
         url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
-            //wc();
-            back();
-
+            Swal.fire(
+                        'Guardado!',
+                        'Se Aprobo Pedido N°:'+ pema_id +' Correctamente!',
+                        'success'
+                    )
+                    linkTo('<?php echo BPM ?>Proceso/');
+            linkTo('<?php echo BPM ?>Proceso/');
         },
         error: function(data) {
             alert("Error");
