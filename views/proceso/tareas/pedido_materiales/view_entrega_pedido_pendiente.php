@@ -177,7 +177,7 @@ function cerrarTarea() {
                     closeView();
                     Swal.fire(
                         'Guardado!',
-                        'El Pedido se Finalizo con Entrega Parcial Correctamente',
+                        'El Pedido N°:'+pema_id +'se Finalizo con Entrega Parcial Correctamente',
                         'success'
                     )
                     linkTo('<?php echo BPM ?>Proceso/');
@@ -233,13 +233,7 @@ function cerrarTareaParcial() {
     });
 
     if (detalles == null || detalles.length == 0) {
-        // Swal.fire(
-        // 	'Error...',
-        // 	'No se Registro Entrega!',
-        // 	'error'
-        // 	)
-        // return;
-
+    
          const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
                 confirmButton: 'btn btn-success',
@@ -323,6 +317,90 @@ function cerrarTareaParcial() {
             }
         })
      
+    } else{
+        debugger;
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        })
+
+        swalWithBootstrapButtons.fire({
+            title: 'Estas Seguro de Finalizar el Pedido?',
+            text: "Este paso no se puede revertir!",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'SI, Estoy Seguro!',
+            cancelButtonText: 'No, Cancelar!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.value) {
+                debugger;
+        console.log('result trae:' + result.value)
+              wbox('#view');
+           
+              $.ajax({
+        type: 'POST',
+        data: {
+            completa,
+            parcial,
+            info_entrega: get_info_entrega(),
+            detalles,
+            cantidades,
+            pema_id
+        },
+        url: '<?php echo BPM ?>Proceso/cerrarTarea/' + id,
+        success: function(data) {
+               if (!existFunction('actualizarEntrega')) {
+
+                if ($('#miniView').length == 1) {
+                    linkTo('<?php echo BPM ?>Proceso');
+                    closeView();
+                    Swal.fire(
+                        'Guardado!',
+                        'El Pedido se Finalizo con Entrega Parcial Correctamente',
+                        'success'
+                    )
+                    linkTo('<?php echo BPM ?>Proceso/');
+
+                } else {
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: 'Error Inesperado, contacta el Soporte Técnico',
+                        footer: ''
+                    });
+                    linkTo('<?php echo BPM ?>Proceso');
+                }
+            }
+        },
+        error: function(data) {
+            Swal.fire({
+                        icon: 'error',
+                        title: 'Error...',
+                        text: 'Error De Red',
+                        footer: ''
+                    });
+        },
+        complete: function() {
+            wbox();
+        }
+    });
+           
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+                swalWithBootstrapButtons.fire(
+                    'Cancelado',
+                    'No se Finalizo Pedido',
+                    'warning'
+                )
+            }
+        })
     }
 
    
