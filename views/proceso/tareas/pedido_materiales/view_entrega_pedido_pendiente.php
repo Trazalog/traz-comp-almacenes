@@ -1,3 +1,8 @@
+<style>
+.frm-save {
+    display: none;
+}
+</style>
 <input type="text" id="pema" value="<?php echo $pema_id ?>" class="hidden">
 
 <h3>Entrega Materiales <small>Información</small></h3>
