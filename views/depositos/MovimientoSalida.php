@@ -3,14 +3,14 @@
 			<!-- SALIDA DE DEPOSITO -->
 				<div class="box">
 						<div class="box-header with-border">
-								<h3 class="box-title">Salida de deposito</h3>
+								<h3 class="box-title">Salida de depósito</h3>
 						</div>
 						<div class="box-body">
 								<div class="row">
 										<div class="col-md-3">
 												<div class="form-group">
 														<label>Nro. Comprobante <strong class="text-danger">*</strong> :</label>
-														<input type="number" id="nroCompr" class="form-control" placeholder="Ingrese Numero de comprobante">
+														<input type="number" id="nroCompr" class="form-control" placeholder="Ingrese Número de comprobante">
 												</div>
 										</div>
 										<div class="col-md-3">
@@ -27,7 +27,7 @@
 										<div class="col-md-3">
 												<label>Establecimiento destino <strong class="text-danger">*</strong> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
-													<option value="" disabled selected>-Seleccione opcion-</option>
+													<option value="" disabled selected>-Seleccione opción-</option>
 													<?php
 													foreach ($establecimiento as $a) {
 														echo '<option value="'.$a->esta_id.'">'.$a->nombre.'</option>';
@@ -36,9 +36,9 @@
 												</select>
 										</div>
 										<div class="col-md-3">
-												<label>Deposito destino <strong class="text-danger">*</strong> :</label>
+												<label>Depósito destino <strong class="text-danger">*</strong> :</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="depo_id" readonly>
-													<option value="" disabled selected>-Seleccione opcion-</option>
+													<option value="" disabled selected>-Seleccione opción-</option>
 												</select>
 										</div>
 								</div>

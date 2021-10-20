@@ -71,10 +71,10 @@
 
 
 <script>
-$("#fecha_entrega").datetimepicker({
-    format: 'YYYY-MM-DD',
-    locale: 'es',
-});
+// $("#fecha_entrega").datetimepicker({
+//     format: 'YYYY-MM-DD',
+//     locale: 'es',
+// });
 
 var select_row = null;
 
