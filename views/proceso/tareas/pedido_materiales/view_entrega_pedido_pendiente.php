@@ -7,7 +7,8 @@
 
 <h3>Entrega Materiales <small>Información</small></h3>
 
-<?php echo getFormXEmpresa('Entrega Materiales', empresa()) ?>
+<div id="form-dinamico" class="frm-new" data-form="14"></div>
+<?php// echo getFormXEmpresa('Entrega Materiales', empresa()) ?>
 <!-- <div class="row">
     <div class="col-sm-6">
         <div class="form-group">
@@ -71,10 +72,9 @@
 
 
 <script>
-// $("#fecha_entrega").datetimepicker({
-//     format: 'YYYY-MM-DD',
-//     locale: 'es',
-// });
+detectarForm();
+initForm();
+
 
 var select_row = null;
 
