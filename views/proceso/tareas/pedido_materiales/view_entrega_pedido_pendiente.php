@@ -1,3 +1,8 @@
+<style>
+.frm-save {
+    display: none;
+}
+</style>
 <input type="text" id="pema" value="<?php echo $pema_id ?>" class="hidden">
 
 <h3>Entrega Materiales <small>Información</small></h3>
@@ -66,10 +71,10 @@
 
 
 <script>
-$("#fecha_entrega").datetimepicker({
-    format: 'YYYY-MM-DD',
-    locale: 'es',
-});
+// $("#fecha_entrega").datetimepicker({
+//     format: 'YYYY-MM-DD',
+//     locale: 'es',
+// });
 
 var select_row = null;
 
