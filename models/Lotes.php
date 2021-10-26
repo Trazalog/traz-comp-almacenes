@@ -90,7 +90,7 @@ class Lotes extends CI_Model
 
             //Readonly
             $readonly = false;
-            if ($action == 'Del' || $action == 'View') {
+            if ($action == 'Del' && $action == 'View') {
                 $readonly = true;
             }
             $data['read'] = $readonly;
@@ -274,33 +274,38 @@ class Lotes extends CI_Model
         $this->db->where('alm.alm_lotes.empr_id', empresa());
         //FILTRADO
         //Nombre Articulo
-        if(!empty($data['artDescrip'])){
+        if($data['artDescrip'] !='' && $data['artDescrip'] != NULL ){
             $this->db->where('alm.alm_articulos.descripcion',$data['artDescrip']);
         }
         //Codigo del Articulo
-        if(!empty($data['artBarCode'])){
+        if($data['artBarCode'] !='' && $data['artBarCode'] != NULL && $data['artBarCode'] != "undefined" ){
             $this->db->where('alm.alm_articulos.barcode',$data['artBarCode']);
         }
         //Tipo Articulo
-        if(!empty($data['artType'])){
+        if($data['artType'] !='' && $data['artType'] != NULL && $data['artType'] != "null" ){
             $this->db->where('alm.alm_articulos.tipo',$data['artType']);
         }
         //Fecha Creación
-        if(!empty($data['fec_alta'])){
+        if($data['fec_alta'] !='' && $data['fec_alta'] != NULL ){
             $this->db->where('DATE(alm.alm_lotes.fec_alta)',$data['fec_alta']);
         }
         //Nombre del Deposito
-        if(!empty($data['depositodescrip'])){
+       if($data['depositodescrip'] !='' && $data['depositodescrip'] != NULL && $data['depositodescrip'] != "null" ){
             $this->db->where('alm.alm_depositos.depo_id',$data['depositodescrip']);
         }
         //Nombre Recipiente
-        if(!empty($data['nom_reci'])){
+        if($data['nom_reci'] !='' && $data['nom_reci'] != NULL && $data['nom_reci'] != "null" ){
             $this->db->where('prd.recipientes.reci_id',$data['nombre']);
         }
          //ARticulo con stock 0
-         if(!empty($data['stock0'])){
-            $this->db->where('alm.alm_lotes.cantidad',$data['stock0']);
-        }
+            if($data['stock0'] !='' && $data['stock0'] != NULL ){
+                $this->db->where('alm.alm_lotes.cantidad',$data['stock0']);
+            }
+            else if($data['stock0'] == ''){
+                  $this->db->where('cantidad !=',0);
+            }
+       
+        
 
         
 

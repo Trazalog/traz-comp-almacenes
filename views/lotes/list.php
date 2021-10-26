@@ -118,7 +118,7 @@ input[type=checkbox] {
                             <div class="form-check col-sm-6">
 
                                 <label for="stock0" class="checkboxtext">Artículo con Stock en 0
-                                    <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value=""
+                                    <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"
                                         id="stock0" />
                                 </label>
                             </div>
@@ -446,8 +446,8 @@ function blockEdicion() {
 //Filtra la tabla y la redibuja
 //Cada campo esta validado en caso de vacios o NULL no se muestren en la tabla
 function filtrar() {
-    var data = new FormData($('#frm-filtros')[0]);
-    data = formToObject(data);
+     var data = new FormData($('#frm-filtros')[0]);
+     data = formToObject(data);
     wo();
     var url = "<?php echo base_url(ALM) ?>Lote/filtrarListado";
     $.ajax({

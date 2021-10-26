@@ -17,12 +17,26 @@ class Lote extends CI_Controller
     {
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
-        $data['list'] = $this->Lotes->getList();
+      //  $data['list'] = $this->Lotes->getList();
         $data['permission'] = "Add-Edit-Del-View";
         $data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
         $data['establecimientos'] = $this->Establecimientos->listar()->establecimientos->establecimiento;
-        $this->load->view(ALM . 'lotes/list', $data);
+        $this->load->view(ALM . 'lotes/list_new', $data);
+       
     }
+
+    public function Listar_tabla()
+{
+	  $data['list'] = $this->Lotes->getList();
+    $this->load->view(ALM . 'lotes/table_list', $data);
+}
+
+
+public function buscador()
+{
+	
+	echo "ok";
+}
 
     public function puntoPedList()
     {
@@ -77,38 +91,57 @@ class Lote extends CI_Controller
         if(!empty($this->input->post('nom_reci'))){
             $data['nom_reci'] = $this->input->post('nom_reci');
         }
+        if($_GET){
+            $data['nom_reci'] = $_GET['nom_reci'];
+        }
         //Deposito
         if(!empty($this->input->post('depositodescrip'))){
             $data['depositodescrip'] = $this->input->post('depositodescrip');
+        }
+        if($_GET){
+            $data['depositodescrip'] = $_GET['depositodescrip'];
         }
         //Descripcion Articulo
         if(!empty($this->input->post('artDescrip'))){
             $data['artDescrip'] = $this->input->post('artDescrip');
         }
+        if($_GET){
+            $data['artDescrip'] = $_GET['artDescrip'];
+        }
         //Codigo Articulo
         if(!empty($this->input->post('artBarCode'))){
             $data['artBarCode'] = $this->input->post('artBarCode');
+        }
+        if($_GET){
+            $data['artBarCode'] = $_GET['artBarCode'];
         }
         //Tipo Articulo
         if(!empty($this->input->post('artType'))){
             $data['artType'] = $this->input->post('artType');
         }
+        if($_GET){
+            $data['artType'] = $_GET['artType'];
+        }
         //Fecha Creacion
         if(!empty($this->input->post('fec_alta'))){
             $data['fec_alta'] = $this->input->post('fec_alta');
+        }
+        if($_GET){
+            $data['fec_alta'] = $_GET['fec_alta'];
         }
      
          //Arcticulos con stock 0
          if(!empty($this->input->post('stock0'))){
             $data['stock0'] = $this->input->post('stock0');
         }
+        if($_GET){
+            $data['stock0'] = $_GET['stock0'];
+        }
         
-        $response = $this->Lotes->filtrarListado($data);
-        log_message('DEBUG','#TRAZA | STOCK | filtrarListado() $response >> '.json_encode($response));
+        $data['list'] = $this->Lotes->filtrarListado($data);
+        log_message('DEBUG','#TRAZA | STOCK | filtrarListado() $response >> '.json_encode($data['list']));
         
-        echo json_encode($response);
-        // var_dump($data['list']);
-        // $this->load->view(ALM . 'lotes/filtered_list', $data);
+      $this->load->view(ALM . 'lotes/table_list', $data);
     }
 
     public function getDepositos(){
