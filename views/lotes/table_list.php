@@ -14,38 +14,57 @@
                     </thead>
                     <tbody>
                         <?php
-               
                           foreach($list as $f)
                           {
                             if($f['cantidad'] === NULL ){
-                                $stock = $f['cantidad'];
-                                
-                                $stock = 0 ;
+                               
+                                  $stock = 0 ;
+                                //  $stock = $f['cantidad'];
                                 
                             } else{
                                 $stock = $f['cantidad'];
                          
                             }
-                            if($f['artType']){
+                            if($f['arttype']){
 
-                                $tipo_articulo =  str_replace('tipo_articulo', '', $f['artType']);
+                                $tipo_articulo =  str_replace('tipo_articulo', '', $f['arttype']);
                             }
 
                             if($f['nom_reci'] == ''){
                                 $nombre_recipiente = "No Aplica";
                             }
 
+                           
+                              if ($f['codigo']== 1 ) {
+                                $codigo = 'S/L';
+                              }else if ($f['codigo'] === NULL) {
+                                $codigo = 'S/L';
+                              } else {
+                                $codigo = $f['codigo'];
+                              }
+
+                              if ($f['depositodescrip'] ===NULL) {
+                                $deposito = "No Aplica";    
+                              } else {
+                                $deposito = $f['depositodescrip'];
+                              }
+                              
+                              $fecha_formateada =  date('d/m/Y', strtotime($f['fecha_nueva']));
+
+
+
+                           
                             echo "<tr data-json='".json_encode($f)."'>";
                             echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
-                            echo '<td class="text-center">'.($f['codigo']==1?'S/L':$f['codigo']).'</td>';
-                            echo '<td>'.$f['artBarCode'].'</td>';
-                            echo '<td>'.$f['artDescription'].'</td>';
+                            echo '<td class="text-center">'.$codigo.'</td>';
+                            echo '<td>'.$f['artbarcode'].'</td>';
+                            echo '<td>'.$f['artdescription'].'</td>';
                             echo '<td class="text-center">'.$stock.'</td>';
                             echo '<td class="text-center">'.$f['un_medida'].'</td>';
                             echo '<td class="text-center">'.$tipo_articulo.'</td>';
                             echo '<td class="text-center">'.$nombre_recipiente.'</td>';
-                            echo "<td class='text-center'>".fecha(substr($f['fec_alta'], 0, 10))."</td>";
-                            echo '<td>'.$f['depositodescrip'].'</td>';
+                            echo "<td class='text-center'>".$fecha_formateada."</td>";
+                            echo '<td>'.$deposito.'</td>';
 			                echo '<td class="text-center">'.estado($f['estado']).'</td>';
                             echo '</tr>';
                           }
@@ -211,6 +230,7 @@ $(".btnInfo").on("click", function(e) {
         '<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search"></span> Detalle Stock </h4>'
     );
     data = $(this).parents("tr").attr("data-json");
+    debugger;
     datajson = JSON.parse(data);
     blockEdicion();
     llenarModal(datajson);
@@ -224,8 +244,8 @@ function llenarModal(datajson) {
     } else {
         $('#codigo_edit').val(datajson.codigo);
     }
-    $('#artBarCode_edit').val(datajson.artBarCode);
-    $('#artDescription_edit').val(datajson.artDescription);
+    $('#artBarCode_edit').val(datajson.artbarcode);
+    $('#artDescription_edit').val(datajson.artdescription);
     $('#cantidad_edit').val(datajson.cantidad);
     $('#un_medida_edit').val(datajson.un_medida);
     $('#nom_reci_edit').val(datajson.nom_reci);
@@ -248,6 +268,7 @@ function blockEdicion() {
 $(document).ready(function() {
     $('#stock').DataTable({
         responsive: true,
+        iDisplayLength: 200,
         language: {
             url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
         },

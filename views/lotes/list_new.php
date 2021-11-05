@@ -90,7 +90,12 @@ input[type=checkbox] {
                                     <option value="" selected disabled> - Seleccionar - </option>
                                     <?php 
                                 foreach ($tipoArticulos as $key => $o) {
-                                    echo "<option value='$o->tabl_id'>$o->valor</option>";
+                                    
+                                 $table = $o->tabl_id;
+                               
+                                  $table_str = str_replace(" ", "%20", $table);
+                                
+                                echo "<option value='$table_str'>$o->valor</option>";
                                 }
 
                                 ?>
@@ -157,7 +162,7 @@ input[type=checkbox] {
             <hr>
             <div class="box-body">
               <!-- carga la tabla -->
-              <div class="col-sm-12" id="cargar_tabla"></div>
+              <div class="table table-responsive" id="cargar_tabla"></div>
             </div><!-- /.box-body -->
         </div><!-- /.box -->
     </div><!-- /.col -->
@@ -259,7 +264,9 @@ function filtrar() {
    var artDescription =  $("#artDescription").val();
   var artBarCode =  $("#artBarCode").val();
   var fec_alta =  $("#fec_alta").val();
+
 var artType = $("#artType").val();
+
  var inputarti =   $("#inputarti").val();
  var establecimiento = $("#establecimiento").val();
  var tipo_deposito = $('#tipo_deposito').val();
@@ -365,6 +372,10 @@ function limpiar() {
     $("label#info").html('');
     $("#establecimiento").val('');
     $('#tipo_deposito').val('');
+    if ($('#stock0').prop("checked", true)) {
+    console.log("Checkbox stock0 limpiado");
+     $('#stock0').prop("checked", true);   
+}
     //Deshabilito tipo y deposito
     $('#tipo_deposito').prop('disabled', 'disabled');
     $("#depositodescrip").prop('disabled', 'disabled');

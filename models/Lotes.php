@@ -11,30 +11,84 @@ class Lotes extends CI_Model
 
     public function getList() // Ok
 
-    {
-        $this->db->select('alm.alm_lotes.*,
-         alm.alm_articulos.descripcion as artDescription,
-         alm.alm_articulos.barcode as artBarCode,
-         alm.alm_articulos.tipo as artType,
-         alm.alm_lotes.cantidad,
-         alm.alm_depositos.descripcion as depositodescrip,
-         alm.alm_articulos.unidad_medida as un_medida,
-         prd.recipientes.nombre as nom_reci');
-        $this->db->from('alm.alm_lotes');
-        $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
-        $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
-        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
-        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
-        $this->db->where('cantidad !=',0);
-        $this->db->where('alm.alm_lotes.empr_id', empresa());
+    { 
+        $empresa = empresa();
+        $query_getList = " Select
+        alm.alm_articulos.descripcion as artdescription,
+                 alm.alm_articulos.barcode as artbarcode,
+                 alm.alm_articulos.tipo as arttype,
+                 alm.alm_articulos.fec_alta as fecha_nueva,
+                 alm.alm_articulos.unidad_medida as un_medida,
+                 alm.alm_lotes.*,
+                 alm.alm_depositos.depo_id,
+                 alm.alm_depositos.descripcion as depositodescrip,
+                 prd.recipientes.reci_id,
+                 prd.recipientes.nombre as nom_reci
+    
+       from alm.alm_articulos
+    
+       LEFT JOIN alm.alm_lotes ON alm_lotes.arti_id = alm_articulos.arti_id
+       LEFT JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
+       LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
+       LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
+    
+       WHERE alm.alm_articulos.empr_id =$empresa";
+     
+    //   $this->db->where('alm.alm_lotes.empr_id', empresa());
+        $query = $this->db->query($query_getList);
+
+        return $query->result_array();
+
+
+        //olds query two
+    //     $this->db->select('
+       
+    //     alm.alm_articulos.descripcion as artDescription,
+    //     alm.alm_articulos.barcode as artBarCode,
+    //     alm.alm_articulos.tipo as artType,
+    //     alm.alm_articulos.unidad_medida as un_medida,
+    //     alm.alm_lotes.*,
+    //     alm.alm_depositos.depo_id,
+    //     alm.alm_depositos.descripcion as depositodescrip,
+    //     prd.recipientes.reci_id,
+    //     prd.recipientes.nombre as nom_reci'
+    // );
+
+    // $this->db->from('alm.alm_articulos');
+
+    // $this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id', 'left');
+    // $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id', 'left');
+    // $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+    // $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+    // $this->db->where('alm.alm_lotes.empr_id', empresa());
+
+
+   //olds query
+   // $this->db->select('alm.alm_lotes.*,
+        //  alm.alm_articulos.descripcion as artDescription,
+        //  alm.alm_articulos.barcode as artBarCode,
+        //  alm.alm_articulos.tipo as artType,
+        //  alm.alm_lotes.cantidad,
+        //  alm.alm_depositos.descripcion as depositodescrip,
+        //  alm.alm_articulos.unidad_medida as un_medida,
+        //  prd.recipientes.nombre as nom_reci');
+        // $this->db->from('alm.alm_lotes');
+        // $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
+        // $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
+        // $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+        // $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+        // $this->db->where('cantidad !=',0);
+        // $this->db->where('alm.alm_lotes.empr_id', empresa());
         //$this->db->join('alm.alm.utl_tablas C','alm.alm_lotes.estado_id = C.tabl_id');
 
-        $query = $this->db->get();
-        if ($query->num_rows() != 0) {
-            return $query->result_array();
-        } else {
-            return false;
-        }
+    //    $query = $this->db->get();
+    //    return $query->result_array();
+
+        // if ($query->num_rows() != 0) {
+        //     return $query->result_array();
+        // } else {
+        //     return false;
+        // }
 
     }
 
@@ -51,12 +105,12 @@ class Lotes extends CI_Model
         $this->db->where('alm.alm_pedidos_materiales.empr_id', empresa());
         $this->db->group_by('arti_id');
         $C = '(' . $this->db->get_compiled_select() . ') as "C"';
-
         $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, ART.punto_pedido, COALESCE(sum("LOTE".cantidad), 0) as cantidad_stock, COALESCE(sum("LOTE".cantidad),0)-COALESCE(cant_reservada,0) as cantidad_disponible');
         $this->db->from('alm.alm_articulos as ART');
         $this->db->join('alm.alm_lotes as LOTE', 'LOTE.arti_id = ART.arti_id');
         $this->db->join($C, 'C.arti_id = ART.arti_id', 'left');
         $this->db->group_by('ART.arti_id, C.cant_reservada');
+        $this->db->where('ART.empr_id',empresa());
 
         $sql = '(' . $this->db->get_compiled_select() . ') as "AUX"';
         $this->db->where('AUX.cantidad_disponible < AUX.punto_pedido');
@@ -250,28 +304,30 @@ class Lotes extends CI_Model
 
     public function filtrarListado($data)
     {
-        // $post = "";
-        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | MODEL | filtrarListado() $data: >> '.json_encode($data));
+        $empresa = empresa();
         $this->db->select('
-            alm.alm_lotes.*,
-            alm.alm_articulos.tipo as artType,
-            alm.alm_articulos.descripcion as artDescription,
-            alm.alm_articulos.barcode as artBarCode,
-            alm.alm_articulos.unidad_medida as un_medida,
-            alm.alm_lotes.cantidad,
-            alm.alm_depositos.depo_id,
-            alm.alm_depositos.descripcion as depositodescrip,
-            prd.recipientes.reci_id,
-            prd.recipientes.nombre as nom_reci
-           
-        ');
-        $this->db->from('alm.alm_lotes');
-        $this->db->join('alm.alm_articulos', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id', 'left');
-        $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id', 'left');
-        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
-        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
-       // $this->db->where('cantidad !=',0);
-        $this->db->where('alm.alm_lotes.empr_id', empresa());
+       
+        alm.alm_articulos.tipo as arttype,
+        alm.alm_articulos.descripcion as artdescription,
+        alm.alm_articulos.barcode as artbarcode,
+        alm.alm_articulos.unidad_medida as un_medida,
+        alm.alm_articulos.fec_alta as fecha_nueva,        
+        alm.alm_lotes.*,
+        COALESCE(alm.alm_lotes.cantidad, 0) as cantidad,
+        alm.alm_depositos.depo_id,
+        alm.alm_depositos.descripcion as depositodescrip,
+        prd.recipientes.reci_id,
+        prd.recipientes.nombre as nom_reci
+       
+    ');
+    $this->db->from('alm.alm_articulos');
+    $this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id', 'left',false);
+    $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id', 'left');
+    $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+    $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+    $this->db->where_in('alm.alm_articulos.empr_id', $empresa);
+
+        
         //FILTRADO
         //Nombre Articulo
         if($data['artDescrip'] !='' && $data['artDescrip'] != NULL ){
@@ -287,7 +343,7 @@ class Lotes extends CI_Model
         }
         //Fecha Creación
         if($data['fec_alta'] !='' && $data['fec_alta'] != NULL ){
-            $this->db->where('DATE(alm.alm_lotes.fec_alta)',$data['fec_alta']);
+            $this->db->where('DATE(alm.alm_articulos.fec_alta)',$data['fec_alta']);
         }
         //Nombre del Deposito
        if($data['depositodescrip'] !='' && $data['depositodescrip'] != NULL && $data['depositodescrip'] != "null" ){
@@ -299,7 +355,9 @@ class Lotes extends CI_Model
         }
          //ARticulo con stock 0
             if($data['stock0'] !='' && $data['stock0'] != NULL ){
-                $this->db->where('alm.alm_lotes.cantidad',$data['stock0']);
+
+                $this->db->where('cantidad','0');
+                   
             }
             else if($data['stock0'] == ''){
                   $this->db->where('cantidad !=',0);
@@ -307,7 +365,7 @@ class Lotes extends CI_Model
        
         
 
-        
+            
 
         $query = $this->db->get();
         if ($query->num_rows() != 0) {
