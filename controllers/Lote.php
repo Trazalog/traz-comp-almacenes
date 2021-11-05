@@ -120,7 +120,7 @@ public function buscador()
             $data['artType'] = $this->input->post('artType');
         }
         if($_GET){
-            $data['artType'] = $_GET['artType'];
+            $data['artType'] = $_GET['artType'];       
         }
         //Fecha Creacion
         if(!empty($this->input->post('fec_alta'))){
