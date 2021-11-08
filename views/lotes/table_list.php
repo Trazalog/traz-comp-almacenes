@@ -30,8 +30,12 @@
                                 $tipo_articulo =  str_replace('tipo_articulo', '', $f['arttype']);
                             }
 
-                            if($f['nom_reci'] == ''){
+                            if($f['nom_reci'] === NULL){
                                 $nombre_recipiente = "No Aplica";
+                            } 
+                             else{
+                                $nombre_recipiente = $f['nom_reci'];
+                         
                             }
 
                            
