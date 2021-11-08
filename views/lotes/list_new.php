@@ -253,6 +253,39 @@ $( document ).ready(function() {
 //Filtra la tabla y la redibuja
 //Cada campo esta validado en caso de vacios o NULL no se muestren en la tabla
 
+
+$(document).ready(function()
+{
+         $('#stock0').click(function () {    
+           
+ if ($('#stock0').prop('checked') ) {
+ 
+    $("#establecimiento").prop('disabled',true);
+    $("#depositodescrip").prop('disabled',true);
+    $("#fec_alta").prop('disabled',true);
+      $("#artType").prop('disabled',true);
+      $("#inputarti").prop('disabled',true);
+      
+
+} else{
+
+    $("#establecimiento").prop('disabled',false);
+    $("#artType").prop('disabled',false);
+    $("#fec_alta").prop('disabled',false);
+    $("#inputarti").prop('disabled',false);
+
+}
+         });
+});
+
+if ($('#stock0').prop('checked') ) {
+    $("#establecimiento").prop('disabled',true);
+    
+    $("#depositodescrip").prop('disabled', );
+}else{
+    var stock0 = '';  
+}
+
 function filtrar() {
    //  var data = new FormData($('#frm-filtros')[0]);
     // data = formToObject(data);
@@ -361,6 +394,13 @@ function bolita($texto, $color, $detalle = '') {
 }
 
 function limpiar() {
+if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
+    $("#establecimiento").prop('disabled',false);
+    $("#artType").prop('disabled',false);
+    $("#fec_alta").prop('disabled',false);
+    $("#inputarti").prop('disabled',false);
+}
+
     $("#nom_reci").val('');
     $("#depositodescrip").val('');
     $("#tpo_depo").val('');
@@ -374,7 +414,7 @@ function limpiar() {
     $('#tipo_deposito').val('');
     if ($('#stock0').prop("checked", true)) {
     console.log("Checkbox stock0 limpiado");
-     $('#stock0').prop("checked", true);   
+     $('#stock0').prop("checked", false);   
 }
     //Deshabilito tipo y deposito
     $('#tipo_deposito').prop('disabled', 'disabled');
