@@ -62,11 +62,11 @@
 										</div>
 										<div class="col-md-6">
 												<label>Patente</label>
-												<input id="patente" class="form-control" placeholder="Ingrese numero de  patente de camión">
+												<input id="patente" class="form-control" placeholder="Ingrese número de  patente de camión">
 										</div>
 										<div class="col-md-6">
 												<label>Acoplado</label>
-												<input id="acoplado" class="form-control" placeholder="Ingrese numero de patente de acoplado">
+												<input id="acoplado" class="form-control" placeholder="Ingrese número de patente de acoplado">
 										</div>
 
 								</div>
@@ -82,7 +82,7 @@
 						<div class="box-body">
 								<div class="row">
 										<div class="col-md-4">
-												<label>Deposito origen <strong class="text-danger">*</strong> :</label>
+												<label>Depósito origen <strong class="text-danger">*</strong> :</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="depo_origen_id" required onchange="">
 													<option value="" disabled selected>-Seleccione opcion-</option>
 														<?php
@@ -93,9 +93,9 @@
 												</select>
 										</div>
 										<div class="col-md-4">
-											<label>Codigo <strong class="text-danger">*</strong> :</label>
+											<label>Código <strong class="text-danger">*</strong> :</label>
 											<div class="input-group">
-												<input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo"
+												<input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Artículo"
 													onchange="getItem(this)" autocomplete="off">
 												<datalist id="articulos">
 													
@@ -109,7 +109,7 @@
 											<label id="info" class="text-blue"></label>
 										</div>
 										<div class="col-md-4">
-												<label>Lote Origen <strong class="text-danger">*</strong> :</label>
+												<label>Lote Origen:</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
 													<option value="" disabled selected>-Seleccione opcion-</option>
 												</select>
@@ -135,12 +135,12 @@
 														<!-- <thead class="thead-dark" bgcolor="#eeeeee"> -->
 														<thead class="thead-dark">
 														<th>Acciones</th>
-														<th>Deposito Origen</th>
+														<th>Depósito Origen</th>
 														<th style="display:none;">DepoIdorigen</th>
 														<th>Lote</th>
-														<th>Codigo Articulo</th>
+														<th>Código Artículo</th>
 														<th style="display:none;">arti_id</th>
-														<th>Descripcion Articulo</th>
+														<th>Descripción Artículo</th>
 														<th>Cantidad</th>
 														<th>UM</th>
 														</thead>
@@ -192,7 +192,7 @@
              <div class="modal-header">
                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                          aria-hidden="true">&times;</span></button>
-                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Listado de Articulos</h4>
+                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Listado de Artículos</h4>
              </div>
 
              <div class="modal-body" id="modalBodyArticle">
@@ -263,7 +263,7 @@ function clearSelect(){
 	// seleccionando deposito habilita combo articulos
 	// Rellena combo con articulos para el deposito seleccionado
 	$('#depo_origen_id').on("change", function() {
-
+debugger;
 		var depo_id = $('#depo_origen_id option:selected').val();
 		$("#inputarti").attr("disabled", false);
 		WaitingOpen('Buscando Artículos...');
@@ -413,7 +413,12 @@ function clearSelect(){
 					datos.codigo = lote_codigo;
 					datos.cantidad = cant;
 					datos.arti_id = idarti;
-					datos.lote_id_origen = lote_id_origen;
+					
+					if (lote_id_origen !=''){
+						datos.lote_id_origen = lote_id_origen;
+					}else{
+						lote_id_origen = 'Sin Lote'
+					}
 
 					var table = $('#tbl_productos').DataTable();
 					var row = `<tr data-json='${JSON.stringify(datos)}'>
@@ -539,9 +544,9 @@ function clearSelect(){
 		if($("#cant_id").val() == ""){
 			valida = "COMPLETE EL CAMPO CANTIDAD!";
 		}
-		if($("#lote_id").val() == null){
-			valida = "COMPLETE EL CAMPO LOTE ORIGEN!";
-			}
+		// if($("#lote_id").val() == null){
+		// 	valida = "COMPLETE EL CAMPO LOTE ORIGEN!";
+		// 	}
 		if($("#inputarti").val() == ""){
 			valida = "SELECCIONE UN ARTÍCULO!";
 		}

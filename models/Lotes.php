@@ -17,7 +17,7 @@ class Lotes extends CI_Model
         alm.alm_articulos.descripcion as artdescription,
                  alm.alm_articulos.barcode as artbarcode,
                  alm.alm_articulos.tipo as arttype,
-                 alm.alm_articulos.fec_alta as fecha_nueva,
+                 alm.alm_lotes.fec_alta as fecha_nueva,
                  alm.alm_articulos.unidad_medida as un_medida,
                  alm.alm_lotes.*,
                  alm.alm_depositos.depo_id,
@@ -32,7 +32,8 @@ class Lotes extends CI_Model
        LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
        LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
     
-       WHERE alm.alm_articulos.empr_id =$empresa";
+       WHERE alm.alm_articulos.empr_id =$empresa
+       ";
      
     //   $this->db->where('alm.alm_lotes.empr_id', empresa());
         $query = $this->db->query($query_getList);
