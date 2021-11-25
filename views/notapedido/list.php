@@ -67,19 +67,56 @@
     $('#agregar_pedido').modal('show');
   }
 function ver(e) {
+    debugger;
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
+    var case_id = json.case_id;
     rellenarCabecera(json);
     getEntregasPedidoOffline(id_nota);
     if (id_nota == null) {
         alert('PEMA_ID: '+id_nota);
         return;
     }
+
+    var url = 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota='+id_nota;
  
+    var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
+		
+
     $.ajax({
         type: 'GET',
-        url: 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota='+id_nota,
+        url: url,
+        success: function(data) {
+          
+            tablaDetalle.clear().draw();
+            for (var i = 0; i < data.length; i++) {
+                var tr = "<tr style='color:'>" +
+                    "<td>" + data[i]['barcode'] + "</td>" +
+                    "<td>" + data[i]['artDescription'] + "</td>" +
+                    "<td class='text-center' width='15%'><b>" + data[i]['cantidad'] + "</b></td>" +
+                    "<td class='text-center' width='15%'><b>" + data[i]['entregado'] + "</b></td>" +
+                    "</tr>";
+                    tablaDetalle.row.add($(tr)).draw();
+            }
+            //DataTable('#tabladetalle');
+            console.log(url2);
+			$("#cargar_trazabilidad").empty();
+			$("#cargar_trazabilidad").load(url2);
+
+            $('#detalle_pedido').modal('show');
+        },
+        error: function(result) {
+
+            console.log(result);
+        },
+        dataType: 'json'
+    });
+
+
+     $.ajax({
+        type: 'GET',
+        url: url,
         success: function(data) {
           
             tablaDetalle.clear().draw();
@@ -353,7 +390,7 @@ var tablaDeposito =  $('#deposito').DataTable({
                 </div>
 
                 <div class="tab-pane" id="tab_3">
-
+                <div id="cargar_trazabilidad"></div>
                 </div>
                 <!-- /.tab-pane -->
             </div>
