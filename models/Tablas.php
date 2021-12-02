@@ -7,18 +7,18 @@ class Tablas extends CI_Model
         parent::__construct();
     }
 
+    public function obtener($id = false)
+    {
+        return $this->obtenerTabla($id);
+    }
+
     public function obtenerTabla($tabla)
     {
-        $url = REST_CORE . "/tablas/$tabla";
+        // cambio de metodo agergando empresa y unificando esta funcion como unica funcion para tablas, eliminando el uso de utl_tablas
+        // nota: debe migrarse los valores de utl_tablas a core.tablas
+        log_message('DEBUG','#TRAZA | ALMACENES | obtenerTabla() >> tabla: |'.$tabla);
+        $url = REST_CORE . "/tabla/$tabla/empresa/".empresa();
         return wso2($url);
     }
 
-    public function obtener($id = false)
-    {
-        if ($id) {
-            $this->db->where('tabla', $id);
-        }
-        $this->db->where('eliminado',false);
-        return $this->db->get('alm.utl_tablas')->result();
-    }
 }
