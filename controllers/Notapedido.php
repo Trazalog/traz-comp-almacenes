@@ -123,7 +123,7 @@ class Notapedido extends CI_Controller
     public function getNotaPedidoId()
     {
         $pema_id = $this->input->get('id_nota');
-        $response = $this->Notapedidos->getNotaPedidoIds($pema_id);
+        $response = $this->Notapedidos->getNotaPedidoIds($pema_id);      
         echo json_encode($response);
     }
 

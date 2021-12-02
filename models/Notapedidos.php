@@ -20,6 +20,7 @@ class Notapedidos extends CI_Model
 
     public function notaPedidos_List($ot = null)
     {
+        $this->db->select('*');
         $this->db->select('T.pema_id as id_notaPedido,T.fecha,T.ortr_id as id_ordTrabajo,T.justificacion, T.estado');
         if ($ot) {
             $this->db->select('orden_trabajo.descripcion');

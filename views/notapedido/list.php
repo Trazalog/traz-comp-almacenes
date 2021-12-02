@@ -67,19 +67,56 @@
     $('#agregar_pedido').modal('show');
   }
 function ver(e) {
+    debugger;
     var tr = $(e).closest('tr')
     var id_nota = $(tr).attr('id');
     var json = JSON.parse(JSON.stringify($(tr).data('json')));
+    var case_id = json.case_id;
     rellenarCabecera(json);
     getEntregasPedidoOffline(id_nota);
     if (id_nota == null) {
         alert('PEMA_ID: '+id_nota);
         return;
     }
+
+    var url = 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota='+id_nota;
  
+    var url2 = "<?php echo base_url(BPM); ?>Pedidotrabajo/cargar_detalle_linetiempo?case_id=" + case_id;
+		
+
     $.ajax({
         type: 'GET',
-        url: 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota='+id_nota,
+        url: url,
+        success: function(data) {
+          
+            tablaDetalle.clear().draw();
+            for (var i = 0; i < data.length; i++) {
+                var tr = "<tr style='color:'>" +
+                    "<td>" + data[i]['barcode'] + "</td>" +
+                    "<td>" + data[i]['artDescription'] + "</td>" +
+                    "<td class='text-center' width='15%'><b>" + data[i]['cantidad'] + "</b></td>" +
+                    "<td class='text-center' width='15%'><b>" + data[i]['entregado'] + "</b></td>" +
+                    "</tr>";
+                    tablaDetalle.row.add($(tr)).draw();
+            }
+            //DataTable('#tabladetalle');
+            console.log(url2);
+			$("#cargar_trazabilidad").empty();
+			$("#cargar_trazabilidad").load(url2);
+
+            $('#detalle_pedido').modal('show');
+        },
+        error: function(result) {
+
+            console.log(result);
+        },
+        dataType: 'json'
+    });
+
+
+     $.ajax({
+        type: 'GET',
+        url: url,
         success: function(data) {
           
             tablaDetalle.clear().draw();
@@ -202,7 +239,63 @@ function rellenarCabeceraEntrega(json){
 }
 
 
-var tablaDeposito = $('#deposito').DataTable({});
+//Funcion de datatable para extencion de botones exportar
+//excel, pdf, copiado portapapeles e impresion
+
+var tablaDeposito =  $('#deposito').DataTable({
+        responsive: true,
+        language: {
+            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+        },
+        dom: 'lBfrtip',
+        buttons: [{
+                //Botón para Excel
+                extend: 'excel',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+
+                //Aquí es donde generas el botón personalizado
+                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+            },
+            // //Botón para PDF
+            {
+                extend: 'pdf',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+            },
+            {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+            },
+            {
+                extend: 'print',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5]
+                },
+                footer: true,
+                title: 'Pedido Materiales',
+                filename: 'Pedido Materiales',
+                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+            }
+        ]
+    });
+
+
 </script>
 
 <!-- Modal Agregar -->
@@ -231,6 +324,9 @@ var tablaDeposito = $('#deposito').DataTable({});
                     </a></li>
                 <li><a href="#tab_2" data-toggle="tab">
                         <h4><span class="fa fa-check text-light-blue"></span>Entrega Asociadas al Pedido</h4>
+                    </a></li>
+                    <li><a href="#tab_3" data-toggle="tab">
+                        <h4><span class="fa fa-check text-light-blue"></span>Trazabilidad</h4>
                     </a></li>
             </ul>
             <div class="tab-content">
@@ -291,6 +387,10 @@ var tablaDeposito = $('#deposito').DataTable({});
                 <!-- /.tab-pane -->
                 <div class="tab-pane" id="tab_2">
 
+                </div>
+
+                <div class="tab-pane" id="tab_3">
+                <div id="cargar_trazabilidad"></div>
                 </div>
                 <!-- /.tab-pane -->
             </div>
