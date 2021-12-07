@@ -88,54 +88,40 @@ public function buscador()
     public function filtrarListado()
     {
         //Recipiente
-        if(!empty($this->input->post('nom_reci'))){
-            $data['nom_reci'] = $this->input->post('nom_reci');
-        }
-        if($_GET){
-            $data['nom_reci'] = $_GET['nom_reci'];
+        if(!empty($this->input->get('nom_reci'))){
+            $data['nom_reci'] = $this->input->get('nom_reci');
         }
         //Deposito
-        if(!empty($this->input->post('depositodescrip'))){
-            $data['depositodescrip'] = $this->input->post('depositodescrip');
-        }
-        if($_GET){
-            $data['depositodescrip'] = $_GET['depositodescrip'];
+        if(!empty($this->input->get('depositodescrip'))){
+            $data['depositodescrip'] = $this->input->get('depositodescrip');
         }
         //Descripcion Articulo
-        if(!empty($this->input->post('artDescrip'))){
-            $data['artDescrip'] = $this->input->post('artDescrip');
-        }
-        if($_GET){
-            $data['artDescrip'] = $_GET['artDescrip'];
+        if(!empty($this->input->get('artDescription'))){
+            $data['artDescription'] = $this->input->get('artDescription');
         }
         //Codigo Articulo
-        if(!empty($this->input->post('artBarCode'))){
-            $data['artBarCode'] = $this->input->post('artBarCode');
-        }
-        if($_GET){
-            $data['artBarCode'] = $_GET['artBarCode'];
-        }
-        //Tipo Articulo
-        if(!empty($this->input->post('artType'))){
-            $data['artType'] = $this->input->post('artType');
-        }
-        if($_GET){
-            $data['artType'] = $_GET['artType'];       
+        if(!empty($this->input->get('artBarCode'))){
+            $data['artBarCode'] = $this->input->get('artBarCode');
         }
         //Fecha Creacion
-        if(!empty($this->input->post('fec_alta'))){
-            $data['fec_alta'] = $this->input->post('fec_alta');
+        if(!empty($this->input->get('fec_alta'))){
+            $data['fec_alta'] = $this->input->get('fec_alta');
         }
-        if($_GET){
-            $data['fec_alta'] = $_GET['fec_alta'];
+        //Tipo Articulo
+        if(!empty($this->input->get('artType'))){
+            $data['artType'] = $this->input->get('artType');
         }
-     
-         //Arcticulos con stock 0
-         if(!empty($this->input->post('stock0'))){
-            $data['stock0'] = $this->input->post('stock0');
+        //Establecimiento
+        if(!empty($this->input->get('establecimiento'))){
+            $data['establecimiento'] = $this->input->get('establecimiento');
         }
-        if($_GET){
-            $data['stock0'] = $_GET['stock0'];
+        //Tipo deposito
+        if(!empty($this->input->get('tipo_deposito'))){
+            $data['tipo_deposito'] = $this->input->get('tipo_deposito');
+        }
+        //Arcticulos con stock 0
+        if(!empty($this->input->get('stock0'))){
+            $data['stock0'] = $this->input->get('stock0');
         }
         
         $data['list'] = $this->Lotes->filtrarListado($data);
