@@ -120,6 +120,12 @@ class Ordeninsumos extends CI_Model
         
         $info['empr_id'] = $data['empr_id'];
 
+        // No toma bien la fecha del formulario, si viene vacia paso now()
+        log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|ORDENINSUMO|guardarCabecera(fecha) fecha: >> '.$info['fecha']);
+        if($info['fecha']==""){
+            $info['fecha']= date('Y-m-d H:i:s');
+        }
+
         //DETALLE ENTREGA
         $detalle = $form['detalles'];
 
