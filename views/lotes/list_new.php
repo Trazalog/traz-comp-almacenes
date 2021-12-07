@@ -287,35 +287,31 @@ if ($('#stock0').prop('checked') ) {
 }
 
 function filtrar() {
-   //  var data = new FormData($('#frm-filtros')[0]);
-    // data = formToObject(data);
+    debugger;
 
- debugger;
+    var nom_reci =  $("#nom_reci").val();
+    var depositodescrip =   $("#depositodescrip").val();
+    var artDescription =  $("#artDescription").val();
+    var fec_alta =  $("#fec_alta").val();
 
-  var nom_reci =  $("#nom_reci").val();
- var depositodescrip =   $("#depositodescrip").val();
-   var artDescription =  $("#artDescription").val();
-  var artBarCode =  $("#artBarCode").val();
-  var fec_alta =  $("#fec_alta").val();
+    var artType = $("#artType").val();
 
-var artType = $("#artType").val();
+    var artBarCode =   $("#inputarti").val();
+    var establecimiento = $("#establecimiento").val();
+    var tipo_deposito = $('#tipo_deposito').val();
 
- var inputarti =   $("#inputarti").val();
- var establecimiento = $("#establecimiento").val();
- var tipo_deposito = $('#tipo_deposito').val();
-
- if ($('#stock0').prop('checked') ) {
-    console.log("Checkbox stock0 seleccionado");
-    var stock0 = $('#stock0').val();   
-}else{
-    var stock0 = '';  
-}
+    if ($('#stock0').prop('checked') ) {
+        console.log("Checkbox stock0 seleccionado");
+        var stock0 = $('#stock0').val();   
+    }else{
+        var stock0 = '';  
+    }
 
 
 $("#WindowLoad").remove();
 $(this).click(jsShowWindowLoad('Se está Generando la Información'));
 
-    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_alta="+fec_alta+"&artType="+artType+"&inputarti="+inputarti+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
+    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_alta="+fec_alta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
     $.ajax({
         type: 'POST',
 
