@@ -264,10 +264,14 @@ class Lotes extends CI_Model
         log_message('DEBUG','#LOTES > crearBatch | RSP: '.json_encode($rsp));
         return $rsp;
     }
-
+    
+    /**
+        *  Llama a 1 stored procedure( cambiar_recipiente() ), que hace el cambio del recipiente origen al de destino creado en Recipientes->crear()
+        * @param array $data con los lotes cargados en pantalla
+        * @return array respuesta del servicio
+    */
     public function guardarCargaCamion($data)
     {
-
         $batch_req = [];
         foreach ($data as $o) {
 
@@ -276,11 +280,13 @@ class Lotes extends CI_Model
             $aux["cantidad"] = strval($o->cantidad);
             $aux["etap_id_deposito"] = strval(ETAPA_DEPOSITO);
             $aux["empre_id"] = strval(empresa());
-            $aux["usuario_app"] = "chuck";
+            $aux["usuario_app"] = userNick();
             $aux["forzar_agregar"] = "false";
-
+            
             $batch_req['_post_lote_recipiente_cambiar_batch_req']['_post_lote_recipiente_cambiar'][] = $aux;
         }
+        
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | guardarCargaCamion()  resp: >> " . json_encode($batch_req));
 
         $url = REST_PRD . '/lote/recipiente/cambiar_batch_req';
         $rsp = $this->rest->callApi('POST', $url, $batch_req);
