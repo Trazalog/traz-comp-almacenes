@@ -5,20 +5,20 @@
     <div
         class="<?php echo (isset($info->pema_id)?'hidden':null)?>  col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
         <div class="form-group">
-            <label>Justificacíon:</label>
+        <label>Justificación<strong style="color: #dd4b39">*</strong>:</label>
             <textarea id="just" type="text" class="form-control <?php echo (isset($info->pema_id)?'hidden':null)?>"
                 placeholder="Ingrese Justificación..."></textarea>
         </div>
     </div>
     <div class="col-xs-6 col-sm-6 col-md-6">
         <div class="form-group">
-            <label>Seleccionar Artículo:</label>
+            <label>Seleccionar Artículo<strong style="color: #dd4b39">*</strong>:</label>
             <?php $this->load->view(ALM.'articulo/componente'); ?>
         </div>
     </div>
     <div class="col-xs-3 col-sm-3 col-md-3">
         <div class="form-group">
-            <label>Cantidad:</label>
+        <label>Cantidad<strong style="color: #dd4b39">*</strong>:</label>
             <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
         </div>
     </div>
@@ -212,14 +212,36 @@ function get_detalle() {
 
 <script>
 //('#tabladetalle2').dataTable({});
+
+function validarCampos() {
+debugger;
+articulo = $('#inputarti').val();
+
+cantidad = $('#add_cantidad').val();
+
+if (articulo == ''|| cantidad == '' || cantidad == 0) { 
+
+    Swal.fire(
+						'Error...',
+						'Debes completar los campos Obligatorios (*)',
+						'error'
+					);
+             return true;       
+} else{
+    return false;
+}
+
+}
+
+
 function guardar_pedido() {
+debugger;
+     if (validarCampos() == true) {
+  
+         return;
+     }
 
-    if (!validarCampos()) {
-        alert('Completar Campos');
-        return;
-    }
-
-    if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
+    else if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
 
         set_pedido();
 
@@ -293,7 +315,21 @@ function set_pedido() {
 }
 
 function lanzarPedido() {
-    wo();
+
+      var nFilas = $("#tabladetalle2 tr").length;
+      var nColumnas = $("#tabladetalle2 tr:last td").length;
+           
+
+      if(nFilas == '2' && nColumnas =='1'){
+
+        Swal.fire(
+						'Error...',
+						'Debes cargar al menos un articulo para realizar un pedido.',
+						'error'
+					);
+
+      } else {
+     wo();
     $.ajax({
         data: {
             id: $('#pema_id').val()
@@ -302,19 +338,38 @@ function lanzarPedido() {
         type: 'POST',
         url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
         success: function(result) {
+            debugger;
+            
+            console.log('pemaId: '+ result.data.pemaId);
+
+            var pedido_num = result.data.pemaId;
+            
             if (result.status) {
+
                 linkTo('<?php echo ALM ?>Notapedido');
+               
+                Swal.fire(
+                        'Pedido de Materiales N°:' +pedido_num,
+                       'Pedido de Materiales generado con Exito',
+						'success'
+					);
             } else {
                 alert(result.msj);
             }
         },
         error: function(result) {
-            alert("Error al Lanzar Pedido");
+        
+            Swal.fire(
+						'Error...',
+						'Error al Lanzar Pedido',
+						'error'
+					);
         },
         complete: function(){
             wc();
         }
-    });
+    });   
+ }
 }
 
 function lanzarPedidoModal() {
@@ -408,7 +463,7 @@ function lanzarPedidoModal() {
 }
 
 function edit_pedido() {
-
+debugger;
     var idinsumos = new Array();
     var cantidades = new Array();
 
@@ -450,14 +505,6 @@ function edit_pedido() {
     });
 }
 
-function validarCampos() {
-
-    if ($('#inputarti').val() == null) return false;
-
-    if ($('#add_cantidad') == null) return false;
-
-    return true;
-}
 
 function clear() {
     $('#inputarti').val(null);

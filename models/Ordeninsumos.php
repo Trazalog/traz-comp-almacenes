@@ -120,6 +120,12 @@ class Ordeninsumos extends CI_Model
         
         $info['empr_id'] = $data['empr_id'];
 
+        // No toma bien la fecha del formulario, si viene vacia paso now()
+        log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|ORDENINSUMO|guardarCabecera(fecha) fecha: >> '.$info['fecha']);
+        if($info['fecha']==""){
+            $info['fecha']= date('Y-m-d H:i:s');
+        }
+
         //DETALLE ENTREGA
         $detalle = $form['detalles'];
 
@@ -128,6 +134,9 @@ class Ordeninsumos extends CI_Model
 
         //INSERTAR EN CABECERA ENTREGA
         $query = $this->db->insert("alm.alm_entrega_materiales", $info);
+        log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|ORDENINSUMO|guardarCabecera($info) insert: >> '.json_encode($info));
+        log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|ORDENINSUMO|guardarCabecera($query) insert: >> '.json_encode($query));
+
         $id = $this->db->insert_id();
 
         //VALIDAR INSERCION
@@ -140,6 +149,7 @@ class Ordeninsumos extends CI_Model
 
         //INSERTAR DETALLES
         $this->db->insert_batch('alm.alm_deta_entrega_materiales', $detalle);
+        log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|INSERTAR DETALLES|insertar detalle($detalle) insert_batch: >> '.json_encode($detalle));
         $this->actualizar_lote($detalle);
         $this->actualizar_entregas($info['pema_id'], $cantidades);
 
