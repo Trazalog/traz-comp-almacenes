@@ -33,7 +33,7 @@ input[type=checkbox] {
             </div><!-- /.box-header -->
             <!--_________________FILTRO_________________-->
             <form id="frm-filtros">
-                <div class="row">
+                <div class="row" style="width: 100%">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Establecimiento</label>
@@ -287,7 +287,6 @@ if ($('#stock0').prop('checked') ) {
 }
 
 function filtrar() {
-    debugger;
 
     var nom_reci =  $("#nom_reci").val();
     var depositodescrip =   $("#depositodescrip").val();

@@ -395,7 +395,7 @@ class Lotes extends CI_Model
             $this->db->where('prd.recipientes.reci_id',$data['nombre']);
         }
         //Nombre Articulo
-        if($data['establecimiento'] !='' && $data['establecimiento'] != NULL ){
+        if($data['establecimiento'] !='' && $data['establecimiento'] != NULL && $data['establecimiento'] != "null" ){
             $this->db->where('alm.alm_depositos.esta_id',$data['establecimiento']);
         }
     }
