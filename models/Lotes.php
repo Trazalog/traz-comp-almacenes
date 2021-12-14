@@ -239,7 +239,7 @@ class Lotes extends CI_Model
             $aux["lote_id"] = strval($o->id);
             $aux["arti_id"] = strval($o->producto);
             $aux["prov_id"] = strval($o->prov_id);
-            $aux["batch_id_padre"] = strval($o->batch_id);
+            $aux["batch_id_padre"] = strval($o->batch_id_padre);
             $aux["cantidad"] = strval($o->cantidad);
             $aux["cantidad_padre"] = strval($o->stock);
             $aux["num_orden_prod"] = "";
@@ -309,27 +309,29 @@ class Lotes extends CI_Model
     */
     public function crearLote($data){
 
-        $aux['patente'] = $data->patente;
-        $aux['motr_id'] = $data->motr_id;
-        $aux['lote_id'] = $data->lote_id;
-        $aux['arti_id'] = $data->arti_id;
-        $aux['prov_id'] = $data->proveedor;
+        $aux['lote_id'] = $data->lote_id_origen;
+        $aux['arti_id'] = $data->arti_id_origen;
+        $aux['prov_id'] = strval($data->prov_id);
+        $aux["batch_id_padre"] = strval($data->batch_id);
         $aux["batch_id"] = strval($data->batch_id);// 0
         $aux["cantidad"] = strval($data->cantidad_origen);
-        $aux['cantidad_padre'] = strval($data->cantidad_origen);
+        $aux['cantidad_padre'] = "0";
         $aux['num_orden_prod'] = strval($data->orden_prod);
         $aux["reci_id"] = strval($data->reci_id);
         $aux["etap_id"] = strval(ETAPA_TRANSPORTE);
         $aux["usuario_app"] = userNick();
-        $aux["empre_id"] = strval(empresa());
+        $aux["empr_id"] = strval(empresa());
+        $aux["recu_id"] = "0";
         $aux["forzar_agregar"] = "true";
         $aux['fec_vencimiento'] = FEC_VEN;
+        $aux["tipo_recurso"] = "";
+        $aux['planificado'] = "false";
         
         $post['_post_lote'] = $aux;
         
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | crearLote()  post: >> " . json_encode($post));
 
-        $url = REST_PRD . '/lote';
+        $url = REST_PRD_LOTE . '/lote';
         $rsp = $this->rest->callApi('POST', $url, $post);
 
         wso2Msj($rsp);
