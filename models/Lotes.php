@@ -258,10 +258,12 @@ class Lotes extends CI_Model
             $batch_req['_post_lote_batch_req']['_post_lote'][] = $aux;
         }
 
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | crearBatch()  batch_req: >> " . json_encode($batch_req));
+
         $url = REST_PRD_LOTE . '/lote/list_batch_req';//
         $rsp = $this->rest->callApi('POST', $url, $batch_req);
         wso2Msj($rsp);
-        log_message('DEBUG','#LOTES > crearBatch | RSP: '.json_encode($rsp));
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | crearBatch() RSP: >>'.json_encode($rsp));
         return $rsp;
     }
     
@@ -286,7 +288,7 @@ class Lotes extends CI_Model
             $batch_req['_post_lote_recipiente_cambiar_batch_req']['_post_lote_recipiente_cambiar'][] = $aux;
         }
         
-        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | guardarCargaCamion()  resp: >> " . json_encode($batch_req));
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | guardarCargaCamion()  batch_req: >> " . json_encode($batch_req));
 
         $url = REST_PRD . '/lote/recipiente/cambiar_batch_req';
         $rsp = $this->rest->callApi('POST', $url, $batch_req);
@@ -298,6 +300,47 @@ class Lotes extends CI_Model
         $rsp['data'] = json_decode($rsp['data'])->respuesta->resultado;
         return $rsp;
 
+    }
+
+    /**
+        *  Llama a 1 stored procedure( crear_lote_v2() ), que genera un lote y finaliza los lotes padres en la cadena productiva
+        * @param array $data de lote cargados en pantalla
+        * @return int batch_id
+    */
+    public function crearLote($data){
+
+        $aux['patente'] = $data->patente;
+        $aux['motr_id'] = $data->motr_id;
+        $aux['lote_id'] = $data->lote_id;
+        $aux['arti_id'] = $data->arti_id;
+        $aux['prov_id'] = $data->proveedor;
+        $aux["batch_id"] = strval($data->batch_id);// 0
+        $aux["cantidad"] = strval($data->cantidad_origen);
+        $aux['cantidad_padre'] = strval($data->cantidad_origen);
+        $aux['num_orden_prod'] = strval($data->orden_prod);
+        $aux["reci_id"] = strval($data->reci_id);
+        $aux["etap_id"] = strval(ETAPA_TRANSPORTE);
+        $aux["usuario_app"] = userNick();
+        $aux["empre_id"] = strval(empresa());
+        $aux["forzar_agregar"] = "true";
+        $aux['fec_vencimiento'] = FEC_VEN;
+        
+        $post['_post_lote'] = $aux;
+        
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | crearLote()  post: >> " . json_encode($post));
+
+        $url = REST_PRD . '/lote';
+        $rsp = $this->rest->callApi('POST', $url, $post);
+
+        wso2Msj($rsp);
+
+        if (!$rsp['status']) {
+            return $rsp;
+        }
+
+        $rsp['data'] = json_decode($rsp['data'])->respuesta->resultado;
+
+        return $rsp;
     }
 
     public function listarPorArticulos($idarticulo,$iddeposito){
