@@ -242,6 +242,15 @@ class Almtareas extends CI_Model
                }    else if ($form['parcial'] == "true") {
                 $this->Pedidosmateriales->setEstado($form['pema_id'], $form['parcial'] == "true" ? 'Finalizado Ent. Parcial' : 'Ent. Parcial');
 
+                $contrato['entregaCompleta'] = $form['completa'];
+
+                return $contrato;
+
+                break;
+               } 
+               else if ($form['sinEntrega'] == "true") {
+                $this->Pedidosmateriales->setEstado($form['pema_id'], $form['sinEntrega'] == "true" ? 'Finalizado Sin Entrega' : 'Ent. Parcial');
+
                 $contrato['entregaCompleta'] = true;
 
                 return $contrato;
