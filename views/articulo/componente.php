@@ -1,4 +1,4 @@
-<div class="input-group">
+<div class="">
      <input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Articulo"
          onchange="getItem(this)" autocomplete="off">
      <datalist id="articulos">
@@ -9,10 +9,10 @@
             }
             ?>
      </datalist>
-     <span class="input-group-btn">
+     <!-- <span class="input-group-btn">
          <button class='btn btn-primary' data-toggle="modal" data-target="#modal_articulos">
              <i class="glyphicon glyphicon-search"></i></button>
-     </span>
+     </span> -->
  </div>
  <br>
  <label id="info" class="text-blue"></label>
