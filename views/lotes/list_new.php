@@ -215,8 +215,8 @@ $( document ).ready(function() {
 
         //operación necesaria para centrar el div que muestra el mensaje
         var heightdivsito = alto / 2 - parseInt(height) / 2; //Se utiliza en el margen superior, para centrar
-       var url_imagen = '<?php echo base_url() ?>imagenes/yudica/loader.gif';
-        console.log(url_imagen);
+        var url_imagen = '<?php echo base_url() ?>imagenes/yudica/loader.gif';
+        
         //imagen que aparece mientras nuestro div es mostrado y da apariencia de cargando
         imgCentro = "<div style='text-align:center;height:" + alto + "px;'><div  style='color:#000;margin-top:" + heightdivsito + "px; font-size:20px;font-weight:bold'>" + mensaje + "</div><img  src="+url_imagen+"></div>";
 
@@ -256,56 +256,40 @@ $( document ).ready(function() {
 
 $(document).ready(function()
 {
-         $('#stock0').click(function () {    
+    $('#stock0').click(function () {    
            
- if ($('#stock0').prop('checked') ) {
- 
-    $("#establecimiento").prop('disabled',true);
-    $("#depositodescrip").prop('disabled',true);
-    $("#fec_alta").prop('disabled',true);
-      $("#artType").prop('disabled',true);
-      $("#inputarti").prop('disabled',true);
-      
+        if ($('#stock0').prop('checked') ) {
+        
+            $("#establecimiento").prop('disabled',true);
+            $("#depositodescrip").prop('disabled',true);
+            $("#fec_alta").prop('disabled',true);
+            $("#artType").prop('disabled',true);
+            $("#inputarti").prop('disabled',true);
+            
 
-} else{
+        } else{
 
-    $("#establecimiento").prop('disabled',false);
-    $("#artType").prop('disabled',false);
-    $("#fec_alta").prop('disabled',false);
-    $("#inputarti").prop('disabled',false);
+            $("#establecimiento").prop('disabled',false);
+            $("#artType").prop('disabled',false);
+            $("#fec_alta").prop('disabled',false);
+            $("#inputarti").prop('disabled',false);
 
-}
-         });
+        }
+    });
 });
-
-if ($('#stock0').prop('checked') ) {
-    $("#establecimiento").prop('disabled',true);
-    
-    $("#depositodescrip").prop('disabled', );
-}else{
-    var stock0 = '';  
-}
 
 function filtrar() {
 
-    var nom_reci =  $("#nom_reci").val();
-    var depositodescrip =   $("#depositodescrip").val();
-    var artDescription =  $("#artDescription").val();
-    var fec_alta =  $("#fec_alta").val();
+    var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
+    var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
+    var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';
+    var fec_alta =  _isset($("#fec_alta").val()) ? $("#fec_alta").val() : '';
+    var artType = _isset($("#artType").val()) ? $("#artType").val() : '';
+    var artBarCode =   _isset($("#inputarti").val()) ? $("#inputarti").val() : '';
+    var establecimiento = _isset($("#establecimiento").val()) ? $("#establecimiento").val() : '';
+    var tipo_deposito = _isset($('#tipo_deposito').val()) ? $('#tipo_deposito').val() : '';
 
-    var artType = $("#artType").val();
-
-    var artBarCode =   $("#inputarti").val();
-    var establecimiento = $("#establecimiento").val();
-    var tipo_deposito = $('#tipo_deposito').val();
-
-    if ($('#stock0').prop('checked') ) {
-        console.log("Checkbox stock0 seleccionado");
-        var stock0 = $('#stock0').val();   
-    }else{
-        var stock0 = '';  
-    }
-
+    var stock0 = $('#stock0').prop('checked');   
 
 $("#WindowLoad").remove();
 $(this).click(jsShowWindowLoad('Se está Generando la Información'));

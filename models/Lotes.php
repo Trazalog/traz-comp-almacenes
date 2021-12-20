@@ -328,99 +328,100 @@ class Lotes extends CI_Model
     }
 
     public function filtrarListado($data){
+        log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | filtrarListado()  data: >> " . json_encode($data));
+
         $empresa = empresa();
-    //Articulo con stock 0
-    if($data['stock0'] !='' && $data['stock0'] != NULL ){
+        //Articulo con stock 0
+        if($data['stock0'] == 'true'){
+
+        $query_getList = " Select
+        alm.alm_articulos.descripcion as artdescription,
+                alm.alm_articulos.barcode as artbarcode,
+                alm.alm_articulos.tipo as arttype,
+                alm.alm_articulos.fec_alta as fecha_nueva,
+                alm.alm_articulos.unidad_medida as un_medida,
+                alm.alm_lotes.*,
+                alm.alm_depositos.depo_id,
+                alm.alm_depositos.descripcion as depositodescrip,
+                prd.recipientes.reci_id,
+                prd.recipientes.nombre as nom_reci
+
+        from alm.alm_articulos
+
+        JOIN alm.alm_lotes ON alm_lotes.arti_id = alm_articulos.arti_id
+        JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
+        LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
+        LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
+        WHERE  alm.alm_articulos.empr_id =$empresa 
+        AND cantidad ='0' OR cantidad IS NULL
+        AND alm.alm_articulos.empr_id =$empresa";
 
 
-    $query_getList = " Select
-    alm.alm_articulos.descripcion as artdescription,
-            alm.alm_articulos.barcode as artbarcode,
-            alm.alm_articulos.tipo as arttype,
-            alm.alm_articulos.fec_alta as fecha_nueva,
-            alm.alm_articulos.unidad_medida as un_medida,
-            alm.alm_lotes.*,
-            alm.alm_depositos.depo_id,
-            alm.alm_depositos.descripcion as depositodescrip,
-            prd.recipientes.reci_id,
-            prd.recipientes.nombre as nom_reci
+        $query = $this->db->query($query_getList);
 
-    from alm.alm_articulos
+        return $query->result_array();
 
-    JOIN alm.alm_lotes ON alm_lotes.arti_id = alm_articulos.arti_id
-    JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
-    LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
-    LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
-    WHERE  alm.alm_articulos.empr_id =$empresa AND  
-    cantidad ='0'
-    OR cantidad ISNULL AND alm.alm_articulos.empr_id =$empresa";
-
-
-    $query = $this->db->query($query_getList);
-
-    return $query->result_array();
-
-    }else if($data['stock0'] == ''){
-        
-        $this->db->select('
-        
-            alm.alm_articulos.tipo as arttype,
-            alm.alm_articulos.descripcion as artdescription,
-            alm.alm_articulos.barcode as artbarcode,
-            alm.alm_articulos.unidad_medida as un_medida,
-            alm.alm_articulos.fec_alta as fecha_nueva,        
-            alm.alm_lotes.*,
-            COALESCE(alm.alm_lotes.cantidad, 0) as cantidad,
-            alm.alm_depositos.depo_id,
-            alm.alm_depositos.descripcion as depositodescrip,
-            prd.recipientes.reci_id,
-            prd.recipientes.nombre as nom_reci
-    
-        ');
-
-        $this->db->from('alm.alm_articulos');
-        $this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
-        $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
-        $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
-        $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
-        $this->db->where('alm.alm_lotes.empr_id', $empresa);
-        $this->db->where('alm.alm_lotes.cantidad', '!=0');
-
-        
-        //FILTRADO
-        //Nombre Articulo
-        if($data['artDescrip'] !='' && $data['artDescrip'] != NULL ){
-            $this->db->where('alm.alm_articulos.descripcion',$data['artDescrip']);
-        }
-        //Codigo del Articulo
-        if($data['artBarCode'] !='' && $data['artBarCode'] != NULL && $data['artBarCode'] != "undefined" ){
-            $this->db->where('alm.alm_articulos.barcode',$data['artBarCode']);
-        }
-        //Tipo Articulo
-        if($data['artType'] !='' && $data['artType'] != NULL && $data['artType'] != "null" ){
-            $this->db->where('alm.alm_articulos.tipo',$data['artType']);
-        }
-        //Fecha Creación
-        if($data['fec_alta'] !='' && $data['fec_alta'] != NULL ){
-            $this->db->where('DATE(alm.alm_articulos.fec_alta)',$data['fec_alta']);
-        }
-        //Nombre del Deposito
-    if($data['depositodescrip'] !='' && $data['depositodescrip'] != NULL && $data['depositodescrip'] != "null" ){
-            $this->db->where('alm.alm_depositos.depo_id',$data['depositodescrip']);
-        }
-        //Nombre Recipiente
-        if($data['nom_reci'] !='' && $data['nom_reci'] != NULL && $data['nom_reci'] != "null" ){
-            $this->db->where('prd.recipientes.reci_id',$data['nombre']);
-        }
-        //Nombre Articulo
-        if($data['establecimiento'] !='' && $data['establecimiento'] != NULL && $data['establecimiento'] != "null" ){
-            $this->db->where('alm.alm_depositos.esta_id',$data['establecimiento']);
-        }
-    }
+        }else{
             
+            $this->db->select('
+            
+                alm.alm_articulos.tipo as arttype,
+                alm.alm_articulos.descripcion as artdescription,
+                alm.alm_articulos.barcode as artbarcode,
+                alm.alm_articulos.unidad_medida as un_medida,
+                alm.alm_articulos.fec_alta as fecha_nueva,        
+                alm.alm_lotes.*,
+                COALESCE(alm.alm_lotes.cantidad, 0) as cantidad,
+                alm.alm_depositos.depo_id,
+                alm.alm_depositos.descripcion as depositodescrip,
+                prd.recipientes.reci_id,
+                prd.recipientes.nombre as nom_reci
+        
+            ');
 
+            $this->db->from('alm.alm_articulos');
+            $this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
+            $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
+            $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+            $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+            $this->db->where('alm.alm_lotes.empr_id', $empresa);
+            $this->db->where('alm.alm_lotes.cantidad <>', '0');
+
+            
+            //FILTRADO
+            //Nombre Articulo
+            if($data['artDescrip'] !='' && $data['artDescrip'] != NULL ){
+                $this->db->where('alm.alm_articulos.descripcion',$data['artDescrip']);
+            }
+            //Codigo del Articulo
+            if($data['artBarCode'] !='' && $data['artBarCode'] != NULL && $data['artBarCode'] != "undefined" ){
+                $this->db->where('alm.alm_articulos.barcode',$data['artBarCode']);
+            }
+            //Tipo Articulo
+            if($data['artType'] !='' && $data['artType'] != NULL && $data['artType'] != "null" ){
+                $this->db->where('alm.alm_articulos.tipo',$data['artType']);
+            }
+            //Fecha Creación
+            if($data['fec_alta'] !='' && $data['fec_alta'] != NULL ){
+                $this->db->where('DATE(alm.alm_articulos.fec_alta)',$data['fec_alta']);
+            }
+            //Nombre del Deposito
+            if($data['depositodescrip'] !='' && $data['depositodescrip'] != NULL && $data['depositodescrip'] != "null" ){
+                $this->db->where('alm.alm_depositos.depo_id',$data['depositodescrip']);
+            }
+            //Nombre Recipiente
+            if($data['nom_reci'] !='' && $data['nom_reci'] != NULL && $data['nom_reci'] != "null" ){
+                $this->db->where('prd.recipientes.reci_id',$data['nom_reci']);
+            }
+            //Establecimiento
+            if($data['establecimiento'] !='' && $data['establecimiento'] != NULL && $data['establecimiento'] != "null" ){
+                $this->db->where('alm.alm_depositos.esta_id',$data['establecimiento']);
+            }
+        }
+            
         $query = $this->db->get();
-        if ($query->num_rows() != 0) {
+    
+        if ($query->num_rows() && $query->num_rows() != 0) {
             return $query->result_array();
         } else {
             return false;

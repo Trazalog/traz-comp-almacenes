@@ -11,6 +11,14 @@ class Lote extends CI_Controller
         $this->load->model('traz-prod-trazasoft/general/Recipientes');
         $this->load->model('traz-comp/Componentes');
         $this->load->model('Tablas');
+
+        // si esta vencida la sesion redirige al login
+		$data = $this->session->userdata();
+		// log_message('DEBUG','#Main/login | '.json_encode($data));
+		if(!$data['email']){
+			log_message('DEBUG','#TRAZA|DASH|CONSTRUCT|ERROR  >> Sesion Expirada!!!');
+			redirect(DNATO.'main/login');
+		}
     }
 
     public function index()
@@ -87,6 +95,8 @@ public function buscador()
 
     public function filtrarListado()
     {
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | LOTE | filtrarListado()');
+        
         //Recipiente
         if(!empty($this->input->get('nom_reci'))){
             $data['nom_reci'] = $this->input->get('nom_reci');
@@ -125,7 +135,6 @@ public function buscador()
         }
         
         $data['list'] = $this->Lotes->filtrarListado($data);
-        log_message('DEBUG','#TRAZA | STOCK | filtrarListado() $response >> '.json_encode($data['list']));
         
       $this->load->view(ALM . 'lotes/table_list', $data);
     }
