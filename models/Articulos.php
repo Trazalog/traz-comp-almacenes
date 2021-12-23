@@ -16,7 +16,7 @@ class Articulos extends CI_Model
 
 	public function obtenerXTipo($tipo)
 	{
-		$resource = "/articulos/tipo/$tipo/".empresa();
+		$resource = "/articulos/tipo/". urlencode($tipo) ."/".empresa();
         $url = REST_ALM . $resource;
         return wso2($url);
 	}
