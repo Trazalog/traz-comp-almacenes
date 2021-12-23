@@ -88,7 +88,7 @@
             </div>
         </div>
 
-        <div class="col-md-12" style="margin-top: -23px;">
+        <div class="col-md-12">
 
             <div class="form-group">
 
@@ -348,8 +348,10 @@
 
   // filtrado de datos
   function filtrar() {
-// debugger;
-    wo();
+ debugger;
+
+
+   // wo();
     var data = {};
     data.desde = $("#datepickerDesde").val();
     fec1 = $("#datepickerDesde").val();
@@ -362,8 +364,28 @@
     depo = $("#depo_id").val();
     data.lote_id = $("#lote_id>option:selected").val();
     lote = $("#lote_id>option:selected").val();
-    data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-    artic = selectItem.arti_id;
+
+    inputarti = $("#inputarti").val();
+    establecimiento = $("#establecimiento").val();
+
+    if (establecimiento == 'NULL') {
+   
+      data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+      artic = selectItem.arti_id;
+
+    }
+   
+
+
+    if (fec1 == ''|| fec2 == '' || tipoajuste == '' || establecimiento == '' || inputarti == '') { 
+
+Swal.fire(
+        'Error...',
+        'Debes completar los campos Obligatorios (*)',
+        'error'
+      );
+         return;       
+}
 
     $.ajax({
       type: 'POST',
@@ -372,7 +394,7 @@
       success: function(result) {
               $('#reportContent').empty();
               $('#reportContent').html(result);
-              wc();
+           //   wc();
       },
       error: function() {
         alert('Error');
