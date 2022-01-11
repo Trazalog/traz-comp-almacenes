@@ -231,6 +231,7 @@ class Almtareas extends CI_Model
 
                 $this->Ordeninsumos->insert_entrega_materiales($form);
 
+               if ($form['completa'] == "true") {
                 $this->Pedidosmateriales->setEstado($form['pema_id'], $form['completa'] == "true" ? 'Entregado' : 'Ent. Parcial');
 
                 $contrato['entregaCompleta'] = $form['completa'];
@@ -238,6 +239,35 @@ class Almtareas extends CI_Model
                 return $contrato;
 
                 break;
+               }    else if ($form['parcial'] == "true") {
+                $this->Pedidosmateriales->setEstado($form['pema_id'], $form['parcial'] == "true" ? 'Finalizado Ent. Parcial' : 'Ent. Parcial');
+
+                $contrato['entregaCompleta'] = $form['completa'];
+
+                return $contrato;
+
+                break;
+               } 
+               else if ($form['sinEntrega'] == "true") {
+                $this->Pedidosmateriales->setEstado($form['pema_id'], $form['sinEntrega'] == "true" ? 'Finalizado Sin Entrega' : 'Ent. Parcial');
+
+                $contrato['entregaCompleta'] = true;
+
+                return $contrato;
+
+                break;
+               } 
+               else {
+                $this->Pedidosmateriales->setEstado($form['pema_id'], $form['completa'] == "true" ? 'Entregado' : 'Ent. Parcial');
+                
+                $contrato['entregaCompleta'] = $form['completa'];
+
+                return $contrato;
+
+                break;
+               } 
+               
+               
 
             // ?PEDIDO MATERIALES EXTRAORDINARIOS
 

@@ -123,12 +123,7 @@ class Notapedido extends CI_Controller
     public function getNotaPedidoId()
     {
         $pema_id = $this->input->get('id_nota');
-        $response = $this->Notapedidos->getNotaPedidoIds($pema_id);
-          //LINEA DE TIEMPO
-//  $data['timeline'] =$this->bpm->ObtenerLineaTiempo($processId, $case_id);
-
- // echo timeline($data['timeline']);
-
+        $response = $this->Notapedidos->getNotaPedidoIds($pema_id);      
         echo json_encode($response);
     }
 

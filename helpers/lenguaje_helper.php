@@ -21,10 +21,12 @@ if(!function_exists('lang_get')){
         $lang = $lang['labels']['label'];
         //var_dump($lang);die;
         $lenguaje =  array();
-        for($i=0;$i<count($lang);$i++)
-        { 
-            $aux = array($lang[$i]['id']=> $lang[$i]['texto']);
-            $lenguaje = array_merge($lenguaje,$aux);
+        if(!empty($lang)){
+            for($i=0;$i<count($lang);$i++)
+            { 
+                $aux = array($lang[$i]['id']=> $lang[$i]['texto']);
+                $lenguaje = array_merge($lenguaje,$aux);
+            }
         }
         return $lenguaje;
     }

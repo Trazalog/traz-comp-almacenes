@@ -118,7 +118,7 @@ input[type=checkbox] {
                             <div class="form-check col-sm-6">
 
                                 <label for="stock0" class="checkboxtext">Artículo con Stock en 0
-                                    <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value=""
+                                    <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"
                                         id="stock0" />
                                 </label>
                             </div>
@@ -151,6 +151,7 @@ input[type=checkbox] {
                         <th>Producto</th>
                         <th class="text-center">Stock</th>
                         <th class="text-center">Unidad de Medida</th>
+                        <th class="text-center">Tipo de Articulo</th>
                         <th class="text-center">Recipiente</th>
                         <th class="text-center">Fecha Creacion</th>
                         <th>Depósito</th>
@@ -170,6 +171,14 @@ input[type=checkbox] {
                                 $stock = $f['cantidad'];
                          
                             }
+                            if($f['artType']){
+
+                                $tipo_articulo =  str_replace('tipo_articulo', '', $f['artType']);
+                            }
+
+                            if($f['nom_reci'] == ''){
+                                $nombre_recipiente = "No Aplica";
+                            }
 
                             echo "<tr data-json='".json_encode($f)."'>";
                             echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
@@ -178,7 +187,8 @@ input[type=checkbox] {
                             echo '<td>'.$f['artDescription'].'</td>';
                             echo '<td class="text-center">'.$stock.'</td>';
                             echo '<td class="text-center">'.$f['un_medida'].'</td>';
-                            echo '<td class="text-center">'.$f['nom_reci'].'</td>';
+                            echo '<td class="text-center">'.$tipo_articulo.'</td>';
+                            echo '<td class="text-center">'.$nombre_recipiente.'</td>';
                             echo "<td class='text-center'>".fecha(substr($f['fec_alta'], 0, 10))."</td>";
                             echo '<td>'.$f['depositodescrip'].'</td>';
 			                echo '<td class="text-center">'.estado($f['estado']).'</td>';
@@ -436,8 +446,8 @@ function blockEdicion() {
 //Filtra la tabla y la redibuja
 //Cada campo esta validado en caso de vacios o NULL no se muestren en la tabla
 function filtrar() {
-    var data = new FormData($('#frm-filtros')[0]);
-    data = formToObject(data);
+     var data = new FormData($('#frm-filtros')[0]);
+     data = formToObject(data);
     wo();
     var url = "<?php echo base_url(ALM) ?>Lote/filtrarListado";
     $.ajax({

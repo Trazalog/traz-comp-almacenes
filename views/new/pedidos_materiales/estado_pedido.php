@@ -16,7 +16,7 @@
                                 <tr>
                                     <th>Cod. Artículo</th>
                                     <th class="text-center">Cant. Pedida</th>
-                                    <th class="text-center">Cant. Pedida</th>
+                                    <th class="text-center">Cant. Entrega</th>
                                     <th class="text-center">Estado</th>
                                 </tr>
                             </thead>
@@ -45,6 +45,7 @@ function EstadoPedido(e)
         type: 'GET',
         url: 'index.php/<?php echo ALM ?>new/Pedido_Material/estado?id='+id,
         success: function(result) {
+            debugger;
             var tabla = $('#tablapedido');
             $(tabla).DataTable().destroy();
             $(tabla).find('tbody').html('');

@@ -13,14 +13,23 @@ class Articulos extends CI_Model
 		$url = REST_ALM.'/articulos/'.empresa();
 		return wso2($url);
 	}
-
+	/**
+	* Trae el listado de articulos por tipo
+	* @param string tipos articulos
+	* @return array articulos por tipo
+	*/
 	public function obtenerXTipo($tipo)
 	{
-		$resource = "/articulos/tipo/$tipo/".empresa();
+		log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | obtenerXTipo()');
+		$resource = "/articulos/tipo/".urlencode($tipo)."/".empresa();
         $url = REST_ALM . $resource;
         return wso2($url);
 	}
-
+	/**
+	* Arma el listado de articulos por tipos
+	* @param string tipos articulos
+	* @return array con articulos coincidentes a los tipos
+	*/
 	public function obtenerXTipos($tipos)
 	{
 		$res = [];
@@ -28,6 +37,7 @@ class Articulos extends CI_Model
 			$aux = $this->obtenerXTipo($o);
 			$res = array_merge(($aux['status']?$aux['data']:[]), $res);
 		}
+		log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | obtenerXTipos() >> resp'.json_encode($res));
 		return $res;
 	}
 
