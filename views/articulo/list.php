@@ -29,7 +29,9 @@
 
                     echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>';
                    
-                    echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';
+                   // echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';
+                    
+                    echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Editar" onclick="verificarStock(this)"></i>';
                     
                     echo "</td>";
 
@@ -129,29 +131,95 @@ function editar(e) {
     $('#new_articulo').modal('show');
 }
 
-// Eliminar Articulo
-var selected = null;
-function eliminar(e){
-    selected = $(e).closest('tr').attr('id');
-    $('#mdl-eliminar').modal('show');
-}
 
-function eliminar_articulo() {
+
+// verifica stock de un articulo antes de eliminarlo.
+//si retorna False se puede eliminar articulo.
+//sino retorna cantidad de stock del articulo.
+function verificarStock(e) {
+    debugger;
+
+    selected = $(e).closest('tr').attr('id');
     $.ajax({
         type: 'POST',
         data: {
             idelim: selected
         },
-        url: 'index.php/<?php echo ALM ?>Articulo/baja_articulo',
+        url: 'index.php/<?php echo ALM ?>Articulo/verificar_articulo',
         success: function(data) {
-            alert("Articulo Eliminado");
-            linkTo();
+
+        datos = JSON.parse(data);
+        console.log('datos trae: ' + datos);
+
+        if (datos == true) {
+                Swal.fire(
+                'Error!',
+                'No puedes Eliminar un Articulo con Stock!',
+                'error'
+            )
+                return true;
+            } else {
+            console.log("Articulo Sin Stock");
+            console.log(selected);
+       
+            eliminar_articulo(selected);
+
+            }
+         
         },
         error: function(result) {
             console.log(result);
         }
 
     });
+}
+
+
+
+function eliminar_articulo() {
+
+    Swal.fire({
+  title: '¿Realmente desea ELIMINAR ARTICULO?',
+  text: "No podras revertir la acción!",
+  type: 'question',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'SI, Eliminar Articulo!'
+}).then((result) => {
+    console.log(result);
+	if (result.value) {
+    console.log('sale por verdadero');
+					
+                    //Ajax
+                    $.ajax({
+                            type: 'POST',
+                            data: {
+                                idelim: selected
+                            },
+                            url: 'index.php/<?php echo ALM ?>Articulo/baja_articulo',
+                            success: function(data) {
+                               
+                                Swal.fire('Hecho!', 'Articulo Eliminado!', 'success')
+                                linkTo();
+                            },
+                            error: function(result) {
+                                console.log(result);
+                            }
+
+                        });
+                        //Fin Ajax
+
+  } else if (result.dismiss) {
+                    console.log('sale por falso');
+                    Swal.fire('Cancelado', '', 'error')
+                }
+})
+
+
+
+  
+
 }
 
 
@@ -343,30 +411,3 @@ $(document).ready(function() {
         </div>
     </div>
 </div>
-
-<!-- Modal eliminar-->
-<div class="modal" id="mdl-eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar Artículo</h4>
-            </div> <!-- /.modal-header  -->
-
-            <div class="modal-body" id="modalBodyArticle">
-                <p>¿Realmente desea ELIMINAR ARTICULO? </p>
-            </div> <!-- /.modal-body -->
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal"
-                    onclick="eliminar_articulo()">Eliminar</button>
-            </div> <!-- /.modal footer -->
-
-        </div> <!-- /.modal-content -->
-    </div> <!-- /.modal-dialog modal-lg -->
-</div> <!-- /.modal fade -->
-<!-- / Modal -->
