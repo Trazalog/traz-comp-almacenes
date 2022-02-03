@@ -105,6 +105,24 @@ class Articulo extends CI_Controller {
 		}
 	}
 
+//devuelve valor false si no tiene stock.
+//sino devuelve cantidad en stock.
+//esta funcion es para verificar si un articulo esta con stock.
+	public function verificar_articulo()
+	{
+		$idarticulo = $_POST['idelim'];
+		$result     = $this->Articulos->verificarStock($idarticulo)[0];
+	//	print_r($result);
+
+			if($result  == NULL)
+			{
+				echo json_encode(false);
+			}
+			else
+			{
+				echo json_encode(true);	
+			}
+	}
 
 	public function baja_articulo()
 	{

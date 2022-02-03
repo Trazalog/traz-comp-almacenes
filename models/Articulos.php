@@ -112,6 +112,44 @@ class Articulos extends CI_Model
 		}
 	}
 
+	
+	//Articulo con stock 0
+	function verificarStock($id) // Ok
+	{
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  id: >> " . json_encode($id));
+
+		$empresa = empresa();
+
+	$this->db->select('
+            
+	
+	COALESCE(alm.alm_lotes.cantidad, 0) as cantidad
+
+
+');
+
+$this->db->from('alm.alm_articulos');
+$this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
+$this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
+$this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+$this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+$this->db->where('alm.alm_lotes.empr_id', $empresa);
+$this->db->where('alm.alm_lotes.cantidad <>', '0');
+$this->db->where('alm.alm_articulos.arti_id', $id);
+
+
+$query = $this->db->get();
+    
+	if ($query->num_rows() && $query->num_rows() != 0) {
+		return $query->result_array();
+
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  Cantidad: >> " . json_encode($query->result_array()));
+	} else {
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  Cantidad: >> " . json_encode('0'));
+		return false;
+	}
+}
+
 	function eliminar($id)
 	{
 		$this->db->where('arti_id', $id);
