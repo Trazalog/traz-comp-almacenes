@@ -120,22 +120,13 @@ class Articulos extends CI_Model
 
 		$empresa = empresa();
 
-	$this->db->select('
-            
+	$this->db->select('SUM(alm.alm_lotes.cantidad) as cantidad');
+
+	$this->db->from('alm.alm_lotes');
+
+	$this->db->where('alm.alm_lotes.empr_id', $empresa);
 	
-	COALESCE(alm.alm_lotes.cantidad, 0) as cantidad
-
-
-');
-
-$this->db->from('alm.alm_articulos');
-$this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
-$this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
-$this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
-$this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
-$this->db->where('alm.alm_lotes.empr_id', $empresa);
-$this->db->where('alm.alm_lotes.cantidad <>', '0');
-$this->db->where('alm.alm_articulos.arti_id', $id);
+	$this->db->where('alm.alm_lotes.arti_id', $id);
 
 
 $query = $this->db->get();
