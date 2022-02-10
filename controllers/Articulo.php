@@ -111,16 +111,16 @@ class Articulo extends CI_Controller {
 	public function verificar_articulo()
 	{
 		$idarticulo = $_POST['idelim'];
-		$result     = $this->Articulos->verificarStock($idarticulo)[0];
+		$result     = $this->Articulos->verificarStock($idarticulo)[0]['cantidad'];
 	//	print_r($result);
 
 			if($result  == NULL)
 			{
-				echo json_encode(false);
+				echo json_encode($result);
 			}
 			else
 			{
-				echo json_encode(true);	
+				echo json_encode($result);	
 			}
 	}
 

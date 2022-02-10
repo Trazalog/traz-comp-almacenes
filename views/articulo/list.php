@@ -150,19 +150,24 @@ function verificarStock(e) {
 
         datos = JSON.parse(data);
         console.log('datos trae: ' + datos);
+debugger;
+       // if (datos == true) {
+           if (datos == null || datos == '0' ){
 
-        if (datos == true) {
-                Swal.fire(
+            console.log("Articulo Sin Stock");
+            console.log(selected);
+          
+            eliminar_articulo(selected);
+
+            } else {
+         
+            Swal.fire(
                 'Error!',
                 'No puedes Eliminar un Articulo con Stock!',
                 'error'
             )
                 return true;
-            } else {
-            console.log("Articulo Sin Stock");
-            console.log(selected);
-       
-            eliminar_articulo(selected);
+           
 
             }
          
