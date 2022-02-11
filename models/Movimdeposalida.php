@@ -17,10 +17,10 @@ class Movimdeposalida extends CI_Model {
 	* @return array con info de lotes encontrados
 	*/
 	function traerLotes($arti_id, $depo_id){
-
+		log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACEN | Movimdeposalida | traerLotes');
 		$url = REST_ALM.'/deposito/'.$depo_id.'/articulo/'.$arti_id.'/lote/list';
 		$aux = $this->rest->callAPI("GET",$url);
-		$aux =json_decode($aux['data']);
+		$aux = json_decode($aux['data']);
 		return $aux->lotes->lote;
 	}
 
