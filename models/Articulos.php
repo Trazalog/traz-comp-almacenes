@@ -420,4 +420,21 @@ $query = $this->db->get();
 		$recurso = REST_ALM.'/articulos/'.($id?$id:empresa());
 		return wso2($recurso);
 	}
+
+	/**
+	* Consulta al service si el codigo insertado, ya esta creado para la empresa
+	* @param string código Artículo; empr_id
+	* @return array respuesta del servicio
+	*/
+	public function validarArticulo($barcode){
+        
+		$url = REST_ALM."/articulo/validar/". urlencode($barcode) . "/empresa/".empresa();
+	
+		$aux = $this->rest->callAPI("GET",$url);
+		$resp = json_decode($aux['data']);
+	
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | validarArticulo() >> resp ".json_encode($resp));
+	
+		return $resp->resultado;
+	}
 }
