@@ -9,13 +9,13 @@
 								<div class="row">
 										<div class="col-md-3">
 												<div class="form-group">
-														<label>Nro. Comprobante <strong class="text-danger">*</strong> :</label>
+														<label>Nro. Comprobante <?php hreq(); ?> :</label>
 														<input type="number" id="nroCompr" class="form-control" placeholder="Ingrese Número de comprobante">
 												</div>
 										</div>
 										<div class="col-md-3">
 												<div class="form-group">
-														<label>Fecha <strong class="text-danger">*</strong> :</label>
+														<label>Fecha <?php hreq(); ?> :</label>
 														<div class="input-group date">
 																<div class="input-group-addon">
 																		<i class="fa fa-calendar"></i>
@@ -25,7 +25,7 @@
 												</div>
 										</div>
 										<div class="col-md-3">
-												<label>Establecimiento destino <strong class="text-danger">*</strong> :</label>
+												<label>Establecimiento destino <?php hreq(); ?> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
 													<option value="" disabled selected>-Seleccione opción-</option>
 													<?php
@@ -36,7 +36,7 @@
 												</select>
 										</div>
 										<div class="col-md-3">
-												<label>Depósito destino <strong class="text-danger">*</strong> :</label>
+												<label>Depósito destino <?php hreq(); ?> :</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="depo_id" readonly>
 													<option value="" disabled selected>-Seleccione opción-</option>
 												</select>
@@ -53,20 +53,28 @@
 						<div class="box-body">
 								<div class="row">
 										<div class="col-md-6">
+											<div class="form-group">
 												<label>Conductor</label>
 												<input id="conductor" class="form-control" placeholder="Ingrese Nombre">
+												</div>
 										</div>
 										<div class="col-md-6">
+											<div class="form-group">
 												<label>DNI</label>
 												<input id="dni" class="form-control" placeholder="Ingrese DNI del conductor">
+											</div>
 										</div>
 										<div class="col-md-6">
+											<div class="form-group">
 												<label>Patente</label>
 												<input id="patente" class="form-control" placeholder="Ingrese número de  patente de camión">
+											</div>
 										</div>
 										<div class="col-md-6">
+											<div class="form-group">
 												<label>Acoplado</label>
 												<input id="acoplado" class="form-control" placeholder="Ingrese número de patente de acoplado">
+											</div>
 										</div>
 
 								</div>
@@ -82,9 +90,9 @@
 						<div class="box-body">
 								<div class="row">
 										<div class="col-md-4">
-												<label>Depósito origen <strong class="text-danger">*</strong> :</label>
+												<label>Depósito origen <?php hreq(); ?> :</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="depo_origen_id" required onchange="">
-													<option value="" disabled selected>-Seleccione opcion-</option>
+													<option value="" disabled selected>-Seleccione opción-</option>
 														<?php
 															foreach ($depositos as $b) {
 																	echo '<option value="'.$b->depo_id.'">'.$b->descripcion.'</option>';
@@ -92,32 +100,25 @@
 														?>
 												</select>
 										</div>
-										<div class="col-md-4">
-											<label>Código <strong class="text-danger">*</strong> :</label>
-											<div class="input-group">
-												<input list="articulos" id="inputarti" class="form-control" placeholder="Seleccionar Artículo"
-													onchange="getItem(this)" autocomplete="off">
-												<datalist id="articulos">
-													
-												</datalist>
-												<span class="input-group-btn">
-													<button class='btn btn-primary' data-toggle="modal" data-target="#modal_articulos">
-														<i class="glyphicon glyphicon-search"></i></button>
-												</span>
-											</div>
+										<div class="col-md-4 ba">
+											<label>Artículos <?php hreq(); ?> :</label>
+												<select style="width: 100%" class="form-control" id="inputarti">
+													<option selected disabled data-foo=""> - Seleccione opción - </option>
+												</select>
+												<label id='detalle' class='select-detalle text-blue'></label>
 											<br>
 											<label id="info" class="text-blue"></label>
 										</div>
 										<div class="col-md-4">
 												<label>Lote Origen:</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
-													<option value="" disabled selected>-Seleccione opcion-</option>
+													<option value="" disabled selected>-Seleccione opción-</option>
 												</select>
 										</div>
 								</div>
 								<div class="row">
 									<div class="col-md-4">
-											<label>Cantidad <strong class="text-danger">*</strong> :</label>
+											<label>Cantidad <?php hreq(); ?> :</label>
 											<input type="number" id="cant_id" class="form-control" placeholder="Ingrese cantidad">
 									</div>
 								</div>
@@ -211,32 +212,6 @@
  </div>
 <!-- FIN MODAL ARTICULOS -->
 <script>
-//MODULO SCRIPTS COMBO ARTICULOS
-var selectItem = null;
-
-function getItem(item) {
-    if (item == null) return;
-	if (item.value == ''){
-		$("#lote_id").attr('disabled',true);
-		$("#lote_id").val('');
-		$("#info").text('');
-		selectItem = null; //Al ser variable global, debo limpiarla para evitar errores en caso que no se seleccione ningun artículo
-		return;	
-	} 
-    var option = $('#articulos').find("[value='" + item.value + "']");
-    var json = JSON.stringify($(option).data('json'));
-    selectItem = JSON.parse(json);
-    $('label#info').html($(option).html());
-    if(existFunction('eventSelect'))eventSelect();
-}
-
-function clearSelect(){
-    $('#inputarti').val(null);
-    selectItem = null;
-}
-//FIN MODULO SCRIPTS COMBO ARTICULOS
-</script>
-<script>
 	$(document).ready(function() {
 		$("#totalCont").val(0);
 		$("#inputarti").attr("disabled", "")
@@ -263,9 +238,10 @@ function clearSelect(){
 	// seleccionando deposito habilita combo articulos
 	// Rellena combo con articulos para el deposito seleccionado
 	$('#depo_origen_id').on("change", function() {
-debugger;
 		var depo_id = $('#depo_origen_id option:selected').val();
+		
 		$("#inputarti").attr("disabled", false);
+		$('#inputarti').html('');
 		WaitingOpen('Buscando Artículos...');
 
 		$.ajax({
@@ -278,7 +254,7 @@ debugger;
 				var resp = JSON.parse(data);
 
 				if (resp == null) {
-					alert("Sin artículos disponibles para este depósito!");
+					Swal.fire('Error',"Sin artículos disponibles para este depósito!",'warning');
 					$("#inputarti").val('');
 					$("#info").text('');
 					$("#inputarti").attr("placeholder", "Sin artículos disponibles para este depósito");
@@ -287,11 +263,17 @@ debugger;
 					$("#inputarti").attr("disabled", true);
 				} else {
 					$("#inputarti").attr("placeholder", "Seleccionar Artículo");
+
+					selectArticulos = '<option selected disabled data-foo=""> - Seleccione artículo -</option>';
+
 					for(var i=0; i<resp.length; i++)
 					{
 						json = JSON.stringify(resp[i]);
-						$('#articulos').append("<option value='" + resp[i].barcode + "' data-json='"+ json +"'>"+ resp[i].descripcion +" | "+ resp[i].cantidad +"</option");
+						selectArticulos += "<option value='" + resp[i].barcode + "' data-json='"+ json +"'  data-foo='<small><cite> "+resp[i].descripcion+" </cite></small><label class=\"text-blue\"> ♦ </label><small><cite> "+resp[i].cantidad+" </cite></small><label class=\"text-blue\"> ♦ </label><small><cite> "+resp[i].unidad_medida+" </cite></small>' >"+ resp[i].barcode + "</option>";
 					}
+					$('#inputarti').html(selectArticulos);
+
+          			$('#inputarti').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
 					$("#articulos").removeAttr('readonly');
 				}
 				WaitingClose();
@@ -305,45 +287,44 @@ debugger;
 
 	// al seleccionar articulo trae los lotes existentes en el deposito seleccionado previamente
 	$('#inputarti').on("change", function() {
+		var depo_id = $('#depo_origen_id option:selected').val();
+		var artiJson = JSON.parse($('#inputarti option:selected').attr('data-json'));
+		arti_id = artiJson.arti_id;
+		$("#cant_id").val(''); // Limpio cantidad al cambiar de artículo
+		
+		if(depo_id == ""){
+			error('Error','Por favor seleccione depósito...');
+			return;
+		}
 
-			var depo_id = $('#depo_origen_id option:selected').val();
-			if(selectItem == null) return; // Limpio la variable en la funcion getItem() 
-			var arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-			$("#cant_id").val(''); // Limpio cantidad al cambiar de artículo
-			
-			if(depo_id == ""){
-				alert('Por favor seleccione deposito...');
-				return;
-			}
-
-			WaitingOpen('Buscando Lotes...');
-			$.ajax({
-					type: 'POST',
-					data: {arti_id: arti_id, depo_id: depo_id},
-					url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerLotes',
-					success: function(data) {
-							
-							$('#lote_id').empty();
-							var resp = JSON.parse(data);
-							if (resp == null) {
-								$('#lote_id').append('<option value="" disabled selected>-Sin Lotes para este artículo-</option>');
-							} else {
-								console.table(resp);
-								console.table(resp[0].lote_id);
-								$('#lote_id').append('<option value="" disabled selected>-Seleccione opcion-</option>');
-								for(var i=0; i<resp.length; i++)
-								{
-										$('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
-								}
-								$("#lote_id").attr('disabled',false);
-							}
-							WaitingClose();
-					},
-					error: function(data) {
-							alert('Error');
-							WaitingClose();
+		WaitingOpen('Buscando Lotes...');
+		$.ajax({
+			type: 'POST',
+			data: {arti_id: arti_id, depo_id: depo_id},
+			url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerLotes',
+			success: function(data) {
+					
+				$('#lote_id').empty();
+				var resp = JSON.parse(data);
+				if (resp == null) {
+					$('#lote_id').append('<option value="" disabled selected>-Sin Lotes para este artículo-</option>');
+				} else {
+					console.table(resp);
+					console.table(resp[0].lote_id);
+					$('#lote_id').append('<option value="" disabled selected>-Seleccione opción-</option>');
+					for(var i=0; i<resp.length; i++)
+					{
+						$('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
 					}
-			});
+					$("#lote_id").attr('disabled',false);
+				}
+				WaitingClose();
+			},
+			error: function(data) {
+				error('Error','Se produjo un error al obtener los Lotes del artículo');
+				WaitingClose();
+			}
+		});
 	});
 	// Al seleccionar establecimiento, busca depositos
 	function seleccionesta(opcion){
@@ -380,66 +361,55 @@ debugger;
 	// agrega info a la tabla temporal
 	function agregarProducto()
 	{
-			var aux = 0;
-			//Informamos el campo vacio 
-			var reporte = validarCamposProducto("agregar");
-									
-			if(reporte == '')
-			{
-					var depoOrigen_id = $("#depo_origen_id").val();
-					var descDepo = $("#depo_origen_id option:selected").text();
-					var lote_id_origen = $('#lote_id').val();
-					var lote_codigo = $('#lote_id option:selected').text();
-					var codigoArt = $("#inputarti").val();
-					var idarti = selectItem.arti_id;// se completa en traz-comp-almacen/articulo/componente.php
-					idarti = idarti.toString();
-					var um = selectItem.unidad_medida;// se completa en traz-comp-almacen/articulo/componente.php
-					var aux = $("#info").text();
-					var descArt = "";
-					//le saco el stock para mostrar solo el nombre del articulo
-					var len = aux.length;
-					for(var j=0; j<aux.length; j++)
-					{
-							if(aux[j] != "|")
-							{descArt = descArt + aux[j];}
-							else{
-									j = aux.length;
-							}
-					}
-					var cant = $("#cant_id").val();
-					// var um = $("#id_un option:selected").text(); debe utilizar la cargada en el articulo
+		//Informamos el campo vacio 
+		var reporte = validarCamposProducto("agregar");
+								
+		if(reporte == '')
+		{
+			var artiJson = JSON.parse($('#inputarti option:selected').attr('data-json'));
 
-					var datos = {};
-					datos.codigo = lote_codigo;
-					datos.cantidad = cant;
-					datos.arti_id = idarti;
-					
-					if (lote_id_origen !=''){
-						datos.lote_id_origen = lote_id_origen;
-					}else{
-						lote_id_origen = 'Sin Lote'
-					}
+			var depoOrigen_id = $("#depo_origen_id").val();
+			var descDepo = $("#depo_origen_id option:selected").text();
+			var lote_id_origen = $('#lote_id').val();
+			var lote_codigo = $('#lote_id option:selected').text();
+			var codigoArt = $("#inputarti").val();
+			var cant = $("#cant_id").val();
+			var idarti = artiJson.arti_id;
+			idarti = idarti.toString();
+			var um = artiJson.unidad_medida;
+			var descArt = artiJson.descripcion;
 
-					var table = $('#tbl_productos').DataTable();
-					var row = `<tr data-json='${JSON.stringify(datos)}'>
-									<td> <i class='fa fa-fw fa-minus text-light-blue' style='cursor: pointer; margin-left: 15px;'></i> </td>
-									<td>${descDepo}</td>
-									<td style='display:none;'>${depoOrigen_id}</td>
-									<td>${lote_id_origen}</td>
-									<td>${codigoArt}</td>
-									<td style='display:none;'>${idarti}</td>
-									<td>${descArt}</td>
-									<td>${cant}</td>
-									<td>${um}</td>
-							</tr>`;
-					table.row.add($(row)).draw();
-					var contaux = parseInt(cant) +  parseInt($("#totalCont").val());
-					$("#total").text(contaux);
-					$("#totalCont").val(contaux);
-
+			var datos = {};
+			datos.codigo = lote_codigo;
+			datos.cantidad = cant;
+			datos.arti_id = idarti;
+			
+			if (lote_id_origen !=''){
+				datos.lote_id_origen = lote_id_origen;
 			}else{
-					alert(reporte);
+				lote_id_origen = 'Sin Lote'
 			}
+
+			var table = $('#tbl_productos').DataTable();
+			var row = `<tr data-json='${JSON.stringify(datos)}'>
+							<td> <i class='fa fa-fw fa-minus text-light-blue' style='cursor: pointer; margin-left: 15px;'></i> </td>
+							<td>${descDepo}</td>
+							<td style='display:none;'>${depoOrigen_id}</td>
+							<td>${lote_id_origen}</td>
+							<td>${codigoArt}</td>
+							<td style='display:none;'>${idarti}</td>
+							<td>${descArt}</td>
+							<td>${cant}</td>
+							<td>${um}</td>
+					</tr>`;
+			table.row.add($(row)).draw();
+			var contaux = parseInt(cant) +  parseInt($("#totalCont").val());
+			$("#total").text(contaux);
+			$("#totalCont").val(contaux);
+
+		}else{
+			error('Error', reporte);
+		}
 	}
 	// guarda info de movimiento de salida
 	function guardar()
@@ -501,7 +471,6 @@ debugger;
 	}
 	// imprime movimiento
 	function imprimir(){
-		debugger;
 			var cabecera = armarCabecera();
 			var detalle = armarDetalle();
 
@@ -512,7 +481,7 @@ debugger;
 					url: 'index.php/<?php echo ALM?>Movimientodeposalida/imprimir',
 					success: function(data) {
 						WaitingClose();
-						debugger;
+			
 						//texto = data;
 							var win = window.open('', 'Imprimir', 'height=700,width=900');
 							win.document.write('<html><head><title></title>');

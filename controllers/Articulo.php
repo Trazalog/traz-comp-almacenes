@@ -174,4 +174,18 @@ class Articulo extends CI_Controller {
 		$this->load->view(ALM.'proceso/tareas/componentes/tabla_lote_deposito', $data);
 	}
 
+	/**
+	* Recibe codigo de Artículo, para validar si ya existe para una empresa
+	* @param string código Artículo
+	* @return array respuesta del servicio
+	*/
+	public function validarArticulo(){
+		log_message('INFO','#TRAZA | #TRAZ-COMP-ALMACENES | Articulo | validarArticulo()');
+	
+		$barcode = $this->input->post('barcode');
+		$resp = $this->Articulos->validarArticulo($barcode);
+			
+		echo json_encode($resp);
+	}
+
 }

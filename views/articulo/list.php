@@ -69,7 +69,7 @@ function guardarArticulo() {
         success: function(rsp) {
 
             mdlClose('new_articulo');
-
+            hecho();
             linkTo();
         },
         error: function(rsp) {
@@ -108,7 +108,31 @@ function editarArticulo() {
         }
     });
 }
-
+//Valida el codigo del articulo antes de editar o agregar articulos
+function validarArticulo(accion){
+    var barcode = $("#artBarCode").val();
+    $.ajax({
+        type: "POST",
+        url: "<?php echo ALM; ?>Articulo/validarArticulo",
+        data: {barcode},
+        dataType: "JSON",
+        success: function (rsp) {
+            if(rsp != null){
+                if(rsp.existe == 'true'){
+                    error("Error","El código ingresado ya se encuentra utilizado!");
+                }else{
+                    if(accion == 'nuevo'){
+                        guardarArticulo();
+                    }else{
+                        editarArticulo();
+                    }
+                }
+            }else{
+                error("Error","Se produjo un error validando el código ingresado!");
+            }
+        }
+    });
+}
 function ver(e) {
     var json = JSON.parse(JSON.stringify($(e).closest('tr').data('json')));
     Object.keys(json).forEach(function(key, index) {
@@ -127,7 +151,7 @@ function editar(e) {
         $('[name="' + key + '"]').val(json[key]);
     });
     $('#mdl-titulo').html('Editar Artículo');
-    $('#btn-accion').attr('onclick', 'editarArticulo()');
+    $('#btn-accion').attr('onclick', 'validarArticulo("editar")');
     $('#new_articulo').modal('show');
 }
 
@@ -137,8 +161,6 @@ function editar(e) {
 //si retorna False se puede eliminar articulo.
 //sino retorna cantidad de stock del articulo.
 function verificarStock(e) {
-    debugger;
-
     selected = $(e).closest('tr').attr('id');
     $.ajax({
         type: 'POST',
@@ -150,7 +172,6 @@ function verificarStock(e) {
 
         datos = JSON.parse(data);
         console.log('datos trae: ' + datos);
-debugger;
        // if (datos == true) {
            if (datos == null || datos == '0' ){
 
@@ -230,7 +251,7 @@ function eliminar_articulo() {
 
 $("#new_articulo").on("hide.bs.modal", function() {
     $('#mdl-titulo').html('Nuevo Artículo');
-    $('#btn-accion').attr('onclick', 'guardarArticulo()');
+    $('#btn-accion').attr('onclick', 'validarArticulo("nuevo")');
     $('#btn-accion').show();
     $('#frm-articulo')[0].reset();
     $('#read-only').prop('disabled', false);
@@ -259,7 +280,6 @@ function validarForm() {
 //excel, pdf, copiado portapapeles e impresion
 
 $(document).ready(function() {
-    debugger;
     $('#articles').DataTable({
         responsive: true,
         language: {
@@ -411,7 +431,7 @@ $(document).ready(function() {
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
-                    onclick="guardarArticulo()">Guardar</button>
+                    onclick="validarArticulo('nuevo')">Guardar</button>
             </div>
         </div>
     </div>
