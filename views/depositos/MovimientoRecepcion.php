@@ -1,3 +1,12 @@
+<style>
+table#tbl_recepciones tbody tr:nth-child(even):hover td, table#tbl_productos_recepcion tbody tr:nth-child(even):hover td{
+    background-color: #3c8dbc3d !important;
+}
+
+table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_recepcion tbody tr:nth-child(odd):hover td{
+    background-color: #3c8dbc3d !important;
+}
+</style>
 <div class="row">
     <div class="col-md-12">
         <div class="box">
@@ -20,10 +29,10 @@
                         <!-- -- -->
                     </div>
                     <div class="col-md-4">
-                        <label>Deposito receptor <strong class="text-danger">*</strong> :</label>
+                        <label>Depósito receptor <strong class="text-danger">*</strong> :</label>
                         <!-- -- -->
                         <select  class="form-control select2 select2-hidden-accesible" id="depo_id" readonly>
-													<option value="" disabled selected>-Seleccione Su deposito-</option>
+													<option value="" disabled selected>-Seleccione Su depósito-</option>
 												</select>
                         <!-- -- -->
                     </div>
@@ -34,10 +43,11 @@
                 <br>
                 <div class="row">
                     <div class="col-md-12">
-                        <table class="table table-striped" id="tbl_recepciones" style="display:none">
+						<label class="control-label">Seleccione el depósito o Nro. de Comprobante</label>
+                        <table class="table table-striped hover" id="tbl_recepciones" style="display:none">
                             <thead class="thead-dark" bgcolor="#eeeeee">
                             <th>Acciones</th>
-                            <th>Deposito Origen</th>
+                            <th>Depósito Origen</th>
                             <th>Nro Comprobante</th>
                             </thead>
                             <tbody>
@@ -122,11 +132,11 @@
                         <table class="table table-striped" id="tbl_productos_recepcion">
 														<thead class="thead-dark">
 															<th>Cargar</th>
-															<th>Codigo</th>
+															<th>Código</th>
 															<th>Lote Orig.</th>
-															<th>Articulo</th>
+															<th>Artículo</th>
 															<th>C. Enviada</th>
-															<th>C. Recepcion</th>
+															<th>C. Recepción</th>
 															<th>Dep. Descargar</th>
 															<th class="hidden"></th>
 															<th>Fecha Vto.</th>
@@ -300,7 +310,7 @@
 	});
 
 	// completa los datos del remito y manda a armar tabla temporal del movimiento
-	$(document).on("click",".fa-level-down",function(event) {
+	$(document).on("click","#tbl_recepciones tr",function(event) {
 
 			event.preventDefault();
 			event.stopImmediatePropagation();
@@ -316,7 +326,7 @@
 	});
 
 	//levanta modal para carga de cantidades y depositos
-	$(document).on("click",".fa-pencil-square-o",function(event) {
+	$(document).on("click","#tbl_productos_recepcion tr", function(event) {
 
 			event.preventDefault();
 			//guardo id de fila en modal
@@ -383,7 +393,7 @@
 							} else {
 								console.table(resp);
 								console.table(resp[0].lote_id);
-								$('#cod_lote').append('<option value="" disabled selected>-Seleccione opcion-</option>');
+								$('#cod_lote').append('<option value="" disabled selected>-Seleccione opción-</option>');
 								for(var i=0; i<resp.length; i++)
 								{
 										$('#cod_lote').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
@@ -443,30 +453,29 @@
 				url: 'index.php/<?php echo ALM?>Movimientodeporecepcion/traerRecepciones',
 				success: function(data) {
 
-								WaitingClose();
-								$("#tbl_recepciones").removeAttr('style');
-								var table = $('#tbl_recepciones').DataTable();
-								table.rows().remove().draw();
-								if (data != 'null') {
-									var resp = JSON.parse(data);
-									for(var i=0; i<resp.length; i++){
-										var movimCabecera = resp[i];
-										var row = `<tr data-json='${JSON.stringify(movimCabecera)}'>
-																<td><span>
-																	<i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;'></i></span>
-																	&nbsp		<span><i class='fa fa-level-down text-light-blue' style='cursor: pointer; margin-left: 15px;'></i></span>
-																</td>
-																<td>${resp[i].depo_id_origen}</td>
-																<td>${resp[i].num_comprobante}</td>
-															</tr>`;
-										table.row.add($(row)).draw();
-										movimDetalle = "";
-									}
-								}
+					WaitingClose();
+					$("#tbl_recepciones").removeAttr('style');
+					var table = $('#tbl_recepciones').DataTable();
+					table.rows().remove().draw();
+					if (data != 'null') {
+						var resp = JSON.parse(data);
+						for(var i=0; i<resp.length; i++){
+							var movimCabecera = resp[i];
+							var row = `<tr data-json='${JSON.stringify(movimCabecera)}' style='cursor: pointer;'>
+											<td>
+												<span><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver detalle'></i></span>
+											</td>
+											<td>${resp[i].depo_id_origen}</td>
+											<td>${resp[i].num_comprobante}</td>
+										</tr>`;
+							table.row.add($(row)).draw();
+							movimDetalle = "";
+						}
+					}
 				},
 				error: function(data) {
-								WaitingClose();
-								alert('Error al traer Datos de Envios de Depositos');
+					WaitingClose();
+					alert('Error al traer Datos de Envios de Depositos');
 				}
 		});
 	}
@@ -575,20 +584,19 @@
 
 							var resp = JSON.parse(data);
 							$('#depo_id').empty();
-							if(data != null){
-									for(var i=0; i<resp.length; i++)
-									{
-										$('#depo_id').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
-									}
-									$("#depo_id").removeAttr('readonly');
+							if(resp != null){
+								for(var i=0; i<resp.length; i++)
+								{
+									$('#depo_id').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
+								}
+								$("#depo_id").removeAttr('readonly');
 							}else{
-									$("#depo_id").append("<option value=''>-Sin Depósitos para este Establecimiento-</option");
+								$("#depo_id").append("<option value=''>-Sin Depósitos para este Establecimiento-</option");
 							}
 							WaitingClose();
 					},
 					error: function(data) {
-
-							alert('Error');
+						error('Error', 'Se produjo un error buscando los depósitos');
 					}
 			});
 	}

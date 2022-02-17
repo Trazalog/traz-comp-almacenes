@@ -14,6 +14,9 @@ class Tipoajustes extends CI_Model
         if(!$rsp["status"]) return $rsp;
         
         $rsp["data"] = json_decode($rsp["data"])->tiposAjuste->tipoAjuste;
+
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | Tipoajustes | obtenerAjustes() >> DATA rsp  '.json_encode($rsp['data']));
+
         return $rsp;
         
     }

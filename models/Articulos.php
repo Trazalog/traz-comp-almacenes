@@ -13,14 +13,23 @@ class Articulos extends CI_Model
 		$url = REST_ALM.'/articulos/'.empresa();
 		return wso2($url);
 	}
-
+	/**
+	* Trae el listado de articulos por tipo
+	* @param string tipos articulos
+	* @return array articulos por tipo
+	*/
 	public function obtenerXTipo($tipo)
 	{
-		$resource = "/articulos/tipo/". urlencode($tipo) ."/".empresa();
+		log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | obtenerXTipo()');
+		$resource = "/articulos/tipo/".urlencode($tipo)."/".empresa();
         $url = REST_ALM . $resource;
         return wso2($url);
 	}
-
+	/**
+	* Arma el listado de articulos por tipos
+	* @param string tipos articulos
+	* @return array con articulos coincidentes a los tipos
+	*/
 	public function obtenerXTipos($tipos)
 	{
 		$res = [];
@@ -28,6 +37,7 @@ class Articulos extends CI_Model
 			$aux = $this->obtenerXTipo($o);
 			$res = array_merge(($aux['status']?$aux['data']:[]), $res);
 		}
+		log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | obtenerXTipos() >> resp'.json_encode($res));
 		return $res;
 	}
 
@@ -101,6 +111,35 @@ class Articulos extends CI_Model
 			return 0;
 		}
 	}
+
+	
+	//Articulo con stock 0
+	function verificarStock($id) // Ok
+	{
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  id: >> " . json_encode($id));
+
+		$empresa = empresa();
+
+	$this->db->select('SUM(alm.alm_lotes.cantidad) as cantidad');
+
+	$this->db->from('alm.alm_lotes');
+
+	$this->db->where('alm.alm_lotes.empr_id', $empresa);
+	
+	$this->db->where('alm.alm_lotes.arti_id', $id);
+
+
+$query = $this->db->get();
+    
+	if ($query->num_rows() && $query->num_rows() != 0) {
+		return $query->result_array();
+
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  Cantidad: >> " . json_encode($query->result_array()));
+	} else {
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  Cantidad: >> " . json_encode('0'));
+		return false;
+	}
+}
 
 	function eliminar($id)
 	{
@@ -380,5 +419,22 @@ class Articulos extends CI_Model
 	{
 		$recurso = REST_ALM.'/articulos/'.($id?$id:empresa());
 		return wso2($recurso);
+	}
+
+	/**
+	* Consulta al service si el codigo insertado, ya esta creado para la empresa
+	* @param string código Artículo; empr_id
+	* @return array respuesta del servicio
+	*/
+	public function validarArticulo($barcode){
+        
+		$url = REST_ALM."/articulo/validar/". urlencode($barcode) . "/empresa/".empresa();
+	
+		$aux = $this->rest->callAPI("GET",$url);
+		$resp = json_decode($aux['data']);
+	
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | validarArticulo() >> resp ".json_encode($resp));
+	
+		return $resp->resultado;
 	}
 }
