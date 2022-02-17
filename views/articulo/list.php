@@ -1,7 +1,6 @@
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Listado de Artículos</h3>
-
     </div><!-- /.box-header -->
     <div class="box-body">
 		<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;" data-toggle="modal"
@@ -18,31 +17,20 @@
             </thead>
             <tbody>
                 <?php
-
-                foreach ($list as $a) {
-
-                    echo "<tr  id='$a->arti_id' data-json='".json_encode($a)."'>";
-
-                    echo "<td class='text-center text-light-blue'>";
-
-                    echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver(this)"></i>';
-
-                    echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>';
-                   
-                   // echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';
-                    
-                    echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Editar" onclick="verificarStock(this)"></i>';
-                    
-                    echo "</td>";
-
-                    echo "<td class='codigo'>$a->barcode</td>";
-                    echo "<td>$a->descripcion</td>";
-                    echo "<td>$a->unidad_medida</td>";
-                    echo "<td class='text-center'>".estado($a->estado)."</td>";
-                    echo "</tr>";
-
-                }
-
+                    foreach ($list as $a) {
+                        echo "<tr  id='$a->arti_id' data-json='".json_encode($a)."'>";
+                        echo "<td class='text-center text-light-blue'>";
+                        echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver(this)"></i>';
+                        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>';                   
+                        // echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';                    
+                        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="verificarStock(this)"></i>';                    
+                        echo "</td>";
+                        echo "<td class='codigo'>$a->barcode</td>";
+                        echo "<td>$a->descripcion</td>";
+                        echo "<td>$a->unidad_medida</td>";
+                        echo "<td class='text-center'>".estado($a->estado)."</td>";
+                        echo "</tr>";
+                    }
                 ?>
             </tbody>
         </table>
