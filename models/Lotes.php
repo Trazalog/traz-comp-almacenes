@@ -212,7 +212,7 @@ class Lotes extends CI_Model
             $aux["lote_id"] = strval($o->id);
             $aux["arti_id"] = strval($o->producto);
             $aux["prov_id"] = strval($o->prov_id);
-            $aux["batch_id_padre"] = strval($o->batch_id_padre);
+            $aux["batch_id_padre"] = $o->batch_id_padre ? strval($o->batch_id_padre) : '0';
             $aux["cantidad"] = strval($o->cantidad);
             $aux["cantidad_padre"] = strval($o->stock);
             $aux["num_orden_prod"] = "";
