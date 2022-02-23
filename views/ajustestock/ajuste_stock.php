@@ -32,17 +32,17 @@ function obtenerArticulos() {
         success: function(rsp) {
 
             if (!rsp.status) {
-                alert('No hay Articulos Disponibles');
+                error('Error','No hay artículos disponibles!');
                 return;
 						}
             rsp.data.forEach(function(e, i) {
                 $('.articulos').append(
-                    `<option value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
+                    `<option data-json='${JSON.stringify(e)}' value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
                 );
             });
         },
         error: function(rsp) {
-            alert('Error: ' + rsp.msj);
+            error('Error!', rsp.msj);
             console.log(rsp.msj);
         }
     });
@@ -74,7 +74,7 @@ $("#articulosal").on('change', function() {
                 var option_lote = '<option value="" disabled selected>-Sin lotes-</option>';
                 console.log("Sin lotes");
             } else {
-                var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
+                var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
                 for (let index = 0; index < result.length; index++) {
                     option_lote += '<option value="' + result[index].lote_id + '">' + result[index]
                         .codigo +
@@ -107,7 +107,7 @@ $("#articuloent").on('change', function() {
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
             } else {
-                var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
+                var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
                 for (let index = 0; index < result.length; index++) {
                     option_lote += '<option value="' + result[index].lote_id + '">' + result[index]
                         .codigo +
