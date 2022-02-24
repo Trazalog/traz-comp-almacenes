@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Articulo:</label>
+                    <label>Artículo:</label>
                     <select class="form-control select2 select2-hidden-accesible articulos" id="articuloent"
                         name="articuloent" required>
                         <option value="" disabled selected>-Seleccione opción-</option>
