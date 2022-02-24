@@ -30,7 +30,6 @@ function obtenerArticulos() {
         dataType: 'JSON',
         url: 'index.php/<?php echo ALM ?>Articulo/obtener',
         success: function(rsp) {
-
             if (!rsp.status) {
                 error('Error','No hay artículos disponibles!');
                 return;
@@ -61,11 +60,9 @@ $("#articulosal").on('change', function() {
 $("#articulosal").on('change', function() {
     var dato = $("#unidadsal").val();
     var $idarticulo = $("#articulosal option:selected").val();
-    var $iddeposito = $("#deposito option:selected").val();
-    
+    var $iddeposito = $("#deposito option:selected").val();    
     if(! _isset($iddeposito)) return;
     wo('Buscando lotes activos...');
-
     $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -91,16 +88,11 @@ $("#articulosal").on('change', function() {
     });
 });
 
-$("#articuloent").on('change', function() {
-
-    
+$("#articuloent").on('change', function() {    
     $idarticulo = $("#articuloent>option:selected").val();
-    $iddeposito = $("#deposito>option:selected").val();
-    
+    $iddeposito = $("#deposito>option:selected").val();    
     if(! _isset($iddeposito)) return;
-
     wo('Buscando lotes activos...');
-
     $.ajax({
         type: 'GET',
         dataType: 'json',
@@ -117,8 +109,8 @@ $("#articuloent").on('change', function() {
                         '</option>';
                 }
             }
-						$('#loteent').html(option_lote);
-						wc();
+            $('#loteent').html(option_lote);
+            wc();
         },
         error: function() {
 						wc();
@@ -128,29 +120,43 @@ $("#articuloent").on('change', function() {
 });
 
 function guardar(){
-		wo();
-		var formdata = new FormData($("#formTotal")[0]);
-		var formobj = formToObject(formdata);
-		formobj.tipo_ent_sal  = $("#tipoajuste>option:selected").attr("data");
-
-		$.ajax({
-				type: 'POST',
-				dataType: 'json',
-        data: {
-            data: formobj
-        },
-        url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
-        success: function(rsp) {
-						wc();
-						debugger;
-						alertify.success(rsp.data);
-        },
-        error: function(rsp) {
-						wc();
-           	alertify.error(rsp.data);
-        },
-        complete: function() {}
+    var formdata = new FormData($("#formTotal")[0]);
+    if (!validarForm()) return;
+    var formobj = formToObject(formdata);
+    formobj.tipo_ent_sal  = $("#tipoajuste>option:selected").attr("data");
+    wo();
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+    data: {
+        data: formobj
+    },
+    url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
+    success: function(rsp) {
+        wc();
+        // debugger;
+        alertify.success(rsp.data);
+    },
+    error: function(rsp) {
+        wc();
+        alertify.error(rsp.data);
+    },
+    complete: function() {}
     });
+}
+
+function validarForm() {
+    console.log('Validando');
+    var ban = ($('#establecimiento').val() != null && $('#establecimiento').val() != '' 
+    && $('#deposito').val() != null && $('#deposito').val() != ''
+    && $('#tipoajuste').val() != null && $('#tipoajuste').val() != '');
+    if (!ban) 
+    	Swal.fire(
+            'Error...',
+            'Debes completar los campos Obligatorios (*)',
+            'error'
+        );
+    return ban;
 }
 
 </script>

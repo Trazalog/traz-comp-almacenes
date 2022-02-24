@@ -6,7 +6,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Establecimiento:</label>
+                    <label>Establecimiento<strong class="text-danger">*</strong>:</label>
                     <select class="form-control" id="establecimiento"
                         name="establecimiento" onchange="seleccionesta(this)" required>
                         <option value="" disabled selected>-Seleccione opción-</option>
@@ -20,7 +20,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Depósito:</label>
+                    <label>Depósito<strong class="text-danger">*</strong>:</label>
                     <select class="form-control" id="deposito" name="deposito"
                         required>
                         <option value="" disabled selected>-Seleccione opción-</option>
@@ -30,7 +30,7 @@
             </div>
             <div class="col-md-4">
                 <div class="form-group">
-                    <label>Tipo de ajuste:</label>
+                    <label>Tipo de ajuste<strong class="text-danger">*</strong>:</label>
                     <select class="form-control" id="tipoajuste" name="tipoajuste"
                         required>
                         <!-- si no me equivoco le falta asignar el atributo data-->
@@ -48,7 +48,6 @@ $.ajax({
     dataType: 'json',
     url: 'index.php/<?php echo ALM?>general/Tipoajuste/obtenerAjuste',
     success: function(result) {
-
         if (!result.status) {
             error("Error","Se produjo un error al obtener los tipos de ajustes");
             return;
@@ -68,44 +67,38 @@ $.ajax({
 
 // Al seleccionar establecimiento, busca depositos
 function seleccionesta(opcion){
-
     WaitingOpen('Buscando Depositos...');
     var id_esta = $("#establecimiento").val();
     json = JSON.parse($("#establecimiento>option:selected").attr("data-json"));
     id_esta = json.esta_id;
-
     $.ajax({
         type: 'POST',
         data: {id_esta},
         url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerDepositos',
         success: function(data) {
-
-                var resp = JSON.parse(data);
-                WaitingClose();
-                $('#deposito').empty();
-                $("#deposito").removeAttr('readonly');
-                if (resp == null) {
-                        $('#deposito').append('<option value="" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
-                } else {
-                    $('#deposito').append('<option value="" disabled selected>-Seleccione Depósito-</option>');
-                        for(var i=0; i<resp.length; i++)
-                        {
-                                $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
-                        }
+            var resp = JSON.parse(data);
+            WaitingClose();
+            $('#deposito').empty();
+            $("#deposito").removeAttr('readonly');
+            if (resp == null) {
+                    $('#deposito').append('<option value="" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
+            } else {
+                $('#deposito').append('<option value="" disabled selected>-Seleccione Depósito-</option>');
+                for(var i=0; i<resp.length; i++)
+                {
+                    $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
                 }
+            }
         },
         error: function(data) {
-                alert('Error');
-                WaitingClose();
+            alert('Error');
+            WaitingClose();
         }
     });
 }
 
-
-
 $("#boxEntrada :input").prop("disabled", true);
 $("#boxSalida :input").prop("disabled", true);
-
 $("#tipoajuste").on('change', function() {
     //console.log($("#tipoajuste>option:selected").val());
     if($("#tipoajuste>option:selected").attr("data") == "ENTRADA"){
