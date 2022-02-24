@@ -32,17 +32,17 @@ function obtenerArticulos() {
         success: function(rsp) {
 
             if (!rsp.status) {
-                alert('No hay Articulos Disponibles');
+                error('Error','No hay artículos disponibles!');
                 return;
 						}
             rsp.data.forEach(function(e, i) {
                 $('.articulos').append(
-                    `<option value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
+                    `<option data-json='${JSON.stringify(e)}' value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
                 );
             });
         },
         error: function(rsp) {
-            alert('Error: ' + rsp.msj);
+            error('Error!', rsp.msj);
             console.log(rsp.msj);
         }
     });
@@ -59,12 +59,14 @@ $("#articulosal").on('change', function() {
 
 // Trae lotes por articulo de Salida
 $("#articulosal").on('change', function() {
-		wo('Buscando lotes activos...');
-		var dato = $("#unidadsal").val();
+    var dato = $("#unidadsal").val();
     var $idarticulo = $("#articulosal option:selected").val();
     var $iddeposito = $("#deposito option:selected").val();
+    
+    if(! _isset($iddeposito)) return;
+    wo('Buscando lotes activos...');
 
-		$.ajax({
+    $.ajax({
         type: 'GET',
         dataType: 'json',
         url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' +
@@ -74,15 +76,13 @@ $("#articulosal").on('change', function() {
                 var option_lote = '<option value="" disabled selected>-Sin lotes-</option>';
                 console.log("Sin lotes");
             } else {
-                var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
-                for (let index = 0; index < result.length; index++) {
-                    option_lote += '<option value="' + result[index].lote_id + '">' + result[index]
-                        .codigo +
-                        '</option>';
-                }
+                var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
+                $.each(result, function (i, val) { 
+                    option_lote += '<option data-json='+ JSON.stringify(val) +' value="' + val.lote_id + '">' + val.codigo +'</option>';
+                });
             }
-						$('#lotesal').html(option_lote);
-						wc();
+            $('#lotesal').html(option_lote);
+            wc();
         },
         error: function() {
 						wc();
@@ -93,10 +93,13 @@ $("#articulosal").on('change', function() {
 
 $("#articuloent").on('change', function() {
 
-		wo('Buscando lotes activos...');
-
+    
     $idarticulo = $("#articuloent>option:selected").val();
     $iddeposito = $("#deposito>option:selected").val();
+    
+    if(! _isset($iddeposito)) return;
+
+    wo('Buscando lotes activos...');
 
     $.ajax({
         type: 'GET',
@@ -107,7 +110,7 @@ $("#articuloent").on('change', function() {
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
             } else {
-                var option_lote = '<option value="" disabled selected>-Seleccione opcion-</option>';
+                var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
                 for (let index = 0; index < result.length; index++) {
                     option_lote += '<option value="' + result[index].lote_id + '">' + result[index]
                         .codigo +
