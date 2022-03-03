@@ -104,7 +104,7 @@ $("#articuloent").on('change', function() {
             } else {
                 var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
                 for (let index = 0; index < result.length; index++) {
-                    option_lote += '<option value="' + result[index].lote_id + '">' + result[index]
+                    option_lote += '<option data-json='+ JSON.stringify(result[index]) +' value="' + result[index].lote_id + '">' + result[index]
                         .codigo +
                         '</option>';
                 }
@@ -158,5 +158,25 @@ function validarForm() {
         );
     return ban;
 }
-
+//Habilito el select de tipo ajuste, luego de seleccionar deposito
+$("#deposito").on('change', function (e) { 
+    e.preventDefault();
+    if(_isset($(e.target).val())){
+        $("#tipoajuste").attr('disabled',false);
+    }
+});
+$('#loteent').on('change', function (e) {
+    jsonLote = getJson($("option:selected", this));
+    if(_isset(jsonLote.batch_id)){
+        error("Error","El lote seleccionado no es materia prima");
+        $('#loteent').val(null).trigger('change');
+    }
+});
+$('#lotesal').on('change', function (e) {
+    jsonLote = getJson($("option:selected", this));
+    if(_isset(jsonLote.batch_id)){
+        error("Error","El lote seleccionado no es materia prima");
+        $('#lotesal').val(null).trigger('change');
+    }
+});
 </script>
