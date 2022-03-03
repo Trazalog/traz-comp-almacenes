@@ -31,8 +31,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label>Tipo de ajuste<strong class="text-danger">*</strong>:</label>
-                    <select class="form-control" id="tipoajuste" name="tipoajuste"
-                        required>
+                    <select class="form-control" id="tipoajuste" name="tipoajuste" disabled>
                         <!-- si no me equivoco le falta asignar el atributo data-->
                         <option value="" disabled selected>-Seleccione opción-</option>
                     </select>
@@ -82,6 +81,9 @@ function seleccionesta(opcion){
             $("#deposito").removeAttr('readonly');
             if (resp == null) {
                     $('#deposito').append('<option value="" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
+                    //reseteo select tipo de ajuste
+                    $("#tipoajuste").val('');
+                    $("#tipoajuste").attr('disabled','disabled');
             } else {
                 $('#deposito').append('<option value="" disabled selected>-Seleccione Depósito-</option>');
                 for(var i=0; i<resp.length; i++)
