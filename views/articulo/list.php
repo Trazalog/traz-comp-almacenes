@@ -1,7 +1,6 @@
 <div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Listado de Artículos</h3>
-
     </div><!-- /.box-header -->
     <div class="box-body">
 		<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;" data-toggle="modal"
@@ -18,29 +17,20 @@
             </thead>
             <tbody>
                 <?php
-
-                foreach ($list as $a) {
-
-                    echo "<tr  id='$a->arti_id' data-json='".json_encode($a)."'>";
-
-                    echo "<td class='text-center text-light-blue'>";
-
-                    echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver(this)"></i>';
-
-                    echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>';
-                   
-                    echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';
-                    
-                    echo "</td>";
-
-                    echo "<td class='codigo'>$a->barcode</td>";
-                    echo "<td>$a->descripcion</td>";
-                    echo "<td>$a->unidad_medida</td>";
-                    echo "<td class='text-center'>".estado($a->estado)."</td>";
-                    echo "</tr>";
-
-                }
-
+                    foreach ($list as $a) {
+                        echo "<tr  id='$a->arti_id' data-json='".json_encode($a)."'>";
+                        echo "<td class='text-center text-light-blue'>";
+                        echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver(this)"></i>';
+                        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>';                   
+                        // echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';                    
+                        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="verificarStock(this)"></i>';                    
+                        echo "</td>";
+                        echo "<td class='codigo'>$a->barcode</td>";
+                        echo "<td>$a->descripcion</td>";
+                        echo "<td>$a->unidad_medida</td>";
+                        echo "<td class='text-center'>".estado($a->estado)."</td>";
+                        echo "</tr>";
+                    }
                 ?>
             </tbody>
         </table>
@@ -67,7 +57,7 @@ function guardarArticulo() {
         success: function(rsp) {
 
             mdlClose('new_articulo');
-
+            hecho();
             linkTo();
         },
         error: function(rsp) {
@@ -106,7 +96,31 @@ function editarArticulo() {
         }
     });
 }
-
+//Valida el codigo del articulo antes de editar o agregar articulos
+function validarArticulo(accion){
+    var barcode = $("#artBarCode").val();
+    $.ajax({
+        type: "POST",
+        url: "<?php echo ALM; ?>Articulo/validarArticulo",
+        data: {barcode},
+        dataType: "JSON",
+        success: function (rsp) {
+            if(rsp != null){
+                if(rsp.existe == 'true'){
+                    error("Error","El código ingresado ya se encuentra utilizado!");
+                }else{
+                    if(accion == 'nuevo'){
+                        guardarArticulo();
+                    }else{
+                        editarArticulo();
+                    }
+                }
+            }else{
+                error("Error","Se produjo un error validando el código ingresado!");
+            }
+        }
+    });
+}
 function ver(e) {
     var json = JSON.parse(JSON.stringify($(e).closest('tr').data('json')));
     Object.keys(json).forEach(function(key, index) {
@@ -125,27 +139,47 @@ function editar(e) {
         $('[name="' + key + '"]').val(json[key]);
     });
     $('#mdl-titulo').html('Editar Artículo');
-    $('#btn-accion').attr('onclick', 'editarArticulo()');
+    $('#btn-accion').attr('onclick', 'validarArticulo("editar")');
     $('#new_articulo').modal('show');
 }
 
-// Eliminar Articulo
-var selected = null;
-function eliminar(e){
-    selected = $(e).closest('tr').attr('id');
-    $('#mdl-eliminar').modal('show');
-}
 
-function eliminar_articulo() {
+
+// verifica stock de un articulo antes de eliminarlo.
+//si retorna False se puede eliminar articulo.
+//sino retorna cantidad de stock del articulo.
+function verificarStock(e) {
+    selected = $(e).closest('tr').attr('id');
     $.ajax({
         type: 'POST',
         data: {
             idelim: selected
         },
-        url: 'index.php/<?php echo ALM ?>Articulo/baja_articulo',
+        url: 'index.php/<?php echo ALM ?>Articulo/verificar_articulo',
         success: function(data) {
-            alert("Articulo Eliminado");
-            linkTo();
+
+        datos = JSON.parse(data);
+        console.log('datos trae: ' + datos);
+       // if (datos == true) {
+           if (datos == null || datos == '0' ){
+
+            console.log("Articulo Sin Stock");
+            console.log(selected);
+          
+            eliminar_articulo(selected);
+
+            } else {
+         
+            Swal.fire(
+                'Error!',
+                'No puedes Eliminar un Articulo con Stock!',
+                'error'
+            )
+                return true;
+           
+
+            }
+         
         },
         error: function(result) {
             console.log(result);
@@ -155,9 +189,57 @@ function eliminar_articulo() {
 }
 
 
+
+function eliminar_articulo() {
+
+    Swal.fire({
+  title: '¿Realmente desea ELIMINAR ARTICULO?',
+  text: "No podras revertir la acción!",
+  type: 'question',
+  showCancelButton: true,
+  confirmButtonColor: '#3085d6',
+  cancelButtonColor: '#d33',
+  confirmButtonText: 'SI, Eliminar Articulo!'
+}).then((result) => {
+    console.log(result);
+	if (result.value) {
+    console.log('sale por verdadero');
+					
+                    //Ajax
+                    $.ajax({
+                            type: 'POST',
+                            data: {
+                                idelim: selected
+                            },
+                            url: 'index.php/<?php echo ALM ?>Articulo/baja_articulo',
+                            success: function(data) {
+                               
+                                Swal.fire('Hecho!', 'Articulo Eliminado!', 'success')
+                                linkTo();
+                            },
+                            error: function(result) {
+                                console.log(result);
+                            }
+
+                        });
+                        //Fin Ajax
+
+  } else if (result.dismiss) {
+                    console.log('sale por falso');
+                    Swal.fire('Cancelado', '', 'error')
+                }
+})
+
+
+
+  
+
+}
+
+
 $("#new_articulo").on("hide.bs.modal", function() {
     $('#mdl-titulo').html('Nuevo Artículo');
-    $('#btn-accion').attr('onclick', 'guardarArticulo()');
+    $('#btn-accion').attr('onclick', 'validarArticulo("nuevo")');
     $('#btn-accion').show();
     $('#frm-articulo')[0].reset();
     $('#read-only').prop('disabled', false);
@@ -186,7 +268,6 @@ function validarForm() {
 //excel, pdf, copiado portapapeles e impresion
 
 $(document).ready(function() {
-    debugger;
     $('#articles').DataTable({
         responsive: true,
         language: {
@@ -338,35 +419,8 @@ $(document).ready(function() {
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
-                    onclick="guardarArticulo()">Guardar</button>
+                    onclick="validarArticulo('nuevo')">Guardar</button>
             </div>
         </div>
     </div>
 </div>
-
-<!-- Modal eliminar-->
-<div class="modal" id="mdl-eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar Artículo</h4>
-            </div> <!-- /.modal-header  -->
-
-            <div class="modal-body" id="modalBodyArticle">
-                <p>¿Realmente desea ELIMINAR ARTICULO? </p>
-            </div> <!-- /.modal-body -->
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal"
-                    onclick="eliminar_articulo()">Eliminar</button>
-            </div> <!-- /.modal footer -->
-
-        </div> <!-- /.modal-content -->
-    </div> <!-- /.modal-dialog modal-lg -->
-</div> <!-- /.modal fade -->
-<!-- / Modal -->

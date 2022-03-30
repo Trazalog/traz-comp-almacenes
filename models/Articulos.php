@@ -112,6 +112,35 @@ class Articulos extends CI_Model
 		}
 	}
 
+	
+	//Articulo con stock 0
+	function verificarStock($id) // Ok
+	{
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  id: >> " . json_encode($id));
+
+		$empresa = empresa();
+
+	$this->db->select('SUM(alm.alm_lotes.cantidad) as cantidad');
+
+	$this->db->from('alm.alm_lotes');
+
+	$this->db->where('alm.alm_lotes.empr_id', $empresa);
+	
+	$this->db->where('alm.alm_lotes.arti_id', $id);
+
+
+$query = $this->db->get();
+    
+	if ($query->num_rows() && $query->num_rows() != 0) {
+		return $query->result_array();
+
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  Cantidad: >> " . json_encode($query->result_array()));
+	} else {
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | verificarStock()  Cantidad: >> " . json_encode('0'));
+		return false;
+	}
+}
+
 	function eliminar($id)
 	{
 		$this->db->where('arti_id', $id);
@@ -390,5 +419,22 @@ class Articulos extends CI_Model
 	{
 		$recurso = REST_ALM.'/articulos/'.($id?$id:empresa());
 		return wso2($recurso);
+	}
+
+	/**
+	* Consulta al service si el codigo insertado, ya esta creado para la empresa
+	* @param string código Artículo; empr_id
+	* @return array respuesta del servicio
+	*/
+	public function validarArticulo($barcode){
+        
+		$url = REST_ALM."/articulo/validar/". urlencode($barcode) . "/empresa/".empresa();
+	
+		$aux = $this->rest->callAPI("GET",$url);
+		$resp = json_decode($aux['data']);
+	
+		log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Articulos | validarArticulo() >> resp ".json_encode($resp));
+	
+		return $resp->resultado;
 	}
 }

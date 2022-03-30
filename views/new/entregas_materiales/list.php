@@ -8,8 +8,8 @@
             <thead>
                
                     <th width="10%">Acciones</th>
-                    <th width="10%">Pedido</th>
-                    <th width="10%">Entrega</th>
+                    <th width="10%">N° de Pedido</th>
+                    <th width="10%">N° de Entrega</th>
                     <th width="10%" class="<?php echo (!viewOT ? "hidden" : null) ?>">Ord.Trabajo</th>
                     <th class="text-center" width="10%">Fecha</th>
                     <th>N° Comprobante</th>
