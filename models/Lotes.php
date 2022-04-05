@@ -14,51 +14,28 @@ class Lotes extends CI_Model
     { 
         $empresa = empresa();
         $query_getList = " Select
-        alm.alm_articulos.descripcion as artdescription,
-                 alm.alm_articulos.barcode as artbarcode,
-                 alm.alm_articulos.tipo as arttype,
-                 alm.alm_lotes.fec_alta as fecha_nueva,
-                 alm.alm_articulos.unidad_medida as un_medida,
-                 alm.alm_lotes.*,
-                 alm.alm_depositos.depo_id,
-                 alm.alm_depositos.descripcion as depositodescrip,
-                 prd.recipientes.reci_id,
-                 prd.recipientes.nombre as nom_reci
+                al.descripcion as artdescription,
+                al.barcode as artbarcode,
+                T.descripcion as arttype,
+                alm.alm_lotes.fec_alta as fecha_nueva,
+                T1.descripcion as un_medida,
+                alm.alm_lotes.*,
+                alm.alm_depositos.depo_id,
+                alm.alm_depositos.descripcion as depositodescrip,
+                prd.recipientes.reci_id,
+                prd.recipientes.nombre as nom_reci
     
-       from alm.alm_articulos
+       from alm.alm_articulos al
     
-       JOIN alm.alm_lotes ON alm_lotes.arti_id = alm_articulos.arti_id AND alm_lotes.cantidad != 0
+       JOIN alm.alm_lotes ON alm_lotes.arti_id = al.arti_id AND alm_lotes.cantidad != 0
        JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
+       LEFT JOIN core.tablas T ON T.tabl_id = al.tiar_id 
+       LEFT JOIN core.tablas T1 ON T1.tabl_id = al.unme_id 
        LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
        LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
     
-       WHERE alm.alm_articulos.empr_id =$empresa
-       ";
+       WHERE al.empr_id =$empresa";
 
-    //     $query_getList_OLD = " Select
-    //     alm.alm_articulos.descripcion as artdescription,
-    //              alm.alm_articulos.barcode as artbarcode,
-    //              alm.alm_articulos.tipo as arttype,
-    //              alm.alm_lotes.fec_alta as fecha_nueva,
-    //              alm.alm_articulos.unidad_medida as un_medida,
-    //              alm.alm_lotes.*,
-    //              alm.alm_depositos.depo_id,
-    //              alm.alm_depositos.descripcion as depositodescrip,
-    //              prd.recipientes.reci_id,
-    //              prd.recipientes.nombre as nom_reci
-    
-    //    from alm.alm_articulos
-    
-    //    LEFT JOIN alm.alm_lotes ON alm_lotes.arti_id = alm_articulos.arti_id
-
-    //    LEFT JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
-    //    LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
-    //    LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
-    
-    //    WHERE alm.alm_articulos.empr_id =$empresa
-    //    ";
-     
-    //   $this->db->where('alm.alm_lotes.empr_id', empresa());
         $query = $this->db->query($query_getList);
 
         return $query->result_array();

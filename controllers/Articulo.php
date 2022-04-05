@@ -18,7 +18,7 @@ class Articulo extends CI_Controller {
 	{
 		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | index()");
 		$data['list'] = $this->Articulos->getList();
-		$data['unidades_medida'] = $this->Tablas->obtener('unidades_medida');
+		$data['unidades_medida'] = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
 		$data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
 		$this->load->view(ALM.'articulo/list', $data);
 	}
