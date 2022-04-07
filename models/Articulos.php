@@ -43,13 +43,14 @@ class Articulos extends CI_Model
 
 	function getList()
 	{
-		$this->db->select('A.*, coalesce(sum(cantidad),0) as stock, T.valor');
+		$this->db->select('A.*, coalesce(sum(cantidad),0) as stock, T.valor, T1.descripcion as unidad_medida');
 		$this->db->from('alm.alm_articulos A');
 		$this->db->join('alm.alm_lotes C', 'C.arti_id = A.arti_id', 'left');
-		$this->db->join('core.tablas T', 'A.tipo = T.tabl_id', 'left');
+		$this->db->join('core.tablas T', 'A.tiar_id = T.tabl_id', 'left');
+		$this->db->join('core.tablas T1', 'A.unme_id = T1.tabl_id', 'left');
 		$this->db->where('A.empr_id', empresa());
 		$this->db->where('A.eliminado', false);
-		$this->db->group_by('A.arti_id, T.valor');
+		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
 
 
 		$query = $this->db->get();
