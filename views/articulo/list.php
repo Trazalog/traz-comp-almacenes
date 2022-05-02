@@ -354,7 +354,7 @@ $(document).ready(function() {
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Tipo <strong class="text-danger">*</strong>: </label>
-                                    <select name="tipo" id="tipo" class="form-control">
+                                    <select name="tiar_id" id="tipo" class="form-control">
                                         <option value="" selected disabled> - Seleccionar - </option>
                                         <?php 
                                             foreach ($tipoArticulos as $key => $o) {
@@ -375,11 +375,11 @@ $(document).ready(function() {
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label>Unidad de medida <strong class="text-danger">*</strong>:</label>
-                                    <select class="form-control" id="unidmed" name="unidad_medida">
+                                    <select class="form-control" id="unidmed" name="unme_id">
                                         <option value="false"> - Seleccionar -</option>
                                         <?php
                                     foreach ($unidades_medida as $o) {
-                                        echo  "<option value='$o->valor'>$o->descripcion</option>";
+                                        echo  "<option value='$o->tabl_id'>$o->descripcion</option>";
                                     }
                                 ?>
                                     </select>

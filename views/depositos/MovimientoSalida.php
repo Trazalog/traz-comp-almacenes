@@ -110,7 +110,7 @@
 											<label id="info" class="text-blue"></label>
 										</div>
 										<div class="col-md-4">
-												<label>Lote Origen:</label>
+												<label>Producto Origen:</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
 													<option value="" disabled selected>-Seleccione opción-</option>
 												</select>

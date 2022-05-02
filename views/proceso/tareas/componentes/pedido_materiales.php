@@ -214,41 +214,25 @@ function get_detalle() {
 //('#tabladetalle2').dataTable({});
 
 function validarCampos() {
-debugger;
-articulo = $('#inputarti').val();
+    articulo = selectItem.barcode;
+    cantidad = $('#add_cantidad').val();
 
-cantidad = $('#add_cantidad').val();
-
-if (articulo == ''|| cantidad == '' || cantidad == 0) { 
-
-    Swal.fire(
-						'Error...',
-						'Debes completar los campos Obligatorios (*)',
-						'error'
-					);
-             return true;       
-} else{
-    return false;
-}
+    if (articulo == ''|| cantidad == '' || cantidad <= 0) { 
+        error('Error...','Debes completar los campos Obligatorios (*)');
+        return true;       
+    } else{
+        return false;
+    }
 
 }
-
 
 function guardar_pedido() {
-debugger;
-     if (validarCampos() == true) {
-  
-         return;
-     }
-
-    else if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
-
+    if (validarCampos() == true) {
+        return;
+    }else if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
         set_pedido();
-
     } else {
-
         edit_pedido();
-
     }
 }
 
@@ -293,6 +277,7 @@ function set_pedido() {
             $('#pema_id').val(result.pema_id);
             wc();
             get_detalle();
+            hecho('','Cargado con éxito!');
             clear();
         },
         error: function() {
