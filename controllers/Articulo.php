@@ -43,6 +43,7 @@ class Articulo extends CI_Controller {
 	public function editar()
 	{
 		$data = $this->input->post();
+		$data['punto_pedido'] = empty($data['punto_pedido']) ? 0 : $data['punto_pedido']; 
 		$rsp = $this->Articulos->editar($data);
 		echo json_encode($rsp);
 	}
