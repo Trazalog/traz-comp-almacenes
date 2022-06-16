@@ -16,9 +16,10 @@ class Articulo extends CI_Controller {
 	// Muestra listado de articulos
 	public function index()
 	{
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | index()");
 		$data['list'] = $this->Articulos->getList();
-		$data['unidades_medida'] = $this->Tablas->obtener('unidades_medida');
-		$data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+		$data['unidades_medida'] = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
+		$data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
 		$this->load->view(ALM.'articulo/list', $data);
 	}
 
@@ -42,6 +43,7 @@ class Articulo extends CI_Controller {
 	public function editar()
 	{
 		$data = $this->input->post();
+		$data['punto_pedido'] = empty($data['punto_pedido']) ? 0 : $data['punto_pedido']; 
 		$rsp = $this->Articulos->editar($data);
 		echo json_encode($rsp);
 	}
@@ -104,6 +106,24 @@ class Articulo extends CI_Controller {
 		}
 	}
 
+//devuelve valor false si no tiene stock.
+//sino devuelve cantidad en stock.
+//esta funcion es para verificar si un articulo esta con stock.
+	public function verificar_articulo()
+	{
+		$idarticulo = $_POST['idelim'];
+		$result     = $this->Articulos->verificarStock($idarticulo)[0]['cantidad'];
+	//	print_r($result);
+
+			if($result  == NULL)
+			{
+				echo json_encode($result);
+			}
+			else
+			{
+				echo json_encode($result);	
+			}
+	}
 
 	public function baja_articulo()
 	{
@@ -153,6 +173,20 @@ class Articulo extends CI_Controller {
 		$data['list'] = $this->Articulos->getLotes($id);
 			
 		$this->load->view(ALM.'proceso/tareas/componentes/tabla_lote_deposito', $data);
+	}
+
+	/**
+	* Recibe codigo de Artículo, para validar si ya existe para una empresa
+	* @param string código Artículo
+	* @return array respuesta del servicio
+	*/
+	public function validarArticulo(){
+		log_message('INFO','#TRAZA | #TRAZ-COMP-ALMACENES | Articulo | validarArticulo()');
+	
+		$barcode = $this->input->post('barcode');
+		$resp = $this->Articulos->validarArticulo($barcode);
+			
+		echo json_encode($resp);
 	}
 
 }

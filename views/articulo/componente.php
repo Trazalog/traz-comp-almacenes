@@ -77,9 +77,14 @@ $(document).off('click', '.tabla_articulos_nuevo').on('click', '.tabla_articulos
 
 
 function getItem(item) {
-    if (item == null) return;
     var option = $('#articulos').find("[value='" + item.value + "']");
     var json = JSON.stringify($(option).data('json'));
+    if (!_isset(json)){
+        error('Error!','No selecciono un artículo!');
+        $('#inputarti').val('');
+        return;
+    }
+
     selectItem = JSON.parse(json);
     $('label#info').html($(option).html());
     if(existFunction('eventSelect'))eventSelect();

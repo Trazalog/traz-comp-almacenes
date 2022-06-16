@@ -33,7 +33,7 @@ input[type=checkbox] {
             </div><!-- /.box-header -->
             <!--_________________FILTRO_________________-->
             <form id="frm-filtros">
-                <div class="row">
+                <div class="row" style="width: 100%">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Establecimiento</label>
@@ -215,8 +215,8 @@ $( document ).ready(function() {
 
         //operación necesaria para centrar el div que muestra el mensaje
         var heightdivsito = alto / 2 - parseInt(height) / 2; //Se utiliza en el margen superior, para centrar
-       var url_imagen = '<?php echo base_url() ?>imagenes/yudica/loader.gif';
-        console.log(url_imagen);
+        var url_imagen = '<?php echo base_url() ?>imagenes/yudica/loader.gif';
+        
         //imagen que aparece mientras nuestro div es mostrado y da apariencia de cargando
         imgCentro = "<div style='text-align:center;height:" + alto + "px;'><div  style='color:#000;margin-top:" + heightdivsito + "px; font-size:20px;font-weight:bold'>" + mensaje + "</div><img  src="+url_imagen+"></div>";
 
@@ -256,66 +256,45 @@ $( document ).ready(function() {
 
 $(document).ready(function()
 {
-         $('#stock0').click(function () {    
+    $('#stock0').click(function () {    
            
- if ($('#stock0').prop('checked') ) {
- 
-    $("#establecimiento").prop('disabled',true);
-    $("#depositodescrip").prop('disabled',true);
-    $("#fec_alta").prop('disabled',true);
-      $("#artType").prop('disabled',true);
-      $("#inputarti").prop('disabled',true);
-      
+        if ($('#stock0').prop('checked') ) {
+        
+            $("#establecimiento").prop('disabled',true);
+            $("#depositodescrip").prop('disabled',true);
+            $("#fec_alta").prop('disabled',true);
+            $("#artType").prop('disabled',true);
+            $("#inputarti").prop('disabled',true);
+            
 
-} else{
+        } else{
 
-    $("#establecimiento").prop('disabled',false);
-    $("#artType").prop('disabled',false);
-    $("#fec_alta").prop('disabled',false);
-    $("#inputarti").prop('disabled',false);
+            $("#establecimiento").prop('disabled',false);
+            $("#artType").prop('disabled',false);
+            $("#fec_alta").prop('disabled',false);
+            $("#inputarti").prop('disabled',false);
 
-}
-         });
+        }
+    });
 });
 
-if ($('#stock0').prop('checked') ) {
-    $("#establecimiento").prop('disabled',true);
-    
-    $("#depositodescrip").prop('disabled', );
-}else{
-    var stock0 = '';  
-}
-
 function filtrar() {
-   //  var data = new FormData($('#frm-filtros')[0]);
-    // data = formToObject(data);
 
- debugger;
+    var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
+    var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
+    var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';
+    var fec_alta =  _isset($("#fec_alta").val()) ? $("#fec_alta").val() : '';
+    var artType = _isset($("#artType").val()) ? $("#artType").val() : '';
+    var artBarCode =   _isset($("#inputarti").val()) ? $("#inputarti").val() : '';
+    var establecimiento = _isset($("#establecimiento").val()) ? $("#establecimiento").val() : '';
+    var tipo_deposito = _isset($('#tipo_deposito').val()) ? $('#tipo_deposito').val() : '';
 
-  var nom_reci =  $("#nom_reci").val();
- var depositodescrip =   $("#depositodescrip").val();
-   var artDescription =  $("#artDescription").val();
-  var artBarCode =  $("#artBarCode").val();
-  var fec_alta =  $("#fec_alta").val();
-
-var artType = $("#artType").val();
-
- var inputarti =   $("#inputarti").val();
- var establecimiento = $("#establecimiento").val();
- var tipo_deposito = $('#tipo_deposito').val();
-
- if ($('#stock0').prop('checked') ) {
-    console.log("Checkbox stock0 seleccionado");
-    var stock0 = $('#stock0').val();   
-}else{
-    var stock0 = '';  
-}
-
+    var stock0 = $('#stock0').prop('checked');   
 
 $("#WindowLoad").remove();
 $(this).click(jsShowWindowLoad('Se está Generando la Información'));
 
-    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_alta="+fec_alta+"&artType="+artType+"&inputarti="+inputarti+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
+    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_alta="+fec_alta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
     $.ajax({
         type: 'POST',
 

@@ -17,7 +17,7 @@
                                     <th>Cod. Artículo</th>
                                     <th class="text-center">Cant. Pedida</th>
                                     <th class="text-center">Cant. Entrega</th>
-                                    <th class="text-center">Estado</th>
+                                    <!-- <th class="text-center">Estado</th> -->
                                 </tr>
                             </thead>
                             <tbody>
@@ -56,9 +56,9 @@ function EstadoPedido(e)
                     '<td class="text-center"><b>' + e.cantidad + '</b></td>' +
                     '<td class="text-center"><b>' + (e.cantidad - e.resto) +
                     '</b></td>' +
-                    '<td class="text-center"><i class="fa '+
-                    (e.resto == 0?'fa-battery-full':(e.resto < e.cantidad?'fa-battery-2':(e.resto == e.cantidad?'fa-battery-0':'')))+
-                    '"></i></td>'+
+                    // '<td class="text-center"><i class="fa '+
+                    // (e.resto == 0?'fa-battery-full':(e.resto < e.cantidad?'fa-battery-2':(e.resto == e.cantidad?'fa-battery-0':'')))+
+                    // '"></i></td>'+
                     '</tr>'
                 );
             });

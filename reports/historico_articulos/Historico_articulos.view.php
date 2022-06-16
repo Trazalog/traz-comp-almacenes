@@ -367,25 +367,18 @@
 
     inputarti = $("#inputarti").val();
     establecimiento = $("#establecimiento").val();
-
-    if (establecimiento == 'NULL') {
    
-      data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-      artic = selectItem.arti_id;
-
-    }
-   
-
+    data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+    artic = selectItem.arti_id;
 
     if (fec1 == ''|| fec2 == '' || tipoajuste == '' || establecimiento == '' || inputarti == '') { 
-
-Swal.fire(
-        'Error...',
-        'Debes completar los campos Obligatorios (*)',
-        'error'
-      );
-         return;       
-}
+      Swal.fire(
+              'Error...',
+              'Debes completar los campos Obligatorios (*)',
+              'error'
+            );
+      return;       
+    }
 
     $.ajax({
       type: 'POST',

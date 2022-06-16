@@ -10,7 +10,7 @@
                     <label>Articulo:</label>
                     <select class="form-control select2 select2-hidden-accesible articulos" id="articulosal"
                         name="articulosal" required>
-                        <option value="" disabled selected>-Seleccione opcion-</option>
+                        <option value="" disabled selected>-Seleccione opción-</option>
                     </select>
                 </div>
             </div>
@@ -21,7 +21,7 @@
                     <label>Lote:</label>
                     <select class="form-control select2 select2-hidden-accesible" id="lotesal"
                         name="lotesal" required>
-                        <option value="" disabled selected>-Seleccione opcion-</option>
+                        <option value="" disabled selected>-Seleccione opción-</option>
                     </select>
                 </div>
             </div>

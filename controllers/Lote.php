@@ -11,6 +11,14 @@ class Lote extends CI_Controller
         $this->load->model('traz-prod-trazasoft/general/Recipientes');
         $this->load->model('traz-comp/Componentes');
         $this->load->model('Tablas');
+
+        // si esta vencida la sesion redirige al login
+		$data = $this->session->userdata();
+		// log_message('DEBUG','#Main/login | '.json_encode($data));
+		if(!$data['email']){
+			log_message('DEBUG','#TRAZA|DASH|CONSTRUCT|ERROR  >> Sesion Expirada!!!');
+			redirect(DNATO.'main/login');
+		}
     }
 
     public function index()
@@ -19,7 +27,8 @@ class Lote extends CI_Controller
         $data['items'] = $this->Componentes->listaArticulos();
       //  $data['list'] = $this->Lotes->getList();
         $data['permission'] = "Add-Edit-Del-View";
-        $data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+        // $data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+        $data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
         $data['establecimientos'] = $this->Establecimientos->listar()->establecimientos->establecimiento;
         $this->load->view(ALM . 'lotes/list_new', $data);
        
@@ -87,59 +96,46 @@ public function buscador()
 
     public function filtrarListado()
     {
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | LOTE | filtrarListado()');
+        
         //Recipiente
-        if(!empty($this->input->post('nom_reci'))){
-            $data['nom_reci'] = $this->input->post('nom_reci');
-        }
-        if($_GET){
-            $data['nom_reci'] = $_GET['nom_reci'];
+        if(!empty($this->input->get('nom_reci'))){
+            $data['nom_reci'] = $this->input->get('nom_reci');
         }
         //Deposito
-        if(!empty($this->input->post('depositodescrip'))){
-            $data['depositodescrip'] = $this->input->post('depositodescrip');
-        }
-        if($_GET){
-            $data['depositodescrip'] = $_GET['depositodescrip'];
+        if(!empty($this->input->get('depositodescrip'))){
+            $data['depositodescrip'] = $this->input->get('depositodescrip');
         }
         //Descripcion Articulo
-        if(!empty($this->input->post('artDescrip'))){
-            $data['artDescrip'] = $this->input->post('artDescrip');
-        }
-        if($_GET){
-            $data['artDescrip'] = $_GET['artDescrip'];
+        if(!empty($this->input->get('artDescription'))){
+            $data['artDescription'] = $this->input->get('artDescription');
         }
         //Codigo Articulo
-        if(!empty($this->input->post('artBarCode'))){
-            $data['artBarCode'] = $this->input->post('artBarCode');
-        }
-        if($_GET){
-            $data['artBarCode'] = $_GET['artBarCode'];
-        }
-        //Tipo Articulo
-        if(!empty($this->input->post('artType'))){
-            $data['artType'] = $this->input->post('artType');
-        }
-        if($_GET){
-            $data['artType'] = $_GET['artType'];       
+        if(!empty($this->input->get('artBarCode'))){
+            $data['artBarCode'] = $this->input->get('artBarCode');
         }
         //Fecha Creacion
-        if(!empty($this->input->post('fec_alta'))){
-            $data['fec_alta'] = $this->input->post('fec_alta');
+        if(!empty($this->input->get('fec_alta'))){
+            $data['fec_alta'] = $this->input->get('fec_alta');
         }
-        if($_GET){
-            $data['fec_alta'] = $_GET['fec_alta'];
+        //Tipo Articulo
+        if(!empty($this->input->get('artType'))){
+            $data['artType'] = $this->input->get('artType');
         }
-     
-         //Arcticulos con stock 0
-         if(!empty($this->input->post('stock0'))){
-            $data['stock0'] = $this->input->post('stock0');
+        //Establecimiento
+        if(!empty($this->input->get('establecimiento'))){
+            $data['establecimiento'] = $this->input->get('establecimiento');
         }
-        if($_GET){
-            $data['stock0'] = $_GET['stock0'];
+        //Tipo deposito
+        if(!empty($this->input->get('tipo_deposito'))){
+            $data['tipo_deposito'] = $this->input->get('tipo_deposito');
+        }
+        //Arcticulos con stock 0
+        if(!empty($this->input->get('stock0'))){
+            $data['stock0'] = $this->input->get('stock0');
         }
         
         $data['list'] = $this->Lotes->filtrarListado($data);
-        log_message('DEBUG','#TRAZA | STOCK | filtrarListado() $response >> '.json_encode($data['list']));
         
       $this->load->view(ALM . 'lotes/table_list', $data);
     }
