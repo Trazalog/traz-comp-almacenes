@@ -95,13 +95,32 @@ function cerrarTarea() {
         processData: false,
         url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
+            debugger;
+            var resp = JSON.parse(data);
+           
+      if(resp.status == true && resp.data == true){
+
             Swal.fire(
                         'Guardado!',
                         'Se Aprobo Pedido N°:'+ pema_id +' Correctamente!',
                         'success'
-                    )
-                    linkTo('<?php echo BPM ?>Proceso/');
-            linkTo('<?php echo BPM ?>Proceso/');
+                    ),
+
+            linkTo('<?php  echo BPM ?>Proceso/');
+             linkTo('<?php  echo BPM ?>Proceso/');
+
+               } else if (resp.status == true && resp.data == false) {
+                Swal.fire(
+                        'Echo!',
+                        'Se Cancelo Pedido N°:'+ pema_id +' Correctamente!',
+                        'info'
+                    ),
+
+             linkTo('<?php  echo BPM ?>Proceso/');
+             linkTo('<?php  echo BPM ?>Proceso/');
+               }
+               
+
         },
         error: function(data) {
             alert("Error");
