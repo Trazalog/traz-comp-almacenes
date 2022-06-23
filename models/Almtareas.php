@@ -192,7 +192,8 @@ class Almtareas extends CI_Model
 
                 $peex = $this->Pedidoextra->getXCaseId($tarea->caseId);
 
-                $this->load->model('traz-comp/Componentes');
+                // $this->load->model('traz-comp/Componentes');
+                $this->load->model(ALM.'traz-comp/Componentes');
 
                 $data = $this->Componentes->listaArticulos();
 
