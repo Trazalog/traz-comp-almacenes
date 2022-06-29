@@ -37,7 +37,7 @@ function cerrarTarea() {
         cache: false,
         contentType: false,
         processData: false,
-        url: '<?php base_url() ?>index.php/<?php echo ALM ?>Proceso/cerrarTarea/' + id,
+        url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
             back();
         },
