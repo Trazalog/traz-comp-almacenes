@@ -226,8 +226,8 @@ class Notapedidos extends CI_Model
         }
     }
     // guarda nota pedido (desde tareas de bpm)
-    public function setCabeceraNota($cabecera)
-    {
+    public function setCabeceraNota($cabecera){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setCabeceraNota($cabecera)');
         $cabecera['ortr_id'] = (int) $cabecera['ortr_id'];
         $this->db->insert('alm.alm_pedidos_materiales', $cabecera);
         $idInsert = $this->db->insert_id();
