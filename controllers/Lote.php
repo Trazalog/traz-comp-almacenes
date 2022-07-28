@@ -27,7 +27,8 @@ class Lote extends CI_Controller
         $data['items'] = $this->Componentes->listaArticulos();
       //  $data['list'] = $this->Lotes->getList();
         $data['permission'] = "Add-Edit-Del-View";
-        $data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+        // $data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+        $data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
         $data['establecimientos'] = $this->Establecimientos->listar()->establecimientos->establecimiento;
         $this->load->view(ALM . 'lotes/list_new', $data);
        

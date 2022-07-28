@@ -314,9 +314,9 @@ class Lotes extends CI_Model
         $query_getList = " Select
         alm.alm_articulos.descripcion as artdescription,
                 alm.alm_articulos.barcode as artbarcode,
-                alm.alm_articulos.tipo as arttype,
+                T.descripcion as arttype,
                 alm.alm_articulos.fec_alta as fecha_nueva,
-                alm.alm_articulos.unidad_medida as un_medida,
+                T1.descripcion as un_medida,
                 alm.alm_lotes.*,
                 alm.alm_depositos.depo_id,
                 alm.alm_depositos.descripcion as depositodescrip,
@@ -329,6 +329,8 @@ class Lotes extends CI_Model
         JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
         LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
         LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
+        LEFT JOIN core.tablas T ON T.tabl_id = alm.alm_articulos.tiar_id 
+        LEFT JOIN core.tablas T1 ON T1.tabl_id = alm.alm_articulos.unme_id 
         WHERE  alm.alm_articulos.empr_id =$empresa 
         AND cantidad ='0' OR cantidad IS NULL
         AND alm.alm_articulos.empr_id =$empresa";
@@ -342,10 +344,10 @@ class Lotes extends CI_Model
             
             $this->db->select('
             
-                alm.alm_articulos.tipo as arttype,
+                T.descripcion as arttype,
                 alm.alm_articulos.descripcion as artdescription,
                 alm.alm_articulos.barcode as artbarcode,
-                alm.alm_articulos.unidad_medida as un_medida,
+                T1.descripcion as un_medida,
                 alm.alm_articulos.fec_alta as fecha_nueva,        
                 alm.alm_lotes.*,
                 COALESCE(alm.alm_lotes.cantidad, 0) as cantidad,
@@ -361,6 +363,8 @@ class Lotes extends CI_Model
             $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
             $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
             $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
+            $this->db->join('core.tablas T', ' T.tabl_id = alm.alm_articulos.tiar_id', 'left');
+            $this->db->join('core.tablas T1', ' T1 ON T1.tabl_id = alm.alm_articulos.unme_id', 'left');
             $this->db->where('alm.alm_lotes.empr_id', $empresa);
             $this->db->where('alm.alm_lotes.cantidad <>', '0');
 
@@ -376,7 +380,7 @@ class Lotes extends CI_Model
             }
             //Tipo Articulo
             if($data['artType'] !='' && $data['artType'] != NULL && $data['artType'] != "null" ){
-                $this->db->where('alm.alm_articulos.tipo',$data['artType']);
+                $this->db->where('alm.alm_articulos.tiar_id',$data['artType']);
             }
             //Fecha Creación
             if($data['fec_alta'] !='' && $data['fec_alta'] != NULL ){
