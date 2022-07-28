@@ -127,8 +127,9 @@ class Notapedido extends CI_Controller
         echo json_encode($response);
     }
 
-    public function setNotaPedido()
-    {
+    public function setNotaPedido(){
+        log_message('ERROR','#TRAZA | TRAZ-COMP-ALMACEN | Notapedido | setNotaPedido()');
+        
         $ids = $this->input->post('idinsumos');
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');
