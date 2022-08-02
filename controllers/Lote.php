@@ -46,9 +46,13 @@ public function buscador()
 	
 	echo "ok";
 }
-
-    public function puntoPedList()
-    {
+	/**
+	* Levanta pantalla de punto de pedido en almacenes
+	* @param 
+	* @return view
+	*/
+    public function puntoPedList(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lote | puntoPedList()');
         $data['list'] = $this->Lotes->getPuntoPedido();
         $data['permission'] = "Add-Edit-Del-View";
         $this->load->view(ALM . 'lotes/list_punto_ped', $data);

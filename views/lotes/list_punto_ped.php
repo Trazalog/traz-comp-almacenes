@@ -1,3 +1,8 @@
+<style>
+.cant_negativa {
+    background-color: #f5d3d3 !important;
+}
+</style>
 <input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section>
 
@@ -22,7 +27,7 @@
 
                 	foreach($list as $f)
       		        {
-  	                echo '<tr>';
+                    echo '<tr '.($f['cantidad_disponible']<0?"class=\"cant_negativa\"":"").'>';
                     echo '<td>'.$f['descripcion'].'</td>';
                     echo '<td>'.$f['barcode'].'</td>';
                     echo '<td class="text-center">'.$f['punto_pedido'].'</td>';
