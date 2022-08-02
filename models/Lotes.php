@@ -42,9 +42,13 @@ class Lotes extends CI_Model
 
 
     }
-
-    public function getPuntoPedido()
-    {
+    /**
+	* Realiza la query para obtener los punto de pedidos
+	* @param 
+	* @return view
+	*/
+    public function getPuntoPedido(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | getPuntoPedido()');
         // OBTENER CANTIDADES RESERVADAS
         $this->db->select('arti_id, COALESCE(sum(resto),0) as cant_reservada');
         $this->db->from('alm.alm_deta_pedidos_materiales');
