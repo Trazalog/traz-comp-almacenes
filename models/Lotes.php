@@ -323,14 +323,14 @@ class Lotes extends CI_Model
                 prd.recipientes.reci_id,
                 prd.recipientes.nombre as nom_reci
 
-        from alm.alm_articulos al
+        from alm.alm_articulos
 
         JOIN alm.alm_lotes ON alm_lotes.arti_id = alm_articulos.arti_id
         JOIN alm.alm_depositos ON alm_lotes.depo_id = alm_depositos.depo_id
         LEFT JOIN prd.lotes ON alm.alm_lotes.batch_id = prd.lotes.batch_id
         LEFT JOIN prd.recipientes ON prd.lotes.reci_id = prd.recipientes.reci_id
-        LEFT JOIN core.tablas T ON T.tabl_id = al.tiar_id 
-        LEFT JOIN core.tablas T1 ON T1.tabl_id = al.unme_id 
+        LEFT JOIN core.tablas T ON T.tabl_id = alm.alm_articulos.tiar_id 
+        LEFT JOIN core.tablas T1 ON T1.tabl_id = alm.alm_articulos.unme_id 
         WHERE  alm.alm_articulos.empr_id =$empresa 
         AND cantidad ='0' OR cantidad IS NULL
         AND alm.alm_articulos.empr_id =$empresa";
