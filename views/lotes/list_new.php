@@ -35,6 +35,25 @@ input[type=checkbox] {
             <form id="frm-filtros">
                 <div class="row" style="width: 100%">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
+                        <!-- _____ FECHA DESDE _____ -->
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <label>Fecha Desde:</label>
+                            <div class="input-group date">
+                                <a class="input-group-addon" id="daterange-btn" title="Más fechas">
+                                    <i class="fa fa-magic"></i>
+                                    <span></span>
+                                </a>
+                                <input type="date" class="form-control pull-right" id="datepickerDesde" name="datepickerDesde" placeholder="Desde">
+                            </div>
+                        </div>
+                        <!-- _____ FIN FECHA DESDE _____ -->
+                        <!-- _____ FECHA HASTA _____ -->
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <label>Fecha Hasta :</label>
+                            <input type="date" class="form-control pull-right" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
+                        </div>
+                        <!-- _____ FIN FECHA HASTA _____ -->
+                        <!-- ESTABLECIMIENTO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Establecimiento</label>
                             <!--primero seleciono luego tipo de deposito y luego cargo depositos los mantengo bloqueados-->
@@ -52,66 +71,61 @@ input[type=checkbox] {
                             </div>
                         </div>
                         <!-- /.form-group -->
+                        <!-- ESTABLECIMIENTO -->
+                        <!-- TIPO DEPOSITO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo Depósito</label>
-                            <div class="input-group">
-                                <select id="tipo_deposito" name="tipo_deposito" class="form-control" disabled
-                                    onchange="getDepositos(this)">
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                    <option value="productivo">Productivo</option>
-                                    <option value="transporte">Transporte</option>
-                                    <option value="almacen">Almacen</option>
-                                </select>
-                            </div>
+                            <select id="tipo_deposito" name="tipo_deposito" class="form-control" disabled onchange="getDepositos(this)">
+                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="productivo">Productivo</option>
+                                <option value="transporte">Transporte</option>
+                                <option value="almacen">Almacen</option>
+                            </select>
                         </div>
                         <!-- /.form-group -->
+                        <!-- TIPO DEPOSITO -->
+                        <!-- DEPOSITO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Depósito</label>
-                            <div class="input-group">
-                                <select id="depositodescrip" name="depositodescrip" class="form-control" disabled>
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                </select>
-                            </div>
+                            <select id="depositodescrip" name="depositodescrip" class="form-control" disabled>
+                                <option value="" selected disabled> - Seleccionar - </option>
+                            </select>
                         </div>
                         <!-- /.form-group -->
+                        <!-- DEPOSITO -->
+                        <!-- RECIPIENTE -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Recipiente</label><!-- -->
-                            <div class="input-group date">
-                                <select id="nom_reci" name="nom_reci" class="form-control" disabled>
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                </select>
-                            </div>
+                            <select id="nom_reci" name="nom_reci" class="form-control" disabled>
+                                <option value="" selected disabled> - Seleccionar - </option>
+                            </select>
                         </div>
                         <!-- /.form-group -->
+                        <!-- RECIPIENTE -->
+                        <!-- TIPO ARTICULO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo de Artículo</label>
-                            <div class="input-group">
-                                <select id="artType" name="artType" class="form-control">
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                    <?php 
+                            <select id="artType" name="artType" class="form-control">
+                                <option value="" selected disabled> - Seleccionar - </option>
+                                <?php 
                                 foreach ($tipoArticulos as $key => $o) {
-                                    
-                                 $table = $o->tabl_id;
-                               
-                                  $table_str = str_replace(" ", "%20", $table);
-                                
-                                echo "<option value='$table_str'>$o->valor</option>";
+                                    echo "<option value='$o->tabl_id'>$o->valor</option>";
                                 }
-
                                 ?>
-                                </select>
-                            </div>
+                            </select>
                         </div>
                         <!-- /.form-group -->
-                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <!-- TIPO ARTICULO -->
+                        <!-- <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Fecha</label>
                             <div class="input-group">
                                 <input type="date" class="form-control" id="fec_alta" name="fec_alta"
                                     placeholder="Fecha...">
                             </div>
-                        </div>
+                        </div> -->
                         <!-- /.form-group -->
-                        <div class="form-group col-xs-12 col-sm-2 col-md-6 col-lg-6">
+                        <!-- ARTICULO -->
+                        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
                             <label>Artículo</label>
                             <input list="articulos" id="inputarti" name="artBarCode" class="form-control"
                                 placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
@@ -128,18 +142,15 @@ input[type=checkbox] {
                             <label id="info" class="text-blue"></label>
                         </div>
                         <!-- /.form-group -->
+                        <!-- ARTICULO -->
                         <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
-
-
                             <!-- Checked checkbox -->
-                            <div class="form-check col-sm-6">
-
+                            <div style="margin-top: 3%;" class="form-check col-sm-6">
                                 <label for="stock0" class="checkboxtext">Artículo con Stock en 0
                                     <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"
                                         id="stock0" name="stock0" />
                                 </label>
                             </div>
-
                         </div>
                         <!-- /.form-group -->
                     </div>
@@ -168,13 +179,12 @@ input[type=checkbox] {
     </div><!-- /.col -->
 </div><!-- /.row -->
 <script>
-
+fechaMagic();
 
 function jsRemoveWindowLoad() {
-        // eliminamos el div que bloquea pantalla
-        $("#WindowLoad").remove();
-
-    }
+    // eliminamos el div que bloquea pantalla
+    $("#WindowLoad").remove();
+}
 $( document ).ready(function() {
     $("#WindowLoad").remove();
     $(this).click(jsShowWindowLoad('Se esta Generando la Información'));
@@ -184,8 +194,6 @@ $( document ).ready(function() {
 });
  
 </script>
-
-
 <script type="text/javascript">
    
     // $('#btnGenerarBoleta').click(jsShowWindowLoad('Se realiza una operación'));
@@ -283,43 +291,37 @@ function filtrar() {
     var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
     var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
     var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';
-    var fec_alta =  _isset($("#fec_alta").val()) ? $("#fec_alta").val() : '';
+    var fec_desde =  _isset($("#datepickerDesde").val()) ? $("#datepickerDesde").val() : '';
+    var fec_hasta =  _isset($("#datepickerHasta").val()) ? $("#datepickerHasta").val() : '';
     var artType = _isset($("#artType").val()) ? $("#artType").val() : '';
     var artBarCode =   _isset($("#inputarti").val()) ? $("#inputarti").val() : '';
     var establecimiento = _isset($("#establecimiento").val()) ? $("#establecimiento").val() : '';
     var tipo_deposito = _isset($('#tipo_deposito').val()) ? $('#tipo_deposito').val() : '';
-
     var stock0 = $('#stock0').prop('checked');   
 
-$("#WindowLoad").remove();
-$(this).click(jsShowWindowLoad('Se está Generando la Información'));
+    $("#WindowLoad").remove();
+    $(this).click(jsShowWindowLoad('Se está Generando la Información'));
 
-    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_alta="+fec_alta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
-    $.ajax({
-        type: 'POST',
-
-        data: stock0,
-
-        url: '<?php echo base_url(ALM) ?>Lote/buscador',
-        success: function(data) {
-      
-           
-            $("#cargar_tabla").load(url1);
-
-           
-        },
-        error: function() {
-            alert('Ha ocurrido un error');
-        },
-        complete : function(data) {
-                   
-                   setTimeout(() => {
-                       jsRemoveWindowLoad();
-                   }, 5000);
-                   
-               }
-       
+    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_desde="+fec_desde+"&fec_hasta="+fec_hasta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
+    $("#cargar_tabla").load(url1,() => {
+        jsRemoveWindowLoad();
     });
+    // $.ajax({
+    //     type: 'POST',
+    //     data: stock0,
+    //     url: '<?php echo base_url(ALM) ?>Lote/buscador',
+    //     success: function(data) {
+    //         $("#cargar_tabla").load(url1);
+    //     },
+    //     error: function() {
+    //         alert('Ha ocurrido un error');
+    //     },
+    //     complete : function(data) {
+    //         setTimeout(() => {
+    //             jsRemoveWindowLoad();
+    //         }, 5000);
+    //     }
+    // });
 }
 
 function estado($estado) {
@@ -373,12 +375,12 @@ function bolita($texto, $color, $detalle = '') {
 }
 
 function limpiar() {
-if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
-    $("#establecimiento").prop('disabled',false);
-    $("#artType").prop('disabled',false);
-    $("#fec_alta").prop('disabled',false);
-    $("#inputarti").prop('disabled',false);
-}
+    if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
+        $("#establecimiento").prop('disabled',false);
+        $("#artType").prop('disabled',false);
+        $("#fec_alta").prop('disabled',false);
+        $("#inputarti").prop('disabled',false);
+    }
 
     $("#nom_reci").val('');
     $("#depositodescrip").val('');
