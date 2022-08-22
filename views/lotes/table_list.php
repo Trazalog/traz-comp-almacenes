@@ -1,105 +1,53 @@
   <table id="stock" class="table table-bordered table-hover">
-                    <thead>
-                        <th class="text-center">Acciones</th>
-                        <th class="text-center">N° Lote</th>
-                        <th>Código</th>
-                        <th>Producto</th>
-                        <th class="text-center">Stock</th>
-                        <th class="text-center">Unidad de Medida</th>
-                        <th class="text-center">Tipo de Articulo</th>
-                        <th class="text-center">Recipiente</th>
-                        <th class="text-center">Fecha Creacion</th>
-                        <th>Depósito</th>
-                        <th>Estado</th>
-                    </thead>
-                    <tbody>
-                        <?php
-                          foreach($list as $f)
-                          {
-                            if($f['cantidad'] === NULL ){
-                               
-                                  $stock = 0 ;
-                                //  $stock = $f['cantidad'];
-                                
-                            } else{
-                                $stock = $f['cantidad'];
-                         
-                            }
-                            if($f['arttype']){
-
-                                $tipo_articulo =  str_replace('tipo_articulo', '', $f['arttype']);
-                            }
-
-                            if($f['nom_reci'] === NULL){
-                                $nombre_recipiente = "No Aplica";
-                            } 
-                             else{
-                                $nombre_recipiente = $f['nom_reci'];
-                         
-                            }
-
-                           
-                              if ($f['codigo']== 1 ) {
-                                $codigo = 'S/L';
-                              }else if ($f['codigo'] === NULL) {
-                                $codigo = 'S/L';
-                              } else {
-                                $codigo = $f['codigo'];
-                              }
-
-                              if ($f['depositodescrip'] ===NULL) {
-                                $deposito = "No Aplica";    
-                              } else {
-                                $deposito = $f['depositodescrip'];
-                              }
-                              
-                              $fecha_formateada =  date('d/m/Y', strtotime($f['fecha_nueva']));
-
-
-
-                           
-                            echo "<tr data-json='".json_encode($f)."'>";
-                            echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
-                            echo '<td class="text-center">'.$codigo.'</td>';
-                            echo '<td>'.$f['artbarcode'].'</td>';
-                            echo '<td>'.$f['artdescription'].'</td>';
-                            echo '<td class="text-center">'.$stock.'</td>';
-                            echo '<td class="text-center">'.$f['un_medida'].'</td>';
-                            echo '<td class="text-center">'.$tipo_articulo.'</td>';
-                            echo '<td class="text-center">'.$nombre_recipiente.'</td>';
-                            echo "<td class='text-center'>".$fecha_formateada."</td>";
-                            echo '<td>'.$deposito.'</td>';
-			                echo '<td class="text-center">'.estado($f['estado']).'</td>';
-                            echo '</tr>';
-                          }
-                        
-                      ?>
-                    </tbody>
-                </table>
-
+    <thead>
+        <th class="text-center">Acciones</th>
+        <th class="text-center">N° Lote</th>
+        <th>Código</th>
+        <th>Producto</th>
+        <th class="text-center">Stock</th>
+        <th class="text-center">Unidad de Medida</th>
+        <th class="text-center">Tipo de Articulo</th>
+        <th class="text-center">Recipiente</th>
+        <th class="text-center">Fecha Creacion</th>
+        <th>Depósito</th>
+        <th>Estado</th>
+    </thead>
+    <tbody>
+        <?php
+            foreach($list as $f){
+            echo "<tr data-json='".json_encode($f)."'>";
+            echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
+            echo '<td class="text-center">'.((empty($f->codigo) && $f->codigo == 1) ? 'S/L' : $f->codigo).'</td>';
+            echo '<td>'.$f->artbarcode.'</td>';
+            echo '<td>'.$f->artdescription.'</td>';
+            echo '<td class="text-center">'.((empty($f->cantidad)) ? '0' : $f->cantidad).'</td>';
+            echo '<td class="text-center">'.$f->un_medida.'</td>';
+            echo '<td class="text-center">'.((!empty($f->arttype)) ? str_replace('tipo_articulo', '', $f->arttype) : '').'</td>';
+            echo '<td class="text-center">'.((empty($f->nom_reci)) ? "<b>No Aplica</b>" : $f->nom_reci).'</td>';
+            echo "<td class='text-center'>".date('d/m/Y', strtotime($f->fecha_nueva))."</td>";
+            echo '<td>'.((empty($f->depositodescrip)) ? "<b>No Aplica</b>" : $f->depositodescrip).'</td>';
+            echo '<td class="text-center">'.estado($f->estado).'</td>';
+            echo '</tr>';
+            }
+        ?>
+    </tbody>
+</table>
      
-               <!---///////--- MODAL EDICION E INFORMACION ---///////--->
-<div class="modal fade bs-example-modal-lg" id="modalinfo" tabindex="-1" role="dialog"
-    aria-labelledby="myLargeModalLabel">
-
+<!---///////--- MODAL EDICION E INFORMACION ---///////--->
+<div class="modal fade bs-example-modal-lg" id="modalinfo" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-
             <div class="modal-header bg-blue">
                 <button type="button" class="close close_modal_edit" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" style="color:white;">&times;</span>
                 </button>
             </div>
-
             <div class="modal-body ">
                 <form class="formEdicion" id="formEdicion">
                     <div class="form-horizontal">
                         <div class="row">
                             <form class="frm_stock_edit" id="frm_stock_edit">
-
-                                <input type="text" class="form-control habilitar hidden" name="lote_id"
-                                    id="lote_id_edit">
-
+                                <input type="text" class="form-control habilitar hidden" name="lote_id"id="lote_id_edit">
                                 <div class="col-sm-6">
                                     <!--_____________ N° Lote _____________-->
                                     <div class="form-group">
@@ -188,42 +136,23 @@
                                         </div>
                                     </div>
                                     <!--__________________________-->
-
-                                    <!--_____________ Recipiente _____________-->
-                                    <!-- <div class="form-group">
-                        <label for="recipiente_edit" class="col-sm-4 control-label">Recipiente:</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control habilitar" name="recipiente" id="recipiente_edit">
-                        </div>
-                    </div> -->
-                                    <!--__________________________-->
-
                                 </div><!-- /.col-sm-6 -->
-
                             </form>
                         </div>
                     </div>
                 </form>
             </div>
-
             <div class="modal-footer">
-
                 <div class="form-group text-right">
                     <!-- <button type="" class="btn btn-primary habilitar" data-dismiss="modal" id="btnsave_edit" onclick="guardar('editar')">Guardar</button> -->
                     <button type="" class="btn btn-default cerrarModalEdit" id="" data-dismiss="modal">Cerrar</button>
                 </div>
-
             </div>
-
         </div>
     </div>
-
 </div>
 <!---///////--- FIN MODAL EDICION E INFORMACION ---///////--->
 <script>
-
-
-
 // extrae datos de la tabla
 $(".btnInfo").on("click", function(e) {
     $(".modal-header h4").remove();
@@ -234,7 +163,6 @@ $(".btnInfo").on("click", function(e) {
         '<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search"></span> Detalle Stock </h4>'
     );
     data = $(this).parents("tr").attr("data-json");
-    debugger;
     datajson = JSON.parse(data);
     blockEdicion();
     llenarModal(datajson);
@@ -262,21 +190,20 @@ function llenarModal(datajson) {
 function blockEdicion() {
     $(".habilitar").attr("readonly", "readonly");
 }
- 
-
-
-
 //Funcion de datatable para extencion de botones exportar
 //excel, pdf, copiado portapapeles e impresion
-
 $(document).ready(function() {
     $('#stock').DataTable({
         responsive: true,
-        iDisplayLength: 200,
+        iDisplayLength: 10,
+        rowGroup: {
+         enable: false
+        },
         language: {
             url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
         },
         dom: 'lBfrtip',
+        destroy: true,
         buttons: [{
                 //Botón para Excel
                 extend: 'excel',
@@ -324,4 +251,4 @@ $(document).ready(function() {
         ]
     });
 });
-                </script>
+</script>

@@ -20,9 +20,13 @@ class Lote extends CI_Controller
 			redirect(DNATO.'main/login');
 		}
     }
-
-    public function index()
-    {
+    /**
+	* Levanta pantalla de STOCK en almacenes
+	* @param 
+	* @return view
+	*/
+    public function index(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lote | index()');        
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
       //  $data['list'] = $this->Lotes->getList();
@@ -33,19 +37,17 @@ class Lote extends CI_Controller
         $this->load->view(ALM . 'lotes/list_new', $data);
        
     }
+    /**
+	* Carga la tabla en pantalla de STOCK
+	* @param 
+	* @return view
+	*/
+    public function Listar_tabla(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lote | Listar_tabla()');
+	    $data['list'] = $this->Lotes->getList();
+        $this->load->view(ALM . 'lotes/table_list', $data);
+    }
 
-    public function Listar_tabla()
-{
-	  $data['list'] = $this->Lotes->getList();
-    $this->load->view(ALM . 'lotes/table_list', $data);
-}
-
-
-public function buscador()
-{
-	
-	echo "ok";
-}
 	/**
 	* Levanta pantalla de punto de pedido en almacenes
 	* @param 
@@ -98,8 +100,7 @@ public function buscador()
 	* @return array listado con listado filtrado
 	*/
 
-    public function filtrarListado()
-    {
+    public function filtrarListado(){
         log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | LOTE | filtrarListado()');
         
         //Recipiente
@@ -118,9 +119,13 @@ public function buscador()
         if(!empty($this->input->get('artBarCode'))){
             $data['artBarCode'] = $this->input->get('artBarCode');
         }
-        //Fecha Creacion
-        if(!empty($this->input->get('fec_alta'))){
-            $data['fec_alta'] = $this->input->get('fec_alta');
+        //Fecha Creacion DESDE
+        if(!empty($this->input->get('fec_desde'))){
+            $data['fec_desde'] = $this->input->get('fec_desde');
+        }
+        //Fecha Creacion HASTA
+        if(!empty($this->input->get('fec_hasta'))){
+            $data['fec_hasta'] = $this->input->get('fec_hasta');
         }
         //Tipo Articulo
         if(!empty($this->input->get('artType'))){
