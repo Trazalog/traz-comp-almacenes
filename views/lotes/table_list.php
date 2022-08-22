@@ -196,10 +196,14 @@ $(document).ready(function() {
     $('#stock').DataTable({
         responsive: true,
         iDisplayLength: 10,
+        rowGroup: {
+         enable: false
+        },
         language: {
             url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
         },
         dom: 'lBfrtip',
+        destroy: true,
         buttons: [{
                 //Botón para Excel
                 extend: 'excel',
