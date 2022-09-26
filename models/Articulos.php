@@ -68,6 +68,8 @@ class Articulos extends CI_Model
 		$data['es_caja'] = isset($data['cantidad_caja']);
 		$data['es_loteado'] = isset($data['es_loteado']);
 		$data['empr_id'] = empresa();
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | guardar()".json_encode($data) );
+
 		$this->db->insert('alm.alm_articulos', $data);
 		return $this->db->insert_id();
 	}
