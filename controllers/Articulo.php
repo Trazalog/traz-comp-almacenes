@@ -20,6 +20,11 @@ class Articulo extends CI_Controller {
 		$data['list'] = $this->Articulos->getList();
 		$data['unidades_medida'] = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
 		$data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | index()".json_encode($data) );
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | index() data[unidades_medida]".json_encode($data['unidades_medida'] ));
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | index() data[tipoArticulos]".json_encode($data['tipoArticulos'] ));
+
+		
 		$this->load->view(ALM.'articulo/list', $data);
 	}
 
@@ -35,6 +40,20 @@ class Articulo extends CI_Controller {
 	public function guardar()
 	{
 		$data = $this->input->post();
+		$unidadMedidas = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
+
+		foreach($unidadMedidas as $um){
+			log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | guardar() um: ".$um->valor );
+			if($data["unme_id"]  === $um->tabl_id ){
+				$data["unidad_medida"] = $um->valor;
+				break;
+			}			
+		}
+
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | guardar() Undidad_Medida: ".json_encode($unidadMedidas) );		
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | guardar() Data: ".json_encode($data) );
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | guardar() Data: ".$data["unme_id"] );
+		
 		unset($data['arti_id']);
 		$data = $this->Articulos->guardar($data);
 		echo json_encode($data);
@@ -43,7 +62,20 @@ class Articulo extends CI_Controller {
 	public function editar()
 	{
 		$data = $this->input->post();
+		$unidadMedidas = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
+
+		foreach($unidadMedidas as $um){
+			log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | editar() um: ".$um->valor );
+			if($data["unme_id"]  === $um->tabl_id ){
+				$data["unidad_medida"] = $um->valor;
+				break;
+			}			
+		}
+
 		$data['punto_pedido'] = empty($data['punto_pedido']) ? 0 : $data['punto_pedido']; 
+		
+		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | editar() Data: ".json_encode($data) );
+
 		$rsp = $this->Articulos->editar($data);
 		echo json_encode($rsp);
 	}
