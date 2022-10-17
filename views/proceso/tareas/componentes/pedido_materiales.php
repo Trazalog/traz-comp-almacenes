@@ -31,6 +31,7 @@
         <tr>
             <th width="1%">Acciones</th>
             <th>Artículo</th>
+            <th>Descripción</th>
             <th class="text-center">Cantidad</th>
         </tr>
     </thead>
@@ -141,6 +142,7 @@ function get_detalle() {
                     "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
                     "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
+                    "<td class='articuloDescripcion'>" + data[i]['artDescription'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
                 tablaDetalle2.row.add($(tr)).draw();
             }
