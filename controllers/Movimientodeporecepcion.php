@@ -40,8 +40,8 @@ class Movimientodeporecepcion extends CI_Controller {
 	* @param int id establecimiento
 	* @return array listado de depositos
 	*/
-	public function traerDepositos()
-	{
+	public function traerDepositos(){
+		log_message('ERROR','#TRAZA | TRAZ-COMP-ALMACEN | MOVIMIENTODEPORECEPCION | traerDepositos()');
 		$id = $this->input->post('id_esta');
 		$resp = $this->Establecimientos->obtenerDepositos($id);
 		echo json_encode($resp->depositos->deposito);
