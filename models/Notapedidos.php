@@ -91,10 +91,13 @@ class Notapedidos extends CI_Model
             return array();
         }
     }
-
-    // Trae lista de articulos por id de nota de pedido
-    public function getNotaPedidoIds($id)
-    {
+    /**
+	* Trae lista de articulos por id de nota de pedido
+	* @param integer $id_nota es el id del pedido de material
+	* @return array detalles de la nota del pedido de material
+	*/
+    public function getNotaPedidoIds($id){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | getNotaPedidoIds($id)');
         if (!$id) {
             return false;
         }
@@ -110,8 +113,7 @@ class Notapedidos extends CI_Model
                           alm.alm_articulos.barcode,
                           alm.alm_articulos.arti_id,
                           alm.alm_articulos.descripcion as artDescription,
-                          alm.alm_deta_pedidos_materiales.depe_id'
-        );
+                          alm.alm_deta_pedidos_materiales.depe_id');
 
         if (viewOT) {
             $this->db->select('orden_trabajo.descripcion');
