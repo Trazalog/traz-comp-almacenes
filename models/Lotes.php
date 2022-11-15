@@ -37,6 +37,7 @@ class Lotes extends CI_Model
         $this->db->where('estado!=', 'Rechazado');
         $this->db->where('estado!=', 'Cancelado');
         $this->db->where('estado!=', 'Finalizado Ent. Parcial');       
+        $this->db->where('estado!=', 'Finalizado Sin Entrega');       
         $this->db->where('alm.alm_pedidos_materiales.empr_id', empresa());
         $this->db->group_by('arti_id');
         $C = '(' . $this->db->get_compiled_select() . ') as "C"';
