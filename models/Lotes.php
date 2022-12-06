@@ -188,6 +188,8 @@ class Lotes extends CI_Model
             $aux["tipo_recurso"] = "";
             $aux['batch_id'] = "0";
             $aux['planificado'] = "";
+            $aux['fec_iniciado'] = $o->fec_iniciado;
+
 
 
             $batch_req['_post_lote_batch_req']['_post_lote'][] = $aux;
@@ -261,6 +263,8 @@ class Lotes extends CI_Model
         $aux['fec_vencimiento'] = FEC_VEN;
         $aux["tipo_recurso"] = "";
         $aux['planificado'] = "false";
+        $aux['fec_iniciado'] = $data->fec_iniciado;
+
         
         $post['_post_lote'] = $aux;
         
