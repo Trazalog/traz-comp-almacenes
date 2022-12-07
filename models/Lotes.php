@@ -319,6 +319,7 @@ class Lotes extends CI_Model
         $this->db->join('core.tablas T', ' T.tabl_id = alm.alm_articulos.tiar_id', 'left');
         $this->db->join('core.tablas T1', ' T1 ON T1.tabl_id = alm.alm_articulos.unme_id', 'left');
         $this->db->where('alm.alm_lotes.empr_id', $empresa);
+        $this->db->where('alm.alm_articulos.eliminado', false);
         
         //FILTRADO
         //Nombre Articulo
