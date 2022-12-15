@@ -12,9 +12,13 @@ class Notapedido extends CI_Controller
         $this->load->model(ALM . 'Notapedidos');
         $this->load->model(ALM . 'Articulos');
     }
-
-    public function index()
-    {
+    /**
+	* Carga el listado de los pedidos de materiales
+	* @param 
+	* @return view listado pedidos de materiales
+	*/
+    public function index(){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedido | index()');
         $this->load->model('traz-comp/Componentes');
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
@@ -119,16 +123,21 @@ class Notapedido extends CI_Controller
         $response = $this->Notapedidos->getProveedores();
         echo json_encode($response);
     }
-
-    public function getNotaPedidoId()
-    {
+    /**
+	* Recibe el id de la nota(pema_id) del pedido de material para posteriormente buscarla
+	* @param integer $id_nota es el id del pedido de material
+	* @return array detalles de la nota del pedido de material
+	*/
+    public function getNotaPedidoId(){
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedido | getNotaPedidoId()');
         $pema_id = $this->input->get('id_nota');
         $response = $this->Notapedidos->getNotaPedidoIds($pema_id);      
         echo json_encode($response);
     }
 
-    public function setNotaPedido()
-    {
+    public function setNotaPedido(){
+        log_message('ERROR','#TRAZA | TRAZ-COMP-ALMACEN | Notapedido | setNotaPedido()');
+        
         $ids = $this->input->post('idinsumos');
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');

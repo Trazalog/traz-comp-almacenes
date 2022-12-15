@@ -1,15 +1,64 @@
 <style>
-input[type=checkbox] {
-    transform: scale(1.6);
-    font-size: larger;
-    margin: 12px;
-}
-
+/*ESTILOS DEL SLIDER */
+/* Label */
 .checkboxtext {
-    /* Checkbox text */
-    font-size: 130%;
-    display: inline;
+    width: 100%
 }
+/* Caja del slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+/* Oculto caract nativas */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+/* El slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+input:checked+.slider {
+  background-color: #2196F3;
+}
+input:focus+.slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+input:checked+.slider:before {
+  -webkit-transform: translateX(19px);
+  -ms-transform: translateX(19px);
+  transform: translateX(19px);
+}
+/* Redondeo slider */
+.slider.round {
+  border-radius: 34px;
+}
+.slider.round:before {
+  border-radius: 50%;
+}
+/** FIN ESTILOS SLIDER */
 </style>
 <style>
     #WindowLoad {
@@ -35,6 +84,25 @@ input[type=checkbox] {
             <form id="frm-filtros">
                 <div class="row" style="width: 100%">
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
+                        <!-- _____ FECHA DESDE _____ -->
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <label>Fecha Desde:</label>
+                            <div class="input-group date">
+                                <a class="input-group-addon" id="daterange-btn" title="Más fechas">
+                                    <i class="fa fa-magic"></i>
+                                    <span></span>
+                                </a>
+                                <input type="date" class="form-control pull-right" id="datepickerDesde" name="datepickerDesde" placeholder="Desde">
+                            </div>
+                        </div>
+                        <!-- _____ FIN FECHA DESDE _____ -->
+                        <!-- _____ FECHA HASTA _____ -->
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                            <label>Fecha Hasta :</label>
+                            <input type="date" class="form-control pull-right" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
+                        </div>
+                        <!-- _____ FIN FECHA HASTA _____ -->
+                        <!-- ESTABLECIMIENTO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Establecimiento</label>
                             <!--primero seleciono luego tipo de deposito y luego cargo depositos los mantengo bloqueados-->
@@ -52,66 +120,67 @@ input[type=checkbox] {
                             </div>
                         </div>
                         <!-- /.form-group -->
+                        <!-- ESTABLECIMIENTO -->
+                        <!-- TIPO DEPOSITO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo Depósito</label>
-                            <div class="input-group">
-                                <select id="tipo_deposito" name="tipo_deposito" class="form-control" disabled
-                                    onchange="getDepositos(this)">
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                    <option value="productivo">Productivo</option>
-                                    <option value="transporte">Transporte</option>
-                                    <option value="almacen">Almacen</option>
-                                </select>
-                            </div>
+                            <select id="tipo_deposito" name="tipo_deposito" class="form-control" disabled onchange="getDepositos(this)">
+                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="productivo">Productivo</option>
+                                <option value="transporte">Transporte</option>
+                                <option value="almacen">Almacen</option>
+                            </select>
                         </div>
                         <!-- /.form-group -->
+                        <!-- TIPO DEPOSITO -->
+                        <!-- DEPOSITO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Depósito</label>
-                            <div class="input-group">
-                                <select id="depositodescrip" name="depositodescrip" class="form-control" disabled>
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                </select>
-                            </div>
+                            <select id="depositodescrip" name="depositodescrip" class="form-control" disabled>
+                                <option value="" selected disabled> - Seleccionar - </option>
+                            </select>
                         </div>
                         <!-- /.form-group -->
+                        <!-- DEPOSITO -->
+                        <!-- RECIPIENTE -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Recipiente</label><!-- -->
-                            <div class="input-group date">
-                                <select id="nom_reci" name="nom_reci" class="form-control" disabled>
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                </select>
-                            </div>
+                            <select id="nom_reci" name="nom_reci" class="form-control" disabled>
+                                <option value="" selected disabled> - Seleccionar - </option>
+                            </select>
                         </div>
                         <!-- /.form-group -->
+                        <!-- RECIPIENTE -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.row-->
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <!-- TIPO ARTICULO -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo de Artículo</label>
-                            <div class="input-group">
-                                <select id="artType" name="artType" class="form-control">
-                                    <option value="" selected disabled> - Seleccionar - </option>
-                                    <?php 
+                            <select id="artType" name="artType" class="form-control">
+                                <option value="" selected disabled> - Seleccionar - </option>
+                                <?php 
                                 foreach ($tipoArticulos as $key => $o) {
-                                    
-                                 $table = $o->tabl_id;
-                               
-                                  $table_str = str_replace(" ", "%20", $table);
-                                
-                                echo "<option value='$table_str'>$o->valor</option>";
+                                    echo "<option value='$o->tabl_id'>$o->valor</option>";
                                 }
-
                                 ?>
-                                </select>
-                            </div>
+                            </select>
                         </div>
                         <!-- /.form-group -->
-                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
+                        <!-- TIPO ARTICULO -->
+                        <!-- <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Fecha</label>
                             <div class="input-group">
                                 <input type="date" class="form-control" id="fec_alta" name="fec_alta"
                                     placeholder="Fecha...">
                             </div>
-                        </div>
+                        </div> -->
                         <!-- /.form-group -->
-                        <div class="form-group col-xs-12 col-sm-2 col-md-6 col-lg-6">
+                        <!-- ARTICULO -->
+                        <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
                             <label>Artículo</label>
                             <input list="articulos" id="inputarti" name="artBarCode" class="form-control"
                                 placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
@@ -128,31 +197,54 @@ input[type=checkbox] {
                             <label id="info" class="text-blue"></label>
                         </div>
                         <!-- /.form-group -->
-                        <div class="form-group col-xs-6 col-sm-6 col-md-6 col-lg-6">
-
-
+                        <!-- ARTICULO -->
+                        <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
                             <!-- Checked checkbox -->
-                            <div class="form-check col-sm-6">
-
+                            <div style="text-align: center;" class="form-check col-sm-12">
                                 <label for="stock0" class="checkboxtext">Artículo con Stock en 0
-                                    <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"
-                                        id="stock0" name="stock0" />
+                                    <!-- <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"id="stock0" name="stock0" /> -->
+                                </label>
+                                <label class="switch">
+                                    <input id="stock0" type="checkbox" value="0" name="stock0">
+                                    <span class="slider round"></span>
                                 </label>
                             </div>
-
+                        </div>
+                        <!-- /.form-group -->
+                        <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2" style="float:right; margin-right: 1%">
+                            <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">&nbsp;</label>
+                            <button type="button" class="btn btn-success btn-flat col-xs-12 col-sm-6 col-md-6 col-lg-6"
+                                onclick="filtrar()">Filtrar</button>
+                            <button type="button"
+                                class="btn btn-danger btn-flat flt-clear col-xs-12 col-sm-6 col-md-6 col-lg-6"
+                                onclick="limpiar()">Limpiar</button>
                         </div>
                         <!-- /.form-group -->
                     </div>
                     <!-- /.col -->
-                    <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2" style="float:right; margin-right: 1%">
-                        <label class="col-xs-12 col-sm-12 col-md-12 col-lg-12">&nbsp;</label>
-                        <button type="button" class="btn btn-success btn-flat col-xs-12 col-sm-6 col-md-6 col-lg-6"
-                            onclick="filtrar()">Filtrar</button>
-                        <button type="button"
-                            class="btn btn-danger btn-flat flt-clear col-xs-12 col-sm-6 col-md-6 col-lg-6"
-                            onclick="limpiar()">Limpiar</button>
+                </div>
+                <!-- /.row -->
+                <div class="row">
+                    <div class="col-xs-3 col-sm-3 col-md-3 col-md-offset-4 col-lg-3">
+                        <div style="text-align:center" class="box box-primary">
+                            <div style=" background-color: #ffeded;color: black" class="box-header">
+                                <h3 class="box-title">Lotes disponibles</h3>
+                            </div>
+                            <div id="lotesDisponibles">
+                                <h1 id="cantidadLotesDeposito">-</h1>
+                            </div>
+                            <h5>Cantidad de lotes en depósito <b><span id="nombreLotesDeposito"></span></b></h5>
+                        </div>
                     </div>
-                    <!-- /.form-group -->
+                    <div class="col-xs-4 col-sm-4 col-md-2 col-md-offset-2 col-lg-2">
+                        <!-- _____ BLOQUE AGRUPAR _____ -->
+                        <div class="form-group">
+                            <label for="btnDeposito" class="form-label">Agrupar por:</label>
+                            <button id="btnDeposito" type="button" class="btn btn-default btn-flat flt-clear" style="float: right !important;" onclick="agrupaDepositos()">Deposito</button>
+                        </div>
+                        <!-- _____ FIN BLOQUE AGRUPAR _____ -->
+                    </div>
+                    <!-- /.col -->
                 </div>
                 <!-- /.row -->
                 <br>
@@ -168,13 +260,12 @@ input[type=checkbox] {
     </div><!-- /.col -->
 </div><!-- /.row -->
 <script>
-
+fechaMagic();
 
 function jsRemoveWindowLoad() {
-        // eliminamos el div que bloquea pantalla
-        $("#WindowLoad").remove();
-
-    }
+    // eliminamos el div que bloquea pantalla
+    $("#WindowLoad").remove();
+}
 $( document ).ready(function() {
     $("#WindowLoad").remove();
     $(this).click(jsShowWindowLoad('Se esta Generando la Información'));
@@ -184,8 +275,6 @@ $( document ).ready(function() {
 });
  
 </script>
-
-
 <script type="text/javascript">
    
     // $('#btnGenerarBoleta').click(jsShowWindowLoad('Se realiza una operación'));
@@ -254,26 +343,19 @@ $( document ).ready(function() {
 //Cada campo esta validado en caso de vacios o NULL no se muestren en la tabla
 
 
-$(document).ready(function()
-{
+$(document).ready(function(){
     $('#stock0').click(function () {    
-           
         if ($('#stock0').prop('checked') ) {
-        
             $("#establecimiento").prop('disabled',true);
             $("#depositodescrip").prop('disabled',true);
             $("#fec_alta").prop('disabled',true);
             $("#artType").prop('disabled',true);
             $("#inputarti").prop('disabled',true);
-            
-
         } else{
-
             $("#establecimiento").prop('disabled',false);
             $("#artType").prop('disabled',false);
             $("#fec_alta").prop('disabled',false);
             $("#inputarti").prop('disabled',false);
-
         }
     });
 });
@@ -283,102 +365,85 @@ function filtrar() {
     var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
     var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
     var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';
-    var fec_alta =  _isset($("#fec_alta").val()) ? $("#fec_alta").val() : '';
+    var fec_desde =  _isset($("#datepickerDesde").val()) ? $("#datepickerDesde").val() : '';
+    var fec_hasta =  _isset($("#datepickerHasta").val()) ? $("#datepickerHasta").val() : '';
     var artType = _isset($("#artType").val()) ? $("#artType").val() : '';
     var artBarCode =   _isset($("#inputarti").val()) ? $("#inputarti").val() : '';
     var establecimiento = _isset($("#establecimiento").val()) ? $("#establecimiento").val() : '';
     var tipo_deposito = _isset($('#tipo_deposito').val()) ? $('#tipo_deposito').val() : '';
-
     var stock0 = $('#stock0').prop('checked');   
 
-$("#WindowLoad").remove();
-$(this).click(jsShowWindowLoad('Se está Generando la Información'));
+    $("#WindowLoad").remove();
+    $(this).click(jsShowWindowLoad('Se está Generando la Información'));
 
-    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_alta="+fec_alta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
-    $.ajax({
-        type: 'POST',
-
-        data: stock0,
-
-        url: '<?php echo base_url(ALM) ?>Lote/buscador',
-        success: function(data) {
-      
-           
-            $("#cargar_tabla").load(url1);
-
-           
-        },
-        error: function() {
-            alert('Ha ocurrido un error');
-        },
-        complete : function(data) {
-                   
-                   setTimeout(() => {
-                       jsRemoveWindowLoad();
-                   }, 5000);
-                   
-               }
-       
+    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_desde="+fec_desde+"&fec_hasta="+fec_hasta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
+    $("#cargar_tabla").load(url1,() => {
+        if(_isset(depositodescrip)){
+            tabla = $('#stock').DataTable();
+            $("#cantidadLotesDeposito").text(tabla.column( 0 ).data().length);
+            $("#nombreLotesDeposito").text($('#depositodescrip option:selected').text());
+        }
+        jsRemoveWindowLoad();
     });
 }
 
-function estado($estado) {
-    // #   $estado =  trim($estado);
+// function estado($estado) {
+//     // #   $estado =  trim($estado);
 
-    switch ($estado) {
+//     switch ($estado) {
 
-        //Estado Generales
-        case 'AC':
-            return bolita('Activo', 'green');
-            break;
-        case 'IN':
-            return bolita('Inactivo', 'red');
-            break;
+//         //Estado Generales
+//         case 'AC':
+//             return bolita('Activo', 'green');
+//             break;
+//         case 'IN':
+//             return bolita('Inactivo', 'red');
+//             break;
 
-            //Estado Camiones
-        case 'CARGADO':
-            return bolita('Cargado', 'yellow');
-            break;
-        case 'EN CURSO':
-            return bolita('En Curso', 'green');
-            break;
-        case 'DESCARGADO':
-            return bolita('Descargado', 'yellow');
-            break;
-        case 'TRANSITO':
-            return bolita('En Transito', 'orange');
-            break;
-        case 'FINALIZADO':
-            return bolita('Finalizado', 'red');
-            break;
+//             //Estado Camiones
+//         case 'CARGADO':
+//             return bolita('Cargado', 'yellow');
+//             break;
+//         case 'EN CURSO':
+//             return bolita('En Curso', 'green');
+//             break;
+//         case 'DESCARGADO':
+//             return bolita('Descargado', 'yellow');
+//             break;
+//         case 'TRANSITO':
+//             return bolita('En Transito', 'orange');
+//             break;
+//         case 'FINALIZADO':
+//             return bolita('Finalizado', 'red');
+//             break;
 
-            //Estado Etapas
-        case 'En Curso':
-            return bolita('En Curso', 'green');
-            break;
+//             //Estado Etapas
+//         case 'En Curso':
+//             return bolita('En Curso', 'green');
+//             break;
 
-        case 'PLANIFICADO':
-            return bolita('Planificado', 'blue');
-            break;
-            //Estado por Defecto
-        default:
-            return bolita('S/E', '');
-            break;
-    }
-}
+//         case 'PLANIFICADO':
+//             return bolita('Planificado', 'blue');
+//             break;
+//             //Estado por Defecto
+//         default:
+//             return bolita('S/E', '');
+//             break;
+//     }
+// }
 
-function bolita($texto, $color, $detalle = '') {
-    return "<span data-toggle='tooltip' title='" + $detalle + "' class='badge bg-" + $color + " estado'>" + $texto +
-        " </span>";
-}
+// function bolita($texto, $color, $detalle = '') {
+//     return "<span data-toggle='tooltip' title='" + $detalle + "' class='badge bg-" + $color + " estado'>" + $texto +
+//         " </span>";
+// }
 
 function limpiar() {
-if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
-    $("#establecimiento").prop('disabled',false);
-    $("#artType").prop('disabled',false);
-    $("#fec_alta").prop('disabled',false);
-    $("#inputarti").prop('disabled',false);
-}
+    if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
+        $("#establecimiento").prop('disabled',false);
+        $("#artType").prop('disabled',false);
+        $("#fec_alta").prop('disabled',false);
+        $("#inputarti").prop('disabled',false);
+    }
 
     $("#nom_reci").val('');
     $("#depositodescrip").val('');
@@ -527,5 +592,9 @@ function getTipoDepositos(item) {
             wc();
         }
     });
+}
+function agrupaDepositos(){
+    let tabla = $('#stock').DataTable();
+    tabla.rowGroup().enable().dataSrc(9).order([[ 9, 'desc' ]]).draw();
 }
 </script>

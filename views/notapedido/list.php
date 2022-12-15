@@ -1,60 +1,57 @@
-    <div class="box box-primary">
-        <div class="box-header with-border">
-            <h3 class="box-title">Pedido Materiales</h3>
-
-        </div><!-- /.box-header -->
-        <div class="box-body" id="deposito_contenedor">
-
-						<?php
-							if(!viewOT)
-							{
-							echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
-									onclick="linkTo(\''.ALM.'Notapedido/crearPedido\')">Agregar</button>';
-							}else{
-									echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
-									onclick="AbrirModal()">Agregar</button>';
-							}
-							if(isset($descripcionOT))
-							{
-									echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
-							}
-						?>
-
-            <table id="deposito" class="table table-bordered table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th>Acciones</th>
-                        <th>Pedido</th>
-                        <th class="<?php echo(!viewOT?"hidden":null)?>">Ord.Trabajo</th>
-                        <th class="text-center">Fecha</th>
-                        <th>Detalle</th>
-                        <th>Estado</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                            if($list) {
-                                foreach($list as $z)
-                                {
-                                $id = $z['id_notaPedido'];
-                                echo '<tr id="'.$id.'" class="'.$id.'" data-json=\''.json_encode($z).'\'>';
-                                echo '<td class="text-center">';
-                                echo '<i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i>';
-                                echo '</td>';           
-                                echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
-                                echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita($z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
-                               
-                                echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
-                                echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
-                                echo '<td class="text-center">'.estadoPedido($z['estado']).'</td>';
-                                echo '</tr>';
-                                }
-                            }
-                            ?>
-                </tbody>
-            </table>
-        </div><!-- /.box-body -->
-    </div><!-- /.box -->
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">Pedido Materiales</h3>
+    </div><!-- /.box-header -->
+    <div class="box-body" id="deposito_contenedor">
+        <?php
+            if(!viewOT)
+            {
+            echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
+                    onclick="linkTo(\''.ALM.'Notapedido/crearPedido\')">Agregar</button>';
+            }else{
+                    echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
+                    onclick="AbrirModal()">Agregar</button>';
+            }
+            if(isset($descripcionOT))
+            {
+                    echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
+            }
+        ?>
+        <table id="deposito" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Acciones</th>
+                    <th>Pedido</th>
+                    <th class="<?php echo(!viewOT?"hidden":null)?>">Ord.Trabajo</th>
+                    <th class="text-center">Fecha</th>
+                    <th>Detalle</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                    if($list) {
+                        foreach($list as $z)
+                        {
+                        $id = $z['id_notaPedido'];
+                        echo '<tr id="'.$id.'" class="'.$id.'" data-json=\''.json_encode($z).'\'>';
+                        echo '<td class="text-center">';
+                        echo '<i onclick="ver(this)" class="fa fa-fw fa-search text-light-blue buscar" style="cursor: pointer;margin:5px;" title="Detalle Pedido Materiales"></i>';
+                        echo '</td>';           
+                        echo '<td class="text-center">'.bolita($z['id_notaPedido'],'blue').'</td>';
+                        echo '<td class="text-center '.(!viewOT?"hidden":null).'">'.bolita($z['id_ordTrabajo'],'yellow','Orden de Trabajo N°'.$z['id_ordTrabajo']).'</td>';
+                        
+                        echo '<td class="text-center">'.fecha($z['fecha']).'</td>';
+                        echo '<td>'.(viewOT?$z['descripcion']:$z['justificacion']).'</td>';
+                        echo '<td class="text-center">'.estadoPedido($z['estado']).'</td>';
+                        echo '</tr>';
+                        }
+                    }
+                ?>
+            </tbody>
+        </table>
+    </div><!-- /.box-body -->
+</div><!-- /.box -->
 
 <script>
   var tablaDetalle=$('#tabladetalle').DataTable({}); 

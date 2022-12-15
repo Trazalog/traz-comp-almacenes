@@ -58,9 +58,13 @@ class Pedidosmateriales extends CI_Model
         $this->db->where('eliminado', false);
         return $this->db->get($this->tabla)->result_array();
     }
-
-    public function obtener($id)
-    {
+    /**
+	* Obtiene el detalle de un pedido de materiales a partir de ID
+	* @param integer pema_id
+	* @return array detalle del pedido de materiales
+	*/
+    public function obtener($id){
+        log_message('DEBUG', '#TRAZA | TRAZ-COMP-ALMACENES | Pedidosmateriales | obtener($id) >> $id -> '. $id);
         $this->db->select('*');
         $this->db->from('alm.alm_deta_pedidos_materiales T');
         $this->db->join('alm.alm_articulos A', 'A.arti_id = T.arti_id');

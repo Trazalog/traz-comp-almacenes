@@ -149,7 +149,8 @@ class Almtareas extends CI_Model
                 $obj->pema_id = $res['pema_id'];
                 $obj->motivo = $res['motivo_rechazo'];
 
-                $this->load->model('traz-comp/Componentes');
+                // $this->load->model('traz-comp/Componentes');
+                $this->load->model(ALM.'traz-comp/Componentes');
 
                 #COMPONENTE ARTICULOS
                 $data['items'] = $this->Componentes->listaArticulos();
@@ -191,7 +192,8 @@ class Almtareas extends CI_Model
 
                 $peex = $this->Pedidoextra->getXCaseId($tarea->caseId);
 
-                $this->load->model('traz-comp/Componentes');
+                // $this->load->model('traz-comp/Componentes');
+                $this->load->model(ALM.'traz-comp/Componentes');
 
                 $data = $this->Componentes->listaArticulos();
 

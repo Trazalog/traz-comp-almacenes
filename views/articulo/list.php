@@ -97,7 +97,7 @@ function editarArticulo() {
     });
 }
 //Valida el codigo del articulo antes de editar o agregar articulos
-function validarArticulo(accion){
+function validarArticulo(){
     var barcode = $("#artBarCode").val();
     $.ajax({
         type: "POST",
@@ -109,11 +109,7 @@ function validarArticulo(accion){
                 if(rsp.existe == 'true'){
                     error("Error","El código ingresado ya se encuentra utilizado!");
                 }else{
-                    if(accion == 'nuevo'){
-                        guardarArticulo();
-                    }else{
-                        editarArticulo();
-                    }
+                    guardarArticulo();
                 }
             }else{
                 error("Error","Se produjo un error validando el código ingresado!");
@@ -139,7 +135,7 @@ function editar(e) {
         $('[name="' + key + '"]').val(json[key]);
     });
     $('#mdl-titulo').html('Editar Artículo');
-    $('#btn-accion').attr('onclick', 'validarArticulo("editar")');
+    $('#btn-accion').attr('onclick', 'editarArticulo()');
     $('#new_articulo').modal('show');
 }
 
@@ -239,7 +235,7 @@ function eliminar_articulo() {
 
 $("#new_articulo").on("hide.bs.modal", function() {
     $('#mdl-titulo').html('Nuevo Artículo');
-    $('#btn-accion').attr('onclick', 'validarArticulo("nuevo")');
+    $('#btn-accion').attr('onclick', 'validarArticulo()');
     $('#btn-accion').show();
     $('#frm-articulo')[0].reset();
     $('#read-only').prop('disabled', false);
@@ -419,7 +415,7 @@ $(document).ready(function() {
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" id="btn-accion" class="btn btn-primary btn-guardar"
-                    onclick="validarArticulo('nuevo')">Guardar</button>
+                    onclick="validarArticulo()">Guardar</button>
             </div>
         </div>
     </div>
