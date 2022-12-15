@@ -179,7 +179,11 @@ class Lotes extends CI_Model
             $aux["cantidad_padre"] = strval($o->stock);
             $aux["num_orden_prod"] = "";
             $aux["reci_id"] = strval($o->reci_id);
-            $aux["etap_id"] = strval(ETAPA_DEPOSITO);
+            if ($o->proceso) {
+                $aux["etap_id"] = strval($o->proceso);
+            } else {
+                $aux["etap_id"] = strval(ETAPA_DEPOSITO);
+            }
             $aux["usuario_app"] = userNick();
             $aux["empr_id"] = strval(empresa());
             $aux["forzar_agregar"] = isset($o->forzar_agregar) ? $o->forzar_agregar : "FALSE";
