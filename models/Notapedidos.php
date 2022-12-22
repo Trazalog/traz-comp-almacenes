@@ -227,7 +227,9 @@ class Notapedidos extends CI_Model
             return array();
         }
     }
-    // guarda nota pedido (desde tareas de bpm)
+
+    
+    // guarda nota pedido (desde tareas de bpm) 
     public function setCabeceraNota($cabecera){
         log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setCabeceraNota($cabecera)');
         $cabecera['ortr_id'] = (int) $cabecera['ortr_id'];
@@ -235,9 +237,27 @@ class Notapedidos extends CI_Model
         $idInsert = $this->db->insert_id();
         return $idInsert;
     }
+
+    //guarda nota del pedido y retorna pema_id desde el servicio
+    public function setCabeceraNotaV2($cabecera){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setCabeceraNotaV2($cabecera)');
+        $data['_post_notapedidos'] = array(
+            'fecha' => $cabecera['fecha'],
+            'justificacion' => $cabecera['justificacion'],
+            'case_id' => null,
+            'estado' => $cabecera['estado'],
+            'empr_id' => $cabecera['empr_id'],
+            'batch_id' => null
+        );
+        $resource = '/pedidos';
+        $url = REST_ALM . $resource;
+        return wso2($url, 'POST', $data);
+    }
+
     // guarda detalle nota pedido (desde tareas de bpm)
     public function setDetaNota($deta)
     {
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setDetaNota($deta)');
         foreach ($deta as $o) {
             $o['resto'] = $o['cantidad'];
             if ($this->db->get_where('alm.alm_deta_pedidos_materiales', array('pema_id' => $o['pema_id'], 'arti_id' => $o['arti_id']))->num_rows() == 1) {
@@ -250,6 +270,21 @@ class Notapedidos extends CI_Model
             }
         }
         return true;
+    }
+
+    //Guarda detalle nota del pedido de material
+    public function setDetaNotaV2($detalle){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setDetaNotaV2($detalle)');
+        $batch_req = [];
+        $resource = '/_post_notapedido_detalle_batch_req';
+        $url = REST_ALM . $resource;
+        for ($i = 0; $i < count($detalle); $i++) {
+            $aux['pema_id'] = (string) $detalle[$i]['pema_id'];
+            $aux['arti_id'] = $detalle[$i]['arti_id']; 
+            $aux['cantidad'] = $detalle[$i]['cantidad'];
+            $batch_req['_post_notapedido_detalle_batch_req']['_post_notapedido_detalle'][] = $aux;
+        } 
+        return wso2($url, 'POST', $batch_req);
     }
 
     public function editarDetalle($id, $data)
