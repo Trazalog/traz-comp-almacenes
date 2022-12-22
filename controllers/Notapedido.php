@@ -135,14 +135,15 @@ class Notapedido extends CI_Controller
         echo json_encode($response);
     }
 
+    
     public function setNotaPedido(){
-        log_message('ERROR','#TRAZA | TRAZ-COMP-ALMACEN | Notapedido | setNotaPedido()');
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACEN | Notapedido | setNotaPedido()');
         
         $ids = $this->input->post('idinsumos');
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');
         $justificacion = $this->input->post('justificacion');
-
+        
         $cabecera = array(
             'fecha' => date('Y-m-d'),
             'ortr_id' => $idOT,
@@ -169,6 +170,55 @@ class Notapedido extends CI_Controller
         $response = $this->Notapedidos->setDetaNota($deta);
 
         echo json_encode(['pema_id' => $idnota]);
+    }
+
+    /**
+	* Crea la cabecera de la nota, retorna el id de la nota(pema_id) del pedido de material para posteriormente 
+    * el crear detalle de la nota con los articulos pedidos
+	* @param array $detalles arreglo con los datos de los articulos, justificacion
+	* @return array pema_id id del pedido de materiales
+	*/
+    public function crearNotaPedido(){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACEN | Notapedido | crearNotaPedido()');
+        $detalles = $this->input->post('detalles');
+        $justificacion = $detalles['justificacion'];
+        $idOT= $detalles['ortr_id'];
+        
+        $cabecera = array(
+            'fecha' => date('Y-m-d'),
+            'ortr_id' => $idOT,
+            'empr_id' => empresa(),
+            'justificacion' => $justificacion,
+            'estado' => 'Creada',
+        );
+
+        //servicio crea la cabecera de pedido y retorna pema_id en $idnota
+        $resp = $this->Notapedidos->setCabeceraNotaV2($cabecera);
+        if($resp['status']){
+            $idnota = $resp['data'];}
+        else{
+            echo json_encode(array('status' => false,'msj' => "Se produjo un error al guardar el detalle del pedido de materiales"));
+        }
+        // SET EN PEDIDO EXTRA EL PEDIDO MATERILES
+        $peex_id = $detalles['peex_id'];
+
+        if ($peex_id) {$this->load->model(ALM . 'Pedidoextra');
+            $this->Pedidoextra->setPemaId($peex_id, $idnota);}
+
+        for ($i = 0; $i < count($detalles['articulos']); $i++) {
+            $deta[$i]['pema_id'] = "$idnota";
+            $deta[$i]['arti_id'] = $detalles['articulos'][$i]['arti_id'];
+            $deta[$i]['cantidad'] = $detalles['articulos'][$i]['cantidadPedida'];
+        }
+
+        //servicio crea el detalle del pedido
+        $response = $this->Notapedidos->setDetaNotaV2($deta);
+        
+        if($response['status']){
+            echo json_encode(array('status' => true,'pema_id' => $idnota));
+        }else{
+            echo json_encode(array('status' => false,'msj' => "Se produjo un error al guardar el detalle del pedido de materiales"));
+        }
     }
 
     public function pedidoNormal($pemaId)
