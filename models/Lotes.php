@@ -179,7 +179,11 @@ class Lotes extends CI_Model
             $aux["cantidad_padre"] = strval($o->stock);
             $aux["num_orden_prod"] = "";
             $aux["reci_id"] = strval($o->reci_id);
-            $aux["etap_id"] = strval(ETAPA_DEPOSITO);
+            if ($o->proceso) {
+                $aux["etap_id"] = strval($o->proceso);
+            } else {
+                $aux["etap_id"] = strval(ETAPA_DEPOSITO);
+            }
             $aux["usuario_app"] = userNick();
             $aux["empr_id"] = strval(empresa());
             $aux["forzar_agregar"] = isset($o->forzar_agregar) ? $o->forzar_agregar : "FALSE";
@@ -188,6 +192,8 @@ class Lotes extends CI_Model
             $aux["tipo_recurso"] = "";
             $aux['batch_id'] = "0";
             $aux['planificado'] = "";
+            $aux['fec_iniciado'] = $o->fec_iniciado;
+
 
 
             $batch_req['_post_lote_batch_req']['_post_lote'][] = $aux;
@@ -261,6 +267,8 @@ class Lotes extends CI_Model
         $aux['fec_vencimiento'] = FEC_VEN;
         $aux["tipo_recurso"] = "";
         $aux['planificado'] = "false";
+        $aux['fec_iniciado'] = $data->fec_iniciado;
+
         
         $post['_post_lote'] = $aux;
         
@@ -315,6 +323,7 @@ class Lotes extends CI_Model
         $this->db->join('core.tablas T', ' T.tabl_id = alm.alm_articulos.tiar_id', 'left');
         $this->db->join('core.tablas T1', ' T1 ON T1.tabl_id = alm.alm_articulos.unme_id', 'left');
         $this->db->where('alm.alm_lotes.empr_id', $empresa);
+        $this->db->where('alm.alm_articulos.eliminado', false);
         
         //FILTRADO
         //Nombre Articulo
