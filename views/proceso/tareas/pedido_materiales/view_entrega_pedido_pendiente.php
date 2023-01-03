@@ -128,22 +128,16 @@ $(function() {
     });
 });
 
-
+//Cierra la tarea actual
 function cerrarTarea() {
-    debugger;
     //cerrar tarea en view etrega pedido pendiente
     if (!validar_campos_obligatorios()) return;
 
     var id = $('#taskId').val();
-
     var pema_id = $('#pema').val();
-
     var cantidades = [];
-
     var detalles = [];
-
     var completa = true;
-
     var parcial = false;
 
     $('#entregas tr').each(function() {
@@ -164,11 +158,7 @@ function cerrarTarea() {
     });
 
     if (detalles == null || detalles.length == 0) {
-        Swal.fire(
-            'Error...',
-            'No se Registro Entrega!',
-            'error'
-        )
+        error('Error...','No se Registro Entrega!');
         return;
     }
 
@@ -188,14 +178,9 @@ function cerrarTarea() {
 
                 if ($('#miniView').length == 1) {
                     closeView();
-                    Swal.fire(
-                        'Guardado!',
-                        'El Pedido N°:'+pema_id +'se Finalizo Correctamente',
-                        'success'
-                    )
+                    hecho('Guardado!','El Pedido N°: '+pema_id +' se finalizó correctamente');
                     linkTo('<?php echo BPM ?>Proceso/');
                 } else {
-
                     linkTo('<?php echo BPM ?>Proceso');
                 }
             }
@@ -208,7 +193,7 @@ function cerrarTarea() {
         }
     });
 }
-
+//Cierra la tarea con entregas parciales
 function cerrarTareaParcial() {
     debugger;
 
