@@ -32,6 +32,7 @@ class Notapedidos extends CI_Model
         }
 
         $this->db->where('T.empr_id', empresa());
+        $this->db->where('T.eliminado != ', true);
         if ($ot) {
             $this->db->where('orden_trabajo.id_orden', $ot);
         }
