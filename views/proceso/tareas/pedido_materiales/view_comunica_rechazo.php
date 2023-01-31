@@ -24,7 +24,12 @@
 $('#view_pedidoMateriales').hide();
 
 function cerrarTarea() {
-
+    guardarPedidoActualizado().then((result) => {
+        console.log("Pedido actualizado");
+    }).catch((err) => {
+        console.log("Se produjo un error");
+    });
+    //return;
     var id = $('#taskId').val();
 
     var dataForm = new FormData($('#generic_form')[0]);
@@ -39,7 +44,8 @@ function cerrarTarea() {
         processData: false,
         url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
-            back();
+            linkTo('<?php echo BPM ?>Proceso/');
+            //back();
         },
         error: function(data) {
             alert("Error");

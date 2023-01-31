@@ -249,7 +249,7 @@ class Notapedido extends CI_Controller
 
     public function editPedido()
     {
-        $ids = $this->input->post('idinsumos');
+        $ids = $this->input->post('detalles');
         $cantidades = $this->input->post('cantidades');
         $idOT = $this->input->post('idOT');
 
@@ -266,6 +266,30 @@ class Notapedido extends CI_Controller
         echo json_encode($response);
     }
 
+    public function editPedidoV2()
+    {
+        $detalles = $this->input->post('detalles');
+        $justificacion = $detalles['justificacion'];
+        $idOT= $detalles['ortr_id'];
+        $idnota = $detalles['pema_id'];
+        $deta =[];
+        if($justificacion){
+            $data['justificacion'] =  $justificacion;
+            $rsp = $this->Notapedidos->editaJustificacion($idnota, $data);
+        }
+
+        $rsp=$this->Notapedidos->eliminaDetallePedidoViejo($idnota);
+        if($rsp['status']){
+            for($i=0; $i < count($detalles['articulos']) ; $i++){
+                $deta[$i]['pema_id'] = "$idnota";
+                $deta[$i]['arti_id'] = $detalles['articulos'][$i]['arti_id'];
+                $deta[$i]['cantidad'] = $detalles['articulos'][$i]['cantidad'];
+            }
+            $rsp = $this->Notapedidos->setDetaNotaV2($deta);
+        }
+        echo json_encode($rsp);
+    }
+
     public function getTablaDetalle($pema = null)
     {
         $this->load->model(ALM . 'Ordeninsumos');
@@ -280,7 +304,7 @@ class Notapedido extends CI_Controller
     public function editarDetalle()
     {
         $id = $this->input->post('id');
-        $data['cantidad'] = $this->input->post('cantidad');
+        $data['cantidad'] = $this->input->post('cantnuevo');
         echo $this->Notapedidos->editarDetalle($id, $data);
     }
 
