@@ -3,10 +3,10 @@
 
 <div class="row">
     <div
-        class="<?php echo (isset($info->pema_id)?'hidden':null)?>  col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
+        class="col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
         <div class="form-group">
         <label>Justificación<strong style="color: #dd4b39">*</strong>:</label>
-            <textarea id="just" type="text" class="form-control <?php echo (isset($info->pema_id)?'hidden':null)?>"
+            <textarea id="just" type="text" class="form-control"
                 placeholder="Ingrese Justificación..."></textarea>
         </div>
     </div>
@@ -66,6 +66,8 @@ function del_detalle() {
     $('#eliminar').modal('hide');
 }
 
+
+//tabla articulos pedido - Tarea 
 function get_detalle() {
     var id = $('#pema_id').val();
     if (id == null || id == '') {
@@ -77,14 +79,14 @@ function get_detalle() {
         url: 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
             tablaDetalle2.clear();
-
-            for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                    /* "< class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
-                    ] + "' data-json='" + JSON.stringify(data) + "'>" +
+                    ] + */ 
+            for (var i = 0; i < data.length; i++) {
+                var tr ="<tr class='celdas' data-json='" + JSON.stringify(data[i]) + "' data-id='" + data[i]['depe_id'] + "'>" +  
                     "<td class='text-light-blue'>" +
                     "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='articuloDescripcion'>" + data[i]['artDescription'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
@@ -93,7 +95,6 @@ function get_detalle() {
 
         },
         error: function(result) {
-
             console.log(result);
         },
         complete: function(){
@@ -103,6 +104,30 @@ function get_detalle() {
     });
 }
 </script>
+
+<!-- Modal editar cantidad-->
+<div class="modal fade" id="set_cantidad">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Ingresar Cantidad</h4>
+            </div>
+            <div class="modal-body">
+                <h5 class="text-center"></h5>
+                <input id="cantNuevo" class="form-control text-center" type="number" placeholder="Cantidad">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary btn-accion" data-dismiss="modal" id='aceptarCantidad'>Guardar</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 
 <!-- Modal eliminar-->
@@ -136,16 +161,16 @@ function get_detalle() {
 //('#tabladetalle2').dataTable({});
 
 function validarCampos() {
+    //debugger;
     articulo = selectItem.barcode;
     cantidad = $('#add_cantidad').val();
     justificacion = $('#just').val();
-    if (articulo == ''|| cantidad == '' || cantidad <= 0 || justificacion == '') { 
-        error('Error...','Debes completar los campos Obligatorios (*)');
-        return true;       
-    } else{
-        return false;
-    }
-
+        if (articulo == ''|| cantidad == '' || cantidad <= 0 || justificacion == '') { 
+            error('Error...','Debes completar los campos Obligatorios (*)');
+            return true;       
+        } else{
+            return false;
+        }
 }
 
 function guardar_pedido() {
@@ -153,12 +178,15 @@ function guardar_pedido() {
         return;
     }else if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
         set_pedido();
+    }else{
+        actualizar_tabla();
     }
 }
 
 
 //armado de la tabla de articulos
 function set_pedido() {
+    //debugger;
     var cant = $('#add_cantidad').val();
     selectItem.cantidadPedida=cant;
     var tr = "<tr class='celdas' data-json='" + JSON.stringify(selectItem) + "'>" +
@@ -336,49 +364,6 @@ function lanzarPedidoModal() {
     $('#' + modal).modal('hide');
 }
 
-function edit_pedido() {
-debugger;
-    var idinsumos = new Array();
-    var cantidades = new Array();
-
-    id = selectItem.arti_id;
-    idinsumos.push(id);
-    cant = $('#add_cantidad').val();
-    cantidades.push(cant);
-
-    var idOT = $('#ortr_id').val();
-
-    if (idinsumos.length == 0) {
-        alert('Error');
-        return;
-    }
-
-    wo();
-
-    $.ajax({
-        data: {
-            idinsumos,
-            cantidades,
-            idOT,
-            pema: $('#pema_id').val()
-        },
-        type: 'POST',
-        dataType: 'json',
-        url: 'index.php/<?php echo ALM ?>Notapedido/editPedido',
-        success: function(result) {
-          
-            get_detalle();
-            clear();
-        },
-        error: function(result) {
-            alert('editesrt');
-        },
-        complete: function(){
-            wc();
-        }
-    });
-}
-
 
 function clear() {
     $('#inputarti').val(null);
@@ -395,4 +380,92 @@ function ajax(options) {
     return $.ajax(options);
 }
 //Fin redifinicion//
+
+
+/* Editar cantidad de pedido */
+function edit_cantidad(e) {
+selectRow = JSON.parse($(e).closest('tr').attr('data-json'));
+$('#set_cantidad').modal('show');
+    $("#aceptarCantidad").off().on('click',function(){
+        cantnuevo = document.getElementById('cantNuevo').value;
+        if((cantnuevo != '')&&(cantnuevo > 0))
+        {
+            selectRow.cantidad=cantnuevo;
+            if(selectRow.artDescription){
+                description = selectRow.artDescription;
+            }else{
+                description = selectRow.descripcion;
+            }
+            tablaDetalle2.row($(e).closest('tr')).remove().draw();
+            var tr ="<tr class='celdas' data-json='" + JSON.stringify(selectRow) + "' >" +  
+                    "<td class='text-light-blue'>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<td class='articulo'>" + selectRow.barcode + "</td>" +
+                    "<td class='articuloDescripcion'>" + description + "</td>" +
+                    "<td class='cantidad text-center'>" + cantnuevo + "</td></tr>";
+                tablaDetalle2.row.add($(tr)).draw();
+        }
+        $('#cantNuevo').val('');
+        $('#set_cantidad').bootstrapValidator('resetForm', true);
+        cantnuevo ='';
+        selectRow='';
+    });
+}
+
+function actualizar_tabla(){
+    var cant = $('#add_cantidad').val();
+    selectItem.cantidad=cant;
+    var tr = "<tr class='celdas' data-json='" + JSON.stringify(selectItem) + "'>" +
+                "<td class='text-light-blue'>" +
+                "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                "<td class='articulo'>" + selectItem.barcode + "</td>" +
+                "<td class='articuloDescripcion'>" + selectItem.descripcion + "</td>" +
+                "<td class='cantidad text-center'>" + selectItem.cantidad + "</td></tr>";
+            tablaDetalle2.row.add($(tr)).draw();
+    clear();
+}
+
+async function guardarPedidoActualizado(){
+    wo();
+    let guardadoCompleto = new Promise( function(resolve,reject){
+        tabla = $('#tabladetalle2').DataTable();
+        detalles = {};
+        detalles.justificacion=$('#just').val();
+        detalles.peex_id=$('#peex_id').val();
+        detalles.ortr_id=$('#ortr_id').val();
+        detalles.pema_id=$('#pema_id').val();
+        detalles.articulos=[];
+        //recorrido tabla de articulos
+        tabla.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            nodo = this.node();
+            var json = JSON.parse($(nodo).attr('data-json'));
+            detalles.articulos[rowIdx] = json; 
+        }); 
+        $.ajax({
+            data: {
+                detalles
+            },
+            type: 'POST',
+            dataType: 'json',
+            url: 'index.php/<?php echo ALM ?>Notapedido/editPedidoV2',
+            success: function(result) {
+                if(result){
+                    resolve(result);
+                }else{
+                    reject(result);
+                }
+            },
+            error: function(result) {
+                reject(result);
+            },
+            complete: function(){
+                wc();
+            }
+        });
+    });
+    return await guardadoCompleto;
+}
+
 </script>

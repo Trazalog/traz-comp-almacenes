@@ -128,6 +128,7 @@ class Notapedidos extends CI_Model
         $this->db->join('alm.alm_deta_pedidos_materiales', 'alm.alm_deta_pedidos_materiales.pema_id = alm.alm_pedidos_materiales.pema_id');
         $this->db->join('alm.alm_articulos', 'alm.alm_deta_pedidos_materiales.arti_id = alm.alm_articulos.arti_id');
         $this->db->where('alm.alm_pedidos_materiales.pema_id', $id);
+        $this->db->where('alm.alm_deta_pedidos_materiales.eliminado', false);
         $query = $this->db->get();
 
         if ($query->num_rows() != 0) {
@@ -295,10 +296,42 @@ class Notapedidos extends CI_Model
         return $this->db->update('alm.alm_deta_pedidos_materiales', $data);
     }
 
+    /**
+	* Elimina los articulos del pedido anterior
+	* @param integer $pema_id es el id del pedido de material
+	* @return array respuesta del servicio
+	*/
+    public function eliminaDetallePedidoViejo($pema_id)
+    {
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | eliminaDetallePedidoViejo($pema_id)');
+        $aux['pema_id'] = $pema_id;
+        $post['_put_pedidos_eliminadetallepedidoanterior'] = $aux;
+        $resource = '/pedidos/eliminadetallepedidoanterior';
+        $url = REST_ALM . $resource;
+        $rsp = $this->rest->callApi('PUT', $url, $post);
+        return $rsp;
+    }
+
     public function eliminarDetalle($id)
     {
         $this->db->where('depe_id', $id);
-        return $this->db->delete('alm.alm_deta_pedidos_materiales');
+        $data['eliminado'] = true;
+        return $this->db->update('alm.alm_deta_pedidos_materiales', $data);
+    }
+    
+    //actualiza justificacion de pedido de materiales
+    public function editaJustificacion($id,$data){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | editaJustificacion($id, $data)');
+        $aux['justificacion'] = $data['justificacion'];
+        $aux['pema_id'] = $id;
+        $post['_put_pedidos_updatejustificacion'] = $aux;
+        $resource = '/pedidos/updatejustificacion';
+        $url = REST_ALM . $resource;
+        $rsp = $this->rest->callApi('PUT', $url, $post);
+        return $rsp;
+        /* $this->db->where('pema_id', $id);
+        $data['justificacion'] = $data['justificacion'];
+        return $this->db->update('alm.alm_pedidos_materiales', $data); */
     }
 
     public function nuevo($data)
