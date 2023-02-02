@@ -183,6 +183,7 @@ class Ordeninsumos extends CI_Model
         $this->db->from('alm.alm_deta_pedidos_materiales as PEMA');
         $this->db->join('alm.alm_articulos as ART', 'ART.arti_id = PEMA.arti_id');
         $this->db->join('alm.alm_lotes as LOTE','LOTE.arti_id = ART.arti_id', 'left');
+        $this->db->where('PEMA.eliminado', false);
         $this->db->where('pema_id', $pema);
         $this->db->where('ART.empr_id', empresa());
         $this->db->group_by('ART.arti_id, PEMA.cantidad');

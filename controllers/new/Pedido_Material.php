@@ -22,6 +22,7 @@ class Pedido_Material extends CI_Controller {
   }
 
   public function pedidoNormal(){
+    log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Pedido_Material | pedidoNormal()');
     $rsp =  $this->Pedidosmateriales->pedidoNormal($this->input->post('id'));
     echo json_encode($rsp);  
   }

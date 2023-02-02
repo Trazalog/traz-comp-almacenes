@@ -32,6 +32,7 @@ class Notapedidos extends CI_Model
         }
 
         $this->db->where('T.empr_id', empresa());
+        $this->db->where('T.eliminado != ', true);
         if ($ot) {
             $this->db->where('orden_trabajo.id_orden', $ot);
         }
@@ -127,6 +128,7 @@ class Notapedidos extends CI_Model
         $this->db->join('alm.alm_deta_pedidos_materiales', 'alm.alm_deta_pedidos_materiales.pema_id = alm.alm_pedidos_materiales.pema_id');
         $this->db->join('alm.alm_articulos', 'alm.alm_deta_pedidos_materiales.arti_id = alm.alm_articulos.arti_id');
         $this->db->where('alm.alm_pedidos_materiales.pema_id', $id);
+        $this->db->where('alm.alm_deta_pedidos_materiales.eliminado', false);
         $query = $this->db->get();
 
         if ($query->num_rows() != 0) {
@@ -227,7 +229,9 @@ class Notapedidos extends CI_Model
             return array();
         }
     }
-    // guarda nota pedido (desde tareas de bpm)
+
+    
+    // guarda nota pedido (desde tareas de bpm) 
     public function setCabeceraNota($cabecera){
         log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setCabeceraNota($cabecera)');
         $cabecera['ortr_id'] = (int) $cabecera['ortr_id'];
@@ -235,9 +239,27 @@ class Notapedidos extends CI_Model
         $idInsert = $this->db->insert_id();
         return $idInsert;
     }
+
+    //guarda nota del pedido y retorna pema_id desde el servicio
+    public function setCabeceraNotaV2($cabecera){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setCabeceraNotaV2($cabecera)');
+        $data['_post_notapedidos'] = array(
+            'fecha' => $cabecera['fecha'],
+            'justificacion' => $cabecera['justificacion'],
+            'case_id' => null,
+            'estado' => $cabecera['estado'],
+            'empr_id' => $cabecera['empr_id'],
+            'batch_id' => null
+        );
+        $resource = '/pedidos';
+        $url = REST_ALM . $resource;
+        return wso2($url, 'POST', $data);
+    }
+
     // guarda detalle nota pedido (desde tareas de bpm)
     public function setDetaNota($deta)
     {
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setDetaNota($deta)');
         foreach ($deta as $o) {
             $o['resto'] = $o['cantidad'];
             if ($this->db->get_where('alm.alm_deta_pedidos_materiales', array('pema_id' => $o['pema_id'], 'arti_id' => $o['arti_id']))->num_rows() == 1) {
@@ -252,6 +274,21 @@ class Notapedidos extends CI_Model
         return true;
     }
 
+    //Guarda detalle nota del pedido de material
+    public function setDetaNotaV2($detalle){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setDetaNotaV2($detalle)');
+        $batch_req = [];
+        $resource = '/_post_notapedido_detalle_batch_req';
+        $url = REST_ALM . $resource;
+        for ($i = 0; $i < count($detalle); $i++) {
+            $aux['pema_id'] = (string) $detalle[$i]['pema_id'];
+            $aux['arti_id'] = $detalle[$i]['arti_id']; 
+            $aux['cantidad'] = $detalle[$i]['cantidad'];
+            $batch_req['_post_notapedido_detalle_batch_req']['_post_notapedido_detalle'][] = $aux;
+        } 
+        return wso2($url, 'POST', $batch_req);
+    }
+
     public function editarDetalle($id, $data)
     {
         $this->db->where('depe_id', $id);
@@ -259,10 +296,42 @@ class Notapedidos extends CI_Model
         return $this->db->update('alm.alm_deta_pedidos_materiales', $data);
     }
 
+    /**
+	* Elimina los articulos del pedido anterior
+	* @param integer $pema_id es el id del pedido de material
+	* @return array respuesta del servicio
+	*/
+    public function eliminaDetallePedidoViejo($pema_id)
+    {
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | eliminaDetallePedidoViejo($pema_id)');
+        $aux['pema_id'] = $pema_id;
+        $post['_put_pedidos_eliminadetallepedidoanterior'] = $aux;
+        $resource = '/pedidos/eliminadetallepedidoanterior';
+        $url = REST_ALM . $resource;
+        $rsp = $this->rest->callApi('PUT', $url, $post);
+        return $rsp;
+    }
+
     public function eliminarDetalle($id)
     {
         $this->db->where('depe_id', $id);
-        return $this->db->delete('alm.alm_deta_pedidos_materiales');
+        $data['eliminado'] = true;
+        return $this->db->update('alm.alm_deta_pedidos_materiales', $data);
+    }
+    
+    //actualiza justificacion de pedido de materiales
+    public function editaJustificacion($id,$data){
+        log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | editaJustificacion($id, $data)');
+        $aux['justificacion'] = $data['justificacion'];
+        $aux['pema_id'] = $id;
+        $post['_put_pedidos_updatejustificacion'] = $aux;
+        $resource = '/pedidos/updatejustificacion';
+        $url = REST_ALM . $resource;
+        $rsp = $this->rest->callApi('PUT', $url, $post);
+        return $rsp;
+        /* $this->db->where('pema_id', $id);
+        $data['justificacion'] = $data['justificacion'];
+        return $this->db->update('alm.alm_pedidos_materiales', $data); */
     }
 
     public function nuevo($data)
