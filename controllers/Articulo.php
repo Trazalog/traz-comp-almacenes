@@ -17,13 +17,9 @@ class Articulo extends CI_Controller {
 	public function index()
 	{
 		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | index()");
-		$data['list'] = $this->Articulos->getList();
+		// $data['list'] = $this->Articulos->getList();
 		$data['unidades_medida'] = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
 		$data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
-		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | index()".json_encode($data) );
-		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | index() data[unidades_medida]".json_encode($data['unidades_medida'] ));
-		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulos | index() data[tipoArticulos]".json_encode($data['tipoArticulos'] ));
-
 		
 		$this->load->view(ALM.'articulo/list', $data);
 	}
@@ -220,5 +216,31 @@ class Articulo extends CI_Controller {
 			
 		echo json_encode($resp);
 	}
+	/**
+	* Genera el listado de los articulos paginado
+	* @param integer;integer;string start donde comienza el listado; length cantidad de registros; search cadena a buscar
+	* @return array listado paginado y la cantidad
+	*/
+	public function paginado(){//server side processing
 
+		$start = $this->input->post('start');
+		$length = $this->input->post('length');
+		$search = $this->input->post('search')['value'];
+
+		$r = $this->Articulos->articulosPaginados($start,$length,$search);
+
+		$resultado =$r['datos'];
+		$totalDatos = $r['numDataTotal'];
+
+		$datos = $resultado->result_array();
+		$datosPagina = $resultado->num_rows();
+
+		$json_data = array(
+			"draw" 				=> intval($this->input->post('draw')),
+			"recordsTotal"  	=> intval($datosPagina),
+			"recordsFiltered"	=> intval($totalDatos),
+			"data" 				=> $datos
+		);
+		echo json_encode($json_data);
+	}
 }
