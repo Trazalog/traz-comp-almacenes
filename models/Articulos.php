@@ -446,7 +446,7 @@ $query = $this->db->get();
 	* @return array listado paginado y la cantidad
 	*/
 	public function articulosPaginados($start,$length,$search){
-		
+
         $this->db->select('A.*, coalesce(sum(cantidad),0) as stock, T.valor, T1.descripcion as unidad_medida');
 		$this->db->from('alm.alm_articulos A');
 		$this->db->join('alm.alm_lotes C', 'C.arti_id = A.arti_id', 'left');
@@ -454,13 +454,15 @@ $query = $this->db->get();
 		$this->db->join('core.tablas T1', 'A.unme_id = T1.tabl_id', 'left');
 		$this->db->where('A.eliminado', false);
 		if(!empty($search)){
+			$this->db->group_start();
 			$this->db->like('LOWER("A"."barcode")',strtolower($search));
-			$this->db->or_like('LOWER("A"."descripcion")', strtolower($search));			
+			$this->db->or_like('LOWER("A"."descripcion")', strtolower($search));
+			$this->db->group_end();
         }
 		$this->db->where('A.empr_id', empresa());
 		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
 		$query_total = $this->db->get();
-
+		log_message('DEBUG',"LAS QUERYYY" .$this->db->last_query());
 		if ($query_total && $query_total->num_rows() > 0) {
 			$query_total = $query_total->num_rows();
 		} else {
@@ -474,8 +476,10 @@ $query = $this->db->get();
 		$this->db->join('core.tablas T1', 'A.unme_id = T1.tabl_id', 'left');
 		$this->db->where('A.eliminado', false);
         if(!empty($search)){
+			$this->db->group_start();
 			$this->db->like('LOWER("A"."barcode")',strtolower($search));
-			$this->db->or_like('LOWER("A"."descripcion")', strtolower($search));			
+			$this->db->or_like('LOWER("A"."descripcion")', strtolower($search));
+			$this->db->group_end();			
         }
 		$this->db->where('A.empr_id', empresa());
 		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
