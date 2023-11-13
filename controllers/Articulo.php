@@ -232,8 +232,8 @@ class Articulo extends CI_Controller {
 		$resultado =$r['datos'];
 		$totalDatos = $r['numDataTotal'];
 
-		$datos = $resultado->result_array();
-		$datosPagina = $resultado->num_rows();
+		$datos = !empty($resultado) ? $resultado->result_array() : array();
+		$datosPagina = !empty($resultado) ? $resultado->num_rows() : array();
 
 		$json_data = array(
 			"draw" 				=> intval($this->input->post('draw')),

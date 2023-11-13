@@ -452,16 +452,17 @@ $query = $this->db->get();
 		$this->db->join('alm.alm_lotes C', 'C.arti_id = A.arti_id', 'left');
 		$this->db->join('core.tablas T', 'A.tiar_id = T.tabl_id', 'left');
 		$this->db->join('core.tablas T1', 'A.unme_id = T1.tabl_id', 'left');
-		$this->db->where('A.empr_id', empresa());
 		$this->db->where('A.eliminado', false);
 		if(!empty($search)){
-			$this->db->like('A.barcode',$search);
-			$this->db->or_like("A.descripcion", $search);			
+			$this->db->group_start();
+			$this->db->like('LOWER("A"."barcode")',strtolower($search));
+			$this->db->or_like('LOWER("A"."descripcion")', strtolower($search));
+			$this->db->group_end();
         }
+		$this->db->where('A.empr_id', empresa());
 		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
-
 		$query_total = $this->db->get();
-
+		log_message('DEBUG',"LAS QUERYYY" .$this->db->last_query());
 		if ($query_total && $query_total->num_rows() > 0) {
 			$query_total = $query_total->num_rows();
 		} else {
@@ -473,16 +474,17 @@ $query = $this->db->get();
 		$this->db->join('alm.alm_lotes C', 'C.arti_id = A.arti_id', 'left');
 		$this->db->join('core.tablas T', 'A.tiar_id = T.tabl_id', 'left');
 		$this->db->join('core.tablas T1', 'A.unme_id = T1.tabl_id', 'left');
-		$this->db->where('A.empr_id', empresa());
 		$this->db->where('A.eliminado', false);
         if(!empty($search)){
-			$this->db->like('A.barcode',$search);
-			$this->db->or_like("A.descripcion", $search);			
+			$this->db->group_start();
+			$this->db->like('LOWER("A"."barcode")',strtolower($search));
+			$this->db->or_like('LOWER("A"."descripcion")', strtolower($search));
+			$this->db->group_end();			
         }
+		$this->db->where('A.empr_id', empresa());
 		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
 		$this->db->limit($length, $start);
 		$articulosPaginados = $this->db->get();
-
 		$result = array (
 			'numDataTotal' => $query_total,
 			'datos' => $articulosPaginados

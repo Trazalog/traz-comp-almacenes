@@ -33,6 +33,9 @@ class Remito extends CI_Controller {
 		$data['establecimientos'] = $this->Depositos->obtenerEstablecimientos();
 		$data['items'] = $this->Componentes->listaArticulos();
 		$data['lang'] = lang_get('spanish', 'Ejecutar OT');
+		$data['alm_config'] = $this->Remitos->getConfigPrecios();
+
+		/*log_message('DEBUG','#Remito >> cargarlista > data: '.json_encode($data));*/
 
 		$data['permission'] = $this->permission;
         $this->load->view(ALM.'remito/view_',$data);

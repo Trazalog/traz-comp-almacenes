@@ -26,6 +26,25 @@ class Remitos extends CI_Model {
         }
     }
 
+    function getConfigPrecios(){
+
+        $this->db->select('empr_id,valor2');
+        $this->db->from('core.tablas as tb');
+        $this->db->where('tb.empr_id', empresa());
+        $this->db->like('tabla', 'alm_configs', 'both');      
+            
+    	$query = $this->db->get();
+
+        
+		if($query->num_rows()>0){
+	       return $query->result();
+	    }
+	    else{
+	       return false;
+	    }
+
+    }
+
     function getcodigo()
     {
         $this->db->select('T.arti_id as artId, T.barcode as artBarCode, T.descripcion as artDescription,T.es_loteado, T.es_caja, T.cantidad_caja');
