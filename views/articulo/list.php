@@ -131,7 +131,9 @@ function editar(e) {
 //si retorna False se puede eliminar articulo.
 //sino retorna cantidad de stock del articulo.
 function verificarStock(e) {
-    selected = $(e).closest('tr').attr('id');
+    var json = $(e).closest('tr').data('json');
+    selected = json.arti_id;
+    console.log(selected);
     $.ajax({
         type: 'POST',
         data: {
