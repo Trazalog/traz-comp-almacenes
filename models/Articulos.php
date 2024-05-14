@@ -88,10 +88,14 @@ class Articulos extends CI_Model
 
 	function getLotes($id)
 	{
+		$data = $this->session->userdata();
+		$idUser = $data['id'];
+
 		$this->db->where('arti_id', $id);
 		$this->db->select('*');
 		$this->db->from('alm.alm_lotes T');
 		$this->db->join('alm.alm_depositos A', 'T.depo_id = A.depo_id');
+		$this->db->join('core.encargados_depositos E', 'T.depo_id = E.depo_id and E.user_id = ' . $idUser);
 		return $this->db->get()->result_array();
 	}
 
