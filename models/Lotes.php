@@ -306,7 +306,7 @@ class Lotes extends CI_Model
             alm.alm_articulos.descripcion as artdescription,
             alm.alm_articulos.barcode as artbarcode,
             T1.descripcion as un_medida,
-            alm.alm_articulos.fec_alta as fecha_nueva,        
+            alm.alm_lotes.fec_alta as fecha_nueva,        
             alm.alm_lotes.*,
             COALESCE(alm.alm_lotes.cantidad, 0) as cantidad,
             alm.alm_depositos.depo_id,
@@ -340,11 +340,12 @@ class Lotes extends CI_Model
         }
         //Fecha Creación DESDE
         if($data['fec_desde'] !='' && $data['fec_desde'] != NULL ){
-            $this->db->where('DATE(alm.alm_articulos.fec_alta) >',$data['fec_desde']);
+          $this->db->where('DATE(alm.alm_lotes.fec_alta) >=',$data['fec_desde']);
+        
         }
         //Fecha Creación HASTA
         if($data['fec_hasta'] !='' && $data['fec_hasta'] != NULL ){
-            $this->db->where('DATE(alm.alm_articulos.fec_alta) <',$data['fec_hasta']);
+            $this->db->where('DATE(alm.alm_lotes.fec_alta) <=',$data['fec_hasta']);
         }
         //Nombre del Deposito
         if($data['depositodescrip'] !='' && $data['depositodescrip'] != NULL && $data['depositodescrip'] != "null" ){
