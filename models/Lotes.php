@@ -14,9 +14,12 @@ class Lotes extends CI_Model
 	* @return view
 	*/
     public function getList(){ 
+        $data = $this->session->userdata();
+		$iduser = $data['id'];
+
         log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | Lotes |getList()');
         $empresa = empresa();
-        $url = REST_ALM."/lotes/stock/empresa/".$empresa;
+        $url = REST_ALM.'/lotes/stock/empresa/'.$empresa.'/usuario/'.$iduser;
 
         $aux = $this->rest->callAPI("GET",$url);
         $resp = json_decode($aux['data']);
@@ -300,13 +303,16 @@ class Lotes extends CI_Model
     public function filtrarListado($data){
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | filtrarListado()  data: >> " . json_encode($data));
 
+        $dataUser = $this->session->userdata();
+		$idUser = $dataUser['id'];
+
         $empresa = empresa();
         $this->db->select('
             T.descripcion as arttype,
             alm.alm_articulos.descripcion as artdescription,
             alm.alm_articulos.barcode as artbarcode,
             T1.descripcion as un_medida,
-            alm.alm_articulos.fec_alta as fecha_nueva,        
+            alm.alm_lotes.fec_alta as fecha_nueva,        
             alm.alm_lotes.*,
             COALESCE(alm.alm_lotes.cantidad, 0) as cantidad,
             alm.alm_depositos.depo_id,
@@ -322,6 +328,7 @@ class Lotes extends CI_Model
         $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
         $this->db->join('core.tablas T', ' T.tabl_id = alm.alm_articulos.tiar_id', 'left');
         $this->db->join('core.tablas T1', ' T1 ON T1.tabl_id = alm.alm_articulos.unme_id', 'left');
+        $this->db->join('core.encargados_depositos E', 'alm.alm_depositos.depo_id = E.depo_id and E.user_id ='. $idUser , 'left');
         $this->db->where('alm.alm_lotes.empr_id', $empresa);
         $this->db->where('alm.alm_articulos.eliminado', false);
         
@@ -340,11 +347,12 @@ class Lotes extends CI_Model
         }
         //Fecha Creación DESDE
         if($data['fec_desde'] !='' && $data['fec_desde'] != NULL ){
-            $this->db->where('DATE(alm.alm_articulos.fec_alta) >',$data['fec_desde']);
+          $this->db->where('DATE(alm.alm_lotes.fec_alta) >=',$data['fec_desde']);
+        
         }
         //Fecha Creación HASTA
         if($data['fec_hasta'] !='' && $data['fec_hasta'] != NULL ){
-            $this->db->where('DATE(alm.alm_articulos.fec_alta) <',$data['fec_hasta']);
+            $this->db->where('DATE(alm.alm_lotes.fec_alta) <=',$data['fec_hasta']);
         }
         //Nombre del Deposito
         if($data['depositodescrip'] !='' && $data['depositodescrip'] != NULL && $data['depositodescrip'] != "null" ){

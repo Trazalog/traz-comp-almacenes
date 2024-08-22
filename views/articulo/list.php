@@ -17,20 +17,6 @@
             </thead>
             <tbody>
                 <?php
-                    foreach ($list as $a) {
-                        echo "<tr  id='$a->arti_id' data-json='".json_encode($a)."'>";
-                        echo "<td class='text-center text-light-blue'>";
-                        echo '<i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick="ver(this)"></i>';
-                        echo '<i class="fa fa-fw fa-pencil " style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>';                   
-                        // echo '<i class="fa fa-fw fa-times-circle eliminar" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="eliminar(this)"></i>';                    
-                        echo '<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="verificarStock(this)"></i>';                    
-                        echo "</td>";
-                        echo "<td class='codigo'>$a->barcode</td>";
-                        echo "<td>$a->descripcion</td>";
-                        echo "<td>$a->unidad_medida</td>";
-                        echo "<td class='text-center'>".estado($a->estado)."</td>";
-                        echo "</tr>";
-                    }
                 ?>
             </tbody>
         </table>
@@ -145,7 +131,9 @@ function editar(e) {
 //si retorna False se puede eliminar articulo.
 //sino retorna cantidad de stock del articulo.
 function verificarStock(e) {
-    selected = $(e).closest('tr').attr('id');
+    var json = $(e).closest('tr').data('json');
+    selected = json.arti_id;
+    console.log(selected);
     $.ajax({
         type: 'POST',
         data: {
@@ -264,57 +252,125 @@ function validarForm() {
 //excel, pdf, copiado portapapeles e impresion
 
 $(document).ready(function() {
-    $('#articles').DataTable({
-        responsive: true,
-        language: {
-            url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
-        },
-        dom: 'lBfrtip',
-        buttons: [{
-                //Botón para Excel
-                extend: 'excel',
-                exportOptions: {
-                    columns: [1, 2, 3, 4]
-                },
-                footer: true,
-                title: 'Listado de Artículos',
-                filename: 'Listado de Artículos',
+$('#articles').DataTable({
+    responsive: true,
+    language: {
+        url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
+    },
+    dom: 'lBfrtip',
+    buttons: [{
+            //Botón para Excel
+            extend: 'excel',
+            exportOptions: {
+                columns: [1, 2, 3, 4]
+            },
+            footer: true,
+            title: 'Listado de Artículos',
+            filename: 'Listado de Artículos',
 
-                //Aquí es donde generas el botón personalizado
-                text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+            //Aquí es donde generas el botón personalizado
+            text: '<button class="btn btn-success ml-2 mb-2 mb-2 mt-3">Exportar a Excel <i class="fa fa-file-excel-o"></i></button>'
+        },
+        // //Botón para PDF
+        {
+            extend: 'pdf',
+            exportOptions: {
+                columns: [1, 2, 3, 4]
             },
-            // //Botón para PDF
+            footer: true,
+            title: 'Listado de Artículos',
+            filename: 'Listado de Artículos',
+            text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+        },
+        {
+            extend: 'copy',
+            exportOptions: {
+                columns: [1, 2, 3, 4]
+            },
+            footer: true,
+            title: 'Listado de Artículos',
+            filename: 'Listado de Artículos',
+            text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+        },
+        {
+            extend: 'print',
+            exportOptions: {
+                columns: [1, 2, 3, 4]
+            },
+            footer: true,
+            title: 'Listado de Artículos',
+            filename: 'Listado de Artículos',
+            text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+        }
+    ],
+    'lengthMenu':[[10,25,50,100,],[10,25,50,100]],
+    'paging' : true,
+    'processing':true,
+    'serverSide': true,
+    'ajax':{
+        type: 'POST',
+        url: '<?php echo ALM; ?>/Articulo/paginado'
+    },
+    'columnDefs':[
             {
-                extend: 'pdf',
-                exportOptions: {
-                    columns: [1, 2, 3, 4]
-                },
-                footer: true,
-                title: 'Listado de Artículos',
-                filename: 'Listado de Artículos',
-                text: '<button class="btn btn-danger ml-2 mb-2 mb-2 mt-3">Exportar a PDF <i class="fa fa-file-pdf-o mr-1"></i></button>'
+                //Agregado para que funcione cabecera de imprimir,descargar excel o pdf.   
+                "defaultContent": "-",
+                "targets": "_all",
             },
             {
-                extend: 'copy',
-                exportOptions: {
-                    columns: [1, 2, 3, 4]
+                'targets':[0],
+                 //agregado de class con el estilo de las acciones
+                'createdCell':  function (td, cellData, rowData, row, col) {
+                    $(td).attr('class', 'text-center text-light-blue'); 
                 },
-                footer: true,
-                title: 'Listado de Artículos',
-                filename: 'Listado de Artículos',
-                text: '<button class="btn btn-primary ml-2 mb-2 mb-2 mt-3">Copiar <i class="fa fa-file-text-o mr-1"></i></button>'
+                'data':'acciones',
+                'render':function(data,type,row){
+                    var id= row['arti_id'];
+                    json = JSON.stringify(row); 
+                    var r = `<tr><td>
+                            <i class="fa fa-search" style="cursor: pointer;margin: 3px;" title="Ver Detalles" onclick='ver(this);'></i>`;
+                    r += `<i class="fa fa-fw fa-pencil" style="cursor: pointer; margin: 3px;" title="Editar" onclick="editar(this)"></i>`;
+                    r += `<i class="fa fa-fw fa-times-circle" style="cursor: pointer;margin: 3px;" title="Eliminar" onclick="verificarStock(this)"></i>`; 
+                    r += `</td>`;
+                    return r;
+                }
             },
             {
-                extend: 'print',
-                exportOptions: {
-                    columns: [1, 2, 3, 4]
-                },
-                footer: true,
-                title: 'Listado de Artículos',
-                filename: 'Listado de Artículos',
-                text: '<button class="btn btn-default ml-2 mb-2 mb-2 mt-3">Imprimir <i class="fa fa-print mr-1"></i></button>'
+                'targets':[1],
+                'data':'barcode',
+                'render': function(data, type, row){
+                    return `<td class="barcode">${row['barcode']}</td>`;
+                }
+            },
+            {
+                'targets':[2],
+                'data':'descripcion',
+                'render': function(data, type, row){
+                    return `<td>${row['descripcion']}</td>`;
+                }
+            },
+            {
+                'targets':[3],
+                'data':'unidad_medida',
+                'render': function(data, type, row){
+                    return `<td>${row['unidad_medida'] == null ? '-' : row['unidad_medida']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
+                'data':'estado',
+                'render': function(data, type, row){
+                    var valorEstado = (row['estado'] == 'AC') ? 'Activo' : '';
+                    var estado = bolita(valorEstado,'green');
+                    return `<td class="text-center">${estado}</td> </tr>`;
+                }
             }
-        ]
+        ],
+        //agregado de data-json al tr de la tabla
+        createdRow:function( row, data, dataIndex ) {
+                    json = JSON.stringify(data);
+                    $(row).attr('data-json', json);
+        }, 
     });
 });
 </script>

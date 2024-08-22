@@ -3,10 +3,10 @@
 
 <div class="row">
     <div
-        class="<?php echo (isset($info->pema_id)?'hidden':null)?>  col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
+        class="col-xs-12 col-sm-12 col-md-12 <?php echo(viewOT?'hidden':null)?>">
         <div class="form-group">
         <label>Justificación<strong style="color: #dd4b39">*</strong>:</label>
-            <textarea id="just" type="text" class="form-control <?php echo (isset($info->pema_id)?'hidden':null)?>"
+            <textarea id="just" type="text" class="form-control"
                 placeholder="Ingrese Justificación..."></textarea>
         </div>
     </div>
@@ -62,66 +62,12 @@ function del(e) {
 }
 
 function del_detalle() {
-    if (selectRow.hasClass('new')) $(selectRow).remove();
-    else {
-        wo();
-        $.ajax({
-            type: 'POST',
-            data: {
-                id: $(selectRow).data('id')
-            },
-            url: 'index.php/<?php echo ALM ?>Notapedido/eliminarDetalle',
-            success: function(data) {
-                //$('.modal #eliminar').modal('hide');
-                $('#eliminar').modal('hide');
-
-                get_detalle();
-            },
-            error: function(data) {
-                alert('Error');
-            },
-            complete: function(){
-                wc();
-            }
-        });
-    }
-}
-
-function edit() {
-
-    var id = $(selectRow).closest('tr').data('id');
-    var cantidad = $('#set_cantidad #cantidad').val();
-    wo();
-    $.ajax({
-        type: 'POST',
-        data: {
-            id,
-            cantidad
-        },
-        url: 'index.php/<?php echo ALM ?>Notapedido/editarDetalle',
-        success: function(data) {
-            get_detalle();
-            selectRow = null;
-            $('#set_cantidad').modal('hide');
-        },
-        error: function(data) {
-            alert('Error');
-        },
-        complete:function() {
-            wc();
-        }
-    });
-
-}
-
-function edit_cantidad(e) {
-    selectRow = $(e).closest('tr');
-    $('#set_cantidad input').val($(selectRow).find('.cantidad').html());
-    $('#set_cantidad h5').html($(selectRow).find('.articulo').html());
-    $('#set_cantidad').modal('show');
+    tablaDetalle2.row(selectRow).remove().draw();
+    $('#eliminar').modal('hide');
 }
 
 
+//tabla articulos pedido - Tarea 
 function get_detalle() {
     var id = $('#pema_id').val();
     if (id == null || id == '') {
@@ -133,14 +79,14 @@ function get_detalle() {
         url: 'index.php/<?php echo ALM ?>Notapedido/getNotaPedidoId?id_nota=' + id,
         success: function(data) {
             tablaDetalle2.clear();
-
-            for (var i = 0; i < data.length; i++) {
-                var tr = "<tr class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
+                    /* "< class='celdas' data-id='" + data[i]['depe_id'] + "'data-id='" + data[i][
                         'arti_id'
-                    ] + "' data-json='" + JSON.stringify(data) + "'>" +
+                    ] + */ 
+            for (var i = 0; i < data.length; i++) {
+                var tr ="<tr class='celdas' data-json='" + JSON.stringify(data[i]) + "' data-id='" + data[i]['depe_id'] + "'>" +  
                     "<td class='text-light-blue'>" +
                     "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                    "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
                     "<td class='articulo'>" + data[i]['barcode'] + "</td>" +
                     "<td class='articuloDescripcion'>" + data[i]['artDescription'] + "</td>" +
                     "<td class='cantidad text-center'>" + data[i]['cantidad'] + "</td></tr>";
@@ -149,7 +95,6 @@ function get_detalle() {
 
         },
         error: function(result) {
-
             console.log(result);
         },
         complete: function(){
@@ -160,7 +105,7 @@ function get_detalle() {
 }
 </script>
 
-
+<!-- Modal editar cantidad-->
 <div class="modal fade" id="set_cantidad">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
@@ -171,12 +116,11 @@ function get_detalle() {
             </div>
             <div class="modal-body">
                 <h5 class="text-center"></h5>
-                <input id="cantidad" class="form-control text-center" type="number" placeholder="Cantidad">
+                <input id="cantNuevo" class="form-control text-center" type="number" placeholder="Cantidad">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary btn-accion" data-dismiss="modal"
-                    onclick="edit()">Guardar</button>
+                <button type="button" class="btn btn-primary btn-accion" data-dismiss="modal" id='aceptarCantidad'>Guardar</button>
             </div>
         </div>
         <!-- /.modal-content -->
@@ -184,6 +128,7 @@ function get_detalle() {
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
 
 <!-- Modal eliminar-->
 <div class="modal" id="eliminar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -216,16 +161,16 @@ function get_detalle() {
 //('#tabladetalle2').dataTable({});
 
 function validarCampos() {
+    //debugger;
     articulo = selectItem.barcode;
     cantidad = $('#add_cantidad').val();
-
-    if (articulo == ''|| cantidad == '' || cantidad <= 0) { 
-        error('Error...','Debes completar los campos Obligatorios (*)');
-        return true;       
-    } else{
-        return false;
-    }
-
+    justificacion = $('#just').val();
+        if (articulo == ''|| cantidad == '' || cantidad <= 0 || justificacion == '') { 
+            error('Error...','Debes completar los campos Obligatorios (*)');
+            return true;       
+        } else{
+            return false;
+        }
 }
 
 function guardar_pedido() {
@@ -233,130 +178,100 @@ function guardar_pedido() {
         return;
     }else if ($('#pema_id').val() == '' || $('#pema_id').val() == 0) {
         set_pedido();
-    } else {
-        edit_pedido();
+    }else{
+        actualizar_tabla();
     }
 }
 
+
+//armado de la tabla de articulos
 function set_pedido() {
-
-    var idinsumos = new Array();
-    var cantidades = new Array();
-
-    id = selectItem.arti_id;
-    idinsumos.push(id);
-    cant = $('#add_cantidad').val();
-    cantidades.push(cant);
-
-    var idOT = $('#ortr_id').val();
-
-    if (idinsumos.length == 0) {
-        alert('Error');
-        return;
-    }
-
-    var peex_id = $('#peex_id').val();
-    var justificacion = $('#just').val();
-
-    wo();
-
-    $.ajax({
-        data: {
-            idinsumos,
-            cantidades,
-            idOT,
-            peex_id,
-            justificacion
-        },
-        type: 'POST',
-        dataType: 'json',
-        url: 'index.php/<?php echo ALM ?>Notapedido/setNotaPedido',
-        success: function(result) {
-            console.log('setNotaPedido: ');
-
-            console.log(result);
-            
-            $('#pema_id').val(result.pema_id);
-            wc();
-            get_detalle();
-            hecho('','Cargado con éxito!');
-            clear();
-        },
-        error: function() {
-
-            data = {
-                arti_id: id,
-                cantidad: cant
-            };
-            var tr = "<tr class='celdas' data-json='[" + JSON.stringify(data) + "]'>" +
-                "<td class='text-light-blue'>" +
-                "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
-                "<i class='fa fa-fw fa-times-circle' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
-                "<td class='articulo'>" + document.getElementById('inputarti').value + "</td>" +
-                "<td class='cantidad text-center'>" + data.cantidad + "</td></tr>";
-            tablaDetalle2.row.add($(tr)).draw();
-            wc();
-
-        },
-    });
+    //debugger;
+    var cant = $('#add_cantidad').val();
+    selectItem.cantidadPedida=cant;
+    var tr = "<tr class='celdas' data-json='" + JSON.stringify(selectItem) + "'>" +
+                    "<td class='text-light-blue'>" +
+                    "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<td class='articulo'>" + selectItem.barcode + "</td>" +
+                    "<td class='articuloDescripcion'>" + selectItem.descripcion + "</td>" +
+                    "<td class='cantidad text-center'>" + selectItem.cantidadPedida + "</td></tr>";
+                tablaDetalle2.row.add($(tr)).draw();
+    clear();
 }
 
+//lanzado de pedido de articulos con los articulos de la tabla
 function lanzarPedido() {
-
-      var nFilas = $("#tabladetalle2 tr").length;
-      var nColumnas = $("#tabladetalle2 tr:last td").length;
-           
-
-      if(nFilas == '2' && nColumnas =='1'){
-
-        Swal.fire(
-						'Error...',
-						'Debes cargar al menos un articulo para realizar un pedido.',
-						'error'
-					);
-
-      } else {
-     wo();
-    $.ajax({
-        data: {
-            id: $('#pema_id').val()
-        },
-        dataType: 'json',
-        type: 'POST',
-        url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
-        success: function(result) {
-            debugger;
+    wo();
+    tabla = $('#tabladetalle2').DataTable();
+    if(tabla.rows().count() === 0){
+        error('Error...','Debes cargar al menos un articulo para realizar un pedido.');
+        wc();
+    }else{
+        detalles = {};
+        detalles.justificacion=$('#just').val();
+        detalles.peex_id=$('#peex_id').val();
+        detalles.ortr_id=$('#ortr_id').val();
+        detalles.articulos=[];
+        //recorrido tabla de articulos
+        tabla.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            nodo = this.node();
+            var json = JSON.parse($(nodo).attr('data-json'));
+            detalles.articulos[rowIdx] = json;
             
-            console.log('pemaId: '+ result.data.pemaId);
-
-            var pedido_num = result.data.pemaId;
-            
-            if (result.status) {
-
-                linkTo('<?php echo ALM ?>Notapedido');
-               
-                Swal.fire(
-                        'Pedido de Materiales N°:' +pedido_num,
-                       'Pedido de Materiales generado con Exito',
-						'success'
-					);
-            } else {
-                alert(result.msj);
-            }
-        },
-        error: function(result) {
-        
-            Swal.fire(
-						'Error...',
-						'Error al Lanzar Pedido',
-						'error'
-					);
-        },
-        complete: function(){
-            wc();
-        }
-    });   
- }
+        });     
+        //creacion de cabecera del pedido con los articulos de la tabla
+        $.ajax({
+            data: {
+                detalles
+            },
+            type: 'POST',
+            dataType: 'json',
+            url: 'index.php/<?php echo ALM ?>Notapedido/crearNotaPedido',
+            success: function(resp) {
+                console.log('setNotaPedido: ');
+                console.log(resp);
+                $('#pema_id').val(resp.pema_id);
+                clear();
+                wc();
+                //Lanzamiento de pedido de materiales
+                if(resp.status){
+                    $.ajax({
+                        data: {
+                            id: resp.pema_id
+                        },
+                        dataType: 'json',
+                        type: 'POST',
+                        url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
+                        success: function(result) {
+                            console.log('pemaId: '+ result.data.pemaId);
+                            var pedido_num = result.data.pemaId;
+                            if (result.status) {
+                                linkTo('<?php echo ALM ?>Notapedido');
+                                Swal.fire(
+                                    'Pedido de Materiales N°:' +pedido_num,
+                                    'Pedido de Materiales generado con Exito',
+                                    'success'
+                                );
+                            } else {
+                                error('Error',result.msj);
+                            }
+                        },
+                        error: function(result) {
+                            error('Error...','Error al Lanzar Pedido' );
+                        },
+                        complete: function(){
+                            wc();
+                        }
+                    });
+                }else{
+                    error('Error',resp.msj);
+                }
+            },
+            error: function(resp) {
+                error('Error...','Error al Lanzar Pedido de Materiales' );
+            },
+        });  
+    }
 }
 
 function lanzarPedidoModal() {
@@ -449,53 +364,11 @@ function lanzarPedidoModal() {
     $('#' + modal).modal('hide');
 }
 
-function edit_pedido() {
-debugger;
-    var idinsumos = new Array();
-    var cantidades = new Array();
-
-    id = selectItem.arti_id;
-    idinsumos.push(id);
-    cant = $('#add_cantidad').val();
-    cantidades.push(cant);
-
-    var idOT = $('#ortr_id').val();
-
-    if (idinsumos.length == 0) {
-        alert('Error');
-        return;
-    }
-
-    wo();
-
-    $.ajax({
-        data: {
-            idinsumos,
-            cantidades,
-            idOT,
-            pema: $('#pema_id').val()
-        },
-        type: 'POST',
-        dataType: 'json',
-        url: 'index.php/<?php echo ALM ?>Notapedido/editPedido',
-        success: function(result) {
-          
-            get_detalle();
-            clear();
-        },
-        error: function(result) {
-            alert('editesrt');
-        },
-        complete: function(){
-            wc();
-        }
-    });
-}
-
 
 function clear() {
     $('#inputarti').val(null);
     $('#add_cantidad').val(null);
+    $('label#info').html("");
 }
 //Rearmo ajax para guardar Post en indexedDB//
 
@@ -507,4 +380,92 @@ function ajax(options) {
     return $.ajax(options);
 }
 //Fin redifinicion//
+
+
+/* Editar cantidad de pedido */
+function edit_cantidad(e) {
+selectRow = JSON.parse($(e).closest('tr').attr('data-json'));
+$('#set_cantidad').modal('show');
+    $("#aceptarCantidad").off().on('click',function(){
+        cantnuevo = document.getElementById('cantNuevo').value;
+        if((cantnuevo != '')&&(cantnuevo > 0))
+        {
+            selectRow.cantidad=cantnuevo;
+            if(selectRow.artDescription){
+                description = selectRow.artDescription;
+            }else{
+                description = selectRow.descripcion;
+            }
+            tablaDetalle2.row($(e).closest('tr')).remove().draw();
+            var tr ="<tr class='celdas' data-json='" + JSON.stringify(selectRow) + "' >" +  
+                    "<td class='text-light-blue'>" +
+                    "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                    "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                    "<td class='articulo'>" + selectRow.barcode + "</td>" +
+                    "<td class='articuloDescripcion'>" + description + "</td>" +
+                    "<td class='cantidad text-center'>" + cantnuevo + "</td></tr>";
+                tablaDetalle2.row.add($(tr)).draw();
+        }
+        $('#cantNuevo').val('');
+        $('#set_cantidad').bootstrapValidator('resetForm', true);
+        cantnuevo ='';
+        selectRow='';
+    });
+}
+
+function actualizar_tabla(){
+    var cant = $('#add_cantidad').val();
+    selectItem.cantidad=cant;
+    var tr = "<tr class='celdas' data-json='" + JSON.stringify(selectItem) + "'>" +
+                "<td class='text-light-blue'>" +
+                "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
+                "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
+                "<td class='articulo'>" + selectItem.barcode + "</td>" +
+                "<td class='articuloDescripcion'>" + selectItem.descripcion + "</td>" +
+                "<td class='cantidad text-center'>" + selectItem.cantidad + "</td></tr>";
+            tablaDetalle2.row.add($(tr)).draw();
+    clear();
+}
+
+async function guardarPedidoActualizado(){
+    wo();
+    let guardadoCompleto = new Promise( function(resolve,reject){
+        tabla = $('#tabladetalle2').DataTable();
+        detalles = {};
+        detalles.justificacion=$('#just').val();
+        detalles.peex_id=$('#peex_id').val();
+        detalles.ortr_id=$('#ortr_id').val();
+        detalles.pema_id=$('#pema_id').val();
+        detalles.articulos=[];
+        //recorrido tabla de articulos
+        tabla.rows().every( function ( rowIdx, tableLoop, rowLoop ) {
+            nodo = this.node();
+            var json = JSON.parse($(nodo).attr('data-json'));
+            detalles.articulos[rowIdx] = json; 
+        }); 
+        $.ajax({
+            data: {
+                detalles
+            },
+            type: 'POST',
+            dataType: 'json',
+            url: 'index.php/<?php echo ALM ?>Notapedido/editPedidoV2',
+            success: function(result) {
+                if(result){
+                    resolve(result);
+                }else{
+                    reject(result);
+                }
+            },
+            error: function(result) {
+                reject(result);
+            },
+            complete: function(){
+                wc();
+            }
+        });
+    });
+    return await guardadoCompleto;
+}
+
 </script>
