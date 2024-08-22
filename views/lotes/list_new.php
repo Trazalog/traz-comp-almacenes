@@ -266,12 +266,29 @@ function jsRemoveWindowLoad() {
     // eliminamos el div que bloquea pantalla
     $("#WindowLoad").remove();
 }
-$( document ).ready(function() {
+$(document).ready(function() {
     $("#WindowLoad").remove();
     $(this).click(jsShowWindowLoad('Se esta Generando la Información'));
     setTimeout(() => {
         jsRemoveWindowLoad();
     }, 3000);
+    $.ajax({
+        url: 'index.php/core/Establecimiento/verificarDepositos',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.tieneDeposito) {
+                Swal.fire(
+                    'Info',
+                    'Aún no posee depósitos asignados. Comunicarse con el administrador.',
+                    'info'
+                );
+            }
+        },
+        error: function() {
+            console.error("Error al verificar los depósitos.");
+        }
+    });
 });
  
 </script>
