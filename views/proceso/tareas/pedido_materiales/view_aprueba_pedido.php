@@ -80,11 +80,8 @@ function cerrarTarea() {
     }
 
     var id = $('#taskId').val();
-    
     var pema_id = $('#pemaId').val();
-
     var dataForm = new FormData($('#generic_form')[0]);
-
     dataForm.append('pema_id', $('#pemaId').val());
 
     $.ajax({
@@ -95,35 +92,20 @@ function cerrarTarea() {
         processData: false,
         url: '<?php base_url() ?>index.php/<?php echo BPM ?>Proceso/cerrarTarea/' + id,
         success: function(data) {
-            debugger;
             var resp = JSON.parse(data);
-           
-      if(resp.status == true && resp.data == true){
-
-            Swal.fire(
-                        'Guardado!',
-                        'Se Aprobo Pedido N°:'+ pema_id +' Correctamente!',
-                        'success'
-                    ),
-
-            linkTo('<?php  echo BPM ?>Proceso/');
-             linkTo('<?php  echo BPM ?>Proceso/');
-
-               } else if (resp.status == true && resp.data == false) {
-                Swal.fire(
-                        'Echo!',
-                        'Se Cancelo Pedido N°:'+ pema_id +' Correctamente!',
-                        'info'
-                    ),
-
-             linkTo('<?php  echo BPM ?>Proceso/');
-             linkTo('<?php  echo BPM ?>Proceso/');
-               }
-               
-
+           if(resp.status == true){
+                selectedValue = $('input[name="result"]:checked').val();
+                if(selectedValue == 'true'){
+                   confRefresh(linkTo, '<?php echo BPM ?>Proceso/','Se aprobó el pedido N°: '+ pema_id +' correctamente!');
+                } else{
+                    confRefresh(linkTo, '<?php echo BPM ?>Proceso/','Se canceló pedido N°: '+ pema_id +' Correctamente!');
+                }
+            }else{
+                error("Error","Se produjo un error al cerrar la tarea");
+            }
         },
         error: function(data) {
-            alert("Error");
+            error("Error","Se produjo un error al aprobar el pedido de materiales.");
         }
     });
 
