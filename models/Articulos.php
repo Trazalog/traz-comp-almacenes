@@ -465,6 +465,7 @@ $query = $this->db->get();
         }
 		$this->db->where('A.empr_id', empresa());
 		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
+		$this->db->order_by('A.descripcion', 'ASC');
 		$query_total = $this->db->get();
 		log_message('DEBUG',"LAS QUERYYY" .$this->db->last_query());
 		if ($query_total && $query_total->num_rows() > 0) {
@@ -487,6 +488,7 @@ $query = $this->db->get();
         }
 		$this->db->where('A.empr_id', empresa());
 		$this->db->group_by('A.arti_id, T.valor, T1.descripcion');
+		$this->db->order_by('A.descripcion', 'ASC');
 		$this->db->limit($length, $start);
 		$articulosPaginados = $this->db->get();
 		$result = array (
