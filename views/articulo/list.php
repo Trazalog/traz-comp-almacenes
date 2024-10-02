@@ -11,6 +11,7 @@
                     <th width="15%">Acciones</th>
                     <th>Código</th>
                     <th>Descripción</th>
+                    <th>Tipo de Producto</th>
                     <th>Unidad de Medida</th>
                     <th width="10%">Estado</th>
                 </tr>
@@ -338,6 +339,7 @@ $('#articles').DataTable({
             {
                 'targets':[1],
                 'data':'barcode',
+                'orderable': true,
                 'render': function(data, type, row){
                     return `<td class="barcode">${row['barcode']}</td>`;
                 }
@@ -345,19 +347,29 @@ $('#articles').DataTable({
             {
                 'targets':[2],
                 'data':'descripcion',
+                'orderable': true,
                 'render': function(data, type, row){
                     return `<td>${row['descripcion']}</td>`;
                 }
             },
             {
                 'targets':[3],
+                'data':'valor',
+                'orderable': true,
+                'render': function(data, type, row){
+                    return `<td>${row['valor']}</td>`;
+                }
+            },
+            {
+                'targets':[4],
                 'data':'unidad_medida',
+                'orderable': true,
                 'render': function(data, type, row){
                     return `<td>${row['unidad_medida'] == null ? '-' : row['unidad_medida']}</td>`;
                 }
             },
             {
-                'targets':[4],
+                'targets':[5],
                 'data':'estado',
                 'render': function(data, type, row){
                     var valorEstado = (row['estado'] == 'AC') ? 'Activo' : '';
