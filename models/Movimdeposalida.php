@@ -77,4 +77,16 @@ class Movimdeposalida extends CI_Model {
 		$aux = json_decode($aux['data']);
 		return $aux->stock->articulo;
 	}
+
+	/**
+	* Trae el siguiente numero de comprobante por empresa
+	* @param int empr_id
+	* @return array suiguiente numero de comprobante 
+	*/
+	function getUltimoNroComprobante($empr_id){
+		$url = REST_ALM.'/movimientosalida/nrocomprobante/'.$empr_id;
+		$aux = $this->rest->callAPI("GET",$url);
+		$aux = json_decode($aux['data']);
+		return $aux->siguiente_numerocomprobante->numerocomprobante;
+	}
 }
