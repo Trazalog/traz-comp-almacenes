@@ -161,4 +161,16 @@ class Movimientodeposalida extends CI_Controller {
 		$resp = $this->Movimdeposalida->getArticulosDeposito($depo_id);
 		echo json_encode($resp);
 	}
+
+	/**
+	* Trae siguiente numero de comprobante por empresa
+	* @param int empr_id
+	* @return array siguiente numero de comprobante
+	*/
+	public function getNroComprobante(){
+
+		$empr_id = empresa();
+		$resp = $this->Movimdeposalida->getUltimoNroComprobante($empr_id);
+		echo json_encode($resp);
+	}
 }
