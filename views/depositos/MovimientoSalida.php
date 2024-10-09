@@ -24,6 +24,7 @@
 														</div>
 												</div>
 										</div> -->
+										<input type="hidden" id="nroCompr" class="form-control" placeholder="" >
 										<div class="col-md-3">
 												<label>Establecimiento destino <?php hreq(); ?> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
@@ -158,7 +159,7 @@
 										<div class="col-md-9">
 												<div class="form-group">
 														<label>Observaciones</label>
-														<input type="text" class="form-control">
+														<input type="text" class="form-control" id="observaciones">
 												</div>
 										</div>
 										<div class="col-md-3">
@@ -175,9 +176,9 @@
 												<button class="btn btn-primary" id="btn_guardar" style="float:right;" onclick="guardar()"><i
 																class="fa fa-check"></i>Guardar</button>
 										</div>
-										<div class="col-md-1" style="float:right">
-												<button class="btn btn-primary " style="float:right;" onclick="imprimir()"><i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir"></i>Imprimir</button>
-										</div> 
+										<!-- <div class="col-md-1" style="float:right">
+											 	<button class="btn btn-primary " style="float:right;" onclick="imprimir()"><i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir"></i>Imprimir</button> 
+										</div>  -->
 								</div>
 						</div>
 				</div>
@@ -210,6 +211,9 @@
      </div>
  </div>
 <!-- FIN MODAL ARTICULOS -->
+ <!-- MODAL REMITO -->
+ <?php $this->load->view(ALM. "depositos/modal_remito_salida") ?>
+<!-- FIN MODAL REMITO -->
 <script>
 	$(document).ready(function() {
 		$("#totalCont").val(0);
@@ -382,6 +386,10 @@
 			datos.codigo = lote_codigo;
 			datos.cantidad = cant;
 			datos.arti_id = idarti;
+			datos.descDepo = descDepo;
+			datos.lote_id_origen= lote_id_origen;
+			datos.descArt=descArt;
+			datos.um = um;
 			
 			if (lote_id_origen !=''){
 				datos.lote_id_origen = lote_id_origen;
@@ -430,7 +438,8 @@
 						success: function(result) {
 							WaitingClose();
 							$('#btn_guardar').attr("disabled", "");
-							alertify.success(result.data);
+							//alertify.success(result.data);
+							imprimir();
 						},
 						error: function(result) {
 							WaitingClose();
@@ -463,6 +472,7 @@
                 if (response[0].siguiente_comprobante) {
                     cabecera.num_comprobante = response[0].siguiente_comprobante;
 
+					$('#nroCompr').val(response[0].siguiente_comprobante);
                     const fechaActual = new Date();
                     const dia = String(fechaActual.getDate()).padStart(2, '0');
                     const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
@@ -475,7 +485,7 @@
                     cabecera.conductor = $("#conductor").val();
                     cabecera.depo_id_origen = $("#depo_origen_id").val().toString();
                     cabecera.depo_id_destino = $("#depo_id").val().toString();
-
+					cabecera.observaciones_recepcion = $("#observaciones").val();
                    
                     resolve(cabecera);
                 } else {
@@ -503,39 +513,44 @@
 			});
 			return datos;
 	}
-	// imprime movimiento
-	function imprimir(){
-			var cabecera = armarCabecera();
-			var detalle = armarDetalle();
-
-			$.ajax({
-					type: 'POST',
-					data:{cabecera, detalle},
-					dataType: 'json',
-					url: 'index.php/<?php echo ALM?>Movimientodeposalida/imprimir',
-					success: function(data) {
-						WaitingClose();
-			
-						//texto = data;
-							var win = window.open('', 'Imprimir', 'height=700,width=900');
-							win.document.write('<html><head><title></title>');
-							win.document.write('</head><body onload="window.print();">');
-							//win.document.write(texto);
-							win.document.write('</body></html>');
-							win.document.close(); // necessary for IE >= 10
-							win.focus(); // necessary for IE >= 10
-						alert('listoooo');
-
-					},
-					error: function(result){
-						WaitingClose();
-						alert(result);
-						//alertify.error('Hubo un error guardando Mpvimiento de Salida');
-					}
-			});
 
 
-	}
+
+// Función para abrir el modal y cargar los datos sincrónicamente
+function imprimir() {
+
+			const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-success',
+				cancelButton: 'btn btn-danger'
+			},
+			buttonsStyling: false
+		});
+
+		swalWithBootstrapButtons.fire({
+			title: '¡Éxito!',
+			text: '¿Desea imprimir antes de salir?',
+			icon: 'success',
+			showCancelButton: true,
+			confirmButtonText: 'Imprimir',
+			cancelButtonText: 'Cerrar',
+			reverseButtons: true
+		}).then((result) => {
+			if (result.value) {
+				wo();
+				generaRemito();
+			} else if (
+				result.dismiss === Swal.DismissReason.cancel
+			) {
+				swalWithBootstrapButtons.fire(
+					'Cancelado',
+					'Recuerda que puedes imprimir luego',
+					'info'
+				);
+				$('#modalRemito').modal('hide'); 
+			}
+		});
+}
 	//Date picker
 	$('#datepicker').datepicker({
 			autoclose: true
