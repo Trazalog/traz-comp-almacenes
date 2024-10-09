@@ -23,6 +23,8 @@ class Reportes extends CI_Controller
 		$this->load->model(ALM.'traz-comp/Componentes');
     $this->load->model(ALM.'general/Establecimientos');
     $this->load->model(ALM.'general/Tipoajustes');
+    $this->load->model(ALM.'Movimdeposalida');
+    $this->load->model('Tablas');
   }
 
   /**
@@ -269,4 +271,44 @@ class Reportes extends CI_Controller
         
     $writer->save('php://output');	// descargamos el excel generado
   }
+
+    /**
+  * Trae listado de articulos
+  * @param
+  * @return array con listado de articulos
+  */
+  function modalReImpresion()
+  {     
+    $this->load->view(ALM.'depositos/modal_remito_salida');
+  }
+
+
+  /**
+	* Obtiene los datos de movimientos internos por demi_id para reimprimir el remito
+	* @param string demi_id
+	* @return array listado de coincidencias
+	*/
+  function datosMovimientoRemito()
+  {     
+    $empr_id = empresa();
+    $data = $this->input->post('data');
+    $resp = $this->Movimdeposalida->getDatosRemito($data);
+    echo json_encode($resp);
+  }
+
+  /**
+	* Trae datos de la empresa para el remito
+	* @param 
+	* @return array datos de empresa de core.tablas
+	*/
+	public function getDatosCabeceraRemito(){
+		$data['logo'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_logo')[0];
+		$data['direccion'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_direccion')[0];
+		$data['telefono'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_telefono')[0];
+		$data['email'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_email')[0];
+		$data['texto_pie_remito'] = $this->Movimdeposalida->obtenerTablaEmpr_id('texto_pie_remito')[0];
+		
+		echo json_encode($data);
+	}
+
 }
