@@ -279,9 +279,9 @@ $(document).ready(function() {
         success: function(response) {
             if (response.tieneDeposito) {
                 Swal.fire(
-                    'Info',
-                    'Aún no posee depósitos asignados. Comunicarse con el administrador.',
-                    'info'
+                    'Ops!',
+                    'No posee depósitos asignados. Comunicarse con el administrador.',
+                    'warning'
                 );
             }
         },
