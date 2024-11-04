@@ -266,12 +266,29 @@ function jsRemoveWindowLoad() {
     // eliminamos el div que bloquea pantalla
     $("#WindowLoad").remove();
 }
-$( document ).ready(function() {
+$(document).ready(function() {
     $("#WindowLoad").remove();
     $(this).click(jsShowWindowLoad('Se esta Generando la Información'));
     setTimeout(() => {
         jsRemoveWindowLoad();
     }, 3000);
+    $.ajax({
+        url: 'index.php/core/Establecimiento/verificarDepositos',
+        type: 'GET',
+        dataType: 'json',
+        success: function(response) {
+            if (response.tieneDeposito) {
+                Swal.fire(
+                    'Ops!',
+                    'No posee depósitos asignados. Comunicarse con el administrador.',
+                    'warning'
+                );
+            }
+        },
+        error: function() {
+            console.error("Error al verificar los depósitos.");
+        }
+    });
 });
  
 </script>
@@ -361,7 +378,7 @@ $(document).ready(function(){
 });
 
 function filtrar() {
-
+    
     var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
     var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
     var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';

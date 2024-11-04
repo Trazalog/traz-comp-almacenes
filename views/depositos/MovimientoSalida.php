@@ -7,7 +7,7 @@
 						</div>
 						<div class="box-body">
 								<div class="row">
-										<div class="col-md-3">
+										<!-- <div class="col-md-3">
 												<div class="form-group">
 														<label>Nro. Comprobante <?php hreq(); ?> :</label>
 														<input type="number" id="nroCompr" class="form-control" placeholder="Ingrese Número de comprobante">
@@ -23,7 +23,8 @@
 																<input type="date" class="form-control pull-right" value="<?php echo date('Y-m-d');?>" id="fecha" placeholder="Seleccione Fecha">
 														</div>
 												</div>
-										</div>
+										</div> -->
+										<input type="hidden" id="nroCompr" class="form-control" placeholder="" >
 										<div class="col-md-3">
 												<label>Establecimiento destino <?php hreq(); ?> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
@@ -110,7 +111,7 @@
 											<label id="info" class="text-blue"></label>
 										</div>
 										<div class="col-md-4">
-												<label>Producto Origen:</label>
+												<label>Lote Origen:</label>
 												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
 													<option value="" disabled selected>-Seleccione opción-</option>
 												</select>
@@ -158,7 +159,7 @@
 										<div class="col-md-9">
 												<div class="form-group">
 														<label>Observaciones</label>
-														<input type="text" class="form-control">
+														<input type="text" class="form-control" id="observaciones">
 												</div>
 										</div>
 										<div class="col-md-3">
@@ -176,9 +177,8 @@
 																class="fa fa-check"></i>Guardar</button>
 										</div>
 										<!-- <div class="col-md-1" style="float:right">
-												<button class="btn btn-primary " style="float:right;" onclick="imprimir()"><i
-																class="fa fa-clone"></i>Imprimir</button>
-										</div> -->
+											 	<button class="btn btn-primary " style="float:right;" onclick="imprimir()"><i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir"></i>Imprimir</button> 
+										</div>  -->
 								</div>
 						</div>
 				</div>
@@ -211,6 +211,9 @@
      </div>
  </div>
 <!-- FIN MODAL ARTICULOS -->
+ <!-- MODAL REMITO -->
+ <?php $this->load->view(ALM. "depositos/modal_remito_salida") ?>
+<!-- FIN MODAL REMITO -->
 <script>
 	$(document).ready(function() {
 		$("#totalCont").val(0);
@@ -383,6 +386,10 @@
 			datos.codigo = lote_codigo;
 			datos.cantidad = cant;
 			datos.arti_id = idarti;
+			datos.descDepo = descDepo;
+			datos.lote_id_origen= lote_id_origen;
+			datos.descArt=descArt;
+			datos.um = um;
 			
 			if (lote_id_origen !=''){
 				datos.lote_id_origen = lote_id_origen;
@@ -412,50 +419,87 @@
 		}
 	}
 	// guarda info de movimiento de salida
-	function guardar()
+	async function guardar()
 	{
 			var reporte = validarCamposProducto("guardar");
 			
-			if(reporte == '')
-			{
+
+		if (reporte == '') {
 				WaitingOpen('Guardando...');
-				var cabecera = armarCabecera();
-				var detalle = armarDetalle();
+				try {
+					var cabecera = await armarCabecera(); // Espera a que se complete la cabecera
+					var detalle = armarDetalle();
 
 					$.ajax({
-							type: 'POST',
-							data:{cabecera, detalle},
-							dataType: 'json',
-							url: 'index.php/<?php echo ALM?>Movimientodeposalida/guardar',
-							success: function(result) {
-								WaitingClose();
-								$('#btn_guardar').attr("disabled", "");
-								alertify.success(result.data);
-							},
-							error: function(result){
-								WaitingClose();
-								alert(result.data);
-								alertify.error(result.data);
-							}
+						type: 'POST',
+						data: { cabecera, detalle },
+						dataType: 'json',
+						url: 'index.php/<?php echo ALM?>Movimientodeposalida/guardar',
+						success: function(result) {
+							WaitingClose();
+							$('#btn_guardar').attr("disabled", "");
+							//alertify.success(result.data);
+							imprimir();
+						},
+						error: function(result) {
+							WaitingClose();
+							alert(result.data);
+							alertify.error(result.data);
+						}
 					});
-
+				} catch (error) {
+					WaitingClose();
+					console.error('Error al armar la cabecera:', error);
+					alert('Error al armar la cabecera');
+				}
 			}else{
 				alert(reporte);
 			}
 	}
 	// procesa datos para enviar a gardar cabecera
-	function armarCabecera(){
+	async function armarCabecera() {
+    var cabecera = {};
 
-			var cabecera = {};
-			cabecera.num_comprobante = $("#nroCompr").val();
-			cabecera.fec_envio = $("#fecha").val();
-			cabecera.patente = $("#patente").val();
-			cabecera.acoplado = $("#acoplado").val();
-			cabecera.conductor = $("#conductor").val();
-			cabecera.depo_id_origen = $("#depo_origen_id").val().toString();
-			cabecera.depo_id_destino = $("#depo_id").val().toString();
-			return cabecera;
-	}
+    var empr_id = $("#empr_id").val();
+
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: 'index.php/<?php echo ALM?>Movimientodeposalida/getNroComprobante',
+            type: 'POST',
+            data: {},
+            dataType: 'json',
+            success: function(response) {
+                if (response[0].siguiente_comprobante) {
+                    cabecera.num_comprobante = response[0].siguiente_comprobante;
+
+					$('#nroCompr').val(response[0].siguiente_comprobante);
+                    const fechaActual = new Date();
+                    const dia = String(fechaActual.getDate()).padStart(2, '0');
+                    const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
+                    const anio = fechaActual.getFullYear();
+                    const fechaFormateada = `${anio}-${mes}-${dia}`;
+
+                    cabecera.fec_envio = fechaFormateada;
+                    cabecera.patente = $("#patente").val();
+                    cabecera.acoplado = $("#acoplado").val();
+                    cabecera.conductor = $("#conductor").val();
+                    cabecera.depo_id_origen = $("#depo_origen_id").val().toString();
+                    cabecera.depo_id_destino = $("#depo_id").val().toString();
+					cabecera.observaciones_recepcion = $("#observaciones").val();
+                   
+                    resolve(cabecera);
+                } else {
+                    console.error('Error al obtener el siguiente número de comprobante');
+                    reject('Error al obtener el siguiente número de comprobante');
+                }
+            },
+            error: function(error) {
+                console.error('Error en la solicitud AJAX', error);
+                reject(error);
+            }
+        });
+    });
+}
 	// procesa datos para guardar detalle
 	function armarDetalle(){
 
@@ -469,39 +513,44 @@
 			});
 			return datos;
 	}
-	// imprime movimiento
-	function imprimir(){
-			var cabecera = armarCabecera();
-			var detalle = armarDetalle();
-
-			$.ajax({
-					type: 'POST',
-					data:{cabecera, detalle},
-					dataType: 'json',
-					url: 'index.php/<?php echo ALM?>Movimientodeposalida/imprimir',
-					success: function(data) {
-						WaitingClose();
-			
-						//texto = data;
-							var win = window.open('', 'Imprimir', 'height=700,width=900');
-							win.document.write('<html><head><title></title>');
-							win.document.write('</head><body onload="window.print();">');
-							//win.document.write(texto);
-							win.document.write('</body></html>');
-							win.document.close(); // necessary for IE >= 10
-							win.focus(); // necessary for IE >= 10
-						alert('listoooo');
-
-					},
-					error: function(result){
-						WaitingClose();
-						alert(result);
-						//alertify.error('Hubo un error guardando Mpvimiento de Salida');
-					}
-			});
 
 
-	}
+
+// Función para abrir el modal y cargar los datos sincrónicamente
+function imprimir() {
+
+			const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-success',
+				cancelButton: 'btn btn-danger'
+			},
+			buttonsStyling: false
+		});
+
+		swalWithBootstrapButtons.fire({
+			title: '¡Éxito!',
+			text: '¿Desea imprimir antes de salir?',
+			icon: 'success',
+			showCancelButton: true,
+			confirmButtonText: 'Imprimir',
+			cancelButtonText: 'Cerrar',
+			reverseButtons: true
+		}).then((result) => {
+			if (result.value) {
+				wo();
+				generaRemito();
+			} else if (
+				result.dismiss === Swal.DismissReason.cancel
+			) {
+				swalWithBootstrapButtons.fire(
+					'Cancelado',
+					'Recuerda que puedes imprimir luego',
+					'info'
+				);
+				$('#modalRemito').modal('hide'); 
+			}
+		});
+}
 	//Date picker
 	$('#datepicker').datepicker({
 			autoclose: true
@@ -526,9 +575,9 @@
 		if($("#depo_id").val() == null){
 			valida = "SELECCIONE CAMPO DEPÓSITO DESTINO!";
 		}
-		if ($("#nroCompr").val() == '') {
+		/* if ($("#nroCompr").val() == '') {
 			valida = "COMPLETE CAMPO NÚMERO DE COMPROBANTE!";
-		}
+		} */
 		if (!$('#tbl_productos').DataTable().data().any() && accion != "agregar") {
 			valida = "ATENCIÓN: NO SE CARGO NINGUN PRODUCTO!";
 		}

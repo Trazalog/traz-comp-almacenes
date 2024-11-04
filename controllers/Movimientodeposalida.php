@@ -161,4 +161,31 @@ class Movimientodeposalida extends CI_Controller {
 		$resp = $this->Movimdeposalida->getArticulosDeposito($depo_id);
 		echo json_encode($resp);
 	}
+
+	/**
+	* Trae siguiente numero de comprobante por empresa
+	* @param int empr_id
+	* @return array siguiente numero de comprobante
+	*/
+	public function getNroComprobante(){
+
+		$empr_id = empresa();
+		$resp = $this->Movimdeposalida->getUltimoNroComprobante($empr_id);
+		echo json_encode($resp);
+	}
+
+	/**
+	* Trae datos de la empresa para el remito
+	* @param 
+	* @return array datos de empresa de core.tablas
+	*/
+	public function getDatosCabeceraRemito(){
+		$data['logo'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_logo')[0];
+		$data['direccion'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_direccion')[0];
+		$data['telefono'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_telefono')[0];
+		$data['email'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_email')[0];
+		$data['texto_pie_remito'] = $this->Movimdeposalida->obtenerTablaEmpr_id('texto_pie_remito')[0];
+		
+		echo json_encode($data);
+	}
 }
