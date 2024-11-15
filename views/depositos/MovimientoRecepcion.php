@@ -465,7 +465,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 											<td>
 												<span><i class='fa fa-fw fa-search text-light-blue' style='cursor: pointer; margin-left: 15px;' title='Ver detalle'></i></span>
 											</td>
-											<td>${resp[i].depo_id_origen}</td>
+											<td>${resp[i].nombre}</td>
 											<td>${resp[i].num_comprobante}</td>
 										</tr>`;
 							table.row.add($(row)).draw();

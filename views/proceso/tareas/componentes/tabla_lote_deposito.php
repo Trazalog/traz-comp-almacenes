@@ -212,7 +212,7 @@ $('table#lotes').DataTable({
         [1, "asc"]
     ],
     "language": {
-        "sProcessing": "Procesando...",
+        "sProcessing": "Procesando, por favor espere...",
         "sLengthMenu": "Mostrar _MENU_ registros",
         "sZeroRecords": "No se encontraron resultados",
         "sEmptyTable": "Ningún dato disponible en esta tabla",
