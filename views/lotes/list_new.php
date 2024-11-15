@@ -182,19 +182,25 @@ input:checked+.slider:before {
                         <!-- ARTICULO -->
                         <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
                             <label>Artículo</label>
-                            <input list="articulos" id="inputarti" name="artBarCode" class="form-control"
-                                placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
+                            <input list="articulos" id="inputarti" name="artBarCode" class="form-control" placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
                             <div class="input-group">
                                 <datalist id="articulos">
                                     <?php foreach($items as $o)
-                        {
-                            echo  "<option value='".$o->codigo."' data-json='".$o->json."' class=form-control'>".$o->descripcion." | Stock: ".$o->stock."</option>";
-                            unset($o->json);
-                        }
-                        ?>
+                                    {
+                                        echo  "<option value='".$o->codigo."' data-json='".$o->json."' class=form-control'>".$o->descripcion." | Stock: ".$o->stock."</option>";
+                                        unset($o->json);
+                                    }
+                                    ?>
                                 </datalist>
                             </div>
-                            <label id="info" class="text-blue"></label>
+                            <?php 
+                                $usuario = $this->session->userdata();
+                                if ($usuario['empr_id'] != "17") {
+                                    ?>
+                                    <label id="info" class="text-blue"></label>
+                                    <?php
+                                }
+                            ?>
                         </div>
                         <!-- /.form-group -->
                         <!-- ARTICULO -->
