@@ -279,9 +279,9 @@ $(document).ready(function() {
         success: function(response) {
             if (response.tieneDeposito) {
                 Swal.fire(
-                    'Info',
-                    'Aún no posee depósitos asignados. Comunicarse con el administrador.',
-                    'info'
+                    'Ops!',
+                    'No posee depósitos asignados. Comunicarse con el administrador.',
+                    'warning'
                 );
             }
         },
@@ -378,7 +378,7 @@ $(document).ready(function(){
 });
 
 function filtrar() {
-
+    
     var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
     var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
     var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';

@@ -89,4 +89,30 @@ class Movimdeposalida extends CI_Model {
 		$aux = json_decode($aux['data']);
 		return $aux->siguiente_numerocomprobante->numerocomprobante;
 	}
+
+	/**
+	* Obtiene los datos cargados en core.tablas por empr_id
+	* @param string columna tabla a buscar
+	* @return array listado de coincidencias
+	*/
+    public function obtenerTablaEmpr_id($tabla)
+    {
+        $url = REST_CORE."/tabla/$tabla/empresa/".empresa();
+		$aux = $this->rest->callAPI("GET",$url);
+		$aux = json_decode($aux['data']);
+		return $aux->tablas->tabla;
+        //return wso2($url);
+    }
+
+	/**
+	* Obtiene los datos de movimientos internos por demi_id para reimprimir el remito
+	* @param string demi_id
+	* @return array listado de coincidencias
+	*/
+	public function getDatosRemito($data){
+		$url = REST_ALM."/getmovimientointerno/demi/$data/$data/$data/".empresa();
+		$aux = $this->rest->callAPI("GET",$url);
+		$aux = json_decode($aux['data']);
+		return $aux->movimientosInternos->movimientoInterno;
+	}
 }

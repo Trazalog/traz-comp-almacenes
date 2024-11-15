@@ -48,6 +48,8 @@
                       <option value="TODOS">Todos</option>
                       <option value="INGRESO">Ingreso</option>
                       <option value="EGRESO">Egreso</option>
+                      <option value="MOV.ENTRADA">Movimiento de Entrada</option>
+                      <option value="MOV.SALIDA">Movimiento de Salida</option>
                       <option value="AJUSTE">Ajuste</option>
                       <option value="ETAPAPRODINGRESO">Etapa Prod Ingresos</option> <!-- produccion caso 1 -->
                       <option value="ENPROCESOENETAPA">Prod En Proceso Etapa</option> <!-- produccion caso 2 -->
@@ -81,7 +83,7 @@
               </div>
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0 habilitado" >
-                  <label for="zona" class="form-label">Artículo  <strong class="text-danger">*</strong> :</label>
+                  <label for="zona" class="form-label">Artículo:</label>
                 <div id="list_articulos"> </div>
               </div>
 
@@ -129,6 +131,17 @@
           // "showHeader" => false,
 
           "columns" => array(
+            array(
+              "label" => "Acciones",
+              "value" => function($row) {
+                if (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV.SALIDA') {
+                  return '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
+                } else {
+                  return ''; // No mostrar nada si no es "MOV.SALIDA"
+                }
+              },
+            "cssClass" => "text-center" // Centrar la columna de acciones
+            ),
             "referencia" => array(
               "label" => "Referencia"
             ),
@@ -166,7 +179,7 @@
           "cssClass" => array(
             "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
             "th" => "sorting"
-          )
+          ),
         ));
         ?>
       </div>
@@ -174,10 +187,11 @@
         <button type="button" class="btn btn-primary" onclick="exportarExcel()">Exportar</button>
       </div>
     </div>
-
   </div>
 </div>
 
+<!-- modal de reimpresion remito -->
+<div id="modalContainer"></div> 
 
 <script>
   //variables que van a mantener el estado para poder generar el excel
@@ -252,6 +266,9 @@
 
     wo();
     var id_esta = $("#establecimiento").val();
+    
+    $('#lote_id').append('<option value="TODOS">Todos</option>'); // En caso que no seleccione articulo
+
     $.ajax({
         type: 'POST',
         data: {id_esta},
@@ -348,7 +365,6 @@
 
   // filtrado de datos
   function filtrar() {
- debugger;
 
 
    // wo();
@@ -367,11 +383,16 @@
 
     inputarti = $("#inputarti").val();
     establecimiento = $("#establecimiento").val();
-   
-    data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-    artic = selectItem.arti_id;
+    if(inputarti){
+      data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+      artic = selectItem.arti_id;
+    }
+    else 
+    {
+      data.arti_id = 'TODOS';
+    }
 
-    if (fec1 == ''|| fec2 == '' || tipoajuste == '' || establecimiento == '' || inputarti == '') { 
+    if (fec1 == ''|| fec2 == '' || tipoajuste == '' || establecimiento == '') { 
       Swal.fire(
               'Error...',
               'Debes completar los campos Obligatorios (*)',
@@ -387,10 +408,17 @@
       success: function(result) {
               $('#reportContent').empty();
               $('#reportContent').html(result);
+              
+                // Verificar si el texto "No data available" está en el <tbody> 
+              let isEmpty = $('#reportContent table tbody').text().trim() === "No data available in table";
+
+              if (isEmpty) {
+                  Swal.fire('Aviso', 'No hay resultados para mostrar con los filtros aplicados.', 'info');
+              }
            //   wc();
       },
       error: function() {
-        alert('Error');
+        alert('Ha ocurrido un error, por favor comunicarse con su proveedor de servicio. Gracias!');
         wc();
       },
       complete: function(result) {
@@ -402,4 +430,145 @@
   function exportarExcel(){
     window.open("<?php echo base_url(ALM); ?>Reportes/exportarExcelHistorico?fec1="+fec1+"&fec2="+fec2+"&depo="+depo+"&arti="+artic+"&tpoMov="+tpoMov+"&lote="+lote);
 }
+
+/* Funciones para reimprimir Remito de movimiento interno */
+
+// Función asíncrona para mostrar el modal de reimpresión de Remito
+async function modalReimpresion(element) {
+  try {
+    wo();
+    var fila = $(element).closest('tr'); 
+    var celdas = fila.find('td');
+
+    // Esperar a que los datos de la empresa se carguen
+    var dataEmpresa = await DatosEmpresaRemito(); 
+
+    // referencia es el demi_id de movimientos_internos
+    var referencia = celdas.eq(1).text().trim(); 
+
+    // Llamar a la función que obtiene los datos del movimiento de remito
+    var dataRemito = await datosMovimientoRemito(referencia);
+
+    // Realizar la llamada AJAX para cargar el modal
+    $.ajax({
+      url: '<?php echo base_url(ALM); ?>Reportes/modalReImpresion',
+      type: 'GET',
+      success: function(response) {
+
+        console.log(dataRemito);
+        $('#modalContainer').html(response); // Cargar el modal en el contenedor
+        $('#modalRemito').modal('show');
+
+        // Asignar los datos de la empresa al modal
+        document.getElementById('logo_remito').src = dataEmpresa.logo.valor;
+        $('#direccion_remito').html('<small>' + dataEmpresa.direccion.valor + '</small>');
+        $('#telefono_remito').html('<small>' + dataEmpresa.telefono.valor + '</small>');
+        $('#email_remito').html('<small>' + dataEmpresa.email.valor + '</small>');
+        $('#texto_pie_remito').html('<strong>' + dataEmpresa.texto_pie_remito.valor + '</strong>'); 
+
+        // Asignar los datos del movimiento de remito al modal
+        $('#conductor_remito').text(dataRemito[0].conductor);
+        $('#patente_acoplado_remito').text(dataRemito[0].acoplado);
+        $('#patente_remito').text(dataRemito[0].patente);
+        $('#observaciones_remito').text(dataRemito[0].observaciones_recepciones);
+        $('#nroRemito').text(dataRemito[0].num_comprobante);
+
+        
+        $('#depo_destino_remito').text(dataRemito[0].descr_depo_origen);
+        $('#establecimiento_destino_remito').text(dataRemito[0].desc_lote_destino); 
+
+        $("#observaciones_remito").text(dataRemito[0].observaciones_recepcion);
+        
+        // Limpiar la tabla antes de agregar nuevas filas
+        var tablaDetalle = $('#tabla_detalle tbody');
+        tablaDetalle.empty();
+
+        // Verifica si dataEmpresa es un arreglo
+        if (Array.isArray(dataRemito)) {
+            // Recorrer el arreglo de datos y agregar cada fila a la tabla
+            dataRemito.forEach(function(datos) {
+                // Asegúrate de que cada objeto tenga las propiedades que necesitas
+                if (datos.cantidad_cargada && datos.unidad_medida && datos.descripcion_articulo && datos.descr_depo_origen && datos.lote_id_origen) {
+                    // Crear una nueva fila con los datos y añadirla a la tabla
+                    var fila = `
+                        <tr>
+                            <td style="text-align: right;">${datos.cantidad_cargada}</td>  <!-- Alineado a la derecha -->
+                            <td>${datos.unidad_medida}</td>
+                            <td style="text-align: left;">${datos.descripcion_articulo}</td>    <!-- Alineado a la izquierda -->
+                            <td>${datos.descr_depo_origen}</td>
+                            <td>${datos.lote_id_origen}</td>
+                        </tr>
+                    `;
+
+                    // Agregar la fila a la tabla
+                    tablaDetalle.append(fila);
+                } else {
+                    console.warn('Falta alguna propiedad en el objeto datos:', datos);
+                }
+            });
+            wc();
+        } else {
+            console.error('dataRemito no es un arreglo:', dataRemito);
+        }
+
+      },
+      error: function(xhr, status, error) {
+        console.error('Error al cargar el modal:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Error en modalReimpresion:', error);
+  }
+}
+
+// Función que obtiene los datos del movimiento del remito (retorna una promesa)
+function datosMovimientoRemito(data) {
+  return new Promise(function(resolve, reject) {
+    $.ajax({
+      url: '<?php echo base_url(ALM); ?>Reportes/datosMovimientoRemito',
+      data: { data },
+      type: 'POST',
+      success: function(response) {
+        try {
+          var resp = JSON.parse(response);
+          resolve(resp); 
+        } catch (error) {
+          reject('Error al parsear la respuesta: ' + error); 
+        }
+      },
+      error: function(xhr, status, error) {
+        reject('Error en la llamada AJAX: ' + error); 
+      }
+    });
+  });
+}
+
+// Función que trae los datos de la empresa para la cabecera del remito
+async function DatosEmpresaRemito() {
+  try {
+    // Realizar la llamada AJAX de manera sincrónica usando await
+    const response = await $.ajax({
+      type: 'POST',
+      data: {},
+      url: 'index.php/<?php echo ALM?>Reportes/getDatosCabeceraRemito'
+    });
+
+    const resp = JSON.parse(response);
+    
+    // Imprimir los datos parseados
+    console.log('Datos parseados:', resp);
+
+    if (resp && resp.logo && resp.direccion && resp.telefono && resp.email && resp.texto_pie_remito) {
+      return resp; 
+    } else {
+      throw new Error('Estructura de datos inesperada en la respuesta');
+    }
+
+  } catch (error) {
+    console.error('Error en DatosEmpresaRemito:', error);
+    alert('Error al obtener los datos de la cabecera');
+    throw error; 
+  }
+}
+
 </script>
