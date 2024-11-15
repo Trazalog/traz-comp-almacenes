@@ -492,11 +492,11 @@ async function modalReimpresion(element) {
                     // Crear una nueva fila con los datos y añadirla a la tabla
                     var fila = `
                         <tr>
-                            <td style="text-align: right;">${datos.cantidad_cargada}</td>  <!-- Alineado a la derecha -->
-                            <td>${datos.unidad_medida}</td>
+                            <td style="text-align: left;">${datos.cantidad_cargada}</td>  <!-- Alineado a la derecha -->
+                            <td style="text-align: left;">${datos.unidad_medida}</td>
                             <td style="text-align: left;">${datos.descripcion_articulo}</td>    <!-- Alineado a la izquierda -->
-                            <td>${datos.descr_depo_origen}</td>
-                            <td>${datos.lote_id_origen}</td>
+                            <td style="text-align: left;">${datos.descr_depo_origen}</td>
+                            <td style="text-align: left;">${datos.lote_id_origen}</td>
                         </tr>
                     `;
 
