@@ -469,7 +469,7 @@ function filtrar() {
                         `<tr data-json='${JSON.stringify(movimCabecera)}'>
                                     <td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>`;
                     //N° LOTE
-                    if (resp[i].codigo != 1) {
+                    if (resp[i].codigo != 1 || resp[i].codigo != '1') {
                         row += `<td>${resp[i].codigo}</td>`;
                     } else {
                         row += `<td>S/L</td>`;
