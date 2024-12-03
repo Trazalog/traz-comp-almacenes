@@ -195,7 +195,7 @@ input:checked+.slider:before {
                             </div>
                             <?php 
                                 $usuario = $this->session->userdata();
-                                if ($usuario['empr_id'] != "17") {
+                                if ($usuario['groupBpm'] != "Tierras_de_Capayan") {
                                     ?>
                                     <label id="info" class="text-blue"></label>
                                     <?php
