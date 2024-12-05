@@ -552,20 +552,22 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	function armarDetalle(){
 
 		var datos = [];
-		var item = {};
+		
 		var rows = $('#tbl_productos_recepcion tbody tr');
 		$.each(rows, function(i,e) {
 
 				var datajson = $(this).attr("data-json");
 				var data = JSON.parse( datajson );
-				item.demi_id = data.demi_id;
-				item.cantidad_cargada = data.cantidad_cargada;
-				item.prov_id = data.prov_id;
-				item.arti_id = JSON.parse($(this).attr("data-articulo")).arti_id;
-				item.cod_lote = JSON.parse($(this).attr("data-articulo")).cod_lote;// codigo de lote origen
-				item.depo_id = $(this).find("input.depo_id_modal").val();
-				item.fec_vencimiento   = $(this).find("input.fec_vencimiento").val();
-				item.cantidad_recibida = $(this).find("input.cantidad").val();
+				var item = {
+							demi_id: data.demi_id,
+							cantidad_cargada: data.cantidad_cargada,
+							prov_id: data.prov_id,
+							arti_id: JSON.parse($(this).attr("data-articulo")).arti_id,
+							cod_lote: JSON.parse($(this).attr("data-articulo")).cod_lote, // código de lote origen
+							depo_id: $(this).find("input.depo_id_modal").val(),
+							fec_vencimiento: $(this).find("input.fec_vencimiento").val(),
+							cantidad_recibida: $(this).find("input.cantidad").val()
+						};
 				datos.push(item);
 		});
 		return datos;
