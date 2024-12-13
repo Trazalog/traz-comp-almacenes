@@ -17,7 +17,7 @@
             foreach($list as $f){
             echo "<tr data-json='".json_encode($f)."'>";
             echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
-            echo '<td class="text-center">'.((empty($f->codigo) && $f->codigo == 1) ? 'S/L' : $f->codigo).'</td>';
+            echo '<td class="text-center">'.(($f->codigo == "1" || empty($f->codigo)) ? 'S/L' : $f->codigo).'</td>';
             echo '<td>'.$f->artbarcode.'</td>';
             echo '<td>'.$f->artdescription.'</td>';
             echo '<td class="text-center">'.((empty($f->cantidad)) ? '0' : $f->cantidad).'</td>';
