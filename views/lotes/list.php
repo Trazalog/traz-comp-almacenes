@@ -182,8 +182,7 @@ input[type=checkbox] {
 
                             echo "<tr data-json='".json_encode($f)."'>";
                             echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
-                            // echo '<td class="text-center">'.($f['codigo']==1?'S/L':$f['codigo']).'</td>';
-                            echo '<td class="text-center">'.(($f['codigo'] != 1 && $f['codigo'] != '1') ? $f['codigo'] : 'S/L').'</td>';
+                            echo '<td class="text-center">'.(($f['codigo'] == 1 || $f['codigo'] == "1") ? 'S/L' : $f['codigo']).'</td>';
                             echo '<td>'.$f['artBarCode'].'</td>';
                             echo '<td>'.$f['artDescription'].'</td>';
                             echo '<td class="text-center">'.$stock.'</td>';
@@ -424,7 +423,7 @@ $(".btnInfo").on("click", function(e) {
 // llena modal para edicion y muestra
 function llenarModal(datajson) {
     $('#lote_id_edit').val(datajson.lote_id);
-    if (datajson.codigo != 1 && datajson.codigo != '1') {
+    if (datajson.codigo != 1 || datajson.codigo != '1') {
         $('#codigo_edit').val(datajson.codigo);
     } else {
         $('#codigo_edit').val("S/L");
