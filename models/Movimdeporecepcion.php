@@ -55,9 +55,9 @@ class Movimdeporecepcion extends CI_Model {
 	*/
 	function actualizarLotes($lotes)
 	{
-		$post["_post_lote_agregaractualizar"] = $lotes;
+		$post["_post_lote_crearactualizarlote"] = $lotes;
 		log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACEN|MOVIMIENTODEPOSITOSRECEP|actualizarLotes($lotes) $post: >> '.json_encode($post));
-		$url = REST_ALM.'/lote/agregarActualizar';
+		$url = REST_ALM.'/lote/crearactualizarlote';
 		$aux = $this->rest->callAPI("POST",$url, $post);
 		$aux =json_decode($aux["status"]);
 		return $aux;
@@ -69,7 +69,6 @@ class Movimdeporecepcion extends CI_Model {
 	* @return string lote_id
 	*/
 	function getLoteIdGenerado($prov_id, $arti_id, $depo_id, $cod_lote){
-
 		$empr_id = empresa();
 		$url = REST_ALM.'/lote/id/prov_id/'.$prov_id.'/arti_id/'.$arti_id.'/depo_id/'.$depo_id.'/empr_id/'.$empr_id.'/cod_lote/'.$cod_lote;
 		$aux = $this->rest->callAPI("GET",$url);

@@ -48,6 +48,8 @@
                       <option value="TODOS">Todos</option>
                       <option value="INGRESO">Ingreso</option>
                       <option value="EGRESO">Egreso</option>
+                      <option value="MOV.ENTRADA">Movimiento de Entrada</option>
+                      <option value="MOV.SALIDA">Movimiento de Salida</option>
                       <option value="AJUSTE">Ajuste</option>
                       <option value="ETAPAPRODINGRESO">Etapa Prod Ingresos</option> <!-- produccion caso 1 -->
                       <option value="ENPROCESOENETAPA">Prod En Proceso Etapa</option> <!-- produccion caso 2 -->
@@ -81,7 +83,7 @@
               </div>
 
               <div class="col-md-4 col-md-6 mb-4 mb-lg-0 habilitado" >
-                  <label for="zona" class="form-label">Artículo  <strong class="text-danger">*</strong> :</label>
+                  <label for="zona" class="form-label">Artículo:</label>
                 <div id="list_articulos"> </div>
               </div>
 
@@ -132,7 +134,7 @@
             array(
               "label" => "Acciones",
               "value" => function($row) {
-                if (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV. SALIDA') {
+                if (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV.SALIDA') {
                   return '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
                 } else {
                   return ''; // No mostrar nada si no es "MOV.SALIDA"
@@ -264,6 +266,9 @@
 
     wo();
     var id_esta = $("#establecimiento").val();
+    
+    $('#lote_id').append('<option value="TODOS">Todos</option>'); // En caso que no seleccione articulo
+
     $.ajax({
         type: 'POST',
         data: {id_esta},
@@ -378,11 +383,16 @@
 
     inputarti = $("#inputarti").val();
     establecimiento = $("#establecimiento").val();
-   
-    data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
-    artic = selectItem.arti_id;
+    if(inputarti){
+      data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+      artic = selectItem.arti_id;
+    }
+    else 
+    {
+      data.arti_id = 'TODOS';
+    }
 
-    if (fec1 == ''|| fec2 == '' || tipoajuste == '' || establecimiento == '' || inputarti == '') { 
+    if (fec1 == ''|| fec2 == '' || tipoajuste == '' || establecimiento == '') { 
       Swal.fire(
               'Error...',
               'Debes completar los campos Obligatorios (*)',
@@ -398,10 +408,17 @@
       success: function(result) {
               $('#reportContent').empty();
               $('#reportContent').html(result);
+              
+                // Verificar si el texto "No data available" está en el <tbody> 
+              let isEmpty = $('#reportContent table tbody').text().trim() === "No data available in table";
+
+              if (isEmpty) {
+                  Swal.fire('Aviso', 'No hay resultados para mostrar con los filtros aplicados.', 'info');
+              }
            //   wc();
       },
       error: function() {
-        alert('Error');
+        alert('Ha ocurrido un error, por favor comunicarse con su proveedor de servicio. Gracias!');
         wc();
       },
       complete: function(result) {
@@ -475,11 +492,11 @@ async function modalReimpresion(element) {
                     // Crear una nueva fila con los datos y añadirla a la tabla
                     var fila = `
                         <tr>
-                            <td style="text-align: right;">${datos.cantidad_cargada}</td>  <!-- Alineado a la derecha -->
-                            <td>${datos.unidad_medida}</td>
+                            <td style="text-align: left;">${datos.cantidad_cargada}</td>  <!-- Alineado a la derecha -->
+                            <td style="text-align: left;">${datos.unidad_medida}</td>
                             <td style="text-align: left;">${datos.descripcion_articulo}</td>    <!-- Alineado a la izquierda -->
-                            <td>${datos.descr_depo_origen}</td>
-                            <td>${datos.lote_id_origen}</td>
+                            <td style="text-align: left;">${datos.descr_depo_origen}</td>
+                            <td style="text-align: left;">${datos.lote_id_origen}</td>
                         </tr>
                     `;
 

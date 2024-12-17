@@ -69,7 +69,7 @@
                             <!-- ______ TABLA PRODUCTOS ______ -->
                             <table id="tabla_detalle" class="table table-bordered table-striped">
                                 <thead class="thead-dark" bgcolor="#eeeeee">
-                                    <th>Cantidad</th>
+                                    <th style="width: 5%;">Cantidad</th>
                                     <th>U. Med</th>
                                     <th>Descripción</th>
                                     <th>Depo. Orig</th>
@@ -248,11 +248,11 @@ async function generaRemito() {
         // Crear una nueva fila con los datos y añadirla a la tabla
         var fila = `
                     <tr>
-                        <td style="text-align: right;">${datos.cantidad}</td>  <!-- Alineado a la derecha -->
-                        <td>${datos.um}</td>
+                        <td style="text-align: left;">${datos.cantidad}</td>  <!-- Alineado a la derecha -->
+                        <td style="text-align: left;">${datos.um}</td>
                         <td style="text-align: left;">${datos.descArt}</td>    <!-- Alineado a la izquierda -->
-                        <td>${datos.descDepo}</td>
-                        <td>${datos.lote_id_origen}</td>
+                        <td style="text-align: left;">${datos.descDepo}</td>
+                        <td style="text-align: left;">${datos.lote_id_origen}</td>
                     </tr>
                 `;
 
