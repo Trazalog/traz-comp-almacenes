@@ -181,7 +181,7 @@ input:checked+.slider:before {
                         <!-- /.form-group -->
                         <!-- ARTICULO -->
                         <div class="form-group col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                            <label>Artículo 123</label>
+                            <label>Artículo</label>
                             <input list="articulos" id="inputarti" name="artBarCode" class="form-control" placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
                             <div class="input-group">
                                 <datalist id="articulos">
