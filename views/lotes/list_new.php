@@ -185,9 +185,18 @@ input:checked+.slider:before {
                             <input list="articulos" id="inputarti" name="artBarCode" class="form-control" placeholder="Seleccionar Articulo" onchange="getItem(this)" autocomplete="off">
                             <div class="input-group">
                                 <datalist id="articulos">
-                                    <?php foreach($items as $o)
+                                    <?php 
+                                    $usuario = $this->session->userdata();
+                                    foreach($items as $o)
                                     {
-                                        echo  "<option value='".$o->codigo."' data-json='".$o->json."' class=form-control'>".$o->descripcion." | Stock: ".$o->stock."</option>";
+                                        // Verifica si el usuario pertenece al grupo "Tierras_de_Capayan"
+                                        if ($usuario['groupBpm'] == "Tierras_de_Capayan") {
+                                            // Muestra el artículo sin stock
+                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
+                                        } else {
+                                            // Muestra el artículo con stock
+                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . " | Stock: " . $o->stock . "</option>";
+                                        }
                                         unset($o->json);
                                     }
                                     ?>
