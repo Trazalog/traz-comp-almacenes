@@ -110,11 +110,14 @@
 											<br>
 											<label id="info" class="text-blue"></label>
 										</div>
-										<div class="col-md-4">
-												<label>Lote Origen:</label>
-												<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
-													<option value="" disabled selected>-Seleccione opción-</option>
-												</select>
+										<div class="col-md-4 ba">
+											<label>Lote Origen:</label>
+											<select  class="form-control select2 select2-hidden-accesible" id="lote_id" disabled>
+												<option value="" disabled selected>-Seleccione opción-</option>
+											</select>
+											<label id='detalle' class='select-detalle'></label>
+											<br>
+											<label id="info" class="text-blue"></label>
 										</div>
 								</div>
 								<div class="row">
@@ -300,32 +303,38 @@
 			return;
 		}
 
-		WaitingOpen('Buscando Lotes...');
+		wo();
 		$.ajax({
 			type: 'POST',
 			data: {arti_id: arti_id, depo_id: depo_id},
 			url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerLotes',
 			success: function(data) {
-					
 				$('#lote_id').empty();
 				var resp = JSON.parse(data);
 				if (resp == null) {
 					$('#lote_id').append('<option value="" disabled selected>-Sin Lotes para este artículo-</option>');
 				} else {
-					console.table(resp);
-					console.table(resp[0].lote_id);
-					$('#lote_id').append('<option value="" disabled selected>-Seleccione opción-</option>');
-					for(var i=0; i<resp.length; i++)
-					{
-						$('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
+					var selectLotes = '<option selected disabled data-foo=""> - Seleccione lote -</option>';
+					// $('#lote_id').append('<option value="" disabled selected>-Seleccione opción-</option>');
+
+					for(var i=0; i < resp.length; i++){
+						json = JSON.stringify(resp[i]);
+						if(resp[i].codigo == '1'){
+							selectLotes += "<option value='" + resp[i].lote_id + "' data-json='"+ json +"'  data-foo='<small><cite>Proveedor: <span class=\"text-blue\"> "+resp[i].proveedor+"</span> </cite></small>' > LOTE ÚNICO </option>";
+						}else{
+							selectLotes += "<option value='" + resp[i].lote_id + "' data-json='"+ json +"'  data-foo='<small><cite>Proveedor: <span class=\"text-blue\"> "+resp[i].proveedor+"</span> </cite></small>' >"+ resp[i].codigo + "</option>";
+						}
+						// $('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
 					}
+					$('#lote_id').html(selectLotes);
+          			$('#lote_id').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
 					$("#lote_id").attr('disabled',false);
 				}
-				WaitingClose();
+				wc();
 			},
 			error: function(data) {
 				error('Error','Se produjo un error al obtener los Lotes del artículo');
-				WaitingClose();
+				wc();
 			}
 		});
 	});
@@ -367,14 +376,13 @@
 		//Informamos el campo vacio 
 		var reporte = validarCamposProducto("agregar");
 								
-		if(reporte == '')
-		{
+		if(reporte == ''){
 			var artiJson = JSON.parse($('#inputarti option:selected').attr('data-json'));
-
+			var loteJson = JSON.parse($('#lote_id option:selected').attr('data-json'));
 			var depoOrigen_id = $("#depo_origen_id").val();
 			var descDepo = $("#depo_origen_id option:selected").text();
 			var lote_id_origen = $('#lote_id').val();
-			var lote_codigo = $('#lote_id option:selected').text();
+			var lote_codigo = loteJson.codigo;
 			var codigoArt = $("#inputarti").val();
 			var cant = $("#cant_id").val();
 			var idarti = artiJson.arti_id;
