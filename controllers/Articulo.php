@@ -16,11 +16,9 @@ class Articulo extends CI_Controller {
 	// Muestra listado de articulos
 	public function index()
 	{
-		log_message('DEBUG',"#TRAZA | TRAZ-COMP-ALMACENES | Articulo | index()");
-		// $data['list'] = $this->Articulos->getList();
-		$data['unidades_medida'] = $this->Tablas->obtenerTablaEmpr_id('unidades_medida')['data'];
-		$data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
-		
+		$data['list'] = $this->Articulos->getList();
+		$data['unidades_medida'] = $this->Tablas->obtenerTabla('unidades_medida')['data'];
+		$data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
 		$this->load->view(ALM.'articulo/list', $data);
 	}
 
