@@ -22,9 +22,33 @@
             <input id="add_cantidad" type="number" min="0" step="1" class="form-control" placeholder="Cantidad">
         </div>
     </div>
+</div>
+<div class="row">
+    <div class="col-xs-4 col-sm-4 col-md-4">
+        <div class="form-group">
+            <label for="establecimiento">Establecimientos:</label>
+            <select  onchange="seleccionesta(this)" id="establecimiento" class="form-control">
+                <option value="false"> - Seleccionar - </option>
+                    <?php 
+                        foreach ($establecimientos as $o) {
+                            echo "<option value='$o->esta_id'>$o->nombre</option>";
+                        }
+                    ?>
+            </select>
+        </div>
+    </div>
+    <div class="col-xs-4 col-sm-4 col-md-4">
+        <div class="form-group">
+            <label for="deposito">Depósito:</label>
+            <select id="deposito" name="deposito" class="form-control" readonly>
+                <option value="" disabled selected> - Seleccionar - </option>
+            </select>
+        </div>
+    </div>
     <div class="col-xs-3 col-sm-3 col-md-3" style="margin-top:25px">
         <button class="btn btn-primary" onclick="guardar_pedido();"><i class="fa fa-check"></i>Agregar</button>
     </div>
+
 </div>
 <table id="tabladetalle2" class="table table-bordered table-striped table-hover">
     <thead>
@@ -68,7 +92,7 @@ function del_detalle() {
 
 
 //tabla articulos pedido - Tarea 
-function get_detalle() {
+function get_detalle() {;
     var id = $('#pema_id').val();
     if (id == null || id == '') {
         return;
@@ -186,9 +210,10 @@ function guardar_pedido() {
 
 //armado de la tabla de articulos
 function set_pedido() {
-    //debugger;
+
     var cant = $('#add_cantidad').val();
     selectItem.cantidadPedida=cant;
+    selectItem.deposito = $('#deposito').val() ? $('#deposito').val()  : '';
     var tr = "<tr class='celdas' data-json='" + JSON.stringify(selectItem) + "'>" +
                     "<td class='text-light-blue'>" +
                     "<i class='fa fa-fw fa-trash' style='cursor: pointer;' title='Eliminar' onclick='del(this);'></i></td>" +
@@ -416,6 +441,7 @@ $('#set_cantidad').modal('show');
 function actualizar_tabla(){
     var cant = $('#add_cantidad').val();
     selectItem.cantidad=cant;
+    selectItem.deposito = $('#deposito').val() ? $('#deposito').val()  : '';
     var tr = "<tr class='celdas' data-json='" + JSON.stringify(selectItem) + "'>" +
                 "<td class='text-light-blue'>" +
                 "<i class='fa fa-fw fa-pencil' style='cursor: pointer;' title='Editar' onclick='edit_cantidad(this)'></i>" +
@@ -468,4 +494,29 @@ async function guardarPedidoActualizado(){
     return await guardadoCompleto;
 }
 
+//trae depositos asociados al establecimiento
+function seleccionesta(opcion){
+    // alert("dentro");
+    var id_esta = $("#establecimiento").val();
+    console.table(id_esta);
+    $.ajax({
+            type: 'POST',
+            data: {id_esta},
+            url: 'index.php/<?php echo ALM?>Deposito/getdepositosxestaid',
+            success: function(data) {
+                var resp = JSON.parse(data);
+                console.table(resp);
+                console.table(resp[0].depo_id);
+                $('#deposito').empty();
+                for(var i=0; i<resp.length; i++)
+                {
+                    $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
+                }
+                $("#deposito").removeAttr('readonly');
+            },
+            error: function(data) {
+                alert('Error');
+            }
+        });
+}
 </script>

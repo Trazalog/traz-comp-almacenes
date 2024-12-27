@@ -11,6 +11,7 @@ class Notapedido extends CI_Controller
         parent::__construct();
         $this->load->model(ALM . 'Notapedidos');
         $this->load->model(ALM . 'Articulos');
+        $this->load->model(ALM.'Depositos');
     }
     /**
 	* Carga el listado de los pedidos de materiales
@@ -209,6 +210,7 @@ class Notapedido extends CI_Controller
             $deta[$i]['pema_id'] = "$idnota";
             $deta[$i]['arti_id'] = $detalles['articulos'][$i]['arti_id'];
             $deta[$i]['cantidad'] = $detalles['articulos'][$i]['cantidadPedida'];
+            $deta[$i]['depo_id'] = $detalles['articulos'][$i]['deposito'];
         }
 
         //servicio crea el detalle del pedido
@@ -315,6 +317,7 @@ class Notapedido extends CI_Controller
         #COMPONENTE ARTICULOS
         $data['items'] = $this->Componentes->listaArticulos();
         $data['lang'] = lang_get('spanish', 'Ejecutar OT');
+        $data['establecimientos'] = $this->Depositos->obtenerEstablecimientos();
 
         if ($ot) {
             $info = new stdClass();
@@ -393,5 +396,21 @@ class Notapedido extends CI_Controller
             $data['articulos'] = $this->Articulos->obtenerTodos()['data'];
             $this->load->view(ALM.'notapedido/nuevo', $data);
         }
+    }
+
+    
+      /**
+	* Updatea los depositos del alm.deta_pedido_materiales asosiados al pema_id
+	* @param 
+	* @return array 
+	*/
+    public function editaDeposito()
+    {
+        $pema_id = $this->input->post('pema_id');
+        $depo_id = $this->input->post('depo_id');
+
+        $rsp = $this->Notapedidos->updateaDeposito($pema_id, $depo_id);
+        echo json_encode($rsp);
+
     }
 }
