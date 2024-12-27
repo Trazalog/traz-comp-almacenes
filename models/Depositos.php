@@ -60,4 +60,29 @@ class Depositos extends CI_Model
             return false;
         }
     }
+
+
+    public function obtenerDepositoxEncargado($user_id , $esta_id)
+    {
+        $this->db->select('
+        ad.depo_id as depo_id,
+        ad.descripcion as descripcion,
+        u.id as user_id,
+        CASE 
+            WHEN u.id IS NULL THEN \'\' 
+            ELSE CONCAT(u.first_name, \' \', u.last_name) 
+        END as responsable
+    ');
+    $this->db->from('alm.alm_depositos as ad');
+    $this->db->join('core.encargados_depositos as ed', 'ed.depo_id = ad.depo_id', 'left');
+    $this->db->join('seg.users as u', 'u.id = ed.user_id', 'left');
+    $this->db->join('prd.establecimientos as e', 'e.esta_id = ad.esta_id', 'left');
+    $this->db->where('u.id', $user_id);
+    $this->db->where('ad.esta_id', $esta_id);
+
+    $query = $this->db->get();
+        return $query->result_array();  
+
+    }
+
 }
