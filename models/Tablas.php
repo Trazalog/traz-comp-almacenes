@@ -7,19 +7,27 @@ class Tablas extends CI_Model
         parent::__construct();
     }
 
+    /** Obtiene los valores para una lista desplegable de core.tablas
+     *  @author rruiz
+     */
     public function obtenerTabla($tabla)
     {
-        $url = REST_CORE . "/tablas/$tabla";
+        // cambio de metodo agergando empresa y unificando esta funcion como unica funcion para tablas, eliminando el uso de utl_tablas
+        // nota: debe migrarse los valores de utl_tablas a core.tablas
+        log_message('DEBUG','#TRAZA | ALMACENES | obtenerTabla() >> tabla: |'.$tabla);
+        $url = REST_CORE . "/tabla/$tabla/empresa/".empresa();
         return wso2($url);
     }
 
-    public function obtener($id = false)
+
+    /** Obtiene los valores para una lista desplegable de core.tablas si es una tabla de sistema
+     *  @author rruiz
+     */
+    public function obtenerSysTabla($tabla)
     {
-        if ($id) {
-            $this->db->where('tabla', $id);
-        }
-        $this->db->where('eliminado',false);
-        return $this->db->get('alm.utl_tablas')->result();
+        log_message('DEBUG','#TRAZA | ALMACENES | obtenerTabla() >> tabla: |'.$tabla);
+        $url = REST_CORE . "/tabla/$tabla/empresa/";
+        return wso2($url);
     }
     /**
 	* Obtiene los datos cargados en core.tablas por empr_id
