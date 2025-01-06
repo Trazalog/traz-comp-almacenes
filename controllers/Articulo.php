@@ -224,8 +224,10 @@ class Articulo extends CI_Controller {
 		$start = $this->input->post('start');
 		$length = $this->input->post('length');
 		$search = $this->input->post('search')['value'];
+		$ordering = $this->input->post('order');
 
-		$r = $this->Articulos->articulosPaginados($start,$length,$search);
+
+		$r = $this->Articulos->articulosPaginados($start,$length,$search, $ordering);
 
 		$resultado =$r['datos'];
 		$totalDatos = $r['numDataTotal'];
