@@ -129,7 +129,7 @@
 								<br>
 								<div class="row">
 										<div class="col-md-3" style="float:right">
-												<button class="btn btn-primary " style="float:right;" onclick="agregarProducto()"><i
+												<button class="btn btn-primary " style="float:right;" id='btnAgregar' onclick="agregarProducto()"><i
 																class="fa fa-check"></i>Agregar</button>
 										</div>
 								</div>
@@ -320,11 +320,20 @@
 					for(var i=0; i < resp.length; i++){
 						json = JSON.stringify(resp[i]);
 						if(resp[i].codigo == '1'){
-							selectLotes += "<option value='" + resp[i].lote_id + "' data-json='"+ json +"'  data-foo='<small><cite>Proveedor: <span class=\"text-blue\"> "+resp[i].proveedor+"</span> </cite></small>' > LOTE ÚNICO </option>";
+							selectLotes += "<option value='" + resp[i].lote_id + "' " + 
+								"data-json='" + json + "' " +
+								"data-foo='<small><cite>Proveedor: <span class=\"text-blue\">" + resp[i].proveedor + "</span></cite></small>' " +
+								"data-cantidad='" + resp[i].cantidad + "'>" +
+								"LOTE ÚNICO" + 
+								"</option>";
 						}else{
-							selectLotes += "<option value='" + resp[i].lote_id + "' data-json='"+ json +"'  data-foo='<small><cite>Proveedor: <span class=\"text-blue\"> "+resp[i].proveedor+"</span> </cite></small>' >"+ resp[i].codigo + "</option>";
+							selectLotes += "<option value='" + resp[i].lote_id + "' " + 
+								"data-json='" + json + "' " +
+								"data-foo='<small><cite>Proveedor: <span class=\"text-blue\">" + resp[i].proveedor + "</span></cite></small>' " +
+								"data-cantidad='" + resp[i].cantidad + "'>" + 
+								resp[i].codigo + 
+								"</option>";
 						}
-						// $('#lote_id').append("<option value='" + resp[i].lote_id + "'>" +resp[i].codigo+"</option");
 					}
 					$('#lote_id').html(selectLotes);
           			$('#lote_id').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
@@ -594,4 +603,68 @@ function imprimir() {
 		}
 		return valida;
 	}
+
+
+
+
+// Validaciones de cantidad ingresada con respecto al lote 
+
+var timeout;
+
+var inputCantidad = document.getElementById("cant_id");
+
+inputCantidad.addEventListener("input", () => {
+    // Reinicia el temporizador cada vez que el usuario escribe
+    clearTimeout(timeout);
+
+    // Configura el temporizador para ejecutar la validación
+    timeout = setTimeout(() => {
+        validarCantidad(inputCantidad.value);
+    }, 800);
+});
+
+function validarCantidad(valor) {
+
+	//trae el lote seleccionado 
+    var selectLote = document.getElementById("lote_id");
+    var selectedOption = selectLote.options[selectLote.selectedIndex];
+    // obtengo el valor de data-cantidad de la opción seleccionada
+    var dataCantidad = selectedOption ? selectedOption.dataset.cantidad : null;
+
+	//console.log('cantidad lote:', dataCantidad);
+
+	//convertir valor a entero
+	let enteroCantidad = Math.floor(dataCantidad);
+
+    // Lógica de validación
+    if (valor < 0 || enteroCantidad < valor) {
+
+		var artiJson = JSON.parse($('#inputarti option:selected').attr('data-json'));
+		var descArt = artiJson.descripcion;
+		
+		//console.log('articulo', descArt);
+
+		const swalWithBootstrapButtons = Swal.mixin({
+			customClass: {
+				confirmButton: 'btn btn-success',
+				cancelButton: 'btn btn-danger'
+			},
+			buttonsStyling: false
+		});
+
+		swalWithBootstrapButtons.fire(
+			'El lote seleccionado contiene ' + enteroCantidad + ' ' + descArt,                 
+			'Por favor, ingrese un valor menor o igual a: '+ enteroCantidad,  
+			'info'                 
+		);
+       // console.log("Cantidad inválida:", valor);
+		$('#btnAgregar').prop('disabled', true);
+    } else {
+        //console.log("Cantidad válida:", valor);
+		$('#btnAgregar').prop('disabled', false);
+    }
+}
+
+
+
 </script>
