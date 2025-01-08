@@ -54,8 +54,16 @@ class Notapedidos extends CI_Model
 
     public function getXCaseId($case)
     {
-        $this->db->where('case_id', $case);
-        return $this->db->get('alm.alm_pedidos_materiales')->row_array();
+       /*  $this->db->where('case_id', $case);
+        return $this->db->get('alm.alm_pedidos_materiales')->row_array(); */
+        $this->db->select('apm.*, adpm.depo_id, d.descripcion as deposito, e.nombre as establecimiento');
+        $this->db->from('alm.alm_pedidos_materiales apm');
+        $this->db->join('alm.alm_deta_pedidos_materiales adpm', 'apm.pema_id = adpm.pema_id', 'left');
+        $this->db->join('alm.alm_depositos d', 'd.depo_id = adpm.depo_id', 'left');
+        $this->db->join('prd.establecimientos e', 'e.esta_id = d.esta_id', 'left');
+        $this->db->where('apm.case_id', $case);
+        return $this->db->get()->row_array();
+
     }
 
     public function setCaseId($id, $case)
@@ -114,7 +122,10 @@ class Notapedidos extends CI_Model
                           alm.alm_articulos.barcode,
                           alm.alm_articulos.arti_id,
                           alm.alm_articulos.descripcion as artDescription,
-                          alm.alm_deta_pedidos_materiales.depe_id');
+                          alm.alm_deta_pedidos_materiales.depe_id,
+                          alm.alm_deta_pedidos_materiales.depo_id,
+                          alm.alm_depositos.descripcion as depoDescripcion,
+                          alm.alm_depositos.esta_id as esta_id'  );
 
         if (viewOT) {
             $this->db->select('orden_trabajo.descripcion');
@@ -127,6 +138,7 @@ class Notapedidos extends CI_Model
 
         $this->db->join('alm.alm_deta_pedidos_materiales', 'alm.alm_deta_pedidos_materiales.pema_id = alm.alm_pedidos_materiales.pema_id');
         $this->db->join('alm.alm_articulos', 'alm.alm_deta_pedidos_materiales.arti_id = alm.alm_articulos.arti_id');
+        $this->db->join('alm.alm_depositos', 'alm.alm_deta_pedidos_materiales.depo_id = alm.alm_depositos.depo_id', 'left');
         $this->db->where('alm.alm_pedidos_materiales.pema_id', $id);
         $this->db->where('alm.alm_deta_pedidos_materiales.eliminado', false);
         $query = $this->db->get();
@@ -282,12 +294,13 @@ class Notapedidos extends CI_Model
         $url = REST_ALM . $resource;
         for ($i = 0; $i < count($detalle); $i++) {
             $aux['pema_id'] = (string) $detalle[$i]['pema_id'];
-            $aux['arti_id'] = $detalle[$i]['arti_id']; 
-            $aux['cantidad'] = $detalle[$i]['cantidad'];
+            $aux['arti_id'] = (string)$detalle[$i]['arti_id']; 
+            $aux['cantidad'] = (string)$detalle[$i]['cantidad'];
+            $aux['depo_id'] = (string)$detalle[$i]['depo_id'];
             $batch_req['_post_notapedido_detalle_batch_req']['_post_notapedido_detalle'][] = $aux;
         } 
         return wso2($url, 'POST', $batch_req);
-    }
+    } 
 
     public function editarDetalle($id, $data)
     {
@@ -389,5 +402,11 @@ class Notapedidos extends CI_Model
     {
         $url = REST_ALM."/notapedidos/origen/$origen/$origId";
         return wso2($url);
+    }
+
+    public function updateaDeposito($pema_id, $depo_id){
+        $this->db->where('pema_id', $pema_id);
+        $data['depo_id'] = $depo_id;
+        return $this->db->update('alm.alm_deta_pedidos_materiales', $data);
     }
 }

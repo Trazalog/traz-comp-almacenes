@@ -68,6 +68,13 @@ class Almtareas extends CI_Model
             $aux->texto = "Fecha: ".formatFechaPG($data['fecha']);
             $array['info'][] = $aux;
 
+            //guardo el deposito asociado al pedido de materiales 
+            $aux = new StdClass();
+            $aux->color = 'default';
+            //$aux->texto ="Deposito: ". $data['depo_id'];
+            $aux->depo_id = $data['depo_id'];
+            $array['info'][] = $aux;
+
             $aux = new StdClass();
             $aux->color = 'default';
             $aux->texto = "Justificacion: ".$data['justificacion'];
