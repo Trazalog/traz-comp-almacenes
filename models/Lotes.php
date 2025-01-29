@@ -331,7 +331,12 @@ class Lotes extends CI_Model
         $this->db->join('core.encargados_depositos E', 'alm.alm_depositos.depo_id = E.depo_id and E.user_id ='. $idUser);
         $this->db->where('alm.alm_lotes.empr_id', $empresa);
         $this->db->where('alm.alm_articulos.eliminado', false);
-        $this->db->where('(COALESCE(alm.alm_lotes.cantidad, 0) > 0)');
+
+        //solo filtra mayores a 0 si el stock no esta seleccionado
+         if($data['stock0'] == 'false'){
+            $this->db->where('(COALESCE(alm.alm_lotes.cantidad, 0) > 0)');
+        }
+       
         
         //FILTRADO
         //Nombre Articulo
