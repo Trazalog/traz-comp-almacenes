@@ -308,6 +308,7 @@ $('#articles').DataTable({
     'paging' : true,
     'processing':true,
     'serverSide': true,
+    "order": [[2, "asc"]],
     'ajax':{
         type: 'POST',
         url: '<?php echo ALM; ?>/Articulo/paginado'

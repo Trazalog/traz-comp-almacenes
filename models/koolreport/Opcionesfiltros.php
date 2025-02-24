@@ -42,8 +42,9 @@ class Opcionesfiltros extends CI_Model
     $tipo = $data["tipo_mov"];
     $arti_id = $data['arti_id'];
     $lote_id = $data['lote_id'];
+    $empr_id = empresa();
     //http://10.142.0.13:8280/services/ALMDataService/movimientos/tipo/TODOS/desde/2021-04-01/hasta/2021-04-30/deposito/TODOS/articulo/TODOS/lote/TODOS
-    $url = '/movimientos/tipo/'.$tipo.'/desde/'.$desde.'/hasta/'.$hasta.'/deposito/'.$depo_id.'/articulo/'.$arti_id.'/lote/'.$lote_id;
+    $url = '/movimientos/tipo/'.$tipo.'/desde/'.$desde.'/hasta/'.$hasta.'/deposito/'.$depo_id.'/articulo/'.$arti_id.'/lote/'.$lote_id.'/empresa/'.$empr_id;
     $aux = $this->rest->callAPI("GET",REST_ALM.$url);
     $aux =json_decode($aux["data"]);
     return $aux->movimientos->movimiento;

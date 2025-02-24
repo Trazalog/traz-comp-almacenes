@@ -23,6 +23,7 @@ class Reportes extends CI_Controller
 		$this->load->model(ALM.'traz-comp/Componentes');
     $this->load->model(ALM.'general/Establecimientos');
     $this->load->model(ALM.'general/Tipoajustes');
+    $this->load->model(ALM.'Ajustestocks');
     $this->load->model(ALM.'Movimdeposalida');
     $this->load->model('Tablas');
   }
@@ -308,6 +309,18 @@ class Reportes extends CI_Controller
 		$data['email'] = $this->Movimdeposalida->obtenerTablaEmpr_id('remito_email')[0];
 		$data['texto_pie_remito'] = $this->Movimdeposalida->obtenerTablaEmpr_id('texto_pie_remito')[0];
 		
+		echo json_encode($data);
+	}
+
+  /**
+	* Trae datos del ajuste por el deaj_id
+	* @param 
+	* @return array datos del ajuste
+	*/
+	public function getDataAjuste(){
+
+    $deaj_id = $this->input->post('deaj_id');
+		$data = $this->Ajustestocks->getDataAjusteStock($deaj_id);
 		echo json_encode($data);
 	}
 

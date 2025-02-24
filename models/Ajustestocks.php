@@ -70,5 +70,22 @@ class Ajustestocks extends CI_Model {
       $array = $this->rest->callAPI("POST", $url, $dato);
       return json_decode($array['status']);
    }
+
+
+   /**
+	* Trae datos del ajuste por el deaj_id
+	* @param 
+	* @return array datos del ajuste
+	*/
+function getDataAjusteStock($deaj_id){
+   $url = REST_ALM.'/ajuste/'.$deaj_id;
+   $aux = $this->rest->callAPI("GET",$url);
+   $aux =json_decode($aux["data"]);
+   log_message('DEBUG', 'Ajustestocks/getDataAjusteStock (datos)-> '.json_encode($aux));
+   return $aux->ajustes->ajuste;
+   /* return json_decode($url); */
 }
+}
+
+
 ?>
