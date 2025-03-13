@@ -674,7 +674,7 @@ function verAjuste(deaj_id) {
         success: function(result) {
           var resp = JSON.parse(result);
           console.log(resp);
-          $("#idAjuste").val(resp[0].ajus_id);
+          $("#idAjuste").val(deaj_id);
           $("#tipoAjuste").val(resp[0].tipo_ajuste.split("tipos_ajuste_stock")[1]);
           $("#justificacion").val(resp[0].justificacion);
             
