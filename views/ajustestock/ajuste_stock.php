@@ -172,11 +172,47 @@ $('#loteent').on('change', function (e) {
         $('#loteent').val(null).trigger('change');
     }
 });
+
+//definicion de variable para controlar tiempo de ingreso de cantidad
+var timeoutId;
+
 $('#lotesal').on('change', function (e) {
     jsonLote = getJson($("option:selected", this));
+    //debugger;
     if(_isset(jsonLote.batch_id)){
         error("Error","El lote seleccionado no es materia prima");
         $('#lotesal').val(null).trigger('change');
     }
 });
+
+
+//valida que la cantidad ingresada sea menor al stock
+$('#cantidadsal').on('input', function (e) {
+    clearTimeout(timeoutId); // Limpiar el timeout anterior
+
+    timeoutId = setTimeout(() => {
+        // Obtener la cantidad ingresada
+        var cantidadIngresada = parseFloat($(this).val());
+
+        // Verificar si la cantidad es un número válido
+        if (isNaN(cantidadIngresada)) {
+            return;
+        }
+
+        // Obtener el stock disponible del lote seleccionado
+        var stockDisponible = parseFloat(jsonLote.cantidad);
+
+        // Validar si la cantidad ingresada es mayor al stock disponible
+        if (cantidadIngresada > stockDisponible) {
+            Swal.fire({
+                title: 'Información', 
+                html: `La cantidad ingresada es mayor al stock disponible.<br><b>Stock actual:</b> ${stockDisponible}`,
+                type: 'info', 
+                confirmButtonText: 'Aceptar', 
+                confirmButtonColor: '#3085d6',
+            });
+        }
+    }, 300); // Esperar 300 ms después de la última entrada
+});
+
 </script>
