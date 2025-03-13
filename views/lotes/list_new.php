@@ -194,8 +194,8 @@ input:checked+.slider:before {
                                             // Muestra el artículo sin stock
                                             echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
                                         } else {
-                                            // Muestra el artículo con stock
-                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . " | Stock: " . $o->stock . "</option>";
+                                            // Muestra el artículo con stock, se saco tambien el stock por armo
+                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
                                         }
                                         unset($o->json);
                                     }
