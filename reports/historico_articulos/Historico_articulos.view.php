@@ -236,9 +236,9 @@
             array(
               "label" => "Fecha",
               "value" => function($row) {
-                $aux = explode("T",$row["fec_alta"]);
-                $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
-                return $row["fec_alta"];
+                $aux = explode("T",$row["fec_alta_formatted"]);
+                $row["fec_alta_formatted"] = date("d-m-Y",strtotime($aux[0]));
+                return $row["fec_alta_formatted"];
               },
               "type" => "date"
             ),
@@ -492,6 +492,8 @@ function filtrar() {
         },
         url: '<?php echo base_url(ALM) ?>Reportes/historicoArticulos',
         success: function(result) {
+
+            debugger;
             $('#reportContent').empty();
             $('#reportContent').html(result);
 

@@ -136,6 +136,7 @@ function guardar(){
         wc();
         // debugger;
         alertify.success(rsp.data);
+        limpiaForms();
     },
     error: function(rsp) {
         wc();
@@ -143,6 +144,40 @@ function guardar(){
     },
     complete: function() {}
     });
+}
+
+
+/* limpia los formularios */
+function limpiaForms(){
+
+        //vacia datos cabecera
+        $("#establecimiento").val('');
+        $("#tipoajuste").val('');
+        $("#deposito").val('');
+        
+        /* vacio inputs de entrada */
+        $('#articuloent').val(null).trigger('change'); 
+        $('#loteent').val(null).trigger('change'); 
+        $('#cantidadent').val('');
+        $('#unidadesent').val('');
+
+        /* vacio inputs salida */
+        $('#articulosal').val(null).trigger('change'); 
+        $('#lotesal').val(null).trigger('change'); 
+        $('#cantidadsal').val('');
+        $('#unidadsal').val('');
+
+        /* vacio justificacion */
+        $('#justificacion').val('');
+
+        /* Oculta los box ENTRADA/SALIDA */
+        $("#boxSalida :input").prop("disabled", true);
+        $("#boxEntrada :input").prop("disabled", true);
+        $("#boxEntrada").removeClass("box-primary");
+        $("#boxSalida").removeClass("box-primary");
+        $('#boxEntrada').css('opacity', '0.5');
+        $('#boxSalida').css('opacity', '0.5');
+
 }
 
 function validarForm() {
