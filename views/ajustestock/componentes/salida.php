@@ -23,6 +23,9 @@
                         name="lotesal" required>
                         <option value="" disabled selected>-Seleccione opción-</option>
                     </select>
+                    <label id="detallesal" class="select-detalle"></label>
+                    <br>
+                    <label id="infosal" class="text-blue"></label>
                 </div>
             </div>
         </div>
