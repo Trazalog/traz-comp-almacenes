@@ -60,7 +60,7 @@ $("#articulosal").on('change', function() {
 $("#articulosal").on('change', function() {
     var dato = $("#unidadsal").val();
     var $idarticulo = $("#articulosal option:selected").val();
-    var $iddeposito = $("#deposito option:selected").val();    
+    var $iddeposito = $("#deposito option:selected").val();   
     if(! _isset($iddeposito)) return;
     wo('Buscando lotes activos...');
     $.ajax({
@@ -73,12 +73,22 @@ $("#articulosal").on('change', function() {
                 var option_lote = '<option value="" disabled selected>-Sin lotes-</option>';
                 console.log("Sin lotes");
             } else {
-                var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
-                $.each(result, function (i, val) { 
-                    option_lote += '<option data-json='+ JSON.stringify(val) +' value="' + val.lote_id + '">' + val.codigo +'</option>';
-                });
+                for (let index = 0; index < result.length; index++) {
+                        // Convertir el objeto 'result[index]' a JSON
+                        let json = JSON.stringify(result[index]);
+                        option_lote += "<option value='" + result[index].lote_id + "' " + 
+                                                    "data-json='" + json + "' " +
+                                                    "data-foo='<small><cite>Proveedor: <span class=\"text-blue\">" + result[index].proveedor + "</span></cite></small>' " +
+                                                    "data-cantidad='" + result[index].cantidad + "'>" + 
+                                                    result[index].codigo + 
+                                                    "</option>";
+                    }
+
+                    // Ahora actualizamos el contenido del select
+                    $('#lotesal').html(option_lote);
+                    $('#lotesal').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
             }
-            $('#lotesal').html(option_lote);
+           
             wc();
         },
         error: function() {
@@ -90,7 +100,7 @@ $("#articulosal").on('change', function() {
 
 $("#articuloent").on('change', function() {    
     $idarticulo = $("#articuloent>option:selected").val();
-    $iddeposito = $("#deposito>option:selected").val();    
+    $iddeposito = $("#deposito>option:selected").val();
     if(! _isset($iddeposito)) return;
     wo('Buscando lotes activos...');
     $.ajax({
@@ -103,13 +113,22 @@ $("#articuloent").on('change', function() {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
             } else {
                 var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
-                for (let index = 0; index < result.length; index++) {
-                    option_lote += '<option data-json='+ JSON.stringify(result[index]) +' value="' + result[index].lote_id + '">' + result[index]
-                        .codigo +
-                        '</option>';
-                }
+
+                    for (let index = 0; index < result.length; index++) {
+                        // Convertir el objeto 'result[index]' a JSON
+                        let json = JSON.stringify(result[index]);
+                        option_lote += "<option value='" + result[index].lote_id + "' " + 
+                                                    "data-json='" + json + "' " +
+                                                    "data-foo='<small><cite>Proveedor: <span class=\"text-blue\">" + result[index].proveedor + "</span></cite></small>' " +
+                                                    "data-cantidad='" + result[index].cantidad + "'>" + 
+                                                    result[index].codigo + 
+                                                    "</option>";
+                    }
+
+                    // Ahora actualizamos el contenido del select
+                    $('#loteent').html(option_lote);
+                    $('#loteent').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
             }
-            $('#loteent').html(option_lote);
             wc();
         },
         error: function() {
@@ -160,12 +179,14 @@ function limpiaForms(){
         $('#loteent').val(null).trigger('change'); 
         $('#cantidadent').val('');
         $('#unidadesent').val('');
+        $('#detalle').html('');
 
         /* vacio inputs salida */
         $('#articulosal').val(null).trigger('change'); 
         $('#lotesal').val(null).trigger('change'); 
         $('#cantidadsal').val('');
         $('#unidadsal').val('');
+        $('#detallesal').html('');
 
         /* vacio justificacion */
         $('#justificacion').val('');
@@ -201,22 +222,41 @@ $("#deposito").on('change', function (e) {
     }
 });
 $('#loteent').on('change', function (e) {
-    jsonLote = getJson($("option:selected", this));
-    if(_isset(jsonLote.batch_id)){
-        error("Error","El lote seleccionado no es materia prima");
-        $('#loteent').val(null).trigger('change');
-    }
+
+        var selectedOption = $(this).find('option:selected');
+        var proveedor = selectedOption.data('foo');
+
+        // Actualizar los labels con la información
+        $('#detalle').html(proveedor);
+
+        // Obtenemos el objeto JSON almacenado en 'data-json'
+        var jsonLote = selectedOption.data('json');
+
+        // Verificamos si 'jsonLote' tiene la propiedad 'batch_id' para determinar si es materia prima
+        if (jsonLote && jsonLote.batch_id) {
+            error("Error", "El lote seleccionado no es materia prima");
+            $('#loteent').val(null).trigger('change');  // Limpiamos la selección
+        }
+
 });
 
 //definicion de variable para controlar tiempo de ingreso de cantidad
 var timeoutId;
 
 $('#lotesal').on('change', function (e) {
-    jsonLote = getJson($("option:selected", this));
-    //debugger;
-    if(_isset(jsonLote.batch_id)){
-        error("Error","El lote seleccionado no es materia prima");
-        $('#lotesal').val(null).trigger('change');
+
+    var selectedOption = $(this).find('option:selected');
+    var proveedor = selectedOption.data('foo');
+
+    // Actualizar los labels con la información
+    $('#detallesal').html(proveedor);
+    
+    var jsonLote = selectedOption.data('json');
+
+    // Verificamos si 'jsonLote' tiene la propiedad 'batch_id' para determinar si es materia prima
+    if (jsonLote && jsonLote.batch_id) {
+        error("Error", "El lote seleccionado no es materia prima");
+        $('#loteent').val(null).trigger('change');  // Limpiamos la selección
     }
 });
 
