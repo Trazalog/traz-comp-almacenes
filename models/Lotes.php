@@ -318,13 +318,15 @@ class Lotes extends CI_Model
             alm.alm_depositos.depo_id,
             alm.alm_depositos.descripcion as depositodescrip,
             prd.recipientes.reci_id,
-            prd.recipientes.nombre as nom_reci
+            prd.recipientes.nombre as nom_reci,
+            p.nombre as proveedor
         ');
 
         $this->db->from('alm.alm_articulos');
         $this->db->join('alm.alm_lotes', 'alm.alm_lotes.arti_id = alm.alm_articulos.arti_id');
         $this->db->join('alm.alm_depositos', ' alm.alm_lotes.depo_id = alm.alm_depositos.depo_id');
         $this->db->join('prd.lotes', ' alm.alm_lotes.batch_id = prd.lotes.batch_id', 'left');
+        $this->db->join('alm.alm_proveedores p', ' p.prov_id = alm.alm_lotes.prov_id', 'left');
         $this->db->join('prd.recipientes', ' prd.lotes.reci_id = prd.recipientes.reci_id', 'left');
         $this->db->join('core.tablas T', ' T.tabl_id = alm.alm_articulos.tiar_id', 'left');
         $this->db->join('core.tablas T1', ' T1 ON T1.tabl_id = alm.alm_articulos.unme_id', 'left');

@@ -10,6 +10,7 @@
         <th class="text-center">Recipiente</th>
         <th class="text-center">Fecha Creacion</th>
         <th>Depósito</th>
+        <th>Proveedor</th>
         <th>Estado</th>
     </thead>
     <tbody>
@@ -26,6 +27,7 @@
             echo '<td class="text-center">'.((empty($f->nom_reci)) ? "<b>No Aplica</b>" : $f->nom_reci).'</td>';
             echo "<td class='text-center'>".date('d/m/Y', strtotime($f->fecha_nueva))."</td>";
             echo '<td>'.((empty($f->depositodescrip)) ? "<b>No Aplica</b>" : $f->depositodescrip).'</td>';
+            echo '<td class="text-center">'.$f->proveedor.'</td>';
             echo '<td class="text-center">'.estado($f->estado).'</td>';
             echo '</tr>';
             }
