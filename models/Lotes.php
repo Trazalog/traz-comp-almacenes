@@ -376,7 +376,7 @@ class Lotes extends CI_Model
         }
         //STOCK en 0
         if($data['stock0'] == 'true'){
-            $this->db->where('cantidad = 0 OR cantidad IS NULL');
+            $this->db->where('cantidad >= 0 OR cantidad IS NULL');
         }
         $query = $this->db->get();
 

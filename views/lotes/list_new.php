@@ -216,7 +216,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
                             <!-- Checked checkbox -->
                             <div style="text-align: center;" class="form-check col-sm-12">
-                                <label for="stock0" class="checkboxtext">Artículo con Stock en 0
+                                <label for="stock0" class="checkboxtext">Incluir artículos con stock en 0
                                     <!-- <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"id="stock0" name="stock0" /> -->
                                 </label>
                                 <label class="switch">
