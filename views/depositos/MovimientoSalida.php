@@ -356,7 +356,7 @@
 			$.ajax({
 							type: 'POST',
 							data: {id_esta},
-							url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerDepositos',
+							url: 'index.php/<?php echo ALM?>Movimientodeposalida/obtenerDepositosAll',
 							success: function(data) {
 
 									var resp = JSON.parse(data);
