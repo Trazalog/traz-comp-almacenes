@@ -40,6 +40,19 @@ class Establecimientos extends CI_Model
       $resp =  json_decode($array['data']);
       return $resp;
     }
+
+      /**
+    * Devuelve listado de depositos por establecimiento
+    * @param
+    * @return array listado de depositos
+    */
+    public function obtenerDepositosAllxEstablecimiento($idestablecimiento){
+      $url = REST_ALM.'/depositos_establecimiento/'.$idestablecimiento;
+      $array = $this->rest->callAPI("GET",$url);
+      $resp =  json_decode($array['data']);
+      return $resp;
+    }
+
     /**
     * Devuelve listado de depositos de una Empresa y por encargado
     * @param
