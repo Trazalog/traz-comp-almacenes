@@ -72,8 +72,11 @@ $("#articulosal").on('change', function() {
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>-Sin lotes-</option>';
                 console.log("Sin lotes");
+                $('#lotesal').html(option_lote);
+                $('#lotesal').select2(); 
             } else {
                 for (let index = 0; index < result.length; index++) {
+                    var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
                         // Convertir el objeto 'result[index]' a JSON
                         let json = JSON.stringify(result[index]);
                         option_lote += "<option value='" + result[index].lote_id + "' " + 
@@ -242,7 +245,7 @@ $('#loteent').on('change', function (e) {
 
 //definicion de variable para controlar tiempo de ingreso de cantidad
 var timeoutId;
-
+var jsonLote;
 $('#lotesal').on('change', function (e) {
 
     var selectedOption = $(this).find('option:selected');
@@ -251,18 +254,26 @@ $('#lotesal').on('change', function (e) {
     // Actualizar los labels con la información
     $('#detallesal').html(proveedor);
     
-    var jsonLote = selectedOption.data('json');
+     jsonLote = selectedOption.data('json');
 
     // Verificamos si 'jsonLote' tiene la propiedad 'batch_id' para determinar si es materia prima
     if (jsonLote && jsonLote.batch_id) {
         error("Error", "El lote seleccionado no es materia prima");
         $('#loteent').val(null).trigger('change');  // Limpiamos la selección
-    }
+    } 
 });
 
 
 //valida que la cantidad ingresada sea menor al stock
 $('#cantidadsal').on('input', function (e) {
+    // Solo permitir números y punto decimal
+    this.value = this.value.replace(/[^0-9.]/g, '');
+    
+    // Evitar múltiples puntos decimales
+    if ((this.value.match(/\./g) || []).length > 1) {
+        this.value = this.value.replace(/\.+$/, '');
+    }
+
     clearTimeout(timeoutId); // Limpiar el timeout anterior
 
     timeoutId = setTimeout(() => {

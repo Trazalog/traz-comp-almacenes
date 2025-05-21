@@ -30,8 +30,11 @@
             <select  onchange="seleccionesta(this)" id="establecimiento" class="form-control">
                 <option value="false"> - Seleccionar - </option>
                     <?php 
+                        $first = true;
                         foreach ($establecimientos as $o) {
-                            echo "<option value='$o->esta_id'>$o->nombre</option>";
+                            $selected = $first ? 'selected' : '';
+                            echo "<option value='$o->esta_id' $selected>$o->nombre</option>";
+                            $first = false;
                         }
                     ?>
             </select>
@@ -494,10 +497,19 @@ async function guardarPedidoActualizado(){
     return await guardadoCompleto;
 }
 
-//trae depositos asociados al establecimiento
+$(document).ready(function() {
+    // Ejecutar seleccionesta cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento && establecimiento.value !== 'false') {
+        seleccionesta(establecimiento);
+    }
+});
+
 function seleccionesta(opcion){
-    // alert("dentro");
     var id_esta = $("#establecimiento").val();
+    if (id_esta === 'false' || !id_esta) {
+        return;
+    }
     console.table(id_esta);
     $.ajax({
             type: 'POST',
@@ -506,7 +518,6 @@ function seleccionesta(opcion){
             success: function(data) {
                 var resp = JSON.parse(data);
                 console.table(resp);
-                console.table(resp[0].depo_id);
                 $('#deposito').empty();
                 for(var i=0; i<resp.length; i++)
                 {

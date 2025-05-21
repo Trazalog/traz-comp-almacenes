@@ -9,10 +9,12 @@
                     <label>Establecimiento<strong class="text-danger">*</strong>:</label>
                     <select class="form-control" id="establecimiento"
                         name="establecimiento" onchange="seleccionesta(this)" required>
-                        <option value="" disabled selected>-Seleccione opción-</option>
                         <?php
+                        $first = true;
                         foreach ($establecimientos as $i) {
-                            echo '<option value="'.$i->nombre.'" class="emp" data-json=\''.json_encode($i).'\'>'.$i->nombre.'</option>';                            
+                            $selected = $first ? 'selected' : '';
+                            echo '<option value="'.$i->nombre.'" class="emp" data-json=\''.json_encode($i).'\' '.$selected.'>'.$i->nombre.'</option>';
+                            $first = false;
                         }
                         ?>
                     </select>
@@ -42,6 +44,14 @@
 </div>
 
 <script>
+$(document).ready(function() {
+    // Ejecutar seleccionesta cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento) {
+        seleccionesta(establecimiento);
+    }
+});
+
 $.ajax({
     type: 'GET',
     dataType: 'json',

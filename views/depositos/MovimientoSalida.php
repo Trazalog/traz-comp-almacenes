@@ -28,10 +28,12 @@
 										<div class="col-md-3">
 												<label>Establecimiento destino <?php hreq(); ?> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
-													<option value="" disabled selected>-Seleccione opción-</option>
 													<?php
+													$first = true;
 													foreach ($establecimiento as $a) {
-														echo '<option value="'.$a->esta_id.'">'.$a->nombre.'</option>';
+														$selected = $first ? 'selected' : '';
+														echo '<option value="'.$a->esta_id.'" '.$selected.'>'.$a->nombre.'</option>';
+														$first = false;
 													}
 													?>
 												</select>
@@ -221,6 +223,11 @@
 	$(document).ready(function() {
 		$("#totalCont").val(0);
 		$("#inputarti").attr("disabled", "")
+		// Ejecutar seleccionesta cuando se carga la página
+		var establecimiento = document.getElementById('esta_dest_id');
+		if (establecimiento && establecimiento.value) {
+			seleccionesta(establecimiento);
+		}
 	});
 	// remueve registro de tabla temporal 
 	$(document).on("click",".fa-minus",function() {
