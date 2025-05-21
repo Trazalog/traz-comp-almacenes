@@ -80,7 +80,16 @@
                         <label for="establecimiento" class="form-label">Establecimiento <strong
                                 class="text-danger">*</strong> :</label>
                         <select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible"
-                            id="establecimiento" name="establecimiento" />
+                            id="establecimiento" name="establecimiento">
+                            <?php
+                                $first = true;
+                                foreach ($establecimientos as $est) {
+                                    $selected = $first ? 'selected' : '';
+                                    echo '<option value="'.$est->esta_id.'" '.$selected.'>'.$est->nombre.'</option>';
+                                    $first = false;
+                                }
+                            ?>
+                        </select>
                     </div>
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0 habilitado">
@@ -308,30 +317,26 @@ function fechaMagic() {
 
 // llena select Establecimientos
 function getEstablecimientos() {
-
     $.ajax({
         type: 'POST',
         dataType: 'json',
         data: {},
         url: 'index.php/<?php echo ALM?>Reportes/getEstablecimientos',
         success: function(data) {
-
             $('#establecimiento').empty();
-            $("#establecimiento").append(
-                "<option value='-1' disabled selected>-Seleccione Establecimiento...-</option");
             if (data != null) {
                 for (var i = 0; i < data.length; i++) {
-                    $('#establecimiento').append("<option value='" + data[i].esta_id + "'>" + data[i]
-                        .nombre + "</option");
+                    var selected = i === 0 ? 'selected' : '';
+                    $('#establecimiento').append("<option value='" + data[i].esta_id + "' " + selected + ">" + data[i].nombre + "</option>");
                 }
-                //$("#establecimiento").removeAttr('readonly');
+                // Ejecutar seleccionesta con el primer elemento
+                seleccionesta(document.getElementById('establecimiento'));
             } else {
-                $("#establecimiento").append("<option value=''>-Sin Establecimientos-</option");
+                $("#establecimiento").append("<option value=''>-Sin Establecimientos-</option>");
             }
             WaitingClose();
         },
         error: function(data) {
-
             alert('Error');
         }
     });
@@ -339,33 +344,31 @@ function getEstablecimientos() {
 
 // carga los depositos de acuerdo a establecimiento
 function seleccionesta(opcion) {
-
     $(".habilitado").show();
-
     wo();
     var id_esta = $("#establecimiento").val();
+    var depo_id = $("#depo_id").val();
 
     $('#lote_id').append('<option value="TODOS">Todos</option>'); // En caso que no seleccione articulo
 
     $.ajax({
         type: 'POST',
         data: {
-            id_esta
+            id_esta,
+            depo_id
         },
         url: 'index.php/<?php echo ALM?>Reportes/traerDepositos',
         success: function(data) {
-
             var resp = JSON.parse(data);
             $('#depo_id').empty();
             $("#depo_id").append("<option value='TODOS'>Todos</option");
             if (data != null) {
                 for (var i = 0; i < resp.length; i++) {
-                    $('#depo_id').append("<option value='" + resp[i].depo_id + "'>" + resp[i].descripcion +
-                        "</option");
+                    $('#depo_id').append("<option value='" + resp[i].depo_id + "'>" + resp[i].descripcion + "</option>");
                 }
                 $("#depo_id").removeAttr('readonly');
             } else {
-                $("#depo_id").append("<option value=''>-Sin Depósitos para este Establecimiento-</option");
+                $("#depo_id").append("<option value=''>-Sin Depósitos para este Establecimiento-</option>");
             }
             wc();
         },
@@ -484,7 +487,7 @@ function filtrar() {
         );
         return;
     }
-
+    wo();
     $.ajax({
         type: 'POST',
         data: {
@@ -492,7 +495,7 @@ function filtrar() {
         },
         url: '<?php echo base_url(ALM) ?>Reportes/historicoArticulos',
         success: function(result) {
-
+            wc();
             debugger;
             $('#reportContent').empty();
             $('#reportContent').html(result);
@@ -694,4 +697,12 @@ function verAjuste(deaj_id) {
 
 
 }
+
+$(document).ready(function() {
+    // Ejecutar seleccionesta cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento && establecimiento.value) {
+        seleccionesta(establecimiento);
+    }
+});
 </script>

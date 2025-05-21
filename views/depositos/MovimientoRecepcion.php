@@ -19,10 +19,12 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
                         <label>Establecimiento receptor <strong class="text-danger">*</strong> :</label>
                         <!-- -- -->
                         <select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
-												<option value="" disabled selected>-Seleccione Su establacimiento-</option>
 													<?php
+														$first = true;
 														foreach ($establecimiento as $a) {
-														echo '<option value="'.$a->esta_id.'">'.$a->nombre.'</option>';
+															$selected = $first ? 'selected' : '';
+															echo '<option value="'.$a->esta_id.'" '.$selected.'>'.$a->nombre.'</option>';
+															$first = false;
 														}
 													?>
 												</select>
@@ -271,7 +273,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 							</div>
 							<div class="col-xs-12 col-sm-6 col-lg-6">
 									<label for="">Cantidad a Ingresar <strong class="text-danger">*</strong> :</label>
-									<input class="form-control" id="cant_recibida"type="text">
+									<input class="form-control" id="cant_recibida" type="number" min="0" step="0.01" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');">
 							</div>
 						</div>
 						<div class="row">
@@ -606,5 +608,13 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	//Date picker
 	$('#datepicker').datepicker({
 			autoclose: true
+	});
+
+	$(document).ready(function() {
+		// Ejecutar seleccionesta cuando se carga la página
+		var establecimiento = document.getElementById('esta_dest_id');
+		if (establecimiento && establecimiento.value) {
+			seleccionesta(establecimiento);
+		}
 	});
 </script>

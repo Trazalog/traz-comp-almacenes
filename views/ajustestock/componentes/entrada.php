@@ -32,7 +32,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Cantidad:</label>
-                    <input name="cantidadent" class="form-control inp-descarga" type="number" id="cantidadent">
+                    <input name="cantidadent" class="form-control inp-descarga" type="number" id="cantidadent" min="0" onchange="if(this.value < 0) { Swal.fire({title: 'Error', text: 'Ingrese un numero mayor a 0', type: 'error', confirmButtonText: 'Aceptar'}); this.value = 0; }">
                 </div>
             </div>
             <div class="col-md-6">

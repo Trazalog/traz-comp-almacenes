@@ -109,12 +109,13 @@ input:checked+.slider:before {
                             <div class="input-group">
                                 <select id="establecimiento" name="establecimiento" class="form-control"
                                     onchange="getTipoDepositos(this)">
-                                    <option value="" selected disabled> - Seleccionar - </option>
                                     <?php 
+                                $first = true;
                                 foreach ($establecimientos as $key => $o) {
-                                    echo "<option value='$o->esta_id'>$o->nombre</option>";
+                                    $selected = $first ? 'selected' : '';
+                                    echo "<option value='$o->esta_id' $selected>$o->nombre</option>";
+                                    $first = false;
                                 }
-
                                 ?>
                                 </select>
                             </div>
@@ -194,8 +195,8 @@ input:checked+.slider:before {
                                             // Muestra el artículo sin stock
                                             echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
                                         } else {
-                                            // Muestra el artículo con stock, se saco tambien el stock por armo
-                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
+                                            // Muestra el artículo con stock
+                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion .  " | Stock: " . $o->stock . "</option>";
                                         }
                                         unset($o->json);
                                     }
@@ -629,4 +630,13 @@ function agrupaDepositos(){
     let tabla = $('#stock').DataTable();
     tabla.rowGroup().enable().dataSrc(9).order([[ 9, 'desc' ]]).draw();
 }
+
+
+$(document).ready(function() {
+    // Ejecutar getTipoDepositos cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento) {
+        getTipoDepositos(establecimiento);
+    }
+});
 </script>

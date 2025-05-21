@@ -70,10 +70,12 @@
                                     <label for="establecimiento">Establecimientos <strong style="color: #dd4b39">*</strong>
                                         :</label>
                                     <select onchange="seleccionesta(this)" id="establecimiento" class="form-control">
-                                        <option value="false"> - Seleccionar - </option>
                                         <?php 
+                                            $first = true;
                                             foreach ($establecimientos as $o) {
-                                                echo "<option value='$o->esta_id'>$o->nombre</option>";
+                                                $selected = $first ? 'selected' : '';
+                                                echo "<option value='$o->esta_id' $selected>$o->nombre</option>";
+                                                $first = false;
                                             }
                                         ?>
                                     </select>
@@ -595,10 +597,16 @@ function validar_campos() {
         return !($('#fecha').val() == '' || $('#comprobante').val() == '' || $('#proveedor').val() == 'false' || $('#lote').val() == '' || $('#cantidad').val() == '' || $('#establecimiento').val() == 'false' || $('#deposito').val() == 'false')
     }
 }
-</script>
+
+$(document).ready(function() {
+    // Ejecutar seleccionesta cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento) {
+        seleccionesta(establecimiento);
+    }
+});
 
 
-<script>
 function selectItemiculo(e) {
     selectItem = JSON.parse(JSON.stringify($(e).data('json')));
     $('#art_select').val($(e).find('a').html());
