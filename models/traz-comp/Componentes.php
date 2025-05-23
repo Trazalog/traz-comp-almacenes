@@ -22,7 +22,7 @@ class Componentes extends CI_Model
 			$obj->descripcion = $o->descripcion;
 			$obj->codigo = $o->barcode;
 			$obj->stock = $o->stock;
-			$obj->proveedor = $o->proveedor;
+			/* $obj->proveedor = $o->proveedor; */
 			$obj->json = json_encode($o);
   
 			array_push($aux, $obj);
