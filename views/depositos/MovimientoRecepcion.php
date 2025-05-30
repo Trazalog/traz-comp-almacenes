@@ -281,10 +281,14 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 								<label>Fecha de Vencimiento <strong class="text-danger">*</strong> :</label>
 								<input type="date" class="form-control pull-right" value="<?php echo date('Y-m-d');?>" id="fec_vencimiento" placeholder="Seleccione Fecha">
 							</div>
+							<div class="col-xs-12 col-sm-6 col-lg-6 rowJustificacion" style= "display:none">
+									<label for="">Justificación <strong class="text-danger">*</strong> :</label>
+									<input class="form-control" id="justificacion" type="text" >
+							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" onclick="agregaCantidadLote()" data-dismiss="modal">Aceptar</button>
+						<button type="button" class="btn btn-primary" onclick="agregaCantidadLote(event)">Aceptar</button>
 						<button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
 					</div> <!-- /.modal footer -->
 			</div><!-- /.tab-content -->
@@ -345,35 +349,68 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 			$("#cant_recibida").val(dataJSON.cantidad_cargada);
 
 			$("#arti_id").val(dataArticulo.arti_id);
+			$("#justificacion").val("");
+			$(".rowJustificacion").css("display", "none");
 			//levanta modal de carga
 			$("#depoDescarga").modal("show");
 	});
 
-	// agregar cantidad  y lote destino a la tabla temporal (trae del modal la info)
-	function agregaCantidadLote(){
+	window.banJustificacion = false;
 
-			var t_row = $("#t_row").val();
-
-			$($("#tbl_productos_recepcion tbody tr")).each(function () {
-
-					//busca id de fila y al encontrarlo, guarda en inputs la info elegida en modal
-					if ($(this).attr("id") == t_row) {
-						
-						var cant_recibida = $("#cant_recibida").val();
-						if(parseInt(cant_recibida) <= parseInt(cant_enviada)){
-
-							var deposito_dest_id = $("#deposito_dest_id option:selected").val();
-							var deposito_dest_nomb = $("#deposito_dest_id option:selected").text();
-							var fec_vencimiento = $("#fec_vencimiento").val();
-							$(this).find("input.cantidad").val(cant_recibida);
-							$(this).find("input.depo_id_modal").val(deposito_dest_id);
-							$(this).find("input.depo_desc_nomb").val(deposito_dest_nomb);
-							$(this).find("input.fec_vencimiento").val(fec_vencimiento);
-						}else{
-							alert("No se puede INGRESAR una cantidad mayor a la ENVIADA");
-						}
-					}
+	$('#cant_recibida').on('blur', function () {
+		var cantidadRecibida = $("#cant_recibida").val();
+		if(cantidadRecibida < cant_enviada){
+			Swal.fire({
+				title: 'Información', 
+				html: `La cantidad ingresada es menor a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
+				type: 'info', 
+				confirmButtonText: 'Aceptar', 
+				confirmButtonColor: '#3085d6',
 			});
+			$(".rowJustificacion").css("display", "block");
+		}else if(cantidadRecibida > cant_enviada){
+			Swal.fire({
+				title: 'Información', 
+				html: `La cantidad ingresada es mayor a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
+				type: 'info', 
+				confirmButtonText: 'Aceptar', 
+				confirmButtonColor: '#3085d6',
+			});
+			$(".rowJustificacion").css("display", "block");
+		} else {
+			$(".rowJustificacion").css("display", "none");
+			$("#justificacion").val("");
+		}
+	});
+
+	// agregar cantidad  y lote destino a la tabla temporal (trae del modal la info)
+	function agregaCantidadLote(e) {
+		let justificacion = $("#justificacion").val();
+		let cantidadRecibida = $("#cant_recibida").val();
+
+		if ((cantidadRecibida < cant_enviada || cantidadRecibida > cant_enviada) && justificacion.trim() === "") {
+			error("Error", "Se debe ingresar Justificación");
+			e.preventDefault();
+			return; 
+		}
+
+		var t_row = $("#t_row").val();
+
+		$("#tbl_productos_recepcion tbody tr").each(function () {
+			if ($(this).attr("id") == t_row) {
+				var cant_recibida = $("#cant_recibida").val();
+				var deposito_dest_id = $("#deposito_dest_id option:selected").val();
+				var deposito_dest_nomb = $("#deposito_dest_id option:selected").text();
+				var fec_vencimiento = $("#fec_vencimiento").val();
+				$(this).find("input.cantidad").val(cant_recibida);
+				$(this).find("input.depo_id_modal").val(deposito_dest_id);
+				$(this).find("input.depo_desc_nomb").val(deposito_dest_nomb);
+				$(this).find("input.fec_vencimiento").val(fec_vencimiento);
+				$(this).find("input.justificacion").val(justificacion);
+			}
+		});
+
+		$("#depoDescarga").modal("hide"); 
 	}
 
 	// buscar lote por deposito e id de articulo para el modal
@@ -436,6 +473,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 											<td><input class='cantidad' style='border: 0;' readonly></input></td>
 											<td><input class='depo_desc_nomb' style='border: 0;' readonly></input></td>
 											<td style="display: none"><input class='depo_id_modal hidden'></input></td>
+											<td style="display: none"><input class='justificacion hidden'></input></td>
 											<td><input class='fec_vencimiento' style='border: 0;' readonly></input></td>
 										</tr>`;
 					table.row.add($(row)).draw();
@@ -568,7 +606,8 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 							cod_lote: JSON.parse($(this).attr("data-articulo")).cod_lote, // código de lote origen
 							depo_id: $(this).find("input.depo_id_modal").val(),
 							fec_vencimiento: $(this).find("input.fec_vencimiento").val(),
-							cantidad_recibida: $(this).find("input.cantidad").val()
+							cantidad_recibida: $(this).find("input.cantidad").val(),
+							justificacion: $(this).find("input.justificacion").val()
 						};
 				datos.push(item);
 		});
