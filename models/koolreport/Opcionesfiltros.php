@@ -76,4 +76,17 @@ class Opcionesfiltros extends CI_Model
 
     return $aux->lotes->lote;
   }
+
+  /**
+  * devueleve datos de un movimiento interno por su demi_id
+  * @param string demi_id
+  * @return array con datos del movimiento interno
+  */
+  function getDataMovimientoInterno($data){
+    $demi_id = $data;
+    $url = '/movimientoInternoData/'.$demi_id;
+    $aux = $this->rest->callAPI("GET",REST_ALM.$url);
+    $aux = json_decode($aux["data"]);
+    return $aux->detallesMovimientosInternos->detalleMovimientoInterno;
+  }
 }

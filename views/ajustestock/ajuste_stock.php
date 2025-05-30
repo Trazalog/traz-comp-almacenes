@@ -61,41 +61,44 @@ $("#articulosal").on('change', function() {
     var dato = $("#unidadsal").val();
     var $idarticulo = $("#articulosal option:selected").val();
     var $iddeposito = $("#deposito option:selected").val();   
-    if(! _isset($iddeposito)) return;
+    
+    if(!_isset($iddeposito)) return;
+    
     wo('Buscando lotes activos...');
     $.ajax({
         type: 'GET',
         dataType: 'json',
-        url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' +
-            $iddeposito,
+        url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' + $iddeposito,
         success: function(result) {
-            if (result == null) {
-                var option_lote = '<option value="" disabled selected>-Sin lotes-</option>';
-                console.log("Sin lotes");
-                $('#lotesal').html(option_lote);
-                $('#lotesal').select2(); 
+            if (!result || result.length === 0) {
+                $('#lotesal').html('<option value="" disabled selected>Sin lotes</option>').select2();
             } else {
-                for (let index = 0; index < result.length; index++) {
-                    var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
-                        // Convertir el objeto 'result[index]' a JSON
-                        let json = JSON.stringify(result[index]);
-                        option_lote += "<option value='" + result[index].lote_id + "' " + 
-                                                    "data-json='" + json + "' " +
-                                                    "data-foo='<small><cite>Proveedor: <span class=\"text-blue\">" + result[index].proveedor + "</span></cite></small>' " +
-                                                    "data-cantidad='" + result[index].cantidad + "'>" + 
-                                                    result[index].codigo + 
-                                                    "</option>";
-                    }
-
-                    // Ahora actualizamos el contenido del select
-                    $('#lotesal').html(option_lote);
-                    $('#lotesal').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
+                var option_lote = '<option value="" disabled>-Seleccione opción-</option>';
+                
+                result.forEach(function(item) {
+                    option_lote += `<option value="${item.lote_id}" 
+                                    data-json='${JSON.stringify(item)}'
+                                    data-foo='<small><cite>Proveedor: <span class="text-blue">${item.proveedor}</span></cite></small>'
+                                    data-cantidad="${item.cantidad}">
+                                    ${item.codigo}
+                                  </option>`;
+                });
+                
+                // Actualizar el select y configurar Select2
+                $('#lotesal').html(option_lote).select2({
+                    matcher: matchCustom,
+                    templateResult: formatCustom
+                });
+                
+                // Seleccionar el primer lote y disparar el evento
+                if (result.length > 0) {
+                    $('#lotesal').val(result[0].lote_id).trigger('change');
+                }
             }
-           
             wc();
         },
         error: function() {
-						wc();
+            wc();
             alert('Error');
         }
     });
@@ -114,8 +117,11 @@ $("#articuloent").on('change', function() {
         success: function(result) {
             if (result == null) {
                 var option_lote = '<option value="" disabled selected>Sin lotes</option>';
+                $('#loteent').html(option_lote);
+                $('#loteent').select2(); 
             } else {
-                var option_lote = '<option value="" disabled selected>-Seleccione opción-</option>';
+                // Crear la opción por defecto sin el atributo 'selected'
+                var option_lote = '<option value="" disabled>-Seleccione opción-</option>';
 
                     for (let index = 0; index < result.length; index++) {
                         // Convertir el objeto 'result[index]' a JSON
@@ -127,10 +133,17 @@ $("#articuloent").on('change', function() {
                                                     result[index].codigo + 
                                                     "</option>";
                     }
+                   // Actualizar el select y configurar Select2
+                    $('#loteent').html(option_lote).select2({
+                        matcher: matchCustom,
+                        templateResult: formatCustom
+                    });
+                    
+                    // Seleccionar el primer lote y disparar el evento
+                    if (result.length > 0) {
+                        $('#loteent').val(result[0].lote_id).trigger('change');
+                    }
 
-                    // Ahora actualizamos el contenido del select
-                    $('#loteent').html(option_lote);
-                    $('#loteent').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
             }
             wc();
         },
@@ -215,6 +228,20 @@ function validarForm() {
             'Debes completar los campos Obligatorios (*)',
             'error'
         );
+
+    //validacion para que no permita guardar vacio el campo cantidad salida
+    if($('#articulosal').val() != null && $('#articulosal').val() != '')
+    {
+        ban = $('#cantidadsal').val() != null && $('#cantidadsal').val() != ''
+
+        if(!ban)
+            Swal.fire(
+                'Error...',
+                'Debes seleccionar cantidad',
+                'error'
+            ); 
+    }
+
     return ban;
 }
 //Habilito el select de tipo ajuste, luego de seleccionar deposito
@@ -224,6 +251,10 @@ $("#deposito").on('change', function (e) {
         $("#tipoajuste").attr('disabled',false);
     }
 });
+//definicion de variable para controlar tiempo de ingreso de cantidad
+var timeoutId;
+var jsonLote;
+
 $('#loteent').on('change', function (e) {
 
         var selectedOption = $(this).find('option:selected');
@@ -233,19 +264,16 @@ $('#loteent').on('change', function (e) {
         $('#detalle').html(proveedor);
 
         // Obtenemos el objeto JSON almacenado en 'data-json'
-        var jsonLote = selectedOption.data('json');
+        jsonLote = selectedOption.data('json');
 
         // Verificamos si 'jsonLote' tiene la propiedad 'batch_id' para determinar si es materia prima
         if (jsonLote && jsonLote.batch_id) {
             error("Error", "El lote seleccionado no es materia prima");
-            $('#loteent').val(null).trigger('change');  // Limpiamos la selección
         }
 
 });
 
-//definicion de variable para controlar tiempo de ingreso de cantidad
-var timeoutId;
-var jsonLote;
+
 $('#lotesal').on('change', function (e) {
 
     var selectedOption = $(this).find('option:selected');
@@ -259,7 +287,6 @@ $('#lotesal').on('change', function (e) {
     // Verificamos si 'jsonLote' tiene la propiedad 'batch_id' para determinar si es materia prima
     if (jsonLote && jsonLote.batch_id) {
         error("Error", "El lote seleccionado no es materia prima");
-        $('#loteent').val(null).trigger('change');  // Limpiamos la selección
     } 
 });
 
@@ -297,8 +324,26 @@ $('#cantidadsal').on('input', function (e) {
                 confirmButtonText: 'Aceptar', 
                 confirmButtonColor: '#3085d6',
             });
+            //vacio el input cantidad
+            $('#cantidadsal').val('');
         }
     }, 300); // Esperar 300 ms después de la última entrada
 });
+
+//funcion para mostrar el proveedor en el select de lotes
+function formatCustom(state) {
+    // Si la opción no tiene un elemento HTML asociado o no tiene el atributo data-foo,
+    // simplemente mostramos el texto de la opción.
+    if (!state.element || !$(state.element).attr('data-foo')) {
+        return $('<div>' + state.text + '</div>');
+    }
+
+    // Si la opción tiene data-foo, construimos el HTML completo con la información adicional.
+    return $(
+        '<div style="font-weight: bold;"><div>' + state.text + '</div><div class="foo text-black">' +
+        $(state.element).attr('data-foo') +
+        '</div></div>'
+    );
+}
 
 </script>

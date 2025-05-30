@@ -190,6 +190,62 @@
             </div>
             <!-- FIN MODAL VER DETALLE AJUSTE -->
 
+            <!-- MODAL VER DETALLE MOVIMIENTO INTERNO -->
+            <div class="modal fade bs-example-modal" id="modalInfoMovimiento" tabindex="-1" role="dialog"
+                aria-labelledby="myLargeModalLabel">
+
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header bg-blue">
+                            <button type="button" class="close close_modal_edit" data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true" style="color:white;">&times;</span>
+                            </button>
+
+                            <h4 class="modal-title" id="myModalLabel"><span class="fa fa-fw fa-paperclip"></span> Detalle
+                                Movimiento Interno </h4>
+                        </div>
+
+                        <div class="modal-body ">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="demiIdMovimiento">ID: </label>
+                                    <input type="text" class="form-control" name="demiIdMovimiento"
+                                        id="demiIdMovimiento" readonly>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="cantidadCargada">Cantidad Cargada: </label>
+                                    <input type="text" class="form-control" name="cantidadCargada"
+                                        id="cantidadCargada" readonly>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="cantidadRecibida">Cantidad Recibida: </label>
+                                    <input type="text" class="form-control" name="cantidadRecibida"
+                                        id="cantidadRecibida" readonly>
+                                </div>
+                                <div class="col-sm-12" id="justificacionContainer" style="display: none;">
+                                    <label for="justificacionMovimiento" class="control-label">Justificación:</label>
+                                    <textarea style="resize:none" type="text" class="form-control input-sm" id="justificacionMovimiento" name="justificacionMovimiento" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <div class="form-group text-right">
+                                <button type="" class="btn btn-default" 
+                                    data-dismiss="modal">Cerrar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- FIN MODAL VER DETALLE MOVIMIENTO INTERNO -->
+
             <!--_______ TABLA _______-->
             <div class="col-md-12">
                 <?php
@@ -215,6 +271,10 @@
                   /* si es ajuste muestra la lupa */
                   return '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ajuste Stock" onclick="verAjuste(' . $row['referencia'] . ')"></i>';
                 }
+                elseif (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV.ENTRADA') {
+                    /* si es ajuste muestra la lupa */
+                    return '<i class="fa fa-paperclip" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $row['referencia'] . ')"></i>';
+                  }
                 else{
                   return ''; // No mostrar nada si no es "MOV.SALIDA"
                 }
@@ -705,4 +765,51 @@ $(document).ready(function() {
         seleccionesta(establecimiento);
     }
 });
+
+function clipMovimiento(demi_id){
+    wo();
+    console.log('Llamando a getDataMovimientoInterno con demi_id:', demi_id);
+    $.ajax({
+        type: 'POST',
+        data: {
+            demi_id
+        },
+        url: '<?php echo base_url(ALM) ?>Reportes/getDataMovimientoInterno',
+        success: function(result) {     
+            wc();       
+            var parsedResult = JSON.parse(result);
+            console.log(parsedResult);
+            console.log('Resultado parseado:', parsedResult);
+            // Asegurarse de que parsedResult es un array y tiene al menos un elemento
+            if(Array.isArray(parsedResult) && parsedResult.length > 0) {
+                
+                let justificacion = parsedResult[0].justificacion;
+                let demiId = parsedResult[0].demi_id;
+                let cantidadCargada = parsedResult[0].cantidad_cargada;
+                let cantidadRecibida = parsedResult[0].cantidad_recibida;
+
+                // Mostrar el modal y llenar los campos
+                $('#modalInfoMovimiento').modal('show');
+                $('#demiIdMovimiento').val(demiId);
+                $('#cantidadCargada').val(cantidadCargada);
+                $('#cantidadRecibida').val(cantidadRecibida);
+
+                // Mostrar u ocultar la justificación según corresponda
+                if (justificacion && justificacion.trim() !== '') {
+                    $('#justificacionContainer').show();
+                    $('#justificacionMovimiento').val(justificacion);
+                } else {
+                    $('#justificacionContainer').hide();
+                }
+
+            } else {
+                error('No se encontraron detalles para este movimiento.');
+            }
+        },
+        error: function(xhr, status, error) {
+             console.error('Error en la llamada AJAX:', status, error);
+            alert('Ha ocurrido un error, por favor comunicarse con su proveedor de servicio. Gracias!');
+        }
+    });
+}
 </script>

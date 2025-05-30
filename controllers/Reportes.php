@@ -324,4 +324,17 @@ class Reportes extends CI_Controller
 		echo json_encode($data);
 	}
 
+
+  /**
+	* Trae datos de un movimiento interno por su demi_id
+	* @param 
+	* @return array datos del movimiento interno
+	*/
+	public function getDataMovimientoInterno(){
+
+    $demi_id = $this->input->post('demi_id');
+		$data = $this->Opcionesfiltros->getDataMovimientoInterno($demi_id);
+		echo json_encode($data);
+	}
+
 }
