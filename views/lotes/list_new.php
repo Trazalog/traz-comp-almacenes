@@ -109,12 +109,13 @@ input:checked+.slider:before {
                             <div class="input-group">
                                 <select id="establecimiento" name="establecimiento" class="form-control"
                                     onchange="getTipoDepositos(this)">
-                                    <option value="" selected disabled> - Seleccionar - </option>
                                     <?php 
+                                $first = true;
                                 foreach ($establecimientos as $key => $o) {
-                                    echo "<option value='$o->esta_id'>$o->nombre</option>";
+                                    $selected = $first ? 'selected' : '';
+                                    echo "<option value='$o->esta_id' $selected>$o->nombre</option>";
+                                    $first = false;
                                 }
-
                                 ?>
                                 </select>
                             </div>
@@ -195,7 +196,7 @@ input:checked+.slider:before {
                                             echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
                                         } else {
                                             // Muestra el artículo con stock
-                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . " | Stock: " . $o->stock . "</option>";
+                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion .  " | Stock: " . $o->stock . "</option>";
                                         }
                                         unset($o->json);
                                     }
@@ -216,7 +217,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-3 col-sm-3 col-md-3 col-lg-3">
                             <!-- Checked checkbox -->
                             <div style="text-align: center;" class="form-check col-sm-12">
-                                <label for="stock0" class="checkboxtext">Artículo con Stock en 0
+                                <label for="stock0" class="checkboxtext">Incluir artículos con stock en 0
                                     <!-- <input class="form-check-input ml-2 mb-2 mb-2 mt-3" type="checkbox" value="0"id="stock0" name="stock0" /> -->
                                 </label>
                                 <label class="switch">
@@ -629,4 +630,13 @@ function agrupaDepositos(){
     let tabla = $('#stock').DataTable();
     tabla.rowGroup().enable().dataSrc(9).order([[ 9, 'desc' ]]).draw();
 }
+
+
+$(document).ready(function() {
+    // Ejecutar getTipoDepositos cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento) {
+        getTipoDepositos(establecimiento);
+    }
+});
 </script>

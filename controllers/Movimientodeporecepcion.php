@@ -157,6 +157,7 @@ class Movimientodeporecepcion extends CI_Controller {
 		unset($data["cantidad_recibida"]);
 		unset($data["demi_id"]);
 		unset($data["cantidad_cargada"]);
+		unset($data["justificacion"]);
 		return $data;
 	}
 
@@ -188,6 +189,7 @@ class Movimientodeporecepcion extends CI_Controller {
 		$detalle['demi_id'] = $value['demi_id'];
 		$detalle['cantidad_recibida'] = $value['cantidad_recibida'];
 		$detalle['lote_id_destino'] = $lote_id;
+		$detalle['justificacion'] = $value['justificacion'];
 		return $detalle;
 	}
 

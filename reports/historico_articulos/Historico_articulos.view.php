@@ -80,7 +80,16 @@
                         <label for="establecimiento" class="form-label">Establecimiento <strong
                                 class="text-danger">*</strong> :</label>
                         <select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible"
-                            id="establecimiento" name="establecimiento" />
+                            id="establecimiento" name="establecimiento">
+                            <?php
+                                $first = true;
+                                foreach ($establecimientos as $est) {
+                                    $selected = $first ? 'selected' : '';
+                                    echo '<option value="'.$est->esta_id.'" '.$selected.'>'.$est->nombre.'</option>';
+                                    $first = false;
+                                }
+                            ?>
+                        </select>
                     </div>
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0 habilitado">
@@ -181,6 +190,62 @@
             </div>
             <!-- FIN MODAL VER DETALLE AJUSTE -->
 
+            <!-- MODAL VER DETALLE MOVIMIENTO INTERNO -->
+            <div class="modal fade bs-example-modal" id="modalInfoMovimiento" tabindex="-1" role="dialog"
+                aria-labelledby="myLargeModalLabel">
+
+                <div class="modal-dialog modal-md" role="document">
+                    <div class="modal-content">
+
+                        <div class="modal-header bg-blue">
+                            <button type="button" class="close close_modal_edit" data-dismiss="modal"
+                                aria-label="Close">
+                                <span aria-hidden="true" style="color:white;">&times;</span>
+                            </button>
+
+                            <h4 class="modal-title" id="myModalLabel"><span class="fa fa-fw fa-paperclip"></span> Detalle
+                                Movimiento Interno </h4>
+                        </div>
+
+                        <div class="modal-body ">
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <label for="demiIdMovimiento">ID: </label>
+                                    <input type="text" class="form-control" name="demiIdMovimiento"
+                                        id="demiIdMovimiento" readonly>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="cantidadCargada">Cantidad Cargada: </label>
+                                    <input type="text" class="form-control" name="cantidadCargada"
+                                        id="cantidadCargada" readonly>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label for="cantidadRecibida">Cantidad Recibida: </label>
+                                    <input type="text" class="form-control" name="cantidadRecibida"
+                                        id="cantidadRecibida" readonly>
+                                </div>
+                                <div class="col-sm-12" id="justificacionContainer" style="display: none;">
+                                    <label for="justificacionMovimiento" class="control-label">Justificación:</label>
+                                    <textarea style="resize:none" type="text" class="form-control input-sm" id="justificacionMovimiento" name="justificacionMovimiento" readonly></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+
+                            <div class="form-group text-right">
+                                <button type="" class="btn btn-default" 
+                                    data-dismiss="modal">Cerrar</button>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- FIN MODAL VER DETALLE MOVIMIENTO INTERNO -->
+
             <!--_______ TABLA _______-->
             <div class="col-md-12">
                 <?php
@@ -206,6 +271,10 @@
                   /* si es ajuste muestra la lupa */
                   return '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ajuste Stock" onclick="verAjuste(' . $row['referencia'] . ')"></i>';
                 }
+                elseif (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV.ENTRADA') {
+                    /* si es ajuste muestra la lupa */
+                    return '<i class="fa fa-paperclip" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $row['referencia'] . ')"></i>';
+                  }
                 else{
                   return ''; // No mostrar nada si no es "MOV.SALIDA"
                 }
@@ -236,9 +305,9 @@
             array(
               "label" => "Fecha",
               "value" => function($row) {
-                $aux = explode("T",$row["fec_alta"]);
-                $row["fec_alta"] = date("d-m-Y",strtotime($aux[0]));
-                return $row["fec_alta"];
+                $aux = explode("T",$row["fec_alta_formatted"]);
+                $row["fec_alta_formatted"] = date("d-m-Y",strtotime($aux[0]));
+                return $row["fec_alta_formatted"];
               },
               "type" => "date"
             ),
@@ -308,30 +377,26 @@ function fechaMagic() {
 
 // llena select Establecimientos
 function getEstablecimientos() {
-
     $.ajax({
         type: 'POST',
         dataType: 'json',
         data: {},
         url: 'index.php/<?php echo ALM?>Reportes/getEstablecimientos',
         success: function(data) {
-
             $('#establecimiento').empty();
-            $("#establecimiento").append(
-                "<option value='-1' disabled selected>-Seleccione Establecimiento...-</option");
             if (data != null) {
                 for (var i = 0; i < data.length; i++) {
-                    $('#establecimiento').append("<option value='" + data[i].esta_id + "'>" + data[i]
-                        .nombre + "</option");
+                    var selected = i === 0 ? 'selected' : '';
+                    $('#establecimiento').append("<option value='" + data[i].esta_id + "' " + selected + ">" + data[i].nombre + "</option>");
                 }
-                //$("#establecimiento").removeAttr('readonly');
+                // Ejecutar seleccionesta con el primer elemento
+                seleccionesta(document.getElementById('establecimiento'));
             } else {
-                $("#establecimiento").append("<option value=''>-Sin Establecimientos-</option");
+                $("#establecimiento").append("<option value=''>-Sin Establecimientos-</option>");
             }
             WaitingClose();
         },
         error: function(data) {
-
             alert('Error');
         }
     });
@@ -339,33 +404,31 @@ function getEstablecimientos() {
 
 // carga los depositos de acuerdo a establecimiento
 function seleccionesta(opcion) {
-
     $(".habilitado").show();
-
     wo();
     var id_esta = $("#establecimiento").val();
+    var depo_id = $("#depo_id").val();
 
     $('#lote_id').append('<option value="TODOS">Todos</option>'); // En caso que no seleccione articulo
 
     $.ajax({
         type: 'POST',
         data: {
-            id_esta
+            id_esta,
+            depo_id
         },
         url: 'index.php/<?php echo ALM?>Reportes/traerDepositos',
         success: function(data) {
-
             var resp = JSON.parse(data);
             $('#depo_id').empty();
             $("#depo_id").append("<option value='TODOS'>Todos</option");
             if (data != null) {
                 for (var i = 0; i < resp.length; i++) {
-                    $('#depo_id').append("<option value='" + resp[i].depo_id + "'>" + resp[i].descripcion +
-                        "</option");
+                    $('#depo_id').append("<option value='" + resp[i].depo_id + "'>" + resp[i].descripcion + "</option>");
                 }
                 $("#depo_id").removeAttr('readonly');
             } else {
-                $("#depo_id").append("<option value=''>-Sin Depósitos para este Establecimiento-</option");
+                $("#depo_id").append("<option value=''>-Sin Depósitos para este Establecimiento-</option>");
             }
             wc();
         },
@@ -484,7 +547,7 @@ function filtrar() {
         );
         return;
     }
-
+    wo();
     $.ajax({
         type: 'POST',
         data: {
@@ -492,6 +555,8 @@ function filtrar() {
         },
         url: '<?php echo base_url(ALM) ?>Reportes/historicoArticulos',
         success: function(result) {
+            wc();
+            debugger;
             $('#reportContent').empty();
             $('#reportContent').html(result);
 
@@ -674,7 +739,7 @@ function verAjuste(deaj_id) {
         success: function(result) {
           var resp = JSON.parse(result);
           console.log(resp);
-          $("#idAjuste").val(resp[0].ajus_id);
+          $("#idAjuste").val(deaj_id);
           $("#tipoAjuste").val(resp[0].tipo_ajuste.split("tipos_ajuste_stock")[1]);
           $("#justificacion").val(resp[0].justificacion);
             
@@ -691,5 +756,60 @@ function verAjuste(deaj_id) {
     });
 
 
+}
+
+$(document).ready(function() {
+    // Ejecutar seleccionesta cuando se carga la página
+    var establecimiento = document.getElementById('establecimiento');
+    if (establecimiento && establecimiento.value) {
+        seleccionesta(establecimiento);
+    }
+});
+
+function clipMovimiento(demi_id){
+    wo();
+    console.log('Llamando a getDataMovimientoInterno con demi_id:', demi_id);
+    $.ajax({
+        type: 'POST',
+        data: {
+            demi_id
+        },
+        url: '<?php echo base_url(ALM) ?>Reportes/getDataMovimientoInterno',
+        success: function(result) {     
+            wc();       
+            var parsedResult = JSON.parse(result);
+            console.log(parsedResult);
+            console.log('Resultado parseado:', parsedResult);
+            // Asegurarse de que parsedResult es un array y tiene al menos un elemento
+            if(Array.isArray(parsedResult) && parsedResult.length > 0) {
+                
+                let justificacion = parsedResult[0].justificacion;
+                let demiId = parsedResult[0].demi_id;
+                let cantidadCargada = parsedResult[0].cantidad_cargada;
+                let cantidadRecibida = parsedResult[0].cantidad_recibida;
+
+                // Mostrar el modal y llenar los campos
+                $('#modalInfoMovimiento').modal('show');
+                $('#demiIdMovimiento').val(demiId);
+                $('#cantidadCargada').val(cantidadCargada);
+                $('#cantidadRecibida').val(cantidadRecibida);
+
+                // Mostrar u ocultar la justificación según corresponda
+                if (justificacion && justificacion.trim() !== '') {
+                    $('#justificacionContainer').show();
+                    $('#justificacionMovimiento').val(justificacion);
+                } else {
+                    $('#justificacionContainer').hide();
+                }
+
+            } else {
+                error('No se encontraron detalles para este movimiento.');
+            }
+        },
+        error: function(xhr, status, error) {
+             console.error('Error en la llamada AJAX:', status, error);
+            alert('Ha ocurrido un error, por favor comunicarse con su proveedor de servicio. Gracias!');
+        }
+    });
 }
 </script>

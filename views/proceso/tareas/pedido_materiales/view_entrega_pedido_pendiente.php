@@ -201,14 +201,15 @@ function cerrarTareaParcial() {
     var pema_id = $('#pema').val();
     var cantidades = [];
     var detalles = [];
-    var completa = false;
+    var completa = true;
     var parcial = true;
 
     $('#entregas tr').each(function() {
         const row = $(this).data('json');
-        completa = completa && (parseInt($(this).find('.pedido').html()) == (parseInt($(this).find('.entregado')
+        //sacado para que finalice la tarea sin contar la entrega total
+/*         completa = completa && (parseInt($(this).find('.pedido').html()) == (parseInt($(this).find('.entregado')
             .html()) + parseInt($(this).find('.extraer').html() == '-' ? 0 : $(this).find(
-            '.extraer').html())));
+            '.extraer').html()))); */
 
         if (row == null) return;
         row.forEach(element => {

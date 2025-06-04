@@ -46,6 +46,18 @@ class Movimientodeposalida extends CI_Controller {
 	}
 
 	/**
+	* Trae listado de depositos por id de Estabelcimiento
+	* @param int id establecimiento
+	* @return array listado de depositos
+	*/
+	public function obtenerDepositosAll()
+	{
+		$id = $this->input->post('id_esta');
+		$resp = $this->Establecimientos->obtenerDepositosAllxEstablecimiento($id);
+		echo json_encode($resp->depositos->deposito);
+	}
+
+	/**
 	* Trae lotes de un articulo en un determinado deposito
 	* @param strin art_id y depo_id
 	* @return array con info de lotes encontrados

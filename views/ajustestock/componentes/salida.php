@@ -23,6 +23,9 @@
                         name="lotesal" required>
                         <option value="" disabled selected>-Seleccione opción-</option>
                     </select>
+                    <label id="detallesal" class="select-detalle"></label>
+                    <br>
+                    <label id="infosal" class="text-blue"></label>
                 </div>
             </div>
         </div>
@@ -30,7 +33,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Cantidad:</label>
-                    <input name="cantidadsal" class="form-control inp-descarga" type="number" id="cantidadsal">
+                    <input name="cantidadsal" class="form-control inp-descarga" type="number" id="cantidadsal" min="0" step="0.01" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" onchange="if(this.value < 0) { Swal.fire({title: 'Error', text: 'Ingrese un numero mayor a 0', type: 'error', confirmButtonText: 'Aceptar'}); this.value = 0; }">
                 </div>
             </div>
             <div class="col-md-6">

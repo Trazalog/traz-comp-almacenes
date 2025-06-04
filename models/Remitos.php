@@ -344,6 +344,8 @@ class Remitos extends CI_Model {
     {
         $data['empr_id'] = empresa();
         $data['fec_vencimiento'] = strlen($data['fec_vencimiento']) == 0? '3000-01-01':$data['fec_vencimiento'];
+        /* harkodeo proveedor ficticio para todas las empresas*/
+        $data['prov_id']= 999999;
         $query = $this->db->insert("alm.alm_lotes",$data);
         if($query) return $this->db->insert_id();
     }
@@ -467,6 +469,8 @@ class Remitos extends CI_Model {
     {
         $this->db->where('lote_id', $id);
         $this->db->set('cantidad','cantidad +'.$data['cantidad'], false);
+        /* harkodeo proveedor ficticio para todas las empresas*/
+        $this->db->set('prov_id', 999999);
         return $this->db->update('alm.alm_lotes');
     }
 

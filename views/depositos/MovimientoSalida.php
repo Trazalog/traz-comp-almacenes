@@ -28,10 +28,12 @@
 										<div class="col-md-3">
 												<label>Establecimiento destino <?php hreq(); ?> :</label>
 												<select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible" id="esta_dest_id" required>
-													<option value="" disabled selected>-Seleccione opción-</option>
 													<?php
+													$first = true;
 													foreach ($establecimiento as $a) {
-														echo '<option value="'.$a->esta_id.'">'.$a->nombre.'</option>';
+														$selected = $first ? 'selected' : '';
+														echo '<option value="'.$a->esta_id.'" '.$selected.'>'.$a->nombre.'</option>';
+														$first = false;
 													}
 													?>
 												</select>
@@ -221,6 +223,11 @@
 	$(document).ready(function() {
 		$("#totalCont").val(0);
 		$("#inputarti").attr("disabled", "")
+		// Ejecutar seleccionesta cuando se carga la página
+		var establecimiento = document.getElementById('esta_dest_id');
+		if (establecimiento && establecimiento.value) {
+			seleccionesta(establecimiento);
+		}
 	});
 	// remueve registro de tabla temporal 
 	$(document).on("click",".fa-minus",function() {
@@ -338,6 +345,11 @@
 					$('#lote_id').html(selectLotes);
           			$('#lote_id').select2({matcher: matchCustom,templateResult: formatCustom}).on('change', function() { selectEvent(this);});
 					$("#lote_id").attr('disabled',false);
+					
+					// Seleccionar automáticamente el primer lote disponible
+					if(resp.length > 0) {
+						$('#lote_id').val(resp[0].lote_id).trigger('change');
+					}
 				}
 				wc();
 			},
@@ -356,7 +368,7 @@
 			$.ajax({
 							type: 'POST',
 							data: {id_esta},
-							url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerDepositos',
+							url: 'index.php/<?php echo ALM?>Movimientodeposalida/obtenerDepositosAll',
 							success: function(data) {
 
 									var resp = JSON.parse(data);
@@ -398,6 +410,26 @@
 			idarti = idarti.toString();
 			var um = artiJson.unidad_medida;
 			var descArt = artiJson.descripcion;
+
+			// Validar si el producto con el mismo lote ya existe en la tabla
+			var table = $('#tbl_productos').DataTable();
+			var existe = false;
+			table.rows().every(function() {
+				var rowData = JSON.parse($(this.node()).attr('data-json'));
+				if (rowData.arti_id === idarti && rowData.lote_id_origen === lote_id_origen) {
+					existe = true;
+					return false; 
+				}
+			});
+
+			if (existe) {
+				Swal.fire({
+					title: 'Error',
+					text: 'Este producto con el mismo lote ya existe en la tabla',
+					type: 'error'
+				});
+				return;
+			}
 
 			var datos = {};
 			datos.codigo = lote_codigo;

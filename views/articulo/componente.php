@@ -4,7 +4,7 @@
      <datalist id="articulos">
          <?php foreach($items as $o)
            {
-             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: ".$o->stock."</option>";
+             echo  "<option value='".$o->codigo."' data-json='".$o->json."'>".$o->descripcion." | Stock: " . $o->stock . "</option>";
              unset($o->json);
             }
             ?>

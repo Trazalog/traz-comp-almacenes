@@ -19,10 +19,12 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label>Lote:</label>
-                    <select class="form-control select2 select2-hidden-accesible" id="loteent"
-                        name="loteent" required>
+                    <select class="form-control select2 select2-hidden-accesible" id="loteent" name="loteent" required>
                         <option value="" disabled selected>-Seleccione opción-</option>
                     </select>
+                    <label id="detalle" class="select-detalle"></label>
+                    <br>
+                    <label id="info" class="text-blue"></label>
                 </div>
             </div>
         </div>
@@ -30,7 +32,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <label>Cantidad:</label>
-                    <input name="cantidadent" class="form-control inp-descarga" type="number" id="cantidadent">
+                    <input name="cantidadent" class="form-control inp-descarga" type="number" id="cantidadent" min="0" onchange="if(this.value < 0) { Swal.fire({title: 'Error', text: 'Ingrese un numero mayor a 0', type: 'error', confirmButtonText: 'Aceptar'}); this.value = 0; }">
                 </div>
             </div>
             <div class="col-md-6">
