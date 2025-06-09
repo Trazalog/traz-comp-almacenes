@@ -362,7 +362,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 		if(cantidadRecibida < cant_enviada){
 			Swal.fire({
 				title: 'Información', 
-				html: `La cantidad ingresada es menor a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
+				html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
 				type: 'info', 
 				confirmButtonText: 'Aceptar', 
 				confirmButtonColor: '#3085d6',
@@ -371,7 +371,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 		}else if(cantidadRecibida > cant_enviada){
 			Swal.fire({
 				title: 'Información', 
-				html: `La cantidad ingresada es mayor a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
+				html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
 				type: 'info', 
 				confirmButtonText: 'Aceptar', 
 				confirmButtonColor: '#3085d6',
