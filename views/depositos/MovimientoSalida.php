@@ -551,16 +551,18 @@
 }
 	// procesa datos para guardar detalle
 	function armarDetalle(){
-
-			var datos = [];
-			var rows = $('#tbl_productos tbody tr');
-			$.each(rows, function(i,e) {
-
-					var datajson = $(this).attr("data-json");
-					console.log(datajson);
-					datos.push(datajson);
-			});
-			return datos;
+		var datos = [];
+		var table = $('#tbl_productos').DataTable();
+		
+		// Obtener todas las filas de todas las páginas
+		table.rows().every(function() {
+			var datajson = $(this.node()).attr("data-json");
+			if (datajson) {
+				datos.push(datajson);
+			}
+		});
+		
+		return datos;
 	}
 
 

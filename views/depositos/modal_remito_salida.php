@@ -221,20 +221,24 @@ async function generaRemito() {
 
     // Recupero datos de la tabla
     var productos = [];
-
-    $('#tbl_productos tbody tr').each(function() {
+    var table = $('#tbl_productos').DataTable();
+    
+    // Obtener todas las filas de todas las páginas
+    table.rows().every(function() {
         // Obtener el valor del atributo 'data-json'
-        var jsonData = $(this).attr('data-json');
+        var jsonData = $(this.node()).attr('data-json');
         
-        // Parsear el JSON para obtener el objeto
-        var datos = JSON.parse(jsonData);
-        
-        // Mostrar en consola los datos obtenidos
-        console.log("Datos de la fila: ", datos);
-        console.log("Código de artículo: ", datos.codigoArt);
-        console.log("Cantidad: ", datos.cant);
+        if (jsonData) {
+            // Parsear el JSON para obtener el objeto
+            var datos = JSON.parse(jsonData);
+            
+            // Mostrar en consola los datos obtenidos
+            console.log("Datos de la fila: ", datos);
+            console.log("Código de artículo: ", datos.codigoArt);
+            console.log("Cantidad: ", datos.cant);
 
-        productos.push(datos);
+            productos.push(datos);
+        }
     });
 
     
