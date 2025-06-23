@@ -525,29 +525,28 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	{
 			var valida = '';
 			var barcode = '';
-			//VALIDADOR DE SI ESTA VACIO LA TABLA DE PRODUCTOS A CARGAR
-			if(  $('#tbl_productos_recepcion').DataTable().data().any() ){
-				//VALIDADOR DE VACIO DE ULTIMAS 3 COLUMNAS DE TABLA PRODUCTOS A CARGAR
+			var table = $('#tbl_productos_recepcion').DataTable();
 
-				var tabla = $('#tbl_productos_recepcion tbody tr');
-				$(tabla).each( function () {
-					barcode = $(this).find(".barcode").text();
-					// console.log("For index: " + index+ ", data value is " + value);
-					if($(this).find("input.cantidad").val() == ''){
-						valida = "El artículo con código: '"+ barcode +"' no se cargó la CANTIDAD";
-					};
-					if($(this).find("input.depo_id_modal").val() == ''){
+			//VALIDADOR DE SI ESTA VACIO LA TABLA DE PRODUCTOS A CARGAR
+			if (table.data().any()) {
+				// Recorre todas las filas de todas las páginas
+				table.rows().every(function() {
+					var $row = $(this.node());
+					barcode = $row.find(".barcode").text();
+					if ($row.find("input.depo_id_modal").val() == '') {
 						valida = "El artículo con código: '"+ barcode +"' no se cargó el CODIGO DEPÓSITO";
-					};
-					if($(this).find("input.depo_desc_nomb").val() == ''){
+					}
+					if ($row.find("input.depo_desc_nomb").val() == '') {
 						valida = "El artículo con código: '"+ barcode +"' no se cargó el DEPÓSITO";
-					};
-					if($(this).find("input.fec_vencimiento").val() == ''){
+					}
+					if ($row.find("input.fec_vencimiento").val() == '') {
 						valida = "El artículo con código: '"+ barcode +"' no se cargó la FECHA VENCIMIENTO";
-					};
+					}
+					if ($row.find("input.cantidad").val() == '') {
+						valida = "El artículo con código: '"+ barcode +"' no se cargó la CANTIDAD RECIBIDA";
+					}
 				});
 			}
-			//FIN VALIDADOR
 
 			if(valida == '')
 			{
@@ -573,7 +572,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 							}
 					});
 			}else{
-					alert(valida);
+				error("Error", valida);
 			}
 	}
 
