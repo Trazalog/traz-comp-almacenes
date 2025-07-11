@@ -358,40 +358,53 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	window.banJustificacion = false;
 
 	$('#cant_recibida').on('blur', function () {
-		var cantidadRecibida = $("#cant_recibida").val();
-		if(cantidadRecibida < cant_enviada){
-			Swal.fire({
-				title: 'Información', 
-				html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
-				type: 'info', 
-				confirmButtonText: 'Aceptar', 
-				confirmButtonColor: '#3085d6',
-			});
-			$(".rowJustificacion").css("display", "block");
-		}else if(cantidadRecibida > cant_enviada){
-			Swal.fire({
-				title: 'Información', 
-				html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
-				type: 'info', 
-				confirmButtonText: 'Aceptar', 
-				confirmButtonColor: '#3085d6',
-			});
-			$(".rowJustificacion").css("display", "block");
-		} else {
-			$(".rowJustificacion").css("display", "none");
-			$("#justificacion").val("");
-		}
-	});
+    // Convertir ambos valores a float para evitar problemas de comparación
+    var cantidadRecibida = parseFloat($("#cant_recibida").val().replace(',', '.'));
+    var enviada = parseFloat(cant_enviada);
+
+    if (isNaN(cantidadRecibida)) cantidadRecibida = 0;
+
+    if (cantidadRecibida < enviada) {
+        Swal.fire({
+            title: 'Información',
+            html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${enviada}`,
+            type: 'info',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+        });
+        $(".rowJustificacion").css("display", "block");
+    } else if (cantidadRecibida > enviada) {
+        Swal.fire({
+            title: 'Información',
+            html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${enviada}`,
+            type: 'info',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+        });
+        $(".rowJustificacion").css("display", "block");
+    } else {
+        $(".rowJustificacion").css("display", "none");
+        $("#justificacion").val("");
+    }
+});
 
 	// agregar cantidad  y lote destino a la tabla temporal (trae del modal la info)
 	function agregaCantidadLote(e) {
 		let justificacion = $("#justificacion").val();
-		let cantidadRecibida = $("#cant_recibida").val();
+		// Convertir ambos valores a float
+		let cantidadRecibida = parseFloat($("#cant_recibida").val().replace(',', '.'));
+		let enviada = parseFloat(cant_enviada);
 
-		if ((cantidadRecibida < cant_enviada || cantidadRecibida > cant_enviada) && justificacion.trim() === "") {
+		if ((cantidadRecibida < enviada || cantidadRecibida > enviada) && justificacion.trim() === "") {
 			error("Error", "Se debe ingresar Justificación");
 			e.preventDefault();
 			return; 
+		}
+
+		if($("#cant_recibida").val().trim() === ""){
+			error("Error", "Se debe ingresar Cantidad Recibida");
+			e.preventDefault();
+			return;
 		}
 
 		var t_row = $("#t_row").val();
