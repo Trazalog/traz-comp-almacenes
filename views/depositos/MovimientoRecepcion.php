@@ -358,40 +358,53 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	window.banJustificacion = false;
 
 	$('#cant_recibida').on('blur', function () {
-		var cantidadRecibida = $("#cant_recibida").val();
-		if(cantidadRecibida < cant_enviada){
-			Swal.fire({
-				title: 'Información', 
-				html: `La cantidad ingresada es menor a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
-				type: 'info', 
-				confirmButtonText: 'Aceptar', 
-				confirmButtonColor: '#3085d6',
-			});
-			$(".rowJustificacion").css("display", "block");
-		}else if(cantidadRecibida > cant_enviada){
-			Swal.fire({
-				title: 'Información', 
-				html: `La cantidad ingresada es mayor a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${cant_enviada}`,
-				type: 'info', 
-				confirmButtonText: 'Aceptar', 
-				confirmButtonColor: '#3085d6',
-			});
-			$(".rowJustificacion").css("display", "block");
-		} else {
-			$(".rowJustificacion").css("display", "none");
-			$("#justificacion").val("");
-		}
-	});
+    // Convertir ambos valores a float para evitar problemas de comparación
+    var cantidadRecibida = parseFloat($("#cant_recibida").val().replace(',', '.'));
+    var enviada = parseFloat(cant_enviada);
+
+    if (isNaN(cantidadRecibida)) cantidadRecibida = 0;
+
+    if (cantidadRecibida < enviada) {
+        Swal.fire({
+            title: 'Información',
+            html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${enviada}`,
+            type: 'info',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+        });
+        $(".rowJustificacion").css("display", "block");
+    } else if (cantidadRecibida > enviada) {
+        Swal.fire({
+            title: 'Información',
+            html: `La cantidad ingresada es distinta a la cantidad enviada, por favor ingrese justificación.<br><b>Cantidad enviada:</b> ${enviada}`,
+            type: 'info',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#3085d6',
+        });
+        $(".rowJustificacion").css("display", "block");
+    } else {
+        $(".rowJustificacion").css("display", "none");
+        $("#justificacion").val("");
+    }
+});
 
 	// agregar cantidad  y lote destino a la tabla temporal (trae del modal la info)
 	function agregaCantidadLote(e) {
 		let justificacion = $("#justificacion").val();
-		let cantidadRecibida = $("#cant_recibida").val();
+		// Convertir ambos valores a float
+		let cantidadRecibida = parseFloat($("#cant_recibida").val().replace(',', '.'));
+		let enviada = parseFloat(cant_enviada);
 
-		if ((cantidadRecibida < cant_enviada || cantidadRecibida > cant_enviada) && justificacion.trim() === "") {
+		if ((cantidadRecibida < enviada || cantidadRecibida > enviada) && justificacion.trim() === "") {
 			error("Error", "Se debe ingresar Justificación");
 			e.preventDefault();
 			return; 
+		}
+
+		if($("#cant_recibida").val().trim() === ""){
+			error("Error", "Se debe ingresar Cantidad Recibida");
+			e.preventDefault();
+			return;
 		}
 
 		var t_row = $("#t_row").val();
@@ -525,29 +538,28 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	{
 			var valida = '';
 			var barcode = '';
-			//VALIDADOR DE SI ESTA VACIO LA TABLA DE PRODUCTOS A CARGAR
-			if(  $('#tbl_productos_recepcion').DataTable().data().any() ){
-				//VALIDADOR DE VACIO DE ULTIMAS 3 COLUMNAS DE TABLA PRODUCTOS A CARGAR
+			var table = $('#tbl_productos_recepcion').DataTable();
 
-				var tabla = $('#tbl_productos_recepcion tbody tr');
-				$(tabla).each( function () {
-					barcode = $(this).find(".barcode").text();
-					// console.log("For index: " + index+ ", data value is " + value);
-					if($(this).find("input.cantidad").val() == ''){
-						valida = "El artículo con código: '"+ barcode +"' no se cargó la CANTIDAD";
-					};
-					if($(this).find("input.depo_id_modal").val() == ''){
+			//VALIDADOR DE SI ESTA VACIO LA TABLA DE PRODUCTOS A CARGAR
+			if (table.data().any()) {
+				// Recorre todas las filas de todas las páginas
+				table.rows().every(function() {
+					var $row = $(this.node());
+					barcode = $row.find(".barcode").text();
+					if ($row.find("input.depo_id_modal").val() == '') {
 						valida = "El artículo con código: '"+ barcode +"' no se cargó el CODIGO DEPÓSITO";
-					};
-					if($(this).find("input.depo_desc_nomb").val() == ''){
+					}
+					if ($row.find("input.depo_desc_nomb").val() == '') {
 						valida = "El artículo con código: '"+ barcode +"' no se cargó el DEPÓSITO";
-					};
-					if($(this).find("input.fec_vencimiento").val() == ''){
+					}
+					if ($row.find("input.fec_vencimiento").val() == '') {
 						valida = "El artículo con código: '"+ barcode +"' no se cargó la FECHA VENCIMIENTO";
-					};
+					}
+					if ($row.find("input.cantidad").val() == '') {
+						valida = "El artículo con código: '"+ barcode +"' no se cargó la CANTIDAD RECIBIDA";
+					}
 				});
 			}
-			//FIN VALIDADOR
 
 			if(valida == '')
 			{
@@ -573,7 +585,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 							}
 					});
 			}else{
-					alert(valida);
+				error("Error", valida);
 			}
 	}
 
@@ -592,24 +604,24 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 	function armarDetalle(){
 
 		var datos = [];
+		var table = $('#tbl_productos_recepcion').DataTable();
 		
-		var rows = $('#tbl_productos_recepcion tbody tr');
-		$.each(rows, function(i,e) {
-
-				var datajson = $(this).attr("data-json");
-				var data = JSON.parse( datajson );
-				var item = {
-							demi_id: data.demi_id,
-							cantidad_cargada: data.cantidad_cargada,
-							prov_id: data.prov_id,
-							arti_id: JSON.parse($(this).attr("data-articulo")).arti_id,
-							cod_lote: JSON.parse($(this).attr("data-articulo")).cod_lote, // código de lote origen
-							depo_id: $(this).find("input.depo_id_modal").val(),
-							fec_vencimiento: $(this).find("input.fec_vencimiento").val(),
-							cantidad_recibida: $(this).find("input.cantidad").val(),
-							justificacion: $(this).find("input.justificacion").val()
-						};
-				datos.push(item);
+		// Obtener todas las filas de todas las páginas
+		table.rows().every(function() {
+			var datajson = $(this.node()).attr("data-json");
+			var data = JSON.parse(datajson);
+			var item = {
+				demi_id: data.demi_id,
+				cantidad_cargada: data.cantidad_cargada,
+				prov_id: data.prov_id,
+				arti_id: JSON.parse($(this.node()).attr("data-articulo")).arti_id,
+				cod_lote: JSON.parse($(this.node()).attr("data-articulo")).cod_lote, // código de lote origen
+				depo_id: $(this.node()).find("input.depo_id_modal").val(),
+				fec_vencimiento: $(this.node()).find("input.fec_vencimiento").val(),
+				cantidad_recibida: $(this.node()).find("input.cantidad").val(),
+				justificacion: $(this.node()).find("input.justificacion").val()
+			};
+			datos.push(item);
 		});
 		return datos;
 	}
