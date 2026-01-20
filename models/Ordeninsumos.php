@@ -181,34 +181,35 @@ class Ordeninsumos extends CI_Model
         $dataUser = $this->session->userdata();
 		$idUser = $dataUser['id'];
 
-        $this->db->select('ART.arti_id, ART.barcode, ART.descripcion, PEMA.cantidad as cant_pedida, sum("LOTE".cantidad) as cantidad_stock');
-        $this->db->from('alm.alm_deta_pedidos_materiales as PEMA');
-        $this->db->join('alm.alm_articulos as ART', 'ART.arti_id = PEMA.arti_id');
-        $this->db->join('alm.alm_lotes as LOTE', 'LOTE.arti_id = ART.arti_id');
-        $this->db->join('core.encargados_depositos as ED', 'ED.depo_id = LOTE.depo_id');
-        $this->db->where('ED.user_id', $idUser); //filtro para que traiga stock solo de los depositos que es encargado
-        $this->db->where('PEMA.eliminado', false);
-        $this->db->where('pema_id', $pema);
-        $this->db->where('ART.empr_id', empresa());
-        $this->db->group_by('ART.arti_id, PEMA.cantidad');
+        $sql = "
+            SELECT 
+                ART.barcode,
+                ART.descripcion,
+                ART.arti_id,
+                PEMA.cantidad as cant_pedida,
+                COALESCE((
+                    SELECT SUM(cantidad) 
+                    FROM alm.alm_lotes L
+                    WHERE L.arti_id = ART.arti_id 
+                    AND L.depo_id IN (SELECT depo_id FROM core.encargados_depositos WHERE user_id = ?)
+                ), 0) as cant_disponible,
+                COALESCE((
+                    SELECT SUM(DEEN.cantidad)
+                    FROM alm.alm_entrega_materiales ENMA
+                    JOIN alm.alm_deta_entrega_materiales DEEN ON DEEN.enma_id = ENMA.enma_id
+                    WHERE ENMA.pema_id = ?
+                    AND DEEN.arti_id = ART.arti_id
+                ), 0) as cant_entregada
+            FROM alm.alm_deta_pedidos_materiales PEMA
+            JOIN alm.alm_articulos ART ON ART.arti_id = PEMA.arti_id
+            WHERE PEMA.eliminado = false
+                AND PEMA.pema_id = ?
+                AND ART.empr_id = ?
+        ";
 
-        $A = '(' . $this->db->get_compiled_select() . ') as "A"';
-
-        // SUMAR ENTREGAS
-        $this->db->select('DEEN.arti_id, sum(cantidad) as cant_entregada');
-        $this->db->from('alm.alm_entrega_materiales as ENMA');
-        $this->db->join('alm.alm_deta_entrega_materiales as DEEN', 'DEEN.enma_id = ENMA.enma_id');
-        $this->db->where('ENMA.pema_id', $pema);
-        $this->db->group_by('DEEN.arti_id');
-        $B = '(' . $this->db->get_compiled_select() . ') as "B"';
-
-        // OBTENER EXISTENCIAS
-        $this->db->select('A.barcode, A.descripcion, A.arti_id, A.cant_pedida, COALESCE(cantidad_stock,0) as cant_disponible, COALESCE("B".cant_entregada,0) as cant_entregada');
-        $this->db->from($A);
-        $this->db->join($B, 'B.arti_id = A.arti_id', 'left');
-
+        return $this->db->query($sql, array($idUser, $pema, $pema, empresa()))->result_array(); 
         //echo var_dump($this->db->get()->result_array());die;
-        return $this->db->get()->result_array();
+        //return $this->db->get()->result_array();
     }
 
     public function insert_detaordeninsumo($data2)
