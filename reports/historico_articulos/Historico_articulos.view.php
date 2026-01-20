@@ -296,9 +296,6 @@
             "cantidad" => array(
               "label" => "Cantidad"
             ),
-            "stock_actual" => array(
-              "label" => "Stock"
-            ),
             "deposito" => array(
               "label" => "Depósito"
             ),
@@ -373,6 +370,11 @@ function fechaMagic() {
             $('#datepickerHasta').val(end.format('YYYY-MM-DD'));
         }
     );
+    // Esto asegura que al elegir un rango rápido, los inputs se actualicen
+    $('#daterange-btn').on('apply.daterangepicker', function(ev, picker) {
+        $('#datepickerDesde').val(picker.startDate.format('YYYY-MM-DD'));
+        $('#datepickerHasta').val(picker.endDate.format('YYYY-MM-DD'));
+    }); 
 }
 
 // llena select Establecimientos

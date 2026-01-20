@@ -63,7 +63,7 @@ $('#hecho').prop('disabled', true);
 
 
 
-cargarPedidos();
+//cargarPedidos();
 getEstablecimientos();
 
 function validar_campos_obligatorios() {
@@ -100,12 +100,19 @@ function cargarPedidos() {
                depositoOriginal = deposito.toString();
             
             if (establecimiento != '' && deposito != '') {
+                // Agregar opción de establecimiento si no existe
+                if ($('#establecimientos option[value="' + establecimiento + '"]').length === 0) {
+                    $('#establecimientos').append("<option value='" + data[0].esta_id + "'>" + data[0].estaDescripcion + "</option>");
+                }
+                // Eliminar la opción '-seleccionar-' si existe
+                $('#establecimientos option[value=""]').remove();
                 // Establecer el valor del establecimiento
                 $('#establecimientos').val(establecimiento);
 
                 //selecciona deposito por defecto
                $('#depositos').val(deposito); 
                $('#depositos').append("<option value='" + data[0].depo_id + "'>" +data[0].depoDescripcion+"</option");
+
 
             }
             $('tr.celdas').remove();
@@ -193,6 +200,7 @@ function getEstablecimientos() {
                 opt.textContent = option.nombre; 
                 selectEstablecimiento.appendChild(opt);
             });
+            cargarPedidos();
         },
         error: function(data) {
             console.error("Error al obtener los establecimientos:", data);

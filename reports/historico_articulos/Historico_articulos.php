@@ -53,7 +53,22 @@ class Historico_articulos extends \koolreport\KoolReport
     protected function setup()
     {
         log_message('DEBUG', '#TRAZA| #INGRESOS|#SETUP| #INGRESO');
+        
+        // Procesar los datos para agregar el signo menos a los movimientos de salida
         $this->src("apiarray")
+            ->pipe(new Custom(function($row) {
+                //formateo para que muestre negativos en los movimientos de salida
+                $cantidad = floatval($row['cantidad']);
+                $tipo_mov = isset($row['tipo_mov']) ? trim($row['tipo_mov']) : '';
+                
+                if ($tipo_mov === 'MOV.SALIDA') {
+                    $row['cantidad'] = '-'.number_format(abs($cantidad), 2, ',', '');
+                } else {
+                    $row['cantidad'] = number_format($cantidad, 2, ',', '');
+                }
+                
+                return $row;
+            }))
             ->pipe($this->dataStore("data_historico_table"));
 
         $this->src("apiarray")
