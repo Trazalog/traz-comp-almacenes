@@ -11,11 +11,10 @@
 
             <!-- _____ GRUPO 1 _____ -->
             <div class="col-md-12">
-
                 <div class="form-group">
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                        <label style="padding-left: 20%;">Desde <strong class="text-danger">*</strong> :</label>
+                        <label>Desde <strong class="text-danger">*</strong> :</label>
                         <div class="input-group date">
                             <a class="input-group-addon" id="daterange-btn" title="Más fechas">
                                 <i class="fa fa-magic"></i>
@@ -25,7 +24,6 @@
                                 name="datepickerDesde" placeholder="Desde">
                         </div>
                     </div>
-
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
                         <label>Hasta <strong class="text-danger">*</strong> :</label>
@@ -37,43 +35,62 @@
 
                             </a>
                         </div>
-                    </div>
-
-                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                        <label for="obra" class="form-label">Obras<strong
-                                class="text-danger">*</strong> :</label>
-                        <select class="form-control select2 select2-hidden-accesible"
-                            id="obra" name="obra">
-																												<option value="TODOS"> - TODOS - </option>
-                            <?php
-                               var_dump($obras);
-                                foreach ($obras as $ob) {
-                                    $selected = $first ? 'selected' : '';
-                                    echo '<option value="'.$ob->tabl_id.'">'.$ob->descripcion.'</option>';
-                                    $first = false;
-                                }
-                            ?>
-                        </select>
-
-																								<!-- <select onchange="seleccionesta(this)" id="establecimiento" class="form-control">
-																												<?php 
-																																$first = true;
-																																foreach ($establecimientos as $o) {
-																																				$selected = $first ? 'selected' : '';
-																																				echo "<option value='$o->esta_id' $selected>$o->nombre</option>";
-																																				$first = false;
-																																}
-																												?>
-																								</select> -->
+                    </div>    
+																				
+																				<div class="col-md-4 col-md-6 mb-4 mb-lg-0">
+																						<label for="obra" class="form-label">Obras<strong
+																														class="text-danger">*</strong> :</label>
+																						<select class="form-control select2 select2-hidden-accesible"
+																										id="obra" name="obra">
+																										<option value="TODOS"> - TODOS - </option>
+																										<?php
+																														foreach ($obras as $ob) {
+																																		$selected = $first ? 'selected' : '';
+																																		echo '<option value="'.$ob->tabl_id.'">'.$ob->descripcion.'</option>';
+																																		$first = false;
+																														}
+																										?>
+																							</select>
+		              						</div>
 
 
 
 
-                    </div>
                 </div>
-
             </div>
-            <!-- _____ GRUPO 1 _____ -->
+
+												<div class="col-md-12">
+                <br>
+            </div>
+
+            <!-- _____ GRUPO 2 _____ -->
+												<div class="col-md-12">
+
+																<div class="form-group">		
+
+																						<div class="col-md-6 col-md-6 mb-6 mb-lg-0">
+                        <label>Establecimiento<strong class="text-danger">*</strong>:</label>
+																								<select class="form-control" id="establecimiento"
+																												name="establecimiento" onchange="seleccionesta(this)" required>
+																												<option value="TODOS" disabled selected>-Seleccione opción-</option>
+																												<?php																										
+																												foreach ($establecimientos as $i) {																														
+																																echo '<option value="'.$i->nombre.'" class="emp" data-json=\''.json_encode($i).'\' >'.$i->nombre.'</option>';																																
+																												}
+																												?>
+																								</select>
+		              						</div>
+
+																						<div class="col-md-6 col-md-6 mb-6 mb-lg-0">
+                        <label>Depósito<strong class="text-danger">*</strong>:</label>
+                    				<select class="form-control" id="deposito" name="deposito"
+                        required>
+                        <option value="TODOS" disabled selected>-Seleccione opción-</option>
+                    				</select>
+		              						</div>
+																</div>				
+
+												</div>
 
             <div class="col-md-12">
                 <br>
@@ -113,22 +130,25 @@ function filtrar() {
     var desde = $("#datepickerDesde").val();
     var hasta = $("#datepickerHasta").val();
     var obra = $("#obra").val();
+				var deposito = $('#deposito option:selected').val();
 
-				if (desde == '' || hasta == '') {
-        Swal.fire(
-            'Error...',
-            'Debes completar los campos Obligatorios (*)',
-            'error'
-        );
-        return;
-    }
+				// if (desde == '' || hasta == '' || deposito == '') {
+					//     Swal.fire(
+					//         'Error...',
+					//         'Debes completar los campos Obligatorios (*)',
+					//         'error'
+					//     );
+					//     return;
+    // }
+				
     wo();
     $.ajax({
         type: 'POST',
         data: {
             desde: desde,
             hasta: hasta,
-            obra: obra
+            obra: obra,
+            depo: deposito
         },
         url: '<?php echo base_url(ALM) ?>Informe/cargaTabla',
         success: function(result) {
@@ -181,6 +201,41 @@ function fechaMagic() {
         $('#datepickerDesde').val(picker.startDate.format('YYYY-MM-DD'));
         $('#datepickerHasta').val(picker.endDate.format('YYYY-MM-DD'));
     }); 
+}
+
+// Al seleccionar establecimiento, busca depositos
+function seleccionesta(opcion){
+    WaitingOpen('Buscando Depositos...');
+    var id_esta = $("#establecimiento").val();
+    json = JSON.parse($("#establecimiento>option:selected").attr("data-json"));
+    id_esta = json.esta_id;
+    $.ajax({
+        type: 'POST',
+        data: {id_esta},
+        url: 'index.php/<?php echo ALM?>Movimientodeposalida/traerDepositos',
+        success: function(data) {
+            var resp = JSON.parse(data);
+            WaitingClose();
+            $('#deposito').empty();
+            $("#deposito").removeAttr('readonly');
+            if (resp == null) {
+                    $('#deposito').append('<option value="" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
+                    //reseteo select tipo de ajuste
+                    $("#tipoajuste").val('');
+                    $("#tipoajuste").attr('disabled','disabled');
+            } else {
+                $('#deposito').append('<option value="" disabled selected>-Seleccione Depósito-</option>');
+                for(var i=0; i<resp.length; i++)
+                {
+                    $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
+                }
+            }
+        },
+        error: function(data) {
+            alert('Error');
+            WaitingClose();
+        }
+    });
 }
 
 

@@ -24,8 +24,8 @@
     </div>
 </div> 
 
-<div id="form-dinamico" class="frm-new" data-form="14" style="display:none;"></div>
-
+<!-- <div id="form-dinamico" class="frm-new" data-form="14" style="display:none;"></div> -->
+ <div id="form-dinamico" class="frm-new" data-form="<?php echo $form_id ?>" style="display:none;"></div>
 <hr>
 <div class="table-responsive">
     <h3>Pedido Materiales <small>Detalles del Pedido</small></h3>
@@ -129,7 +129,10 @@ $(function() {
 });
 
 //Cierra la tarea actual
-function cerrarTarea() {
+async function cerrarTarea() {
+debugger;
+
+
     //cerrar tarea en view etrega pedido pendiente
     if (!validar_campos_obligatorios()) return;
 
@@ -162,12 +165,29 @@ function cerrarTarea() {
         return;
     }
 
-    wbox('#view');
+    //wbox('#view');
+
+				 // Guardado del formulario dinamico
+					idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+
+					if(idFormDinamico != "#undefined"){
+									wo();
+									var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+					}
+
+					if(newInfoID){
+
+					}else{
+									wc();
+									alertify.error("Error al Agregar Formulario dinamico");
+									return;
+					}
+
     $.ajax({
         type: 'POST',
         data: {
             completa,
-            info_entrega: get_info_entrega(),
+            info_entrega: get_info_entrega(newInfoID),
             detalles,
             cantidades,
             pema_id
@@ -194,7 +214,7 @@ function cerrarTarea() {
     });
 }
 //Cierra la tarea con entregas parciales
-function cerrarTareaParcial() {
+async function cerrarTareaParcial() {
     //cerrar tarea en view etrega pedido pendiente
     if (!validar_campos_obligatorios()) return;
     var id = $('#taskId').val();
@@ -203,6 +223,23 @@ function cerrarTareaParcial() {
     var detalles = [];
     var completa = true;
     var parcial = true;
+
+				// Guardado del formulario dinamico
+					idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+
+					if(idFormDinamico != "#undefined"){
+									wo();
+									var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+					}
+
+					if(newInfoID){
+
+					}else{
+									wc();
+									alertify.error("Error al Agregar Formulario dinamico");
+									return;
+					}
+
 
     $('#entregas tr').each(function() {
         const row = $(this).data('json');
@@ -380,7 +417,7 @@ function cerrarTareaParcial() {
     }
 }
 
-function cerrarTareaSinEntrega() {
+async function cerrarTareaSinEntrega() {
     //cerrar tarea en view etrega pedido pendiente
    // if (!validar_campos_obligatorios()) return;
 
@@ -391,6 +428,24 @@ function cerrarTareaSinEntrega() {
     var completa = false;
     var parcial = false;
     var sinEntrega = true;
+
+				// Guardado del formulario dinamico
+					idFormDinamico = "#"+$('.frm-new').find('form').attr('id');
+
+					if(idFormDinamico != "#undefined"){
+									wo();
+									var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+					}
+
+					if(newInfoID){
+
+					}else{
+									wc();
+									alertify.error("Error al Agregar Formulario dinamico");
+									return;
+					}
+
+
 
     $('#entregas tr').each(function() {
         const row = $(this).data('json');
@@ -568,13 +623,14 @@ function cerrarTareaSinEntrega() {
     }
 }
 
-function get_info_entrega() {
+function get_info_entrega(newInfoID	= null) {
     return JSON.stringify(obj = {
         comprobante: $('#comprobante').val(),
         fecha: $('#fecha_entrega').val(),
         solicitante: $('#solicitante').val(),
         dni: $('#dni').val(),
-        pema_id: $('#pema').val()
+        pema_id: $('#pema').val(),
+								info_id: newInfoID
     });
 }
 

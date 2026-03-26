@@ -61,28 +61,34 @@
 	<thead>
 		<tr>
 		  <th>Fecha</th>
-		  <th>Codigo</th>
-		  <th>Artículo</th>
-		  <th>Lote</th>
-				<th>C. Entregada</th>
-				<th>U.Medida</th>
-				<th>Dep. Desde</th>      
-				<th>Obra</th>               
+     <th>Pedido</th>
+     <th>Codigo</th>
+     <th>Artículo</th>
+     <th>Lote</th>
+     <th>C. Entregada</th>
+     <th>U.Medida</th>
+     <th>Dep. Desde</th>    
+     <th>Obra</th>              
 		</tr>
 	</thead>
 	<tbody>
-	
+	<?php
+
+
+?>	
+
 	<?php foreach($data as $dato): ?>
     <tr>
-        <td><?= $dato['to_char']       ?></td>
-        <td><?= $dato['pema_id']       ?></td>
-        <td><?= $dato['barcode']   ?></td>  <!-- artículo -->
-        <td><?= $dato['lote']          ?></td>
-        <td><?= $dato['cantidad']      ?></td>
-        <td><?= $dato['unidad_medida'] ?></td>
-        <td><?= $dato['descripcion']      ?></td>  
-        <td><?= $dato['obra'] ?></td>  
-    </tr>
+        <td><?= $dato->fec_alta       ?></td>
+								<td><?= $dato->pema_id       ?></td>
+								<td><?= $dato->barcode       ?></td>
+								<td><?= $dato->desc_articulo   ?></td>  <!-- artículo -->
+								<td><?= $dato->lote          ?></td>
+								<td><?= $dato->cantidad      ?></td>
+								<td><?= $dato->unidad_medida ?></td>
+								<td><?= $dato->deposito      ?></td>
+     			<td><?= $dato->obra ?></td>  
+   </tr>
 <?php endforeach; ?>
 	</tbody>
 </table>
