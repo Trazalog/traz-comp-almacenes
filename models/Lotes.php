@@ -9,27 +9,27 @@ class Lotes extends CI_Model
         parent::__construct();
     }
     /**
-	* Obtiene el reporte de stock por empr_id
-	* @param 
-	* @return view
-	*/
+				* Obtiene el reporte de stock por empr_id
+				* @param 
+				* @return view
+				*/
     public function getList(){ 
-        $data = $this->session->userdata();
-		$iduser = $data['id'];
+						$data = $this->session->userdata();
+						$iduser = $data['id'];
 
-        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | Lotes |getList()');
-        $empresa = empresa();
-        $url = REST_ALM.'/lotes/stock/empresa/'.$empresa.'/usuario/'.$iduser;
+						log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | Lotes |getList()');
+						$empresa = empresa();
+						$url = REST_ALM.'/lotes/stock/empresa/'.$empresa.'/usuario/'.$iduser;
 
-        $aux = $this->rest->callAPI("GET",$url);
-        $resp = json_decode($aux['data']);
-        return $resp->lotes->stock;
+						$aux = $this->rest->callAPI("GET",$url);
+						$resp = json_decode($aux['data']);
+						return $resp->lotes->stock;
     }
     /**
-	* Realiza la query para obtener los punto de pedidos
-	* @param 
-	* @return view
-	*/
+		* Realiza la query para obtener los punto de pedidos
+		* @param 
+		* @return view
+		*/
     public function getPuntoPedido(){
         log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | getPuntoPedido()');
         // OBTENER CANTIDADES RESERVADAS
@@ -293,18 +293,18 @@ class Lotes extends CI_Model
 
     public function listarPorArticulos($idarticulo,$iddeposito){
 
-        log_message('DEBUG', '#MODEL > listarPorArticulos | ID_ARTICULO: ' .$idarticulo);
-        $url = REST_ALM.'/deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list';
-		$array = $this->rest->callAPI("GET",$url);
-		$resp =  json_decode($array['data']);
-		return $resp;
+					log_message('DEBUG', '#MODEL > listarPorArticulos | ID_ARTICULO: ' .$idarticulo);
+					$url = REST_ALM.'/deposito/'.$iddeposito.'/articulo/'.$idarticulo.'/lote/list';
+					$array = $this->rest->callAPI("GET",$url);
+					$resp =  json_decode($array['data']);
+					return $resp;
     }
 
     public function filtrarListado($data){
         log_message('DEBUG', "#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | filtrarListado()  data: >> " . json_encode($data));
 
         $dataUser = $this->session->userdata();
-		$idUser = $dataUser['id'];
+								$idUser = $dataUser['id'];
 
         $empresa = empresa();
         $this->db->select('
