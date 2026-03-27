@@ -130,8 +130,8 @@ class Almtareas extends CI_Model
 
                 $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($data['pema_id']);
 
-																$data['form_id'] = $this->Valores->getValor('formulario_entrega_materiales')[0]->valor;
-
+																$data['form_id'] = $this->Valores->getTablaValor('configuraciones','formulario_entrega_materiales');
+																
 																log_message('DEBUG', '#TRAZ-COMP-ALMACENES | Almtareas | desplegarVista()  form_id: ' . $data['form_id']);
 																
                 if (viewOT) {
