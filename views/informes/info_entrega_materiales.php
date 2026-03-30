@@ -52,10 +52,6 @@
 																										?>
 																							</select>
 		              						</div>
-
-
-
-
                 </div>
             </div>
 
@@ -72,7 +68,7 @@
                         <label>Establecimiento<strong class="text-danger">*</strong>:</label>
 																								<select class="form-control" id="establecimiento"
 																												name="establecimiento" onchange="seleccionesta(this)" required>
-																												<option value="TODOS" disabled selected>-Seleccione opción-</option>
+																												<option value="TODOS" disabled selected>- TODOS -</option>
 																												<?php																										
 																												foreach ($establecimientos as $i) {																														
 																																echo '<option value="'.$i->nombre.'" class="emp" data-json=\''.json_encode($i).'\' >'.$i->nombre.'</option>';																																
@@ -83,9 +79,9 @@
 
 																						<div class="col-md-6 col-md-6 mb-6 mb-lg-0">
                         <label>Depósito<strong class="text-danger">*</strong>:</label>
-                    				<select class="form-control" id="deposito" name="deposito"
+                    				<select class="form-control" id="deposito" name="deposito" 
                         required>
-                        <option value="TODOS" disabled selected>-Seleccione opción-</option>
+                        <option value="TODOS" disabled selected>- TODOS -</option>
                     				</select>
 		              						</div>
 																</div>				
