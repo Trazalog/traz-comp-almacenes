@@ -215,12 +215,12 @@ function seleccionesta(opcion){
             $('#deposito').empty();
             $("#deposito").removeAttr('readonly');
             if (resp == null) {
-                    $('#deposito').append('<option value="" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
+                    $('#deposito').append('<option value="TODOS" disabled selected>-Sin Depósitos para este Establecimiento-</option>');
                     //reseteo select tipo de ajuste
                     $("#tipoajuste").val('');
                     $("#tipoajuste").attr('disabled','disabled');
             } else {
-                $('#deposito').append('<option value="" disabled selected>-Seleccione Depósito-</option>');
+                $('#deposito').append('<option value="TODOS" disabled selected>- TODOS -</option>');
                 for(var i=0; i<resp.length; i++)
                 {
                     $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
