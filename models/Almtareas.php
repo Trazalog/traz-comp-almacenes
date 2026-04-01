@@ -110,6 +110,8 @@ class Almtareas extends CI_Model
                     $this->load->model('Otrabajos');
                 }
 
+																$this->load->model('core/Valores');
+
                 $proceso = $tarea->processId;
 
                 $aux = null;
@@ -128,6 +130,10 @@ class Almtareas extends CI_Model
 
                 $data['list_deta_pema'] = $this->Ordeninsumos->get_detalle_entrega($data['pema_id']);
 
+																$data['form_id'] = $this->Valores->getTablaValor('configuraciones','formulario_entrega_materiales');
+																
+																log_message('DEBUG', '#TRAZ-COMP-ALMACENES | Almtareas | desplegarVista()  form_id: ' . $data['form_id']);
+																
                 if (viewOT) {
                     $ot = $this->Otrabajos->obtenerOT($aux['ortr_id']);
 
