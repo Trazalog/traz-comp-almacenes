@@ -307,7 +307,7 @@
                     </div>
                     <div class="col-xs-4 col-md-4">
                         <img src="imagenes/trazalog/logo_trazalog.png" id='logo_remito'
-                            style="max-width: 150px; margin-left: 30%;">
+                            style="max-width: 150px; margin-left: 0%;">
                     </div>
                 </div>
 
