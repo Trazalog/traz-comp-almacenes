@@ -277,6 +277,9 @@ input:checked+.slider:before {
 </div><!-- /.row -->
 <script>
 fechaMagic();
+// Limpio las fechas para que no traiga valores por defecto
+$('#datepickerDesde').val('');
+$('#datepickerHasta').val('');
 
 function jsRemoveWindowLoad() {
     // eliminamos el div que bloquea pantalla
