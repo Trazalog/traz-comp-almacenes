@@ -3,6 +3,12 @@
         <h3 class="box-title">Entrega Materiales</h3>
     </div><!-- /.box-header -->
     <div class="box-body table-responsive">
+        <?php if(isset($entrega_directa) && $entrega_directa !== null && ($entrega_directa === true || $entrega_directa === 'true' || $entrega_directa == 1)): 
+            
+            echo '<button class="btn btn-block btn-primary"  style="width: 200px; margin: 10px;" 
+                    onclick="linkTo(\''.ALM.'new/Entrega_Material/entregaMaterialesDirecto\')">Entregar materiales</button>';
+        endif; 
+        ?>
         <table id="entregas" class="table table-bordered table-striped table-hover">
             <thead>
 
@@ -216,6 +222,10 @@
             },
             base: base
         });
+    }
+
+    function EntregaMateriales(){
+        $('#view_entrega_pedido').modal('show');
     }
 </script>
 
