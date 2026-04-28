@@ -120,7 +120,7 @@
                 var tabla = $('#modal_detalle_entrega table');
 
                 $(tabla).find('tbody').html('');
-                result.forEach(e => {
+                result.detalles.forEach(e => {
                     $(tabla).append(
                         '<tr>' +
                         '<td>' + e.barcode + '</td>' +
