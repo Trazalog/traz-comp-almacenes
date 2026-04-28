@@ -20,7 +20,7 @@
                 <div class="form-group">
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                        <label style="padding-left: 20%;">Desde <strong class="text-danger">*</strong> :</label>
+                        <label>Desde: </label>
                         <div class="input-group date">
                             <a class="input-group-addon" id="daterange-btn" title="Más fechas">
                                 <i class="fa fa-magic"></i>
@@ -33,7 +33,7 @@
 
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                        <label>Hasta <strong class="text-danger">*</strong> :</label>
+                        <label>Hasta: </label>
                         <div class="input-group date">
                             <input type="date" class="form-control" id="datepickerHasta" name="datepickerHasta"
                                 placeholder="Hasta">
@@ -45,10 +45,8 @@
                     </div>
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                        <label for="tipoajuste" class="form-label">Tipo Movimiento <strong
-                                class="text-danger">*</strong> :</label>
+                        <label for="tipoajuste" class="form-label">Tipo Movimiento: </label>
                         <select class="form-control select2 select2-hidden-accesible" id="tipoajuste" name="tipoajuste">
-                            <option value="-1" disabled selected>-Seleccione-</option>
                             <option value="TODOS">Todos</option>
                             <option value="INGRESO">Ingreso</option>
                             <option value="EGRESO">Egreso</option>
@@ -77,16 +75,13 @@
                 <div class="form-group">
 
                     <div class="col-md-4 col-md-6 mb-4 mb-lg-0">
-                        <label for="establecimiento" class="form-label">Establecimiento <strong
-                                class="text-danger">*</strong> :</label>
+                        <label for="establecimiento" class="form-label">Establecimiento: </label>
                         <select onchange="seleccionesta(this)" class="form-control select2 select2-hidden-accesible"
                             id="establecimiento" name="establecimiento">
+                            <option value="TODOS">Todos</option>
                             <?php
-                                $first = true;
                                 foreach ($establecimientos as $est) {
-                                    $selected = $first ? 'selected' : '';
-                                    echo '<option value="'.$est->esta_id.'" '.$selected.'>'.$est->nombre.'</option>';
-                                    $first = false;
+                                    echo '<option value="'.$est->esta_id.'">'.$est->nombre.'</option>';
                                 }
                             ?>
                         </select>
@@ -127,8 +122,10 @@
 
             <div class="form-group col-xs-12">
                 <div class="form-group">
-                    <button type="button" class="btn btn-success btn-flat col-xs-12 col-sm-3 col-md-3 col-lg-3"
-                        onclick="filtrar()" style="float: right !important;">Filtrar</button>
+                    <button type="button" class="btn btn-default btn-sm btn-flat col-xs-12 col-sm-2 col-md-2 col-lg-2"
+                        onclick="limpiar()" style="float: right !important;">Limpiar</button>
+                    <button type="button" class="btn btn-success btn-sm btn-flat col-xs-12 col-sm-2 col-md-2 col-lg-2"
+                        onclick="filtrar()" style="float: right !important; margin-right: 5px;">Filtrar</button>
                 </div>
             </div>
 
@@ -320,7 +317,7 @@
         ?>
             </div>
             <div id="acciones" class="" style="float: right !important;">
-                <button type="button" class="btn btn-primary" onclick="exportarExcel()">Exportar</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="exportarExcel()">Exportar</button>
             </div>
         </div>
     </div>
@@ -387,14 +384,14 @@ function getEstablecimientos() {
         success: function(data) {
             $('#establecimiento').empty();
             if (data != null) {
+                $('#establecimiento').append("<option value='TODOS' selected>Todos</option>");
                 for (var i = 0; i < data.length; i++) {
-                    var selected = i === 0 ? 'selected' : '';
-                    $('#establecimiento').append("<option value='" + data[i].esta_id + "' " + selected + ">" + data[i].nombre + "</option>");
+                    $('#establecimiento').append("<option value='" + data[i].esta_id + "'>" + data[i].nombre + "</option>");
                 }
                 // Ejecutar seleccionesta con el primer elemento
                 seleccionesta(document.getElementById('establecimiento'));
             } else {
-                $("#establecimiento").append("<option value=''>-Sin Establecimientos-</option>");
+                $("#establecimiento").append("<option value='TODOS' selected>Todos</option>");
             }
             WaitingClose();
         },
@@ -407,8 +404,17 @@ function getEstablecimientos() {
 // carga los depositos de acuerdo a establecimiento
 function seleccionesta(opcion) {
     $(".habilitado").show();
-    wo();
     var id_esta = $("#establecimiento").val();
+
+    if (id_esta == 'TODOS') {
+        $('#depo_id').empty();
+        $("#depo_id").append("<option value='TODOS'>Todos</option>");
+        $('#lote_id').empty();
+        $('#lote_id').append('<option value="TODOS">Todos</option>');
+        return;
+    }
+
+    wo();
     var depo_id = $("#depo_id").val();
 
     $('#lote_id').append('<option value="TODOS">Todos</option>'); // En caso que no seleccione articulo
@@ -423,7 +429,7 @@ function seleccionesta(opcion) {
         success: function(data) {
             var resp = JSON.parse(data);
             $('#depo_id').empty();
-            $("#depo_id").append("<option value='TODOS'>Todos</option");
+            $("#depo_id").append("<option value='TODOS'>Todos</option>");
             if (data != null) {
                 for (var i = 0; i < resp.length; i++) {
                     $('#depo_id').append("<option value='" + resp[i].depo_id + "'>" + resp[i].descripcion + "</option>");
@@ -540,7 +546,7 @@ function filtrar() {
     } else {
         data.arti_id = 'TODOS';
     }
-
+/* 
     if (fec1 == '' || fec2 == '' || tipoajuste == '' || establecimiento == '') {
         Swal.fire(
             'Error...',
@@ -548,7 +554,7 @@ function filtrar() {
             'error'
         );
         return;
-    }
+    } */
     wo();
     $.ajax({
         type: 'POST',
@@ -578,6 +584,24 @@ function filtrar() {
             wc();
         }
     });
+}
+
+function limpiar() {
+    $("#datepickerDesde").val('');
+    $("#datepickerHasta").val('');
+    $("#tipoajuste").val('TODOS').trigger('change');
+    $("#establecimiento").val('TODOS').trigger('change');
+    if ($("#inputarti").length) {
+        $("#inputarti").val('');
+    }
+    $("#lote_id").val('TODOS').trigger('change');
+
+    // Vaciar la tabla y mostrar mensaje de sin datos
+    $('#reportContent table tbody').empty();
+    $('#reportContent table tbody').append('<tr><td colspan="10" class="text-center">No data available in table</td></tr>');
+
+    // Ocultar botones de acciones (exportar)
+    $('#acciones').hide();
 }
 
 function exportarExcel() {
