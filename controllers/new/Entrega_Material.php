@@ -60,7 +60,39 @@ class Entrega_Material extends CI_Controller
       $form = $this->input->post();
       $res = $this->Ordeninsumos->insert_entrega_materiales($form);
       $this->Pedidosmateriales->setEstado($form['pema_id'], $form['completa'] == "true" ? 'Entregado' : 'Ent. Parcial');
+
+      // Si es entrega directa, cerramos la tarea de entrega en BPM
+      if(isset($form['directo']) && $form['directo'] == 'true'){
+          $this->load->model(ALM . 'Notapedidos');
+          $pema = $this->Notapedidos->get($form['pema_id']); // Obtenemos el registro para sacar el case_id
+          if($pema && isset($pema['case_id']) && $pema['case_id']){
+              $this->load->library('BPM');
+              $this->cerrarTareaEntrega($pema['case_id']);
+          }
+      }
+
       echo json_encode(['status' => true]);
+   }
+
+   public function cerrarTareaEntrega($caseId)
+   {
+       // Buscamos la tarea directamente. En entrega directa, el tiempo entre la aprobación y este paso 
+       // suele ser suficiente para que el motor de BPM cree la tarea.
+       $taskId = $this->bpm->ObtenerTaskidXNombre(BPM_PROCESS_ID_PEDIDOS_NORMALES, $caseId, "Entrega pedido pendiente");
+       
+       log_message('DEBUG', "#TRAZA | Entrega_Material | cerrarTareaEntrega | caseId: $caseId | taskId: " . ($taskId ? $taskId : 'NO ENCONTRADO'));
+
+       $user = userId();
+       if ($taskId && $user) {
+           $resultSetUsuario = $this->bpm->setUsuario($taskId, $user);
+           $contract['entregaCompleta'] = "true";
+           $contract['gEntregaCompleta'] = true;
+
+           if ($resultSetUsuario['status']) {
+               $this->bpm->cerrarTarea($taskId, $contract);
+               log_message('DEBUG', "#TRAZA | Entrega_Material | cerrarTareaEntrega | Tarea $taskId cerrada");
+           }
+       }
    }
 }
 ?>

@@ -7,7 +7,7 @@
 
 <div class="box box-primary">
     <div class="box-header with-border">
-        <h3 class="box-title">Entrega de Materiales</h3>
+        <h3 class="box-title">Entrega Materiales Directa</h3>
     </div>
     <div class="box-body">
     <input id="pema_id" type="number" class="hidden" value="">
@@ -33,7 +33,7 @@
         <div class="col-xs-4 col-sm-4 col-md-4">
             <div class="form-group">
                 <label for="establecimiento">Establecimientos:</label>
-                <select  onchange="seleccionesta(this)" id="establecimiento" class="form-control">
+                <select id="establecimiento" class="form-control">
                     <option value="false"> - Seleccionar - </option>
                         <?php 
                             $first = true;
@@ -76,8 +76,6 @@
             </div>
 
             <div class="table-responsive col-md-12">
-                <hr>
-                <h3>Pedido Materiales <small>Detalles del Pedido</small></h3>
                 <table class="table table-striped table-bordered table-hover">
                     <thead>
                         <th>Acciones</th>
@@ -94,23 +92,107 @@
     </div>
 
     <div class="box-footer">
-        <button class="btn btn-primary pull-right" onclick="guardarTodo()">Guardar Entrega</button>
+        <button class="btn btn-primary pull-right" onclick="guardarTodo()">Entregar</button>
     </div>
 
 
 </div>
 
 <script>
+var esta_anterior = '';
+var depo_anterior = '';
+
+function tieneLotesSeleccionados() {
+    var hay = false;
+    $('#entregas tr').each(function() {
+        if ($(this).attr('data-json')) {
+            hay = true;
+            return false;
+        }
+    });
+    return hay;
+}
+
+//limpia las cantidades de la tabla de lotes
+function borrarCantidades() {
+    $('#entregas tr').each(function() {
+        $(this).removeAttr('data-json');
+        $(this).find('.extraer').html('-');
+        $(this).find('.entregado').html('0');
+    });
+}
+
 $(document).ready(function() {
     wo();
     detectarForm();
     initForm();
 
+    esta_anterior = $('#establecimiento').val();
+    depo_anterior = $('#deposito').val();
+
     // Ejecutar seleccionesta cuando se carga la página
-    var establecimiento = document.getElementById('establecimiento');
-    if (establecimiento && establecimiento.value !== 'false') {
-        seleccionesta(establecimiento);
+    if (esta_anterior !== 'false' && esta_anterior !== '') {
+        seleccionesta();
     }
+
+
+    // si cambia establecimiento o deposito tengo que vaciar la lista de lotes, y volver a cargar
+    $('#establecimiento').on('change', function() {
+        var $combo = $(this);
+        var valor_nuevo = $combo.val();
+
+        if (tieneLotesSeleccionados()) {
+            Swal.fire({
+                title: '¿Desea cambiar el establecimiento?',
+                text: "Se borrarán las cantidades de lotes seleccionadas.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cambiar',
+                cancelButtonText: 'Cancelar'
+            }).then(function(result) {
+                if (result.isConfirmed || result.value) {
+                    borrarCantidades();
+                    esta_anterior = valor_nuevo;
+                    seleccionesta();
+                } else {
+                    $combo.val(esta_anterior);
+                }
+            });
+        } else {
+            esta_anterior = valor_nuevo;
+            seleccionesta();
+        }
+    });
+
+    $('#deposito').on('change', function() {
+        var $combo = $(this);
+        var valor_nuevo = $combo.val();
+
+        if (tieneLotesSeleccionados()) {
+            Swal.fire({
+                title: '¿Desea cambiar el depósito?',
+                text: "Se borrarán las cantidades de lotes seleccionadas.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cambiar',
+                cancelButtonText: 'Cancelar'
+            }).then(function(result) {
+                if (result.isConfirmed || result.value) {
+                    borrarCantidades();
+                    depo_anterior = valor_nuevo;
+                } else {
+                    $combo.val(depo_anterior);
+                }
+            });
+        } else {
+            depo_anterior = valor_nuevo;
+        }
+    });
+
     wc();
 }); 
 
@@ -140,15 +222,41 @@ function agregarArticulo() {
     selectItem = null;
 }
 
+
+/* completa modal de lotes */
 var select_row = null;
 function ver_info(e) {
     wo();
     select_row = $(e).closest('tr');
     var id = $(select_row).data('id');
+    var esta_id = $('#establecimiento').val();
+    var depo_id = $('#deposito').val();
+    var json_guardado = $(select_row).attr('data-json'); // Recuperamos lo que ya se ingresó
+
     $('#modal_view .view').empty();
-    $('#modal_view .view').load("<?php echo base_url(ALM) ?>Articulo/getLotes/" + id, function() {
-        // Ocultar el campo Cantidad Entregada en el modal de lotes
+    $('#modal_view .view').load("<?php echo base_url(ALM) ?>Articulo/getLotes/" + id + "?directo=true&esta_id=" + esta_id + "&depo_id=" + depo_id, function() {
         $('#tit_entregada').closest('.col-xs-12').hide();
+        
+        // Si ya había lotes cargados para esta fila, los reponemos en los inputs
+        if(json_guardado) {
+            var lotes_previos = JSON.parse(json_guardado);
+            $('#lotes_depositos tr').each(function() {
+                var fila_modal = $(this);
+                var datos_fila_modal = JSON.parse(fila_modal.find('.lote_depo').val());
+                
+                // Buscamos si este lote/deposito estaba en lo guardado anteriormente
+                var coincidencia = lotes_previos.find(function(l) {
+                    return l.lote_id == datos_fila_modal.lote_id && l.depo_id == datos_fila_modal.depo_id;
+                });
+                
+                if(coincidencia) {
+                    fila_modal.find('.cantidad').val(coincidencia.cantidad);
+                }
+            });
+            // Actualizamos los totales del modal
+            if(typeof verificar_cantidad === 'function') verificar_cantidad();
+        }
+
         $('#modal_view').modal('show');
         wc();
     });
@@ -256,16 +364,17 @@ async function guardarTodo() {
                     dataType: 'json',
                     url: '<?php echo base_url(ALM) ?>new/Pedido_Material/pedidoNormal',
                     data: {
-                        id: pema_id
+                        id: pema_id,
+                        directo: true
                     },
                     success: function(res) {
                         if (res.status) {
                             // 4. Guardar Entrega
                             var info_entrega = JSON.stringify({
-                                comprobante: 'S/C',
+                                comprobante: $('#form-dinamico [name="comprobante"]').val() || 'S/C',
                                 fecha: '<?php echo date('Y-m-d') ?>',
-                                solicitante: '',
-                                dni: '',
+                                solicitante: $('#form-dinamico [name="solicitante"]').val() || '',
+                                dni: $('#form-dinamico [name="dni"]').val() || '',
                                 pema_id: pema_id,
                                 info_id: info_id
                             });
@@ -279,7 +388,8 @@ async function guardarTodo() {
                                     info_entrega: info_entrega,
                                     detalles: detalles_entrega,
                                     cantidades: cantidades,
-                                    pema_id: pema_id
+                                    pema_id: pema_id,
+                                    directo: true
                                 },
                                 success: function() {
                                     Swal.fire('Guardado!', 'La entrega se registró con éxito.', 'success');
@@ -317,30 +427,31 @@ async function guardarTodo() {
 
 
 
-function seleccionesta(opcion){
+function seleccionesta() {
     var id_esta = $("#establecimiento").val();
     if (id_esta === 'false' || !id_esta) {
+        $('#deposito').empty().append('<option value="" disabled selected> - Seleccionar - </option>').attr('readonly', true);
         return;
     }
-    console.table(id_esta);
     $.ajax({
-            type: 'POST',
-            data: {id_esta},
-            url: 'index.php/<?php echo ALM?>Deposito/getdepositosxestaid',
-            success: function(data) {
-                var resp = JSON.parse(data);
-                console.table(resp);
-                $('#deposito').empty();
-                for(var i=0; i<resp.length; i++)
-                {
-                    $('#deposito').append("<option value='" + resp[i].depo_id + "'>" +resp[i].descripcion+"</option");
-                }
-                $("#deposito").removeAttr('readonly');
-            },
-            error: function(data) {
-                alert('Error');
+        type: 'POST',
+        data: {
+            id_esta
+        },
+        url: 'index.php/<?php echo ALM?>Deposito/getdepositosxestaid',
+        success: function(data) {
+            var resp = JSON.parse(data);
+            $('#deposito').empty();
+            for (var i = 0; i < resp.length; i++) {
+                $('#deposito').append("<option value='" + resp[i].depo_id + "'>" + resp[i].descripcion + "</option>");
             }
-        });
+            $("#deposito").removeAttr('readonly');
+            depo_anterior = $("#deposito").val();
+        },
+        error: function(data) {
+            Swal.fire('Error', 'Error al obtener depósitos', 'error');
+        }
+    });
 }
 </script>
 

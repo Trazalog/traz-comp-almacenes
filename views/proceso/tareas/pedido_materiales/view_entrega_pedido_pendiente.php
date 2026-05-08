@@ -50,7 +50,7 @@
                 echo '<td class="entregado" style="text-align:center">' . $o['cant_entregada'] . '</td>';
                 echo '<td class="disponible" style="text-align:center">'.($o['cant_disponible']<0?0:$o['cant_disponible']).'</td>';
                 echo '<td class="extraer" style="text-align:center">-</td>';
-                echo '<td style="text-align:center"><a style="display:none" href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] ||$o['cant_pedida'] == $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . ' btnEntrega" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';
+                echo '<td style="text-align:center"><a href="#" class="' . ($o['cant_pedida'] <= $o['cant_entregada'] ||$o['cant_pedida'] == $o['cant_entregada'] || $o['cant_disponible'] == 0 ? 'hidden' : 'pendiente') . ' btnEntrega" onclick="ver_info(this)"><i class="fa fa-fw fa-plus"></i></a></td>';
                 echo '</tr>';
             }
 
@@ -63,7 +63,7 @@
 
 <script>
 
-$('.btnEntrega').attr({'style': 'display:none'});
+/* $('.btnEntrega').attr({'style': 'display:none'}); */
 
 
 
@@ -71,6 +71,7 @@ function  realizarEntrega(){
     wo();
     $('#cerrarTareaSinEntregra').attr({'style': 'display:none'});
     $('#form-dinamico').attr({'style': 'display:block'});
+    $("#btncerrarTarea").removeAttr("style");
    
     detectarForm();
     initForm(); 
