@@ -331,6 +331,12 @@ async function guardarTodo() {
     var info_id = null;
     var idFormDinamico = "#" + $('.frm-new').find('form').attr('id');
     if (idFormDinamico != "#undefined") {
+        if (!frm_validar(idFormDinamico)) {
+            wc();
+            alertify.error("Por favor, complete los campos obligatorios del formulario dinámico");
+            return;
+        }
+
         info_id = await frmGuardarConPromesa($(idFormDinamico));
         if (!info_id) {
             wc();
