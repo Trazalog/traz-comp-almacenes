@@ -75,6 +75,7 @@ foreach ($list as $o) {
 </div>
 
 <script>
+var is_directo = <?php echo (isset($directo) && $directo) ? 'true' : 'false' ?>;
 index();
 
 function index() {
@@ -179,6 +180,14 @@ function verificar_cantidad() {
 
     if ((acum + entregado) > pedido) {
         $('#msj').html('Supera la Cantidad Pedida');$('#msj').show();
+        $('#btn-extraccion').prop('disabled', true);
+        return false;
+    }
+
+    //validacion solo si es entrega directa
+    if (is_directo && acum != pedido) {
+        $('#msj').html('La cantidad a entregar debe ser igual a la pedida (' + pedido + ')');
+        $('#msj').show();
         $('#btn-extraccion').prop('disabled', true);
         return false;
     }

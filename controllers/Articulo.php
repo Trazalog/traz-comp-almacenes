@@ -74,6 +74,7 @@ class Articulo extends CI_Controller {
 		echo json_encode($rsp);
 	}
 
+
 	public function getdatosart() // Ok
 	{
 		$art = $this->Articulos->getUnidadesMedidas();
@@ -196,8 +197,21 @@ class Articulo extends CI_Controller {
 
 		$data['articulo'] = $this->Articulos->get($id);
 
-		$data['list'] = $this->Articulos->getLotes($id);
+		$list = $this->Articulos->getLotes($id);
+
+		// Filtrado por Establecimiento y Depósito
+		$depo_id = $this->input->get('depo_id');
+		if($depo_id && $depo_id != 'false'){
+			$list = array_filter($list, function($l) use ($depo_id) {
+				return $l['depo_id'] == $depo_id;
+			});
+		}
+
+		$data['list'] = $list;
 			
+		//variable de control por si viene de entrega directa
+		$data['directo'] = $this->input->get('directo') == 'true';
+
 		$this->load->view(ALM.'proceso/tareas/componentes/tabla_lote_deposito', $data);
 	}
 

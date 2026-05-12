@@ -242,14 +242,14 @@ input:checked+.slider:before {
                 <!-- /.row -->
                 <div class="row">
                     <div class="col-xs-3 col-sm-3 col-md-3 col-md-offset-4 col-lg-3">
-                        <div style="text-align:center" class="box box-primary">
+                        <div style="text-align:center; margin-bottom: 0px;" class="box box-primary">
                             <div style=" background-color: #ffeded;color: black" class="box-header">
                                 <h3 class="box-title">Lotes disponibles</h3>
                             </div>
                             <div id="lotesDisponibles">
                                 <h1 id="cantidadLotesDeposito">-</h1>
                             </div>
-                            <h5>Cantidad de lotes en depósito <b><span id="nombreLotesDeposito"></span></b></h5>
+                            <h5 style="margin-bottom: 5px;">Cantidad de lotes en depósito <b><span id="nombreLotesDeposito"></span></b></h5>
                         </div>
                     </div>
                     <div class="col-xs-4 col-sm-4 col-md-2 col-md-offset-2 col-lg-2">
@@ -263,11 +263,8 @@ input:checked+.slider:before {
                     <!-- /.col -->
                 </div>
                 <!-- /.row -->
-                <br>
             </form>
-
-            <!-- <br> -->
-            <hr>
+            <hr style="margin-top: 5px; margin-bottom: 5px;">
             <div class="box-body">
               <!-- carga la tabla -->
               <div class="table table-responsive" id="cargar_tabla"></div>
@@ -277,6 +274,9 @@ input:checked+.slider:before {
 </div><!-- /.row -->
 <script>
 fechaMagic();
+// Limpio las fechas para que no traiga valores por defecto
+$('#datepickerDesde').val('');
+$('#datepickerHasta').val('');
 
 function jsRemoveWindowLoad() {
     // eliminamos el div que bloquea pantalla
@@ -490,14 +490,20 @@ function limpiar() {
     $("#establecimiento").val('');
     $('#tipo_deposito').val('');
     if ($('#stock0').prop("checked", true)) {
-    console.log("Checkbox stock0 limpiado");
-     $('#stock0').prop("checked", false);   
-}
+        console.log("Checkbox stock0 limpiado");
+        $('#stock0').prop("checked", false);   
+    }
+
     //Deshabilito tipo y deposito
     $('#tipo_deposito').prop('disabled', 'disabled');
     $("#depositodescrip").prop('disabled', 'disabled');
     //Deshabilito recipiente
     $('#nom_reci').prop('disabled', 'disabled');
+
+    // Vaciar tabla
+    $("#cargar_tabla").empty();
+    $("#cantidadLotesDeposito").text("-");
+    $("#nombreLotesDeposito").text("");
 }
 
 function getItem(item) {

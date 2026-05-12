@@ -29,9 +29,10 @@
               foreach($list['data'] as $remito)
               { 
                 $id=$remito['remitoId'];
-                echo '<tr id="'.$id.'">';
+                echo '<tr id="'.$id.'" data-json=\''.json_encode($remito).'\'>';
                   echo '<td class="text-center">';
                   echo '<i class="fa fa-fw fa-search text-light-blue" style="cursor: pointer;" title="Consultar"></i>';
+                  echo '<i class="fa fa-fw  fa-print text-light-blue btn-imprimir" style="cursor: pointer; margin:2px"onclick="ImprimirEntrega(this)" title="Imprimir Entrega"></i> ';
                   echo '</td>';
                   echo '<td>'.$remito['comprobante'].'</td>';
                   echo '<td>'.$remito['fecha'].'</td>';
@@ -157,6 +158,76 @@ $(".fa-search").click(function (e) {
         ]
     });
 
+    function ImprimirEntrega(e) {
+        wo();
+        var tr = $(e).closest('tr');
+        var id = $(tr).attr('id');
+        var json = $(tr).data('json');
+        rellenarCabeceraImpresion(json);
+        $.ajax({
+            type: 'POST',
+            data: { idremito: id },
+            dataType: 'json',
+            url: 'index.php/<?php echo ALM ?>Remito/consultar',
+            success: function (result) {
+                var tabla = $('#modal_impresion_remito table');
+
+                // Asignar logo dinámico si existe
+                if (result.logo && result.logo.data && result.logo.data[0] && result.logo.data[0].valor) {
+                    $('#logo_remito').attr('src', result.logo.data[0].valor);
+                } else {
+                    $('#logo_remito').attr('src', 'imagenes/trazalog/logo_trazalog.png');
+                }
+
+                $(tabla).find('tbody').html('');
+                if(result.datosDetaRemitos){
+                    result.datosDetaRemitos.forEach(e => {
+                        $(tabla).append(
+                            '<tr>' +
+                            '<td>' + e.codigo + '</td>' +
+                            '<td>' + e.artdescription + '</td>' +
+                            '<td class="text-center">' + e.cantidad + '</td>' +
+                            '<td>' + (e.depositodescrip ? e.depositodescrip : '') + '</td>' +
+                            '<td>' + (e.nomesta ? e.nomesta : '') + '</td>' +
+                            '</tr>'
+                        );
+                    });
+                }
+
+                $('#modal_impresion_remito').modal('show');
+                wc();
+            },
+            error: function (result) {
+                wc();
+                alert('Error al traer datos de remito');
+            },
+        });
+    }
+
+    function rellenarCabeceraImpresion(json) {
+        $('#modal_impresion_remito .comprobanteRemito').html(json.comprobante);
+        $('#modal_impresion_remito .comprobante_impresion').val(json.comprobante);
+        $('#modal_impresion_remito .fecha_impresion').val(json.fecha);
+        $('#modal_impresion_remito .proveedor_impresion').val(json.provnombre);
+    }
+
+    function imprimirRemito() {
+        wo();
+        var base = "<?php echo base_url() ?>";
+        $('#modal_impresion_remito').printThis({
+            debug: false,
+            importCSS: true,
+            importStyle: true,
+            pageTitle: "TRAZALOG TOOLS",
+            printContainer: true,
+            loadCSS: base + "lib/bower_components/bootstrap/dist/css/bootstrap.min.css",
+            copyTagClasses: true,
+            printDelay: 4000,
+            base: base
+        });
+        wc();
+    }
+
 var table = $('#tablaconsulta').DataTable( {
     "aLengthMenu": [ 10, 25, 50, 100 ],
     "columnDefs": [ {
@@ -254,4 +325,71 @@ var table = $('#tablaconsulta').DataTable( {
     </div> <!-- /.modal-content -->
   </div>  <!-- /.modal-dialog modal-lg -->
 </div>  <!-- /.modal fade -->
+<!-- / Modal -->
+
+<!-- Modal impresion-->
+<div class="modal fade" id="modal_impresion_remito" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog " role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title hidden-print" id="myModalLabel"><span id="modalAction"
+                        class="fa fa-print text-light-blue"></span> Imprimir Recepción de Materiales</h4>
+                <br>
+                <div class="row">
+                    <div class="col-xs-8 col-md-8">
+                        <h3 style="margin-top:-10px;"><strong>Recepción de Materiales</strong></h3>
+                        <h3 style=""><strong>N° <span class="comprobanteRemito"></span></strong></h3>
+                    </div>
+                    <div class="col-xs-4 col-md-4">
+                        <img src="imagenes/trazalog/logo_trazalog.png" id='logo_remito'
+                            style="max-width: 150px; margin-left: 0%;">
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <br>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="">Comprobante:</label>
+                        <input class="form-control comprobante_impresion" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="">Fecha:</label>
+                        <input class="form-control fecha_impresion" type="text" value="???" readonly>
+                    </div>
+                    <div class="col-xs-12 col-sm-6 col-md-4">
+                        <label for="">Proveedor:</label>
+                        <input class="form-control proveedor_impresion" type="text" value="???" readonly>
+                    </div>
+                </div>
+            </div> <!-- /.modal-header  -->
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Descripción</th>
+                                    <th>Cantidad</th>
+                                    <th>Depósito</th>
+                                    <th>Establecimiento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!--TABLE BODY -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div> <!-- /.modal-body -->
+            <div class='modal-footer hidden-print'>
+                <button type='button' class='btn btn-default' data-dismiss="modal">Cancelar</button>
+                <button type='button' class='btn btn-primary' onclick='imprimirRemito()'>Imprimir</button>
+            </div> <!-- /.modal footer -->
+        </div> <!-- /.modal-content -->
+    </div> <!-- /.modal-dialog modal-lg -->
+</div> <!-- /.modal fade -->
 <!-- / Modal -->

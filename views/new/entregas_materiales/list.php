@@ -3,6 +3,12 @@
         <h3 class="box-title">Entrega Materiales</h3>
     </div><!-- /.box-header -->
     <div class="box-body table-responsive">
+        <?php if(isset($entrega_directa) && $entrega_directa !== null && ($entrega_directa === true || $entrega_directa === 'true' || $entrega_directa == 1)): 
+            
+            echo '<button class="btn btn-block btn-primary"  style="width: 200px; margin: 10px;" 
+                    onclick="linkTo(\''.ALM.'new/Entrega_Material/entregaMaterialesDirecto\')">Entrega Materiales Directa</button>';
+        endif; 
+        ?>
         <table id="entregas" class="table table-bordered table-striped table-hover">
             <thead>
 
@@ -114,7 +120,7 @@
                 var tabla = $('#modal_detalle_entrega table');
 
                 $(tabla).find('tbody').html('');
-                result.forEach(e => {
+                result.detalles.forEach(e => {
                     $(tabla).append(
                         '<tr>' +
                         '<td>' + e.barcode + '</td>' +
@@ -217,6 +223,10 @@
             base: base
         });
     }
+
+    function EntregaMateriales(){
+        $('#view_entrega_pedido').modal('show');
+    }
 </script>
 
 
@@ -307,7 +317,7 @@
                     </div>
                     <div class="col-xs-4 col-md-4">
                         <img src="imagenes/trazalog/logo_trazalog.png" id='logo_remito'
-                            style="max-width: 150px; margin-left: 30%;">
+                            style="max-width: 150px; margin-left: 0%;">
                     </div>
                 </div>
 

@@ -36,8 +36,8 @@ class Opcionesfiltros extends CI_Model
   function getHistoricoArticulos($data)
   {
     log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACENES|OPCIONESFILTROS|getHistoricoArticulos($data)| $data: >> '.json_encode($data));
-    $desde = date("Y-m-d", strtotime($data["desde"]));
-    $hasta = date("Y-m-d", strtotime($data["hasta"]));
+    $desde = !empty($data["desde"]) ? date("Y-m-d", strtotime($data["desde"])) : "1900-01-01";
+    $hasta = !empty($data["hasta"]) ? date("Y-m-d", strtotime($data["hasta"])) : date("Y-m-d");
     $depo_id = $data["depo_id"];
     $tipo = $data["tipo_mov"];
     $arti_id = $data['arti_id'];

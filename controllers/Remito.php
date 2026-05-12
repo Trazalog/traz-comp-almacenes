@@ -13,6 +13,7 @@ class Remito extends CI_Controller {
 		$this->load->model(ALM.'Lotes');
 		$this->load->model(ALM.'Proveedores');
 		$this->load->model(ALM.'Depositos');
+		$this->load->model(ALM.'Tablas');
     }
 
     public function index() // Ok
@@ -124,6 +125,7 @@ class Remito extends CI_Controller {
 			{
 				$arre['datosDetaRemitos'] = $datosDetaRemitos;
 			}
+			$arre['logo'] = $this->Tablas->obtenerTablaEmpr_id('logo_impresion_recepcion_materiales');
 			echo json_encode($arre);
 		}
 		else echo "nada";
