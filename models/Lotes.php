@@ -386,4 +386,73 @@ class Lotes extends CI_Model
             return false;
         }
     }
+
+    /**
+	* Obtiene el listado de lotes paginado consumiendo el servicio de WSO2
+	* @param array $params parámetros de DataTables (start, length, search, filtros)
+	* @return array listado, total de registros y total filtrado
+	*/
+    public function getDataTable($params = null)
+    {
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | getDataTable() | INCOMING PARAMS: ' . json_encode($params));
+        
+        $iduser = $this->session->userdata('id');
+        $empresa = empresa();
+
+        // Mapeo completo: TODO como STRING 
+        $payload = array(
+            'empr_id'         => (string)$empresa,
+            'id_user'         => (string)$iduser,
+            'limit'           => (string)(isset($params['length']) ? $params['length'] : 10),
+            'offset'          => (string)(isset($params['start']) ? $params['start'] : 0),
+            'stock0'          => (isset($params['stock0']) && $params['stock0'] == 'true' ? 'true' : 'false'),
+            'depo_id'         => (empty($params['depositodescrip']) || $params['depositodescrip'] == 'TODOS' ? 'TODOS' : (string)$params['depositodescrip']),
+            'reci_id'         => (empty($params['nom_reci']) || $params['nom_reci'] == 'TODOS' ? 'TODOS' : (string)$params['nom_reci']),
+            'art_type'        => (empty($params['artType']) || $params['artType'] == 'TODOS' ? 'TODOS' : (string)$params['artType']),
+            'establecimiento' => (empty($params['establecimiento']) || $params['establecimiento'] == 'TODOS' ? 'TODOS' : (string)$params['establecimiento']),
+            'fec_desde'       => (empty($params['fec_desde']) ? '' : (string)$params['fec_desde']),
+            'fec_hasta'       => (empty($params['fec_hasta']) ? '' : (string)$params['fec_hasta']),
+            'art_barcode'     => (empty($params['artBarCode']) ? '' : (string)$params['artBarCode']),
+            'art_descrip'     => (empty($params['artDescription']) ? '' : (string)$params['artDescription']),
+            'search'          => (empty($params['search']['value']) ? '' : (string)$params['search']['value'])
+        );
+
+        log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | getDataTable() | post: ' . json_encode($payload));
+
+        // Obtener los DATOS (Paginados) 
+        $postData['post_lotes_stock_paginado'] = $payload;
+        $url = REST_ALM . '/lotes/stock/paginado';
+        $response = $this->rest->callAPI("POST", $url, $postData);
+        $result = json_decode($response['data']);
+        $list = isset($result->lotes->stock) ? $result->lotes->stock : array();
+
+        //  Obtener el TOTAL (Para el paginado)
+        $totalPayload = $payload;
+        unset($totalPayload['limit']);
+        unset($totalPayload['offset']);
+
+        $postTotal['post_lotes_stock_total'] = $totalPayload;
+        
+        $urlTotal = REST_ALM . '/total/stock';
+        $responseTotal = $this->rest->callAPI("POST", $urlTotal, $postTotal);
+        $resultTotal = json_decode($responseTotal['data']);
+        
+        $totalRecords = 0;
+        // Intentamos extraer el totales -> total
+        if(isset($resultTotal->totales->total)){
+            $totalRecords = $resultTotal->totales->total;
+        } elseif(isset($resultTotal->lotes->stock[0]->total)){
+            $totalRecords = $resultTotal->lotes->stock[0]->total;
+        } elseif(isset($resultTotal->total->cantidad)){
+            $totalRecords = $resultTotal->total->cantidad;
+        } elseif(isset($resultTotal->lotes->total)){
+            $totalRecords = $resultTotal->lotes->total;
+        }
+
+        return array(
+            'data'            => $list,
+            'recordsTotal'    => $totalRecords,
+            'recordsFiltered' => $totalRecords 
+        );
+    }
 }

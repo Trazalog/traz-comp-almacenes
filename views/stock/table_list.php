@@ -7,8 +7,10 @@
         <th class="text-center">Stock</th>
         <th class="text-center">Unidad de Medida</th>
         <th class="text-center">Tipo de Articulo</th>
-        <th>Establecimiento</th>
+        <th class="text-center">Recipiente</th>
+        <th class="text-center">Fecha Creacion</th>
         <th>Depósito</th>
+        <th>Estado</th>
     </thead>
     <tbody>
         <?php
@@ -21,8 +23,10 @@
             echo '<td class="text-center">'.((empty($f->cantidad)) ? '0' : $f->cantidad).'</td>';
             echo '<td class="text-center">'.$f->un_medida.'</td>';
             echo '<td class="text-center">'.((!empty($f->arttype)) ? str_replace('tipo_articulo', '', $f->arttype) : '').'</td>';
-            echo '<td>'.((empty($f->establecimiento)) ? "<b>No Aplica</b>" : $f->establecimiento).'</td>';
+            echo '<td class="text-center">'.((empty($f->nom_reci)) ? "<b>No Aplica</b>" : $f->nom_reci).'</td>';
+            echo "<td class='text-center'>".date('d/m/Y', strtotime($f->fecha_nueva))."</td>";
             echo '<td>'.((empty($f->depositodescrip)) ? "<b>No Aplica</b>" : $f->depositodescrip).'</td>';
+            echo '<td class="text-center">'.estado($f->estado).'</td>';
             echo '</tr>';
             }
         ?>
@@ -150,7 +154,7 @@
 <!---///////--- FIN MODAL EDICION E INFORMACION ---///////--->
 <script>
 // extrae datos de la tabla
-$(document).off("click", ".btnInfo").on("click", ".btnInfo", function(e) {
+$(".btnInfo").on("click", function(e) {
     $(".modal-header h4").remove();
     //guardo el tipo de operacion en el modal
     $("#operacion").val("Info");
@@ -191,64 +195,6 @@ function blockEdicion() {
 $(document).ready(function() {
     $('#stock').DataTable({
         responsive: true,
-        serverSide: true,
-        processing: true,
-        ajax: {
-            url: '<?php echo base_url(ALM) ?>Lote/getDataTable',
-            type: 'POST',
-            data: function(d) {
-                d.nom_reci = $("#nom_reci").val();
-                d.depositodescrip = $("#depositodescrip").val();
-                d.artDescription = $("#artDescription").val();
-                d.artBarCode = $("#inputarti").val();
-                d.fec_desde = $("#datepickerDesde").val();
-                d.fec_hasta = $("#datepickerHasta").val();
-                d.artType = $("#artType").val();
-                d.establecimiento = $("#establecimiento").val();
-                d.tipo_deposito = $('#tipo_deposito').val();
-                d.stock0 = $('#stock0').prop('checked');
-            }
-        },
-        columns: [
-            { 
-                data: null, 
-                className: 'text-center', 
-                orderable: false,
-                render: function(data, type, row) {
-                    return '<button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>';
-                }
-            },
-            { 
-                data: 'codigo', 
-                className: 'text-center',
-                render: function(data, type, row) {
-                    return (data == "1" || !data) ? 'S/L' : data;
-                }
-            },
-            { data: 'artbarcode' },
-            { data: 'artdescription' },
-            { 
-                data: 'cantidad', 
-                className: 'text-center',
-                render: function(data, type, row) {
-                    return data ? data : '0';
-                }
-            },
-            { data: 'un_medida', className: 'text-center' },
-            { data: 'arttype', className: 'text-center' },
-            { 
-                data: 'establecimiento',
-                render: function(data, type, row) {
-                    return data ? data : '<b>No Aplica</b>';
-                }
-            },
-            { 
-                data: 'depositodescrip',
-                render: function(data, type, row) {
-                    return data ? data : '<b>No Aplica</b>';
-                }
-            }
-        ],
         iDisplayLength: 10,
         rowGroup: {
          enable: false
@@ -262,7 +208,7 @@ $(document).ready(function() {
                 //Botón para Excel
                 extend: 'excel',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -277,7 +223,7 @@ $(document).ready(function() {
                 orientation: 'landscape',
                 pageSize: 'A4',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -346,13 +292,13 @@ $(document).ready(function() {
 
                     // Hacer que la tabla ocupe todo el ancho con anchos proporcionales
                     var tableIndex = doc.content.length - 1;
-                    doc.content[tableIndex].table.widths = ['10%', '10%', '20%', '10%', '10%', '10%', '15%', '15%'];
+                    doc.content[tableIndex].table.widths = ['10%', '8%', '20%', '6%', '10%', '10%', '10%', '10%', '16%'];
                 }
             },
             {
                 extend: 'copy',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -363,7 +309,7 @@ $(document).ready(function() {
             {
                 extend: 'print',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -371,23 +317,7 @@ $(document).ready(function() {
                 className: 'btn btn-default btn-flat ml-1',
                 text: 'Imprimir <i class="fa fa-print"></i>'
             }
-        ],
-        drawCallback: function(settings) {
-            // Actualizar contadores si es necesario
-            var json = settings.json;
-            if(json && json.recordsFiltered !== undefined) {
-                if(_isset($("#depositodescrip").val())) {
-                     $("#cantidadLotesDeposito").text(json.recordsFiltered);
-                     $("#nombreLotesDeposito").text($('#depositodescrip option:selected').text());
-                }
-            }
-        }
-    }).on('processing.dt', function(e, settings, processing) {
-        if (processing) {
-            jsShowWindowLoad('Procesando...');
-        } else {
-            jsRemoveWindowLoad();
-        }
+        ]
     });
 });
 </script>
