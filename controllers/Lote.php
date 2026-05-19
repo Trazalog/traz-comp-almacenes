@@ -21,7 +21,7 @@ class Lote extends CI_Controller
 		}
     }
     /**
-	* Levanta pantalla de STOCK en almacenes
+	* Levanta pantalla de STOCK PRODUCCION en almacenes
 	* @param 
 	* @return view
 	*/
@@ -37,6 +37,24 @@ class Lote extends CI_Controller
         $this->load->view(ALM . 'lotes/list_new', $data);
        
     }
+
+        /**
+	* Levanta pantalla de STOCK en almacenes
+	* @param 
+	* @return view
+	*/
+    public function indexStock(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lote | index()');        
+        #COMPONENTE ARTICULOS
+        $data['items'] = $this->Componentes->listaArticulos();
+      //  $data['list'] = $this->Lotes->getList();
+        $data['permission'] = "Add-Edit-Del-View";
+        // $data['tipoArticulos'] = $this->Tablas->obtenerTabla('tipo_articulo')['data'];
+        $data['tipoArticulos'] = $this->Tablas->obtenerTablaEmpr_id('tipo_articulo')['data'];
+        $data['establecimientos'] = $this->Establecimientos->listar()->establecimientos->establecimiento;
+        $this->load->view(ALM . 'stock/list', $data);
+       
+    }
     /**
 	* Carga la tabla en pantalla de STOCK
 	* @param 
@@ -44,7 +62,7 @@ class Lote extends CI_Controller
 	*/
     public function Listar_tabla(){
         log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lote | Listar_tabla()');
-	    $data['list'] = $this->Lotes->getList();
+        $data['logo'] = $this->getLogo();
         $this->load->view(ALM . 'lotes/table_list', $data);
     }
 
@@ -104,11 +122,11 @@ class Lote extends CI_Controller
         log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | LOTE | filtrarListado()');
         
         //Recipiente
-        if(!empty($this->input->get('nom_reci'))){
+        if(!empty($this->input->get('nom_reci')) && $this->input->get('nom_reci') != 'TODOS'){
             $data['nom_reci'] = $this->input->get('nom_reci');
         }
         //Deposito
-        if(!empty($this->input->get('depositodescrip'))){
+        if(!empty($this->input->get('depositodescrip')) && $this->input->get('depositodescrip') != 'TODOS'){
             $data['depositodescrip'] = $this->input->get('depositodescrip');
         }
         //Descripcion Articulo
@@ -128,15 +146,15 @@ class Lote extends CI_Controller
             $data['fec_hasta'] = $this->input->get('fec_hasta');
         }
         //Tipo Articulo
-        if(!empty($this->input->get('artType'))){
+        if(!empty($this->input->get('artType')) && $this->input->get('artType') != 'TODOS'){
             $data['artType'] = $this->input->get('artType');
         }
         //Establecimiento
-        if(!empty($this->input->get('establecimiento'))){
+        if(!empty($this->input->get('establecimiento')) && $this->input->get('establecimiento') != 'TODOS'){
             $data['establecimiento'] = $this->input->get('establecimiento');
         }
         //Tipo deposito
-        if(!empty($this->input->get('tipo_deposito'))){
+        if(!empty($this->input->get('tipo_deposito')) && $this->input->get('tipo_deposito') != 'TODOS'){
             $data['tipo_deposito'] = $this->input->get('tipo_deposito');
         }
         //Arcticulos con stock 0
@@ -144,9 +162,43 @@ class Lote extends CI_Controller
             $data['stock0'] = $this->input->get('stock0');
         }
         
-        $data['list'] = $this->Lotes->filtrarListado($data);
+        $data['list'] = array();
         
-      $this->load->view(ALM . 'lotes/table_list', $data);
+        $data['logo'] = $this->getLogo();
+        $this->load->view(ALM . 'lotes/table_list', $data);
+    }
+
+    /**
+	* Trae url del logo desde core tablas y realiza la conversion
+	*/
+    public function getLogo()
+    {
+        $logo = $this->Tablas->obtenerTablaEmpr_id('logo_pdf_stock');
+        if (!empty($logo['data']) && !empty($logo['data'][0]->valor)) {
+            $valor = $logo['data'][0]->valor;
+            // Si ya es un dataURL (base64), lo usamos directo
+            if (substr($valor, 0, 5) === 'data:') {
+                return $valor;
+            } else {
+                // Si es un path, lo convertimos a base64
+                $path = $valor;
+                if (file_exists($path)) {
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $fileData = file_get_contents($path);
+                    return 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+                }
+            }
+        }
+
+        // Default logo as base64 data URL
+        $path = 'imagenes/trazalog/logo_trazalog.png';
+        if (file_exists($path)) {
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $fileData = file_get_contents($path);
+            return 'data:image/' . $type . ';base64,' . base64_encode($fileData);
+        }
+
+        return '';
     }
 
     public function getDepositos(){
@@ -162,5 +214,40 @@ class Lote extends CI_Controller
         log_message('DEBUG','#TRAZA | STOCK | getRecipientesPorEstablecimiento() $response >> '.json_encode($response));
         echo json_encode($response->recipientes->recipiente);
 
+    }
+
+    /**
+	* Obtiene el listado de lotes paginado para DataTables
+	* @param 
+	* @return json listado formateado para DataTables
+	*/
+    public function getDataTable()
+    {
+        $params = $this->input->post();
+        $result = $this->Lotes->getDataTable($params);
+        
+        $data = array();
+        foreach($result['data'] as $f) {
+            // Formateo básico de texto 
+            $f->arttype = (!empty($f->arttype)) ? str_replace('tipo_articulo', '', $f->arttype) : '';
+            $f->fecha_nueva = date('d/m/Y', strtotime($f->fec_alta));
+            $f->estado_label = estado($f->estado); // Mantenemos la función estado() pero la llamamos estado_label
+
+            // Guardamos el objeto completo para el creado de filas (data-json)
+            $f->DT_RowAttr = array(
+                'data-json' => json_encode($f)
+            );
+
+            $data[] = $f;
+        }
+        
+        $response = array(
+            "draw" => intval($params['draw']),
+            "recordsTotal" => intval($result['recordsTotal']),
+            "recordsFiltered" => intval($result['recordsFiltered']),
+            "data" => $data
+        );
+        
+        echo json_encode($response);
     }
 }
