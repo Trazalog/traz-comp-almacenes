@@ -78,7 +78,7 @@ input:checked+.slider:before {
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Stock</h3>
+                <h3 class="box-title">Stock Producción</h3>
             </div><!-- /.box-header -->
             <!--_________________FILTRO_________________-->
             <form id="frm-filtros">
@@ -86,7 +86,7 @@ input:checked+.slider:before {
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
                         <!-- _____ FECHA DESDE _____ -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                            <label>Fecha Desde:</label>
+                            <label>Fecha creación desde:</label>
                             <div class="input-group date">
                                 <a class="input-group-addon" id="daterange-btn" title="Más fechas">
                                     <i class="fa fa-magic"></i>
@@ -98,7 +98,7 @@ input:checked+.slider:before {
                         <!-- _____ FIN FECHA DESDE _____ -->
                         <!-- _____ FECHA HASTA _____ -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                            <label>Fecha Hasta :</label>
+                            <label>Fecha creación hasta:</label>
                             <input type="date" class="form-control pull-right" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
                         </div>
                         <!-- _____ FIN FECHA HASTA _____ -->
@@ -263,6 +263,50 @@ input:checked+.slider:before {
     </div><!-- /.col -->
 </div><!-- /.row -->
 <script>
+var articulosOriginales = [];
+
+function getArticuloTipoId(dataJson) {
+    if (!dataJson) return '';
+
+    if (typeof dataJson === 'string') {
+        try {
+            dataJson = JSON.parse(dataJson);
+        } catch (e) {
+            return '';
+        }
+    }
+
+    return String(
+        dataJson.tiar_id ||
+        dataJson.artType ||
+        dataJson.arttype ||
+        dataJson.type_id ||
+        dataJson.tabl_id ||
+        ''
+    );
+}
+
+/* filtro por tipo de articulo */
+function filtrarArticulosPorTipo() {
+    var tipoSeleccionado = String($('#artType').val() || 'TODOS');
+    var $datalist = $('#articulos');
+
+    $datalist.empty();
+
+    $.each(articulosOriginales, function(index, item) {
+        if (tipoSeleccionado === 'TODOS' || getArticuloTipoId(item.dataJson) === tipoSeleccionado) {
+            var opcion = $('<option></option>');
+            opcion.attr('value', item.codigo);
+            opcion.attr('data-json', item.rawJson);
+            opcion.text(item.descripcion);
+            $datalist.append(opcion);
+        }
+    });
+
+    $('#inputarti').val('');
+    $('label#info').html('');
+}
+
 fechaMagic();
 // Limpio las fechas para que no traiga valores por defecto
 $('#datepickerDesde').val('');
@@ -295,6 +339,19 @@ $(document).ready(function() {
             console.error("Error al verificar los depósitos.");
         }
     });
+
+    $('#articulos option').each(function() {
+        var $opcion = $(this);
+        articulosOriginales.push({
+            codigo: $opcion.val(),
+            descripcion: $opcion.text(),
+            dataJson: $opcion.data('json'),
+            rawJson: $opcion.attr('data-json')
+        });
+    });
+
+    $('#artType').on('change', filtrarArticulosPorTipo);
+    filtrarArticulosPorTipo();
 });
  
 </script>
@@ -368,7 +425,7 @@ $(document).ready(function() {
 
 $(document).ready(function(){
     $('#stock0').click(function () {    
-        if ($('#stock0').prop('checked') ) {
+                if ($('#stock0').prop('checked') ) {
             $("#establecimiento").prop('disabled',true);
             $("#depositodescrip").prop('disabled',true);
             $("#fec_alta").prop('disabled',true);
@@ -455,12 +512,7 @@ function filtrar() {
 // }
 
 function limpiar() {
-    if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
-        $("#establecimiento").prop('disabled',false);
-        $("#artType").prop('disabled',false);
-        $("#fec_alta").prop('disabled',false);
-        $("#inputarti").prop('disabled',false);
-    }
+    // Eliminamos la lógica de habilitar campos que estaban bloqueados por el checkbox de stock 0
 
     $("#nom_reci").val('');
     $("#depositodescrip").val('');
@@ -468,20 +520,24 @@ function limpiar() {
     $("#artDescription").val('');
     $("#artBarCode").val('');
     $("#fec_alta").val('');
-    $("#artType").val('');
+    $("#artType").val('TODOS');
     $("#inputarti").val('');
     $("label#info").html('');
     $("#establecimiento").val('');
     $('#tipo_deposito').val('');
+    $('#datepickerDesde').val('');
+    $('#datepickerHasta').val('');
     if ($('#stock0').prop("checked", true)) {
         console.log("Checkbox stock0 limpiado");
         $('#stock0').prop("checked", false);   
     }
 
-    //Deshabilito tipo y deposito
+    filtrarArticulosPorTipo();
+
+    // Deshabilito tipo y deposito
     $('#tipo_deposito').prop('disabled', 'disabled');
     $("#depositodescrip").prop('disabled', 'disabled');
-    //Deshabilito recipiente
+    // Deshabilito recipiente
     $('#nom_reci').prop('disabled', 'disabled');
 
     // Vaciar tabla

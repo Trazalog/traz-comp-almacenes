@@ -91,7 +91,7 @@ input:checked+.slider:before {
                             <div class="input-group">
                                 <select id="establecimiento" name="establecimiento" class="form-control"
                                     onchange="getDepositos(this)">
-                                    <option value="" selected>TODOS</option>
+                                    <option value="TODOS" selected>TODOS</option>
                                     <?php 
                                 foreach ($establecimientos as $key => $o) {
                                     echo "<option value='$o->esta_id'>$o->nombre</option>";
@@ -116,7 +116,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo de Artículo</label>
                             <select id="artType" name="artType" class="form-control">
-                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="TODOS" selected>TODOS</option>
                                 <?php 
                                 foreach ($tipoArticulos as $key => $o) {
                                     echo "<option value='$o->tabl_id'>$o->valor</option>";
@@ -183,40 +183,92 @@ input:checked+.slider:before {
     </div><!-- /.col -->
 </div><!-- /.row -->
 <script>
+var articulosOriginales = [];
+
+function getArticuloTipoId(dataJson) {
+    if (!dataJson) return '';
+
+    if (typeof dataJson === 'string') {
+        try {
+            dataJson = JSON.parse(dataJson);
+        } catch (e) {
+            return '';
+        }
+    }
+
+    return String(
+        dataJson.tiar_id ||
+        dataJson.artType ||
+        dataJson.arttype ||
+        dataJson.type_id ||
+        dataJson.tabl_id ||
+        ''
+    );
+}
+
+function filtrarArticulosPorTipo() {
+    var tipoSeleccionado = String($('#artType').val() || 'TODOS');
+    var $datalist = $('#articulos');
+
+    $datalist.empty();
+
+    $.each(articulosOriginales, function(index, item) {
+        if (tipoSeleccionado === 'TODOS' || getArticuloTipoId(item.dataJson) === tipoSeleccionado) {
+            var opcion = $('<option></option>');
+            opcion.attr('value', item.codigo);
+            opcion.attr('data-json', item.rawJson);
+            opcion.text(item.descripcion);
+            $datalist.append(opcion);
+        }
+    });
+
+    $('#inputarti').val('');
+    $('label#info').html('');
+}
+
 fechaMagic();
-// Limpio las fechas para que no traiga valores por defecto
 $('#datepickerDesde').val('');
 $('#datepickerHasta').val('');
 
 function jsRemoveWindowLoad() {
-    // eliminamos el div que bloquea pantalla
-    $("#WindowLoad").remove();
+    $('#WindowLoad').remove();
 }
+
 $(document).ready(function() {
-    $("#WindowLoad").remove();
+    $('#WindowLoad').remove();
     $(this).click(jsShowWindowLoad('Se esta Generando la Información'));
-    setTimeout(() => {
+
+    setTimeout(function() {
         jsRemoveWindowLoad();
     }, 3000);
+
     $.ajax({
         url: 'index.php/core/Establecimiento/verificarDepositos',
         type: 'GET',
         dataType: 'json',
         success: function(response) {
             if (response.tieneDeposito) {
-                Swal.fire(
-                    'Ops!',
-                    'No posee depósitos asignados. Comunicarse con el administrador.',
-                    'warning'
-                );
+                Swal.fire('Ops!', 'No posee depósitos asignados. Comunicarse con el administrador.', 'warning');
             }
         },
         error: function() {
-            console.error("Error al verificar los depósitos.");
+            console.error('Error al verificar los depósitos.');
         }
     });
+
+    $('#articulos option').each(function() {
+        var $opcion = $(this);
+        articulosOriginales.push({
+            codigo: $opcion.val(),
+            descripcion: $opcion.text(),
+            dataJson: $opcion.data('json'),
+            rawJson: $opcion.attr('data-json')
+        });
+    });
+
+    $('#artType').on('change', filtrarArticulosPorTipo);
+    filtrarArticulosPorTipo();
 });
- 
 </script>
 <script type="text/javascript">
    
@@ -281,84 +333,61 @@ $(document).ready(function() {
 
 
 <script>
-    $("#cargar_tabla").load("<?php echo base_url(ALM) ?>Lote/Listar_tabla");
+    $("#cargar_tabla").load("<?php echo base_url(ALM) ?>Lote/Listar_tabla_stock");
 //Filtra la tabla y la redibuja
 //Cada campo esta validado en caso de vacios o NULL no se muestren en la tabla
 
 
 $(document).ready(function(){
     $('#stock0').click(function () {    
-        if ($('#stock0').prop('checked') ) {
-            $("#establecimiento").prop('disabled',true);
-            $("#depositodescrip").prop('disabled',true);
-            $("#fec_alta").prop('disabled',true);
-            $("#artType").prop('disabled',true);
-            $("#inputarti").prop('disabled',true);
-        } else{
-            $("#establecimiento").prop('disabled',false);
-            $("#artType").prop('disabled',false);
-            $("#fec_alta").prop('disabled',false);
-            $("#inputarti").prop('disabled',false);
-        }
+        // Ya no bloqueamos los filtros al marcar "Incluir artículos con stock en 0"
+        // Se mantiene la lógica de visualización del checkbox
     });
 });
 
 function filtrar() {
-    
-    var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
     var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
-    var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';
-    var fec_desde =  _isset($("#datepickerDesde").val()) ? $("#datepickerDesde").val() : '';
-    var fec_hasta =  _isset($("#datepickerHasta").val()) ? $("#datepickerHasta").val() : '';
-    var artType = _isset($("#artType").val()) ? $("#artType").val() : '';
-    var artBarCode =   _isset($("#inputarti").val()) ? $("#inputarti").val() : '';
-    var establecimiento = _isset($("#establecimiento").val()) ? $("#establecimiento").val() : '';
-    var tipo_deposito = _isset($('#tipo_deposito').val()) ? $('#tipo_deposito').val() : '';
-    var stock0 = $('#stock0').prop('checked');   
-
+    
     $("#WindowLoad").remove();
-    $(this).click(jsShowWindowLoad('Se está Generando la Información'));
+    jsShowWindowLoad('Se está Generando la Información');
 
-    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_desde="+fec_desde+"&fec_hasta="+fec_hasta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
-    $("#cargar_tabla").load(url1,() => {
-        if(_isset(depositodescrip)){
-            tabla = $('#stock').DataTable();
-            $("#cantidadLotesDeposito").text(tabla.column( 0 ).data().length);
-            $("#nombreLotesDeposito").text($('#depositodescrip option:selected').text());
-        }
-        jsRemoveWindowLoad();
-    });
-}
+    if ($.fn.DataTable.isDataTable('#stock')) {
+        $('#stock').DataTable().ajax.reload(function(json) {
+            if(_isset(depositodescrip)){
+                $("#cantidadLotesDeposito").text(json.recordsFiltered);
+                $("#nombreLotesDeposito").text($('#depositodescrip option:selected').text());
+            }
+            jsRemoveWindowLoad();
+        });
+    } else {
+        $("#cargar_tabla").load("<?php echo base_url(ALM) ?>Lote/Listar_tabla", function() {
+            jsRemoveWindowLoad();
+        });
+    }
+};
 
 function limpiar() {
-    if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
-        $("#establecimiento").prop('disabled',false);
-        $("#artType").prop('disabled',false);
-        $("#fec_alta").prop('disabled',false);
-        $("#inputarti").prop('disabled',false);
-    }
+    // Eliminamos la lógica de habilitar campos que estaban bloqueados por el checkbox de stock 0
 
-    $("#nom_reci").val('');
     $("#depositodescrip").val('');
-    $("#tpo_depo").val('');
     $("#artDescription").val('');
     $("#artBarCode").val('');
     $("#fec_alta").val('');
-    $("#artType").val('');
+    $("#artType").val('TODOS');
     $("#inputarti").val('');
     $("label#info").html('');
-    $("#establecimiento").val('');
-    $('#tipo_deposito').val('');
+    $("#establecimiento").val('TODOS');
+    $('#datepickerDesde').val('');
+    $('#datepickerHasta').val('');
     if ($('#stock0').prop("checked", true)) {
         console.log("Checkbox stock0 limpiado");
         $('#stock0').prop("checked", false);   
     }
 
-    //Deshabilito tipo y deposito
-    $('#tipo_deposito').prop('disabled', 'disabled');
+    filtrarArticulosPorTipo();
+
+    //Deshabilito deposito
     $("#depositodescrip").prop('disabled', 'disabled');
-    //Deshabilito recipiente
-    $('#nom_reci').prop('disabled', 'disabled');
 
     // Vaciar tabla
     $("#cargar_tabla").empty();
@@ -374,14 +403,17 @@ function getItem(item) {
     $('label#info').html($(option).html());
     if (existFunction('eventSelect')) eventSelect();
 }
-// Obtiene los depósitos asociados al establecimiento seleccionado
-function getDepositos(item) {
-    $("#depositodescrip").empty();
-    if (item == null) return;
-    $("#depositodescrip").prop('disabled', 'disabled');
 
+function getDepositos(item) {
+    $("#depositodescrip").empty().append('<option value="TODOS" selected>TODOS</option>');
+    if (item == null || item.value == 'TODOS') {
+        $("#depositodescrip").prop('disabled', 'disabled');
+        return;
+    }
+
+    var esta_id = item.value;
     var data = {
-        esta_id: item.value
+        esta_id: esta_id
     };
     wo();
     var url = "<?php echo base_url(ALM) ?>Lote/getDepositos";
@@ -390,10 +422,6 @@ function getDepositos(item) {
         url: url,
         data: data,
         success: function(response) {
-            var opc = document.createElement('option');
-            opc.value = '';
-            opc.innerHTML = "TODOS";
-            $("#depositodescrip").append(opc);
 
             if (response != null) {
                 var resp = JSON.parse(response);
@@ -404,17 +432,13 @@ function getDepositos(item) {
                     $("#depositodescrip").append(opc);
                 });
             }
-            $("#depositodescrip").prop('disabled', false);
+            $("#depositodescrip").prop('disabled', '');
             wc();
         },
         complete: function() {
             wc();
         }
     });
-}
-function agrupaDepositos(){
-    let tabla = $('#stock').DataTable();
-    tabla.rowGroup().enable().dataSrc(9).order([[ 9, 'desc' ]]).draw();
 }
 
 

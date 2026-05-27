@@ -66,6 +66,18 @@ class Lote extends CI_Controller
         $this->load->view(ALM . 'lotes/table_list', $data);
     }
 
+        /**
+	* Carga la tabla en pantalla de STOCK
+	* @param 
+	* @return view
+	*/
+    public function Listar_tabla_stock(){
+        log_message('DEBUG','#TRAZA | #TRAZ-COMP-ALMACENES | Lote | Listar_tabla()');
+        $data['logo'] = $this->getLogo();
+        $this->load->view(ALM . 'stock/table_list', $data);
+    }
+
+
 	/**
 	* Levanta pantalla de punto de pedido en almacenes
 	* @param 
@@ -166,6 +178,62 @@ class Lote extends CI_Controller
         
         $data['logo'] = $this->getLogo();
         $this->load->view(ALM . 'lotes/table_list', $data);
+    }
+
+    /**
+	* Filtra listado Movimientos de Stock
+	* @param array con los filtros seleccionados
+	* @return array listado con listado filtrado
+	*/
+
+    public function filtrarListadoStock(){
+        log_message('DEBUG','#TRAZA | TRAZ-COMP-ALMACENES | LOTE | filtrarListado()');
+        
+        //Recipiente
+        if(!empty($this->input->get('nom_reci')) && $this->input->get('nom_reci') != 'TODOS'){
+            $data['nom_reci'] = $this->input->get('nom_reci');
+        }
+        //Deposito
+        if(!empty($this->input->get('depositodescrip')) && $this->input->get('depositodescrip') != 'TODOS'){
+            $data['depositodescrip'] = $this->input->get('depositodescrip');
+        }
+        //Descripcion Articulo
+        if(!empty($this->input->get('artDescription'))){
+            $data['artDescription'] = $this->input->get('artDescription');
+        }
+        //Codigo Articulo
+        if(!empty($this->input->get('artBarCode'))){
+            $data['artBarCode'] = $this->input->get('artBarCode');
+        }
+        //Fecha Creacion DESDE
+        if(!empty($this->input->get('fec_desde'))){
+            $data['fec_desde'] = $this->input->get('fec_desde');
+        }
+        //Fecha Creacion HASTA
+        if(!empty($this->input->get('fec_hasta'))){
+            $data['fec_hasta'] = $this->input->get('fec_hasta');
+        }
+        //Tipo Articulo
+        if(!empty($this->input->get('artType')) && $this->input->get('artType') != 'TODOS'){
+            $data['artType'] = $this->input->get('artType');
+        }
+        //Establecimiento
+        if(!empty($this->input->get('establecimiento')) && $this->input->get('establecimiento') != 'TODOS'){
+            $data['establecimiento'] = $this->input->get('establecimiento');
+        }
+        //Tipo deposito
+        if(!empty($this->input->get('tipo_deposito')) && $this->input->get('tipo_deposito') != 'TODOS'){
+            $data['tipo_deposito'] = $this->input->get('tipo_deposito');
+        }
+        //Arcticulos con stock 0
+        if(!empty($this->input->get('stock0'))){
+            $data['stock0'] = $this->input->get('stock0');
+        }
+        
+        $data['list'] = array();
+        
+        $data['logo'] = $this->getLogo();
+        $this->load->view(ALM . 'stock/table_list', $data);
     }
 
     /**

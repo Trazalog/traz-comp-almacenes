@@ -7,8 +7,11 @@
         <th class="text-center">Stock</th>
         <th class="text-center">Unidad de Medida</th>
         <th class="text-center">Tipo de Articulo</th>
+        <th class="text-center">Recipiente</th>
+        <th class="text-center">Fecha Creación</th>
         <th>Establecimiento</th>
         <th>Depósito</th>
+        <th class="text-center">Estado</th>
     </thead>
     <tbody>
         <?php
@@ -21,8 +24,11 @@
             echo '<td class="text-center">'.((empty($f->cantidad)) ? '0' : $f->cantidad).'</td>';
             echo '<td class="text-center">'.$f->un_medida.'</td>';
             echo '<td class="text-center">'.((!empty($f->arttype)) ? str_replace('tipo_articulo', '', $f->arttype) : '').'</td>';
+            echo '<td class="text-center">'.((empty($f->nom_reci)) ? "<b>No Aplica</b>" : $f->nom_reci).'</td>';
+            echo '<td class="text-center">'.((empty($f->fec_alta)) ? "" : date('d/m/Y', strtotime($f->fec_alta))).'</td>';
             echo '<td>'.((empty($f->establecimiento)) ? "<b>No Aplica</b>" : $f->establecimiento).'</td>';
             echo '<td>'.((empty($f->depositodescrip)) ? "<b>No Aplica</b>" : $f->depositodescrip).'</td>';
+            echo '<td class="text-center">'.estado($f->estado).'</td>';
             echo '</tr>';
             }
         ?>
@@ -237,6 +243,20 @@ $(document).ready(function() {
             { data: 'un_medida', className: 'text-center' },
             { data: 'arttype', className: 'text-center' },
             { 
+                data: 'nom_reci', 
+                className: 'text-center',
+                render: function(data, type, row) {
+                    return data ? data : '<b>No Aplica</b>';
+                }
+            },
+            { 
+                data: 'fecha_nueva', 
+                className: 'text-center',
+                render: function(data, type, row) {
+                    return data ? data : '';
+                }
+            },
+            { 
                 data: 'establecimiento',
                 render: function(data, type, row) {
                     return data ? data : '<b>No Aplica</b>';
@@ -247,6 +267,10 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     return data ? data : '<b>No Aplica</b>';
                 }
+            },
+            { 
+                data: 'estado_label', 
+                className: 'text-center'
             }
         ],
         iDisplayLength: 10,
@@ -262,14 +286,28 @@ $(document).ready(function() {
                 //Botón para Excel
                 extend: 'excel',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                 },
                 footer: true,
                 title: 'Reporte Stock',
                 filename: 'Reporte_Stock',
-
                 className: 'btn btn-success btn-flat ml-1',
-                text: 'Exportar a Excel <i class="fa fa-file-excel-o"></i>'
+                text: 'Exportar a Excel <i class="fa fa-file-excel-o"></i>',
+                messageTop: function () {
+                    var f = new Date();
+                    var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
+                    
+                    var filtros = "Fecha de reporte: " + fecha + "\n";
+                    filtros += " Filtros aplicados:\n";
+                    filtros += "Desde: " + ($('#datepickerDesde').val() ? $('#datepickerDesde').val() : 'N/A') + " | Hasta: " + ($('#datepickerHasta').val() ? $('#datepickerHasta').val() : 'N/A') + " | ";
+                    filtros += "Establecimiento: " + ($('#establecimiento option:selected').text() ? $('#establecimiento option:selected').text() : 'TODOS') + "\n";
+                    filtros += "Tipo Depósito: " + ($('#tipo_deposito option:selected').text() ? $('#tipo_deposito option:selected').text() : 'TODOS') + " | ";
+                    filtros += "Depósito: " + ($('#depositodescrip option:selected').text() ? $('#depositodescrip option:selected').text() : 'TODOS') + " | ";
+                    filtros += "Recipiente: " + ($('#nom_reci option:selected').text() ? $('#nom_reci option:selected').text() : 'TODOS') + "\n";
+                    filtros += "Tipo Artículo: " + ($('#artType option:selected').text() ? $('#artType option:selected').text() : 'TODOS') + " | ";
+                    filtros += "Artículo: " + ($('#inputarti').val() ? $('#inputarti').val() : 'TODOS');
+                    return filtros;
+                }
             },
             //Botón para PDF
             {
@@ -277,7 +315,7 @@ $(document).ready(function() {
                 orientation: 'landscape',
                 pageSize: 'A4',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -346,13 +384,13 @@ $(document).ready(function() {
 
                     // Hacer que la tabla ocupe todo el ancho con anchos proporcionales
                     var tableIndex = doc.content.length - 1;
-                    doc.content[tableIndex].table.widths = ['10%', '10%', '20%', '10%', '10%', '10%', '15%', '15%'];
+                    doc.content[tableIndex].table.widths = ['8%', '8%', '15%', '6%', '8%', '10%', '10%', '10%', '10%', '10%', '5%'];
                 }
             },
             {
                 extend: 'copy',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -363,13 +401,73 @@ $(document).ready(function() {
             {
                 extend: 'print',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
                 },
                 footer: true,
                 title: 'Reporte Stock',
                 filename: 'Reporte_Stock',
                 className: 'btn btn-default btn-flat ml-1',
-                text: 'Imprimir <i class="fa fa-print"></i>'
+                text: 'Imprimir <i class="fa fa-print"></i>',
+                messageTop: function () {
+                    var f = new Date();
+                    var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
+                    
+                    var filtros = "Fecha de reporte: " + fecha + "\n\n";
+                    filtros += "Filtros aplicados:\n";
+                    filtros += "Desde: " + ($('#datepickerDesde').val() ? $('#datepickerDesde').val() : 'N/A') + " | Hasta: " + ($('#datepickerHasta').val() ? $('#datepickerHasta').val() : 'N/A') + " | ";
+                    filtros += "Establecimiento: " + ($('#establecimiento option:selected').text() ? $('#establecimiento option:selected').text() : 'TODOS') + "\n";
+                    filtros += "Tipo Depósito: " + ($('#tipo_deposito option:selected').text() ? $('#tipo_deposito option:selected').text() : 'TODOS') + " | ";
+                    filtros += "Depósito: " + ($('#depositodescrip option:selected').text() ? $('#depositodescrip option:selected').text() : 'TODOS') + " | ";
+                    filtros += "Recipiente: " + ($('#nom_reci option:selected').text() ? $('#nom_reci option:selected').text() : 'TODOS') + "\n";
+                    filtros += "Tipo Artículo: " + ($('#artType option:selected').text() ? $('#artType option:selected').text() : 'TODOS') + " | ";
+                    filtros += "Artículo: " + ($('#inputarti').val() ? $('#inputarti').val() : 'TODOS');
+                    return filtros;
+                },
+                customize: function (win) {
+                    // Remover el título original H1
+                    $(win.document.body).find('h1').remove();
+                    
+                    // Agregar Cabecera con Título y Logo
+                    var cabecera = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #dd4b39; padding-bottom: 10px;">' +
+                                   '  <h1 style="margin: 0; font-size: 22pt; font-weight: bold; color: #333;">Reporte Stock</h1>' +
+                                   '  <img src="<?php echo $logo; ?>" style="width: 100px; height: auto;" />' +
+                                   '</div>';
+                    $(win.document.body).prepend(cabecera);
+
+                    // Estilizar el bloque de filtros (messageTop)
+                    $(win.document.body).find('div').each(function() {
+                        if ($(this).text().indexOf('Filtros aplicados:') !== -1) {
+                            $(this).css({
+                                'white-space': 'pre-line',
+                                'font-size': '10pt',
+                                'margin-bottom': '15px',
+                                'line-height': '1.5',
+                                'background-color': '#f9f9f9',
+                                'padding': '10px',
+                                'border': '1px solid #ddd',
+                                'border-radius': '4px'
+                            });
+                        }
+                    });
+
+                    // Estilo general de la página
+                    $(win.document.body).css('font-size', '9pt');
+
+                    // Estilo de la tabla
+                    $(win.document.body).find('table')
+                        .addClass('compact')
+                        .css('font-size', '9pt')
+                        .css('width', '100%');
+
+                    // Estilo de los encabezados para coincidir con el PDF
+                    $(win.document.body).find('th').css({
+                        'background-color': '#dd4b39',
+                        'color': 'white',
+                        'text-align': 'center',
+                        'font-size': '10pt',
+                        'padding': '8px'
+                    });
+                }
             }
         ],
         drawCallback: function(settings) {
