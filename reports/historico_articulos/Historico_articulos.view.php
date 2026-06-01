@@ -244,80 +244,25 @@
             <!-- FIN MODAL VER DETALLE MOVIMIENTO INTERNO -->
 
             <!--_______ TABLA _______-->
-            <div class="col-md-12">
-                <?php
-        Table::create(array(
-          "dataStore" => $this->dataStore('data_historico_table'),
-          // "themeBase" => "bs4",
-          // "showFooter" => true, // cambiar true por "top" para ubicarlo en la parte superior
-          // "headers" => array(
-          //   array(
-          //     "Reporte de Producción" => array("colSpan" => 6),
-          //     // "Other Information" => array("colSpan" => 2),
-          //   )
-          // ), // Para desactivar encabezado reemplazar "headers" por "showHeader"=>false
-          // "showHeader" => false,
-
-          "columns" => array(
-            array(
-              "label" => "Acciones",
-              "value" => function($row) {
-                if (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV.SALIDA') {
-                  return '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
-                } elseif (isset($row['tipo_mov']) && $row['tipo_mov'] == 'AJUSTE') {
-                  /* si es ajuste muestra la lupa */
-                  return '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ajuste Stock" onclick="verAjuste(' . $row['referencia'] . ')"></i>';
-                }
-                elseif (isset($row['tipo_mov']) && $row['tipo_mov'] == 'MOV.ENTRADA') {
-                    /* si es ajuste muestra la lupa */
-                    return '<i class="fa fa-paperclip" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $row['referencia'] . ')"></i>';
-                  }
-                else{
-                  return ''; // No mostrar nada si no es "MOV.SALIDA"
-                }
-              },
-            "cssClass" => "text-center" // Centrar la columna de acciones
-            ),
-            "referencia" => array(
-              "label" => "Referencia"
-            ),
-            "codigo" => array(
-              "label" => "Cod. Artículo"
-            ),
-            "descripcion" => array(
-              "label" => "Descrip."
-            ),
-            "lote" => array(
-              "label" => "Lote"
-            ),
-            "cantidad" => array(
-              "label" => "Cantidad"
-            ),
-            "deposito" => array(
-              "label" => "Depósito"
-            ),
-            array(
-              "label" => "Fecha",
-              "value" => function($row) {
-                $aux = explode("T",$row["fec_alta_formatted"]);
-                $row["fec_alta_formatted"] = date("d-m-Y",strtotime($aux[0]));
-                return $row["fec_alta_formatted"];
-              },
-              "type" => "date"
-            ),
-            "tipo_mov" => array(
-              "label" => "Tipo Movim."
-            )
-          ),
-          "cssClass" => array(
-            "table" => "table-scroll table-responsive dataTables_wrapper form-inline dt-bootstrap dataTable table table-bordered table-striped table-hover display",
-            "th" => "sorting"
-          ),
-        ));
-        ?>
-            </div>
-            <div id="acciones" class="" style="float: right !important;">
-                <button type="button" class="btn btn-primary btn-sm" onclick="exportarExcel()">Exportar</button>
+            <div class="col-md-12 table-responsive">
+                <table id="tabla_historico" class="table table-bordered table-striped table-hover display" style="width: 100%;">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 80px;">Acciones</th>
+                            <th>Referencia</th>
+                            <th>Cod. Artículo</th>
+                            <th>Descrip.</th>
+                            <th>Lote</th>
+                            <th>Cantidad</th>
+                            <th>Depósito</th>
+                            <th>Fecha</th>
+                            <th>Tipo Movim.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- DataTable populated via AJAX -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
@@ -336,6 +281,8 @@ var depo;
 var artic;
 var lote;
 
+var tablaHistorico;
+
 // carga select de Establecimientos, componente Articulos y llama configuracion selects de fecha
 $(function() {
     $(".habilitado").hide();
@@ -344,6 +291,148 @@ $(function() {
     getEstablecimientos();
     fechaMagic();
     //getTipoAjuste();
+    
+    // Inicializar DataTable con procesamiento del servidor
+    tablaHistorico = $('#tabla_historico').DataTable({
+        "responsive": true,
+        "serverSide": true,
+        "processing": true,
+        "ordering": true,
+        "searching": true,
+        "ajax": {
+            "url": "<?php echo base_url(ALM) ?>Reportes/getHistoricoPaginado",
+            "type": "POST",
+            "data": function(d) {
+                d.desde = $("#datepickerDesde").val();
+                d.hasta = $("#datepickerHasta").val();
+                d.tipo_mov = $("#tipoajuste>option:selected").val();
+                d.esta_id = $("#establecimiento").val();
+                d.depo_id = $("#depo_id").val();
+                d.lote_id = $("#lote_id>option:selected").val();
+                var inputarti = $("#inputarti").val();
+                if (inputarti && typeof selectItem !== 'undefined') {
+                    d.arti_id = selectItem.arti_id;
+                } else {
+                    d.arti_id = 'TODOS';
+                }
+            }
+        },
+        "columns": [
+            { 
+                "data": "acciones", 
+                "className": "text-center", 
+                "orderable": false 
+            },
+            { "data": "referencia" },
+            { "data": "codigo" },
+            { "data": "descripcion" },
+            { "data": "lote" },
+            { 
+                "data": "cantidad", 
+                "className": "text-right" 
+            },
+            { "data": "deposito" },
+            { "data": "fecha" },
+            { "data": "tipo_mov" }
+        ],
+        "iDisplayLength": 10,
+        "language": {
+            "url": '<?php echo base_url() ?>lib/bower_components/datatables.net/js/es-ar.json'
+        },
+        "dom": 'lBfrtip',
+        buttons: [
+        {
+            // Botón Excel
+            extend: 'excel',
+            exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
+            footer: true,
+            title: 'Reporte Histórico Artículos',
+            className: 'btn btn-success btn-flat ml-1',
+            text: 'Exportar a Excel <i class="fa fa-file-excel-o"></i>',
+            messageTop: function () {
+                var filtros = "Filtros aplicados:\n";
+                filtros += "Desde: " + ($('#datepickerDesde').val() || 'N/A') + " | Hasta: " + ($('#datepickerHasta').val() || 'N/A') + "\n";
+                filtros += "Tipo Movimiento: " + ($('#tipoajuste option:selected').text() || 'TODOS') + "\n";
+                filtros += "Establecimiento: " + ($('#establecimiento option:selected').text() || 'TODOS') + "\n";
+                filtros += "Depósito: " + ($('#depo_id option:selected').text() || 'TODOS') + "\n";
+                filtros += "Artículo: " + ($('#inputarti').val() || 'TODOS');
+                return filtros;
+            }
+        },
+        {
+            // Botón PDF (Con filtros, sin logo)
+            extend: 'pdf',
+            orientation: 'landscape',
+            pageSize: 'A4',
+            exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
+            footer: true,
+            title: 'Reporte Histórico Artículos',
+            className: 'btn btn-danger btn-flat ml-1',
+            text: 'Exportar a PDF <i class="fa fa-file-pdf-o"></i>',
+            customize: function (doc) {
+                // Construir texto de filtros
+                var filtros = "Filtros aplicados: " +
+                    "Desde: " + ($('#datepickerDesde').val() || 'N/A') + " | " +
+                    "Hasta: " + ($('#datepickerHasta').val() || 'N/A') + " | " +
+                    "Tipo: " + ($('#tipoajuste option:selected').text() || 'TODOS') + " | " +
+                    "Establecimiento: " + ($('#establecimiento option:selected').text() || 'TODOS') + " | " +
+                    "Depósito: " + ($('#depo_id option:selected').text() || 'TODOS');
+
+                // Agregar filtros al PDF
+                doc.content.splice(1, 0, {
+                    text: filtros,
+                    fontSize: 10,
+                    margin: [0, 0, 0, 15]
+                });
+
+                doc.defaultStyle.fontSize = 9;
+                doc.styles.tableHeader.fillColor = '#dd4b39';
+                doc.styles.tableHeader.color = 'white';
+            }
+        },
+        {
+                extend: 'copy',
+                exportOptions: {
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
+                },
+                footer: true,
+                title: 'Reporte Histórico Artículos',
+                filename: 'Reporte_Historico_Articulos',
+                className: 'btn btn-primary btn-flat ml-1',
+                text: 'Copiar <i class="fa fa-file-text-o"></i>'
+        },
+        {
+            // Botón Imprimir (Con filtros, sin logo)
+            extend: 'print',
+            exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
+            className: 'btn btn-default btn-flat ml-1',
+            text: 'Imprimir <i class="fa fa-print"></i>',
+            customize: function (win) {
+                var filtros = `
+                    <div style="margin-bottom:20px; font-size:12px;">
+                        <h2>Movimientos de Stock</h2>
+                        <strong>Filtros aplicados:</strong><br>
+                        Desde: ${$('#datepickerDesde').val() || 'N/A'} | Hasta: ${$('#datepickerHasta').val() || 'N/A'}<br>
+                        Tipo Movimiento: ${$('#tipoajuste option:selected').text() || 'TODOS'}<br>
+                        Establecimiento: ${$('#establecimiento option:selected').text() || 'TODOS'} | 
+                        Depósito: ${$('#depo_id option:selected').text() || 'TODOS'}
+                    </div>
+                `;
+                $(win.document.body).prepend(filtros);
+                $(win.document.body).find('table').addClass('compact');
+                $(win.document.body).find('th').css({'background-color': '#dd4b39', 'color': 'white'});
+            }
+        }
+    ],     
+    "destroy": true
+    }).on('processing.dt', function(e, settings, processing) {
+        if (processing) {
+            wo();
+        } else {
+            wc();
+        }
+    });
+
     wc();
 });
 
@@ -522,68 +611,29 @@ function getTipoAjuste() {
 
 // filtrado de datos
 function filtrar() {
-
-
-    // wo();
-    var data = {};
-    data.desde = $("#datepickerDesde").val();
+    // Actualizar variables de estado para el Excel
     fec1 = $("#datepickerDesde").val();
-    data.hasta = $("#datepickerHasta").val();
     fec2 = $("#datepickerHasta").val();
-    data.tipo_mov = $("#tipoajuste>option:selected").val();
     tpoMov = $("#tipoajuste>option:selected").val();
-    data.esta_id = $("#establecimiento").val();
-    data.depo_id = $("#depo_id").val();
+    esta = $("#establecimiento").val();
     depo = $("#depo_id").val();
-    data.lote_id = $("#lote_id>option:selected").val();
     lote = $("#lote_id>option:selected").val();
 
-    inputarti = $("#inputarti").val();
-    establecimiento = $("#establecimiento").val();
-    if (inputarti) {
-        data.arti_id = selectItem.arti_id; // se completa en traz-comp-almacen/articulo/componente.php
+    var inputarti = $("#inputarti").val();
+    if (inputarti && typeof selectItem !== 'undefined') {
         artic = selectItem.arti_id;
     } else {
-        data.arti_id = 'TODOS';
+        artic = 'TODOS';
     }
-/* 
-    if (fec1 == '' || fec2 == '' || tipoajuste == '' || establecimiento == '') {
-        Swal.fire(
-            'Error...',
-            'Debes completar los campos Obligatorios (*)',
-            'error'
-        );
-        return;
-    } */
-    wo();
-    $.ajax({
-        type: 'POST',
-        data: {
-            data
-        },
-        url: '<?php echo base_url(ALM) ?>Reportes/historicoArticulos',
-        success: function(result) {
-            wc();
-            debugger;
-            $('#reportContent').empty();
-            $('#reportContent').html(result);
 
-            // Verificar si el texto "No data available" está en el <tbody> 
-            let isEmpty = $('#reportContent table tbody').text().trim() === "No data available in table";
-
-            if (isEmpty) {
+    // Recargar el DataTable con los nuevos parámetros por AJAX
+    if (tablaHistorico) {
+        tablaHistorico.ajax.reload(function(json) {
+            if (json && json.recordsFiltered === 0) {
                 Swal.fire('Aviso', 'No hay resultados para mostrar con los filtros aplicados.', 'info');
             }
-            //   wc();
-        },
-        error: function() {
-            alert('Ha ocurrido un error, por favor comunicarse con su proveedor de servicio. Gracias!');
-            wc();
-        },
-        complete: function(result) {
-            wc();
-        }
-    });
+        });
+    }
 }
 
 function limpiar() {
@@ -596,17 +646,19 @@ function limpiar() {
     }
     $("#lote_id").val('TODOS').trigger('change');
 
-    // Vaciar la tabla y mostrar mensaje de sin datos
-    $('#reportContent table tbody').empty();
-    $('#reportContent table tbody').append('<tr><td colspan="10" class="text-center">No data available in table</td></tr>');
+    // Limpiar variables de estado para el Excel
+    fec1 = '';
+    fec2 = '';
+    tpoMov = 'TODOS';
+    esta = 'TODOS';
+    depo = 'TODOS';
+    artic = 'TODOS';
+    lote = 'TODOS';
 
-    // Ocultar botones de acciones (exportar)
-    $('#acciones').hide();
-}
-
-function exportarExcel() {
-    window.open("<?php echo base_url(ALM); ?>Reportes/exportarExcelHistorico?fec1=" + fec1 + "&fec2=" + fec2 +
-        "&depo=" + depo + "&arti=" + artic + "&tpoMov=" + tpoMov + "&lote=" + lote);
+    // Recargar el DataTable con filtros vaciados
+    if (tablaHistorico) {
+        tablaHistorico.clear().draw();
+    }
 }
 
 /* Funciones para reimprimir Remito de movimiento interno */
