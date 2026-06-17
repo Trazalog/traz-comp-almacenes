@@ -56,4 +56,25 @@ class Entregasmateriales extends CI_Model
         $this->db->where('T.empr_id',empresa());
         return $this->db->get()->result_array();
     } 
+
+    public function obtenerCabecera($id)
+    {
+        $this->db->select('T.enma_id, T.fecha, T.comprobante, T.solicitante');
+        $this->db->select('A.pema_id, A.estado, A.ortr_id');
+        $this->db->from($this->tabla.' T');
+        $this->db->join('alm.alm_pedidos_materiales A','A.pema_id = T.pema_id', 'left');
+        $this->db->where('T.enma_id', $id);
+        $this->db->where('T.eliminado', false);
+        $this->db->where('T.empr_id', empresa());
+        return $this->db->get()->row_array();
+    }
+
+    public function getEntregaXbatch($batch_id)
+    {
+        $url = REST_ALM.'/entrega/batch/'.$batch_id;
+		$aux = $this->rest->callAPI("GET",$url);
+		$aux =json_decode($aux['data']);
+		return $aux->entregas->entrega;
+    }
+    
 }

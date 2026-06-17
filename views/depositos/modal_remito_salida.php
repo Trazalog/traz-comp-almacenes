@@ -69,7 +69,8 @@
                             <!-- ______ TABLA PRODUCTOS ______ -->
                             <table id="tabla_detalle" class="table table-bordered table-striped">
                                 <thead class="thead-dark" bgcolor="#eeeeee">
-                                    <th style="width: 5%;">Cantidad</th>
+                                    <th style="width: 5%;">Cantidad Enviada</th>
+                                    <th style="width: 5%;">Cantidad Recibida</th>
                                     <th>U. Med</th>
                                     <th>Descripción</th>
                                     <th>Depo. Orig</th>
@@ -222,7 +223,7 @@ async function generaRemito() {
     // Recupero datos de la tabla
     var productos = [];
     var table = $('#tbl_productos').DataTable();
-    
+    debugger;
     // Obtener todas las filas de todas las páginas
     table.rows().every(function() {
         // Obtener el valor del atributo 'data-json'
@@ -253,6 +254,7 @@ async function generaRemito() {
         var fila = `
                     <tr>
                         <td style="text-align: left;">${datos.cantidad}</td>  <!-- Alineado a la derecha -->
+                        <td style="text-align: left;"></td>  <!-- Alineado a la derecha -->
                         <td style="text-align: left;">${datos.um}</td>
                         <td style="text-align: left;">${datos.descArt}</td>    <!-- Alineado a la izquierda -->
                         <td style="text-align: left;">${datos.descDepo}</td>
