@@ -27,6 +27,7 @@ class Entrega_Material extends CI_Controller
    {
       $id = $this->input->get('id');
       $data['detalles'] = $this->Entregasmateriales->obtenerDetalles($id);
+      $data['cabecera'] = $this->Entregasmateriales->obtenerCabecera($id);
       $data['logo'] = $this->Tablas->obtenerTablaEmpr_id('logo_impresion_entrega_materiales');
       echo json_encode($data);
    }
@@ -93,6 +94,13 @@ class Entrega_Material extends CI_Controller
                log_message('DEBUG', "#TRAZA | Entrega_Material | cerrarTareaEntrega | Tarea $taskId cerrada");
            }
        }
+   }
+
+   public function getEntregaXbatch()
+   {
+      $batch_id = $this->input->get('batch_id');
+      $data['list'] = $this->Entregasmateriales->getEntregaXbatch($batch_id);
+      echo json_encode($data);
    }
 }
 ?>

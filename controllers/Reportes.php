@@ -161,11 +161,28 @@ class Reportes extends CI_Controller
       $acciones = '';
       $referencia = isset($row['referencia']) ? $row['referencia'] : '';
       if ($tipo_mov === 'MOV.SALIDA') {
-        $acciones = '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $referencia . ')"></i>'
+                  .'<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
       } elseif ($tipo_mov === 'AJUSTE') {
         $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ajuste Stock" onclick="verAjuste(' . $referencia . ')"></i>';
       } elseif ($tipo_mov === 'MOV.ENTRADA') {
-        $acciones = '<i class="fa fa-paperclip" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $referencia . ')"></i>';
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $referencia . ')"></i>'
+                    . '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
+      }
+      elseif ($tipo_mov === 'INGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ingreso" onclick="verIngreso(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'EGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verEgreso(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'INGRESOPRODUCTO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verEgresoConsumoMP(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'ETAPAPRODINGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verEgresoConsumoMP(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'ETAPAPRODEGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verSalidaEtapaProd(' . $referencia . ')"></i>';
       }
       
       $formattedData[] = array(
@@ -207,6 +224,20 @@ class Reportes extends CI_Controller
     $resp = $this->Tablas->getTabla('tipo_articulo');
     echo json_encode($resp);
   }
+
+  /**
+	* Carga la view de trazabilidad de lotes (módulo producción) para mostrar
+	* en el modal de Salida de Etapa Productiva del histórico de artículos.
+	* @param GET batch_id - ID del batch a trazar
+	* @return view trazabilidad del módulo traz-prod-trazasoft
+	*/
+	public function verSalidaEtapaProd(){
+    log_message('DEBUG', '#TRAZA | TRAZ-COMP-ALMACENES | REPORTES | verSalidaEtapaProd() | INICIO');
+    $batch_id = $this->input->get('batch_id');
+    $data['batch_id'] = $batch_id;
+    // Usamos path absoluto ya que PRD no está definida en este módulo
+    $this->load->view(PRD.'produccion/lotes/trazabilidad', $data);
+	}
 
   /**
   * - Levanta vista reporte de Articulos Vencidos
@@ -441,5 +472,6 @@ class Reportes extends CI_Controller
 		$data = $this->Opcionesfiltros->getDataMovimientoInterno($demi_id);
 		echo json_encode($data);
 	}
+
 
 }
