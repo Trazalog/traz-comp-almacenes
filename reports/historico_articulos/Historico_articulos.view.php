@@ -191,6 +191,9 @@
                         <div class="modal-footer">
 
                             <div class="form-group text-right">
+                                <button type="button" class="btn btn-primary" onclick="imprimirModalGenerico('modalInfoAjuste', 'Imprimir Ajuste')">
+                                    <i class="fa fa-print"></i> Imprimir
+                                </button>
                                 <button type="" class="btn btn-default cerrarModalEdit" 
                                     data-dismiss="modal">Cerrar</button>
                             </div>
@@ -308,6 +311,9 @@
                         </div>  <!-- /.modal-body -->
                         
                         <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="imprimirModalGenerico('modalIngreso', 'Imprimir Ingreso')">
+                                <i class="fa fa-print"></i> Imprimir
+                            </button>
                             <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         </div>  <!-- /.modal footer -->
 
@@ -441,7 +447,10 @@
                             </div>
                         </div> <!-- /.modal-body -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="btnSave" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" onclick="imprimirModalGenerico('modal_detalle_entrega', 'Imprimir Egreso')">
+                                <i class="fa fa-print"></i> Imprimir
+                            </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
                         </div> <!-- /.modal footer -->
                     </div> <!-- /.modal-content -->
                 </div> <!-- /.modal-dialog modal-lg -->
@@ -822,9 +831,17 @@ $("body").on('change', '#inputarti', function() {
                 console.table(resp[0].lote_id);
                 // $('#lote_id').append('<option value="" disabled selected>-Seleccione opcion-</option>');
                 $('#lote_id').append('<option value="TODOS">Todos</option>');
+                
                 for (var i = 0; i < resp.length; i++) {
-                    $('#lote_id').append("<option value='" + resp[i].lote_id + "'>" + resp[i]
-                        .codigo + "</option");
+                    if (resp[i].codigo == '1') {
+                        $('#lote_id').append("<option value='" + resp[i].lote_id + "'> N/A</option>");
+                    } else {
+                        $('#lote_id').append("<option value='" + resp[i].lote_id + "'>" + resp[i].codigo + "</option>");
+                    }
+                }
+                
+                if ($('#lote_id').hasClass('select2-hidden-accessible')) {
+                    $('#lote_id').trigger('change');
                 }
                 $("#lote_id").removeAttr('disabled');
             }
@@ -950,70 +967,77 @@ async function modalReimpresion(element) {
                 $('#modalRemito').modal('show');
 
                 // Asignar los datos de la empresa al modal
-                document.getElementById('logo_remito').src = dataEmpresa.logo.valor;
-                $('#direccion_remito').html('<small>' + dataEmpresa.direccion.valor + '</small>');
-                $('#telefono_remito').html('<small>' + dataEmpresa.telefono.valor + '</small>');
-                $('#email_remito').html('<small>' + dataEmpresa.email.valor + '</small>');
-                $('#texto_pie_remito').html('<strong>' + dataEmpresa.texto_pie_remito.valor +
-                    '</strong>');
+                var logoUrl = (dataEmpresa && dataEmpresa.logo && dataEmpresa.logo.valor) ? dataEmpresa.logo.valor : '';
+                var direccionVal = (dataEmpresa && dataEmpresa.direccion && dataEmpresa.direccion.valor) ? dataEmpresa.direccion.valor : '-';
+                var telefonoVal = (dataEmpresa && dataEmpresa.telefono && dataEmpresa.telefono.valor) ? dataEmpresa.telefono.valor : '-';
+                var emailVal = (dataEmpresa && dataEmpresa.email && dataEmpresa.email.valor) ? dataEmpresa.email.valor : '-';
+                var pieVal = (dataEmpresa && dataEmpresa.texto_pie_remito && dataEmpresa.texto_pie_remito.valor) ? dataEmpresa.texto_pie_remito.valor : '-';
+
+                document.getElementById('logo_remito').src = logoUrl;
+                $('#direccion_remito').html('<small>' + direccionVal + '</small>');
+                $('#telefono_remito').html('<small>' + telefonoVal + '</small>');
+                $('#email_remito').html('<small>' + emailVal + '</small>');
+                $('#texto_pie_remito').html('<strong>' + pieVal + '</strong>');
 
                 // Asignar los datos del movimiento de remito al modal
-                $('#conductor_remito').text(dataRemito[0].conductor);
-                $('#patente_acoplado_remito').text(dataRemito[0].acoplado);
-                $('#patente_remito').text(dataRemito[0].patente);
-                $('#observaciones_remito').text(dataRemito[0].observaciones_recepciones);
-                $('#nroRemito').text(dataRemito[0].num_comprobante);
+                var r0 = (dataRemito && dataRemito.length > 0) ? dataRemito[0] : {};
+
+                $('#conductor_remito').text(r0.conductor || '-');
+                $('#patente_acoplado_remito').text(r0.acoplado || '-');
+                $('#patente_remito').text(r0.patente || '-');
+                $('#observaciones_remito').text(r0.observaciones_recepciones || '-');
+                $('#nroRemito').text(r0.num_comprobante || '-');
 
 
-                $('#depo_destino_remito').text(dataRemito[0].descr_depo_origen);
-                $('#establecimiento_destino_remito').text(dataRemito[0].desc_lote_destino);
+                $('#depo_destino_remito').text(r0.descr_depo_origen || '-');
+                $('#establecimiento_destino_remito').text(r0.desc_lote_destino || '-');
 
-                $("#observaciones_remito").text(dataRemito[0].observaciones_recepcion);
+                $("#observaciones_remito").text(r0.observaciones_recepcion || '-');
 
                 // Limpiar la tabla antes de agregar nuevas filas
                 var tablaDetalle = $('#tabla_detalle tbody');
                 tablaDetalle.empty();
 
-                // Verifica si dataEmpresa es un arreglo
+                // Verifica si dataRemito es un arreglo
                 if (Array.isArray(dataRemito)) {
                     // Recorrer el arreglo de datos y agregar cada fila a la tabla
                     dataRemito.forEach(function(datos) {
-                        // Asegúrate de que cada objeto tenga las propiedades que necesitas
-                        if (datos.cantidad_cargada && datos.unidad_medida && datos
-                            .descripcion_articulo && datos.descr_depo_origen && datos
-                            .lote_id_origen) {
+                        var cantCargada = (datos.cantidad_cargada !== undefined && datos.cantidad_cargada !== null) ? datos.cantidad_cargada : '-';
+                        var cantRecibida = (datos.cantidad_recibida !== undefined && datos.cantidad_recibida !== null && datos.cantidad_recibida !== '') ? datos.cantidad_recibida : '-';
+                        var um = datos.unidad_medida || '-';
+                        var desc = datos.descripcion_articulo || '-';
+                        var depoOrig = datos.descr_depo_origen || '-';
+                        var lote = datos.lote_id_origen || '-';
 
-                            cantidad_recibida = datos.cantidad_recibida ? datos.cantidad_recibida : ' '
-                            // Crear una nueva fila con los datos y añadirla a la tabla
-                            var fila = `
-                        <tr>
-                            <td style="text-align: left;">${datos.cantidad_cargada}</td>  <!-- Alineado a la derecha -->
-                            <td style="text-align: left;">${cantidad_recibida}</td>  <!-- Alineado a la derecha -->
-                            <td style="text-align: left;">${datos.unidad_medida}</td>
-                            <td style="text-align: left;">${datos.descripcion_articulo}</td>    <!-- Alineado a la izquierda -->
-                            <td style="text-align: left;">${datos.descr_depo_origen}</td>
-                            <td style="text-align: left;">${datos.lote_id_origen}</td>
-                        </tr>
-                    `;
+                        var fila = `
+                            <tr>
+                                <td style="text-align: left;">${cantCargada}</td>  <!-- Alineado a la derecha -->
+                                <td style="text-align: left;">${cantRecibida}</td>  <!-- Alineado a la derecha -->
+                                <td style="text-align: left;">${um}</td>
+                                <td style="text-align: left;">${desc}</td>    <!-- Alineado a la izquierda -->
+                                <td style="text-align: left;">${depoOrig}</td>
+                                <td style="text-align: left;">${lote}</td>
+                            </tr>
+                        `;
 
-                            // Agregar la fila a la tabla
-                            tablaDetalle.append(fila);
-                        } else {
-                            console.warn('Falta alguna propiedad en el objeto datos:', datos);
-                        }
+                        // Agregar la fila a la tabla
+                        tablaDetalle.append(fila);
                     });
                     wc();
                 } else {
                     console.error('dataRemito no es un arreglo:', dataRemito);
+                    wc();
                 }
 
             },
             error: function(xhr, status, error) {
                 console.error('Error al cargar el modal:', error);
+                wc();
             }
         });
     } catch (error) {
         console.error('Error en modalReimpresion:', error);
+        wc();
     }
 }
 
@@ -1056,16 +1080,11 @@ async function DatosEmpresaRemito() {
         // Imprimir los datos parseados
         console.log('Datos parseados:', resp);
 
-        if (resp && resp.logo && resp.direccion && resp.telefono && resp.email && resp.texto_pie_remito) {
-            return resp;
-        } else {
-            throw new Error('Estructura de datos inesperada en la respuesta');
-        }
+        return resp || {};
 
     } catch (error) {
         console.error('Error en DatosEmpresaRemito:', error);
-        alert('Error al obtener los datos de la cabecera');
-        throw error;
+        return {};
     }
 }
 
@@ -1429,4 +1448,52 @@ function clipMovimiento(demi_id){
         }
     });
 }
+
+
+function imprimirModalGenerico(modalId, titulo) {
+    var prt = document.getElementById(modalId);
+    if (!prt) return;
+
+    // Sincronizar el valor actual en el DOM con el atributo HTML para que aparezca en el innerHTML
+    $('#' + modalId + ' input, #' + modalId + ' textarea').each(function() {
+        var val = $(this).val();
+        if ($(this).is('textarea')) {
+            $(this).text(val);
+        } else {
+            $(this).attr('value', val);
+        }
+    });
+
+    var printContent = prt.getElementsByClassName('modal-content')[0].innerHTML;
+    var winPrint = window.open('', '', 'width=800,height=600');
+    winPrint.document.write('\x3chtml\x3e\x3chead\x3e\x3ctitle\x3e' + titulo + '\x3c/title\x3e');
+    
+    // Copiar estilos de la página principal
+    var links = document.getElementsByTagName('link');
+    for (var i = 0; i < links.length; i++) {
+        if (links[i].rel === 'stylesheet') {
+            winPrint.document.write('\x3clink rel="stylesheet" href="' + links[i].href + '" type="text/css" /\x3e');
+        }
+    }
+    
+    // Aplicar estilos personalizados para la impresión
+    winPrint.document.write('\x3cstyle\x3e');
+    winPrint.document.write('.btn, .close { display: none !important; }');
+    winPrint.document.write('table { width: 100% !important; border-collapse: collapse; margin-top: 15px; }');
+    winPrint.document.write('th, td { border: 1px solid #ddd !important; padding: 8px !important; text-align: left; }');
+    winPrint.document.write('th { background-color: #f5f5f5 !important; }');
+    winPrint.document.write('input[type="text"], textarea { border: none !important; box-shadow: none !important; background: transparent !important; font-weight: bold; resize: none !important; }');
+    winPrint.document.write('\x3c/style\x3e');
+    winPrint.document.write('\x3c/head\x3e\x3cbody\x3e');
+    winPrint.document.write(printContent);
+    winPrint.document.write('\x3c/body\x3e\x3c/html\x3e');
+    winPrint.document.close();
+    winPrint.focus();
+    setTimeout(function() {
+        winPrint.print();
+        winPrint.close();
+    }, 500);
+}
+
 </script>
+
