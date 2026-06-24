@@ -67,8 +67,9 @@ class Opcionesfiltros extends CI_Model
     $empr_id = empresa();
     $offset = isset($data['offset']) ? $data['offset'] : '0';
     $limit = isset($data['limit']) ? $data['limit'] : '10';
+    $search = isset($data['search']['value']) ? $data['search']['value'] : '';
 
-    $url = '/movimientos/paginados/tipo/'.$tipo.'/desde/'.$desde.'/hasta/'.$hasta.'/deposito/'.$depo_id.'/articulo/'.$arti_id.'/lote/'.$lote_id.'/empresa/'.$empr_id.'/'.$offset.'/'.$limit;
+    $url = '/movimientos/paginados/tipo/'.$tipo.'/desde/'.$desde.'/hasta/'.$hasta.'/deposito/'.$depo_id.'/articulo/'.$arti_id.'/lote/'.$lote_id.'/empresa/'.$empr_id.'/'.$offset.'/'.$limit.'/'.$search;
     $aux = $this->rest->callAPI("GET", REST_ALM.$url);
     $aux = json_decode($aux["data"]);
     return isset($aux->movimientos->movimiento) ? $aux->movimientos->movimiento : array();

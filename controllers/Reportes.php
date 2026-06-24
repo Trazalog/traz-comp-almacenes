@@ -113,6 +113,7 @@ class Reportes extends CI_Controller
       'lote_id' => !empty($params['lote_id']) ? $params['lote_id'] : 'TODOS',
       'offset' => isset($params['start']) ? $params['start'] : '0',
       'limit' => isset($params['length']) ? $params['length'] : '10',
+      'search' => isset($params['search']) ? $params['search'] : '',
     );
     
     // Obtener los registros paginados desde WSO2
@@ -151,23 +152,21 @@ class Reportes extends CI_Controller
       $fecha_formateada = '';
       if (!empty($row['fec_alta_formatted'])) {
         $aux = explode("T", $row['fec_alta_formatted']);
-        $fecha_formateada = date("d-m-Y", strtotime($aux[0]));
+        $fecha_formateada = date("Y-m-d H:i:s", strtotime($aux[0]));
       } elseif (!empty($row['fec_alta'])) {
         $aux = explode("T", $row['fec_alta']);
-        $fecha_formateada = date("d-m-Y", strtotime($aux[0]));
+        $fecha_formateada = date("Y-m-d H:i:s", strtotime($aux[0]));
       }
       
       // Generar columna de acciones
       $acciones = '';
       $referencia = isset($row['referencia']) ? $row['referencia'] : '';
       if ($tipo_mov === 'MOV.SALIDA') {
-        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $referencia . ')"></i>'
-                  .'<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="modalReimpresion(this)"></i>';
       } elseif ($tipo_mov === 'AJUSTE') {
         $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ajuste Stock" onclick="verAjuste(' . $referencia . ')"></i>';
       } elseif ($tipo_mov === 'MOV.ENTRADA') {
-        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="clipMovimiento(' . $referencia . ')"></i>'
-                    . '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir Remito" onclick="modalReimpresion(this)"></i>';
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="modalReimpresion(this)"></i>';
       }
       elseif ($tipo_mov === 'INGRESO') {
         $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ingreso" onclick="verIngreso(' . $referencia . ')"></i>';
