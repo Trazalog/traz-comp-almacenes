@@ -50,6 +50,31 @@ class Opcionesfiltros extends CI_Model
     return $aux->movimientos->movimiento;
   }
 
+  /**
+  * Devuelve información filtrada y paginada directamente desde WSO2
+  * @param array parametros para filtrar, incluyendo limit y offset
+  * @return array con datos filtrados y paginados
+  */
+  function getHistoricoArticulosPaginado($data)
+  {
+    log_message('DEBUG','#TRAZA|TRAZ-COMP-ALMACENES|OPCIONESFILTROS|getHistoricoArticulosPaginado($data)| $data: >> '.json_encode($data));
+    $desde = !empty($data["desde"]) ? date("Y-m-d", strtotime($data["desde"])) : "1900-01-01";
+    $hasta = !empty($data["hasta"]) ? date("Y-m-d", strtotime($data["hasta"])) : date("Y-m-d");
+    $depo_id = !empty($data["depo_id"]) ? $data["depo_id"] : 'TODOS';
+    $tipo = !empty($data["tipo_mov"]) ? $data["tipo_mov"] : 'TODOS';
+    $arti_id = !empty($data['arti_id']) ? $data['arti_id'] : 'TODOS';
+    $lote_id = !empty($data['lote_id']) ? $data['lote_id'] : 'TODOS';
+    $empr_id = empresa();
+    $offset = isset($data['offset']) ? $data['offset'] : '0';
+    $limit = isset($data['limit']) ? $data['limit'] : '10';
+    $search = isset($data['search']['value']) ? $data['search']['value'] : '';
+
+    $url = '/movimientos/paginados/tipo/'.$tipo.'/desde/'.$desde.'/hasta/'.$hasta.'/deposito/'.$depo_id.'/articulo/'.$arti_id.'/lote/'.$lote_id.'/empresa/'.$empr_id.'/'.$offset.'/'.$limit.'/'.$search;
+    $aux = $this->rest->callAPI("GET", REST_ALM.$url);
+    $aux = json_decode($aux["data"]);
+    return isset($aux->movimientos->movimiento) ? $aux->movimientos->movimiento : array();
+  }
+
 
 
 

@@ -83,11 +83,132 @@ class Reportes extends CI_Controller
   * @return view historico_articulos
   */
   function historicoArticulos(){
-
     $data = $this->input->post('data');
-    $json = $this->Opcionesfiltros->getHistoricoArticulos($data);
+    if (empty($data)) {
+      $json = array();
+    } else {
+      $json = $this->Opcionesfiltros->getHistoricoArticulos($data);
+    }
     $reporte = new Historico_articulos($json);
     $reporte->run()->render();
+  }
+
+  /**
+  * Devuelve listado de movimientos de stock paginado, filtrado y ordenado para DataTables
+  * consumiendo el nuevo servicio paginado de WSO2
+  * @param
+  * @return json
+  */
+  public function getHistoricoPaginado()
+  {
+    $params = $this->input->post();
+    
+    // Preparar el array de búsqueda / filtros para getHistoricoArticulosPaginado
+    $data = array(
+      'desde' => !empty($params['desde']) ? $params['desde'] : '',
+      'hasta' => !empty($params['hasta']) ? $params['hasta'] : '',
+      'tipo_mov' => !empty($params['tipo_mov']) ? $params['tipo_mov'] : 'TODOS',
+      'depo_id' => !empty($params['depo_id']) ? $params['depo_id'] : 'TODOS',
+      'arti_id' => !empty($params['arti_id']) ? $params['arti_id'] : 'TODOS',
+      'lote_id' => !empty($params['lote_id']) ? $params['lote_id'] : 'TODOS',
+      'offset' => isset($params['start']) ? $params['start'] : '0',
+      'limit' => isset($params['length']) ? $params['length'] : '10',
+      'search' => isset($params['search']) ? $params['search'] : '',
+    );
+    
+    // Obtener los registros paginados desde WSO2
+    $json = $this->Opcionesfiltros->getHistoricoArticulosPaginado($data);
+    
+    // Si no es un array o está vacío, retornar respuesta vacía
+    if (!is_array($json)) {
+      $json = array();
+    }
+    
+    // Extraer total count del primer elemento utilizando COUNT(*) OVER() de la base de datos
+    $recordsFiltered = 0;
+    $recordsTotal = 0;
+    if (!empty($json)) {
+      $firstRow = (array)$json[0];
+      $recordsFiltered = isset($firstRow['total_count']) ? intval($firstRow['total_count']) : count($json);
+      $recordsTotal = $recordsFiltered; // Al ser filtrado desde la DB, usamos el total filtrado como total
+    }
+    
+    // Mapear y formatear los registros
+    $formattedData = array();
+    foreach ($json as $row) {
+      $row = (array)$row;
+      
+      // Aplicar reglas de negocio para formateo de cantidad
+      $cantidad = floatval(isset($row['cantidad']) ? $row['cantidad'] : 0);
+      $tipo_mov = isset($row['tipo_mov']) ? trim($row['tipo_mov']) : '';
+      
+      if ($tipo_mov === 'MOV.SALIDA') {
+        $cantidad_formateada = '-'.number_format(abs($cantidad), 2, ',', '');
+      } else {
+        $cantidad_formateada = number_format($cantidad, 2, ',', '');
+      }
+      
+      // Formateo de fecha (dd-mm-yyyy)
+      $fecha_formateada = '';
+      if (!empty($row['fec_alta_formatted'])) {
+        $aux = explode("T", $row['fec_alta_formatted']);
+        $fecha_formateada = date("Y-m-d H:i:s", strtotime($aux[0]));
+      } elseif (!empty($row['fec_alta'])) {
+        $aux = explode("T", $row['fec_alta']);
+        $fecha_formateada = date("Y-m-d H:i:s", strtotime($aux[0]));
+      }
+      
+      // Generar columna de acciones
+      $acciones = '';
+      $referencia = isset($row['referencia']) ? $row['referencia'] : '';
+      if ($tipo_mov === 'MOV.SALIDA') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="modalReimpresion(this)"></i>';
+      } elseif ($tipo_mov === 'AJUSTE') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ajuste Stock" onclick="verAjuste(' . $referencia . ')"></i>';
+      } elseif ($tipo_mov === 'MOV.ENTRADA') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver detalle movimiento" onclick="modalReimpresion(this)"></i>';
+      }
+      elseif ($tipo_mov === 'INGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Ingreso" onclick="verIngreso(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'EGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verEgreso(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'INGRESOPRODUCTO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verEgresoConsumoMP(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'ETAPAPRODINGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verEgresoConsumoMP(' . $referencia . ')"></i>';
+      }
+      elseif ($tipo_mov === 'ETAPAPRODEGRESO') {
+        $acciones = '<i class="fa fa-search" style="cursor: pointer; margin: 3px;" title="Ver Egreso" onclick="verSalidaEtapaProd(' . $referencia . ')"></i>';
+      }
+      
+      $formattedData[] = array(
+        'acciones' => $acciones,
+        'referencia' => $referencia,
+        'codigo' => isset($row['codigo']) ? $row['codigo'] : '',
+        'descripcion' => isset($row['descripcion']) ? $row['descripcion'] : '',
+        'lote' => isset($row['lote']) ? $row['lote'] : '',
+        'cantidad' => $cantidad_formateada,
+        'deposito' => isset($row['deposito']) ? $row['deposito'] : '',
+        'fecha' => $fecha_formateada,
+        'tipo_mov' => $tipo_mov,
+        // Guardamos el objeto completo en data-json por compatibilidad
+        'DT_RowAttr' => array(
+          'data-json' => json_encode($row)
+        )
+      );
+    }
+    
+    $response = array(
+      "draw" => isset($params['draw']) ? intval($params['draw']) : 1,
+      "recordsTotal" => $recordsTotal,
+      "recordsFiltered" => $recordsFiltered,
+      "data" => $formattedData
+    );
+    
+    echo json_encode($response);
   }
 
 
@@ -102,6 +223,20 @@ class Reportes extends CI_Controller
     $resp = $this->Tablas->getTabla('tipo_articulo');
     echo json_encode($resp);
   }
+
+  /**
+	* Carga la view de trazabilidad de lotes (módulo producción) para mostrar
+	* en el modal de Salida de Etapa Productiva del histórico de artículos.
+	* @param GET batch_id - ID del batch a trazar
+	* @return view trazabilidad del módulo traz-prod-trazasoft
+	*/
+	public function verSalidaEtapaProd(){
+    log_message('DEBUG', '#TRAZA | TRAZ-COMP-ALMACENES | REPORTES | verSalidaEtapaProd() | INICIO');
+    $batch_id = $this->input->get('batch_id');
+    $data['batch_id'] = $batch_id;
+    // Usamos path absoluto ya que PRD no está definida en este módulo
+    $this->load->view(PRD.'produccion/lotes/trazabilidad', $data);
+	}
 
   /**
   * - Levanta vista reporte de Articulos Vencidos
@@ -336,5 +471,6 @@ class Reportes extends CI_Controller
 		$data = $this->Opcionesfiltros->getDataMovimientoInterno($demi_id);
 		echo json_encode($data);
 	}
+
 
 }

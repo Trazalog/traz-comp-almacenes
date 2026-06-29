@@ -7,11 +7,8 @@
         <th class="text-center">Stock</th>
         <th class="text-center">Unidad de Medida</th>
         <th class="text-center">Tipo de Articulo</th>
-        <th class="text-center">Recipiente</th>
-        <th class="text-center">Fecha Creación</th>
         <th>Establecimiento</th>
         <th>Depósito</th>
-        <th class="text-center">Estado</th>
     </thead>
     <tbody>
         <?php
@@ -24,11 +21,8 @@
             echo '<td class="text-center">'.((empty($f->cantidad)) ? '0' : $f->cantidad).'</td>';
             echo '<td class="text-center">'.$f->un_medida.'</td>';
             echo '<td class="text-center">'.((!empty($f->arttype)) ? str_replace('tipo_articulo', '', $f->arttype) : '').'</td>';
-            echo '<td class="text-center">'.((empty($f->nom_reci)) ? "<b>No Aplica</b>" : $f->nom_reci).'</td>';
-            echo '<td class="text-center">'.((empty($f->fec_alta)) ? "" : date('d/m/Y', strtotime($f->fec_alta))).'</td>';
             echo '<td>'.((empty($f->establecimiento)) ? "<b>No Aplica</b>" : $f->establecimiento).'</td>';
             echo '<td>'.((empty($f->depositodescrip)) ? "<b>No Aplica</b>" : $f->depositodescrip).'</td>';
-            echo '<td class="text-center">'.estado($f->estado).'</td>';
             echo '</tr>';
             }
         ?>
@@ -156,7 +150,7 @@
 <!---///////--- FIN MODAL EDICION E INFORMACION ---///////--->
 <script>
 // extrae datos de la tabla
-$(document).off("click", ".btnInfo").on("click", ".btnInfo", function(e) {
+$(".btnInfo").on("click", function(e) {
     $(".modal-header h4").remove();
     //guardo el tipo de operacion en el modal
     $("#operacion").val("Info");
@@ -164,8 +158,10 @@ $(document).off("click", ".btnInfo").on("click", ".btnInfo", function(e) {
     $(".modal-header").append(
         '<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search"></span> Detalle Stock </h4>'
     );
-    data = $(this).parents("tr").attr("data-json");
-    datajson = JSON.parse(data);
+    var table = $('#stock').DataTable();
+    var rowData = table.row($(this).closest('tr')).data();
+    var data = $(this).parents("tr").attr("data-json");
+    var datajson = rowData ? rowData : (data ? JSON.parse(data) : {});
     blockEdicion();
     llenarModal(datajson);
 });
@@ -241,22 +237,14 @@ $(document).ready(function() {
                 }
             },
             { data: 'un_medida', className: 'text-center' },
-            { data: 'arttype', className: 'text-center' },
-            { 
-                data: 'nom_reci', 
+            {
+                data: 'arttype',
                 className: 'text-center',
                 render: function(data, type, row) {
-                    return data ? data : '<b>No Aplica</b>';
+                    return data ? data.replace('tipo_articulo', '') : '';
                 }
             },
-            { 
-                data: 'fecha_nueva', 
-                className: 'text-center',
-                render: function(data, type, row) {
-                    return data ? data : '';
-                }
-            },
-            { 
+            {
                 data: 'establecimiento',
                 render: function(data, type, row) {
                     return data ? data : '<b>No Aplica</b>';
@@ -267,10 +255,6 @@ $(document).ready(function() {
                 render: function(data, type, row) {
                     return data ? data : '<b>No Aplica</b>';
                 }
-            },
-            { 
-                data: 'estado_label', 
-                className: 'text-center'
             }
         ],
         iDisplayLength: 10,
@@ -286,7 +270,7 @@ $(document).ready(function() {
                 //Botón para Excel
                 extend: 'excel',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -315,7 +299,7 @@ $(document).ready(function() {
                 orientation: 'landscape',
                 pageSize: 'A4',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -384,13 +368,13 @@ $(document).ready(function() {
 
                     // Hacer que la tabla ocupe todo el ancho con anchos proporcionales
                     var tableIndex = doc.content.length - 1;
-                    doc.content[tableIndex].table.widths = ['8%', '8%', '15%', '6%', '8%', '10%', '10%', '10%', '10%', '10%', '5%'];
+                    doc.content[tableIndex].table.widths = ['10%', '10%', '20%', '8%', '12%', '12%', '14%', '14%'];
                 }
             },
             {
                 extend: 'copy',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
                 },
                 footer: true,
                 title: 'Reporte Stock',
@@ -401,7 +385,7 @@ $(document).ready(function() {
             {
                 extend: 'print',
                 exportOptions: {
-                    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+                    columns: [1, 2, 3, 4, 5, 6, 7, 8]
                 },
                 footer: true,
                 title: 'Reporte Stock',

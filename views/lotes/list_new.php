@@ -78,7 +78,7 @@ input:checked+.slider:before {
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Stock</h3>
+                <h3 class="box-title">Stock Producción</h3>
             </div><!-- /.box-header -->
             <!--_________________FILTRO_________________-->
             <form id="frm-filtros">
@@ -86,7 +86,7 @@ input:checked+.slider:before {
                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" style="padding-top: 2%;">
                         <!-- _____ FECHA DESDE _____ -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                            <label>Fecha Desde:</label>
+                            <label>Fecha creación desde:</label>
                             <div class="input-group date">
                                 <a class="input-group-addon" id="daterange-btn" title="Más fechas">
                                     <i class="fa fa-magic"></i>
@@ -98,7 +98,7 @@ input:checked+.slider:before {
                         <!-- _____ FIN FECHA DESDE _____ -->
                         <!-- _____ FECHA HASTA _____ -->
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
-                            <label>Fecha Hasta :</label>
+                            <label>Fecha creación hasta:</label>
                             <input type="date" class="form-control pull-right" id="datepickerHasta" name="datepickerHasta" placeholder="Hasta">
                         </div>
                         <!-- _____ FIN FECHA HASTA _____ -->
@@ -109,14 +109,12 @@ input:checked+.slider:before {
                             <div class="input-group">
                                 <select id="establecimiento" name="establecimiento" class="form-control"
                                     onchange="getTipoDepositos(this)">
+                                    <option value="TODOS" selected>TODOS</option>
                                     <?php 
-                                $first = true;
-                                foreach ($establecimientos as $key => $o) {
-                                    $selected = $first ? 'selected' : '';
-                                    echo "<option value='$o->esta_id' $selected>$o->nombre</option>";
-                                    $first = false;
-                                }
-                                ?>
+                                    foreach ($establecimientos as $key => $o) {
+                                        echo "<option value='$o->esta_id'>$o->nombre</option>";
+                                    }
+                                    ?>
                                 </select>
                             </div>
                         </div>
@@ -126,7 +124,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo Depósito</label>
                             <select id="tipo_deposito" name="tipo_deposito" class="form-control" disabled onchange="getDepositos(this)">
-                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="TODOS" selected>TODOS</option>
                                 <option value="productivo">Productivo</option>
                                 <option value="transporte">Transporte</option>
                                 <option value="almacen">Almacen</option>
@@ -138,7 +136,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Depósito</label>
                             <select id="depositodescrip" name="depositodescrip" class="form-control" disabled>
-                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="TODOS" selected>TODOS</option>
                             </select>
                         </div>
                         <!-- /.form-group -->
@@ -147,7 +145,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Recipiente</label><!-- -->
                             <select id="nom_reci" name="nom_reci" class="form-control" disabled>
-                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="TODOS" selected>TODOS</option>
                             </select>
                         </div>
                         <!-- /.form-group -->
@@ -162,7 +160,7 @@ input:checked+.slider:before {
                         <div class="form-group col-xs-12 col-sm-2 col-md-2 col-lg-2">
                             <label>Tipo de Artículo</label>
                             <select id="artType" name="artType" class="form-control">
-                                <option value="" selected disabled> - Seleccionar - </option>
+                                <option value="TODOS" selected>TODOS</option>
                                 <?php 
                                 foreach ($tipoArticulos as $key => $o) {
                                     echo "<option value='$o->tabl_id'>$o->valor</option>";
@@ -187,17 +185,9 @@ input:checked+.slider:before {
                             <div class="input-group">
                                 <datalist id="articulos">
                                     <?php 
-                                    $usuario = $this->session->userdata();
                                     foreach($items as $o)
                                     {
-                                        // Verifica si el usuario pertenece al grupo "Tierras_de_Capayan"
-                                        if ($usuario['groupBpm'] == "Tierras_de_Capayan") {
-                                            // Muestra el artículo sin stock
-                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . "</option>";
-                                        } else {
-                                            // Muestra el artículo con stock
-                                            echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion .  " | Stock: " . $o->stock . "</option>";
-                                        }
+                                        echo "<option value='" . $o->codigo . "' data-json='" . $o->json . "' class='form-control'>" . $o->descripcion . " </option>";
                                         unset($o->json);
                                     }
                                     ?>
@@ -273,6 +263,50 @@ input:checked+.slider:before {
     </div><!-- /.col -->
 </div><!-- /.row -->
 <script>
+var articulosOriginales = [];
+
+function getArticuloTipoId(dataJson) {
+    if (!dataJson) return '';
+
+    if (typeof dataJson === 'string') {
+        try {
+            dataJson = JSON.parse(dataJson);
+        } catch (e) {
+            return '';
+        }
+    }
+
+    return String(
+        dataJson.tiar_id ||
+        dataJson.artType ||
+        dataJson.arttype ||
+        dataJson.type_id ||
+        dataJson.tabl_id ||
+        ''
+    );
+}
+
+/* filtro por tipo de articulo */
+function filtrarArticulosPorTipo() {
+    var tipoSeleccionado = String($('#artType').val() || 'TODOS');
+    var $datalist = $('#articulos');
+
+    $datalist.empty();
+
+    $.each(articulosOriginales, function(index, item) {
+        if (tipoSeleccionado === 'TODOS' || getArticuloTipoId(item.dataJson) === tipoSeleccionado) {
+            var opcion = $('<option></option>');
+            opcion.attr('value', item.codigo);
+            opcion.attr('data-json', item.rawJson);
+            opcion.text(item.descripcion);
+            $datalist.append(opcion);
+        }
+    });
+
+    $('#inputarti').val('');
+    $('label#info').html('');
+}
+
 fechaMagic();
 // Limpio las fechas para que no traiga valores por defecto
 $('#datepickerDesde').val('');
@@ -305,6 +339,19 @@ $(document).ready(function() {
             console.error("Error al verificar los depósitos.");
         }
     });
+
+    $('#articulos option').each(function() {
+        var $opcion = $(this);
+        articulosOriginales.push({
+            codigo: $opcion.val(),
+            descripcion: $opcion.text(),
+            dataJson: $opcion.data('json'),
+            rawJson: $opcion.attr('data-json')
+        });
+    });
+
+    $('#artType').on('change', filtrarArticulosPorTipo);
+    filtrarArticulosPorTipo();
 });
  
 </script>
@@ -378,7 +425,7 @@ $(document).ready(function() {
 
 $(document).ready(function(){
     $('#stock0').click(function () {    
-        if ($('#stock0').prop('checked') ) {
+                if ($('#stock0').prop('checked') ) {
             $("#establecimiento").prop('disabled',true);
             $("#depositodescrip").prop('disabled',true);
             $("#fec_alta").prop('disabled',true);
@@ -394,31 +441,25 @@ $(document).ready(function(){
 });
 
 function filtrar() {
-    
-    var nom_reci =  _isset($("#nom_reci").val()) ? $("#nom_reci").val() : '';
     var depositodescrip =   _isset($("#depositodescrip").val()) ? $("#depositodescrip").val() : '';
-    var artDescription =  _isset($("#artDescription").val()) ? $("#artDescription").val() : '';
-    var fec_desde =  _isset($("#datepickerDesde").val()) ? $("#datepickerDesde").val() : '';
-    var fec_hasta =  _isset($("#datepickerHasta").val()) ? $("#datepickerHasta").val() : '';
-    var artType = _isset($("#artType").val()) ? $("#artType").val() : '';
-    var artBarCode =   _isset($("#inputarti").val()) ? $("#inputarti").val() : '';
-    var establecimiento = _isset($("#establecimiento").val()) ? $("#establecimiento").val() : '';
-    var tipo_deposito = _isset($('#tipo_deposito').val()) ? $('#tipo_deposito').val() : '';
-    var stock0 = $('#stock0').prop('checked');   
-
+    
     $("#WindowLoad").remove();
-    $(this).click(jsShowWindowLoad('Se está Generando la Información'));
+    jsShowWindowLoad('Se está Generando la Información');
 
-    var url1 = "<?php echo base_url(ALM) ?>Lote/filtrarListado?nom_reci="+nom_reci+"&depositodescrip="+depositodescrip+"&artDescription="+artDescription+"&artBarCode="+artBarCode+"&fec_desde="+fec_desde+"&fec_hasta="+fec_hasta+"&artType="+artType+"&establecimiento="+establecimiento+"&tipo_deposito="+tipo_deposito+"&stock0="+stock0;
-    $("#cargar_tabla").load(url1,() => {
-        if(_isset(depositodescrip)){
-            tabla = $('#stock').DataTable();
-            $("#cantidadLotesDeposito").text(tabla.column( 0 ).data().length);
-            $("#nombreLotesDeposito").text($('#depositodescrip option:selected').text());
-        }
-        jsRemoveWindowLoad();
-    });
-}
+    if ($.fn.DataTable.isDataTable('#stock')) {
+        $('#stock').DataTable().ajax.reload(function(json) {
+            if(_isset(depositodescrip)){
+                $("#cantidadLotesDeposito").text(json.recordsFiltered);
+                $("#nombreLotesDeposito").text($('#depositodescrip option:selected').text());
+            }
+            jsRemoveWindowLoad();
+        });
+    } else {
+        $("#cargar_tabla").load("<?php echo base_url(ALM) ?>Lote/Listar_tabla", function() {
+            jsRemoveWindowLoad();
+        });
+    }
+};
 
 // function estado($estado) {
 //     // #   $estado =  trim($estado);
@@ -471,12 +512,7 @@ function filtrar() {
 // }
 
 function limpiar() {
-    if( $("#establecimiento").prop('disabled',true) || $("#artType").prop('disabled',true) ||  $("#fec_alta").prop('disabled',true ) ||  $("#inputarti").prop('disabled',true)){
-        $("#establecimiento").prop('disabled',false);
-        $("#artType").prop('disabled',false);
-        $("#fec_alta").prop('disabled',false);
-        $("#inputarti").prop('disabled',false);
-    }
+    // Eliminamos la lógica de habilitar campos que estaban bloqueados por el checkbox de stock 0
 
     $("#nom_reci").val('');
     $("#depositodescrip").val('');
@@ -484,20 +520,24 @@ function limpiar() {
     $("#artDescription").val('');
     $("#artBarCode").val('');
     $("#fec_alta").val('');
-    $("#artType").val('');
+    $("#artType").val('TODOS');
     $("#inputarti").val('');
     $("label#info").html('');
     $("#establecimiento").val('');
     $('#tipo_deposito').val('');
+    $('#datepickerDesde').val('');
+    $('#datepickerHasta').val('');
     if ($('#stock0').prop("checked", true)) {
         console.log("Checkbox stock0 limpiado");
         $('#stock0').prop("checked", false);   
     }
 
-    //Deshabilito tipo y deposito
+    filtrarArticulosPorTipo();
+
+    // Deshabilito tipo y deposito
     $('#tipo_deposito').prop('disabled', 'disabled');
     $("#depositodescrip").prop('disabled', 'disabled');
-    //Deshabilito recipiente
+    // Deshabilito recipiente
     $('#nom_reci').prop('disabled', 'disabled');
 
     // Vaciar tabla
@@ -519,8 +559,8 @@ function getItem(item) {
 //Si es transporte solo tomo los id's > 1000 y < 2000
 //Si es productivo solo tomo los id's > 2000
 function getDepositos(item) {
-    $("#depositodescrip").empty();
-    if (item == null) return;
+    $("#depositodescrip").empty().append('<option value="TODOS" selected>TODOS</option>');
+    if (item == null || item.value == 'TODOS') return;
 
     //Utilizo el tipo para definir que depositos mostrar
     tipoDeposito = item.value;
@@ -539,11 +579,6 @@ function getDepositos(item) {
 
             if (response != null) {
                 var resp = JSON.parse(response);
-                var opc = document.createElement('option');
-                opc.value = '';
-                opc.innerHTML = "-Seleccionar-";
-
-                $("#depositodescrip").append(opc);
                 $.each(resp, function(index, value) {
                     switch (tipoDeposito) {
                         case 'productivo':
@@ -589,11 +624,18 @@ function getDepositos(item) {
 //Limpio los depositos y lo deshabilito hasta que seleccione un tipo de deposito
 function getTipoDepositos(item) {
 
-    $("#depositodescrip").empty();
-    $("#nom_reci").empty();
+    $("#depositodescrip").empty().append('<option value="TODOS" selected>TODOS</option>');
+    $("#nom_reci").empty().append('<option value="TODOS" selected>TODOS</option>');
     if (item == null) return;
+    if (item.value == 'TODOS') {
+        $('#tipo_deposito').val('TODOS');
+        $('#tipo_deposito').prop('disabled', 'disabled');
+        $("#depositodescrip").prop('disabled', 'disabled');
+        $("#nom_reci").prop('disabled', 'disabled');
+        return;
+    }
     $('#tipo_deposito').prop('disabled', '');
-    $('#tipo_deposito').val('');
+    $('#tipo_deposito').val('TODOS');
     $("#depositodescrip").prop('disabled', 'disabled');
 
     //Traigo los recipientes por establecimiento
@@ -610,12 +652,6 @@ function getTipoDepositos(item) {
 
             if (response != null) {
                 var resp = JSON.parse(response);
-                var opc = document.createElement('option');
-                opc.value = '';
-                opc.innerHTML = "-Seleccionar-";
-
-                $("#nom_reci").append(opc);
-
                 $.each(resp, function(index, value) {
                     var opc = document.createElement('option');
                     opc.value = value.id;
