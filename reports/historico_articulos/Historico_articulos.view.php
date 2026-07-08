@@ -604,6 +604,26 @@ $(function() {
             "url": '<?php echo base_url() ?>lib/bower_components/datatables.net/js/es-ar.json'
         },
         "dom": 'lBfrtip',
+        searchDelay: 700,
+        initComplete: function() {
+            var api = this.api();
+            $('.dataTables_filter input')
+                .off('.DT')
+                .on('keyup.DT input.DT', function(e) {
+                    var value = this.value;
+                    if (e.type === 'keyup' && e.keyCode === 13) {
+                        clearTimeout(window.searchTimeout);
+                        api.search(value).draw();
+                        return;
+                    }
+                    clearTimeout(window.searchTimeout);
+                    window.searchTimeout = setTimeout(function() {
+                        if (value.length >= 2 || value.length === 0) {
+                            api.search(value).draw();
+                        }
+                    }, 700);
+                });
+        },
         buttons: [
         {
             // Botón Excel
@@ -613,6 +633,18 @@ $(function() {
             title: 'Reporte Histórico Artículos',
             className: 'btn btn-success btn-flat ml-1',
             text: 'Exportar a Excel <i class="fa fa-file-excel-o"></i>',
+             action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                },
             messageTop: function () {
                 var filtros = "Filtros aplicados:\n";
                 filtros += "Desde: " + ($('#datepickerDesde').val() || 'N/A') + " | Hasta: " + ($('#datepickerHasta').val() || 'N/A') + "\n";
@@ -633,6 +665,18 @@ $(function() {
             title: 'Reporte Histórico Artículos',
             className: 'btn btn-danger btn-flat ml-1',
             text: 'Exportar a PDF <i class="fa fa-file-pdf-o"></i>',
+            action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                },
             customize: function (doc) {
                 // Construir texto de filtros
                 var filtros = "Filtros aplicados: " +
@@ -663,7 +707,19 @@ $(function() {
                 title: 'Reporte Histórico Artículos',
                 filename: 'Reporte_Historico_Articulos',
                 className: 'btn btn-primary btn-flat ml-1',
-                text: 'Copiar <i class="fa fa-file-text-o"></i>'
+                text: 'Copiar <i class="fa fa-file-text-o"></i>',
+                 action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                }
         },
         {
             // Botón Imprimir (Con filtros, sin logo)
@@ -671,6 +727,28 @@ $(function() {
             exportOptions: { columns: [1, 2, 3, 4, 5, 6, 7, 8] },
             className: 'btn btn-default btn-flat ml-1',
             text: 'Imprimir <i class="fa fa-print"></i>',
+            action: function (e, dt, button, config) {
+                    var self = this;
+                    // 1. Guardar la paginación actual
+                    var oldLength = dt.page.len();
+                    
+                    // 2. Cambiar la longitud a un número grande para traer todos los registros del servidor
+                    dt.page.len(1000000);
+                    
+                    // 3. Listener por única vez al terminar de renderizar los datos
+                    dt.one('draw', function () {
+                        // Invocar la acción original de impresión
+                        $.fn.dataTable.ext.buttons.print.action.call(self, e, dt, button, config);
+                        
+                        // 4. Restaurar la longitud de página original tras un pequeño delay
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    
+                    // 5. Disparar el dibujado con la nueva longitud
+                    dt.draw();
+                },
             customize: function (win) {
                 var filtros = `
                     <div style="margin-bottom:20px; font-size:12px;">
@@ -935,7 +1013,7 @@ function limpiar() {
 
     // Recargar el DataTable con filtros vaciados
     if (tablaHistorico) {
-        tablaHistorico.clear().draw();
+        tablaHistorico.search('').clear().draw();
     }
 }
 
@@ -1023,6 +1101,11 @@ async function modalReimpresion(element) {
                         // Agregar la fila a la tabla
                         tablaDetalle.append(fila);
                     });
+
+                    // Mostrar justificaciones si existen
+                    if (typeof mostrarJustificaciones === 'function') {
+                        mostrarJustificaciones(dataRemito);
+                    }
                     wc();
                 } else {
                     console.error('dataRemito no es un arreglo:', dataRemito);

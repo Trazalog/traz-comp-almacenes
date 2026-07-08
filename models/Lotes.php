@@ -414,7 +414,9 @@ class Lotes extends CI_Model
             'fec_hasta'       => (empty($params['fec_hasta']) ? '' : (string)$params['fec_hasta']),
             'art_barcode'     => (empty($params['artBarCode']) ? '' : (string)$params['artBarCode']),
             'art_descrip'     => (empty($params['artDescription']) ? '' : (string)$params['artDescription']),
-            'search'          => (empty($params['search']['value']) ? '' : (string)$params['search']['value'])
+            'search'          => (empty($params['search']['value']) ? '' : (string)$params['search']['value']),
+            'order_column'    => (empty($params['order_column']) ? 'fecha_nueva' : (string)$params['order_column']),
+            'order_dir'       => (empty($params['order_dir']) ? 'DESC' : (string)$params['order_dir'])
         );
 
         log_message('DEBUG', '#TRAZA | #TRAZ-COMP-ALMACENES | Lotes | getDataTable() | post: ' . json_encode($payload));
@@ -430,6 +432,8 @@ class Lotes extends CI_Model
         $totalPayload = $payload;
         unset($totalPayload['limit']);
         unset($totalPayload['offset']);
+        unset($totalPayload['order_column']);
+        unset($totalPayload['order_dir']);
 
         $postTotal['post_lotes_stock_total'] = $totalPayload;
         
