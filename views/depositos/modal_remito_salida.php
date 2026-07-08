@@ -107,6 +107,10 @@
                                 _______ FIN TABLA ARTICULOS ______
                             </div> -->
                         </div>
+                        <div id="justificaciones_remito_seccion" style="margin-top: 15px; display: none; text-align: left;">
+                            <strong>Justificación:</strong><br>
+                            <div id="justificaciones_remito_list"></div>
+                        </div>
                         <h3 id ="texto_pie_remito"></h3>
                         <p id="observaciones_remito"></p>
                     </div>
@@ -122,6 +126,33 @@
 </div>
 
 <script>
+
+function mostrarJustificaciones(datos) {
+    var list = $('#justificaciones_remito_list');
+    list.empty();
+    $('#justificaciones_remito_seccion').hide();
+
+    if (!datos || !Array.isArray(datos)) return;
+
+    var justificadas = [];
+    var index = 1;
+    datos.forEach(function(d) {
+        var cc = parseFloat(d.cantidad_cargada || d.cantidad || d.cant);
+        var cr = parseFloat(d.cantidad_recibida);
+        var justif = d.justificacion || d.justifica;
+        if (!isNaN(cc) && !isNaN(cr) && cr < cc && justif && justif.trim() !== '') {
+            justificadas.push(index + '. ' + justif.trim());
+        }
+        index++;
+    });
+
+    if (justificadas.length > 0) {
+        justificadas.forEach(function(j) {
+            list.append('<span>' + j + '</span><br>');
+        });
+        $('#justificaciones_remito_seccion').show();
+    }
+}
 
 function cierraModalRemito() {
     $('#modalRemito').modal('hide');
@@ -268,6 +299,7 @@ async function generaRemito() {
 
     });
 
+    mostrarJustificaciones(productos);
 }
 
 </script>

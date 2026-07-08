@@ -8,9 +8,9 @@ class Movimientosinternos extends CI_Model
 		parent::__construct();
 	}
 
-    public function getMovimientosPaginados($empr_id, $user_id, $search,$lmit,$offset){
+    public function getMovimientosPaginados($empr_id, $user_id, $search,$lmit,$offset, $orderColumn, $orderDir){
 	    
-        $url = REST_ALM."/getmovimientointerno/paginado/".$empr_id."/".$user_id."/".$search."/".$lmit."/".$offset;
+        $url = REST_ALM."/getmovimientointerno/paginado/".$empr_id."/".$user_id."/".$lmit."/".$offset."/".urlencode($search)."/".$orderColumn."/".$orderDir;
 		$aux = $this->rest->callAPI("GET",$url);
 		$aux = json_decode($aux['data']);
 		return $aux->movimientos->movimiento;
