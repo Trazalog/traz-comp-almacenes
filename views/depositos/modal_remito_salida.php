@@ -148,7 +148,7 @@ function mostrarJustificaciones(datos) {
 
     if (justificadas.length > 0) {
         justificadas.forEach(function(j) {
-            list.append('<span>' + j + '</span><br>');
+            list.append('<span>' + "Línea "+ j + '</span><br>');
         });
         $('#justificaciones_remito_seccion').show();
     }
