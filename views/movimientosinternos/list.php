@@ -44,18 +44,12 @@
 <!-- MODAL RECEPCION DEPOSITO -->
 <div class="modal fade" id="modalRecepcion" tabindex="-1" role="dialog" aria-labelledby="modalRecepcionLabel">
     <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1200px;">
-        <div class="modal-content">
-            <div class="modal-header bg-blue">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" style="color:white;">&times;</span>
-                </button>
-            </div>
+        <div class="modal-content" style="border-top: 3px solid #dd4b39; border-radius: 4px;">
             <div class="modal-body" id="modalRecepcionBody">
                 <p class="text-center">
                     <i class="fa fa-spinner fa-spin"></i> Cargando...
                 </p>
             </div>
-            
         </div>
     </div>
 </div>
@@ -63,12 +57,7 @@
 <!-- MODAL SALIDA DEPOSITO -->
 <div class="modal fade" id="modalSalida" tabindex="-1" role="dialog" aria-labelledby="modalSalidaLabel">
     <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1200px;">
-        <div class="modal-content">
-            <div class="modal-header bg-blue">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true" style="color:white;">&times;</span>
-                </button>
-            </div>
+        <div class="modal-content" style="border-top: 3px solid #dd4b39; border-radius: 4px;">
             <div class="modal-body" id="modalSalidaBody">
                 <p class="text-center">
                     <i class="fa fa-spinner fa-spin"></i> Cargando...
