@@ -27,7 +27,9 @@
                     <th class="text-center">Acciones</th>
                     <th>Remito</th>
                     <th>Fecha y Hora</th>
+                    <th>Establecimiento Origen</th>
                     <th>Deposito Origen</th>
+                    <th>Establecimiento Destino</th>
                     <th>Deposito Destino</th>
                     <th>Estado</th>
                 </tr>
@@ -103,7 +105,19 @@
         { 
             "data": null,
             "render": function(data, type, row) {
+                return row.establecimiento_origen;
+            }
+        },
+        { 
+            "data": null,
+            "render": function(data, type, row) {
                 return row.nombre_depo_origen;
+            }
+        },
+        { 
+            "data": null,
+            "render": function(data, type, row) {
+                return row.establecimiento_destino;
             }
         },
         { 
@@ -153,7 +167,7 @@
             //Botón para Excel
             extend: 'excel',
             exportOptions: {
-                columns: [1, 2, 3, 4, 5]
+                columns: [1, 2, 3, 4, 5, 6, 7]
             },
             footer: true,
             title: 'Reporte Movimientos Internos',
@@ -184,7 +198,7 @@
             orientation: 'landscape',
             pageSize: 'A4',
             exportOptions: {
-                columns: [1, 2, 3, 4, 5]
+                columns: [1, 2, 3, 4, 5, 6, 7]
             },
             footer: true,
             title: 'Reporte Movimientos Internos',

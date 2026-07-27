@@ -175,6 +175,7 @@
                                                         <th>Código</th>
                                                         <th>Descripción</th>
                                                         <th>Cantidad</th>
+                                                        <th>Tipo Ajuste</th>
                                                         <th>U. Med</th>
                                                     </tr>
                                                 </thead>
@@ -1206,6 +1207,7 @@ function verAjuste(deaj_id) {
                         item.barcode,
                         item.descripcion,
                         item.cantidad,
+                        (item.tipo_ajuste_detalle ? item.tipo_ajuste_detalle.replace('tipos_ajuste_stock', '') : ''),
                         item.unidad_medida
                     ]);
                 });

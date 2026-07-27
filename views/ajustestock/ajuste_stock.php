@@ -16,6 +16,18 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-12 text-right">
+            <button type="button" class="btn btn-primary" onclick="agregarArticulo()">Agregar <i class="fa fa-plus"></i></button>
+        </div>
+    </div>
+    
+    <br>
+
+    <?php 
+        $this->load->view(ALM.'ajustestock/componentes/list_articulos');
+    ?>
+
     <?php 
         $this->load->view(ALM.'ajustestock/componentes/justificacion');
     ?>
@@ -155,91 +167,76 @@ $("#articuloent").on('change', function() {
 });
 
 function guardar(){
-    var formdata = new FormData($("#formTotal")[0]);
     if (!validarForm()) return;
-    var formobj = formToObject(formdata);
-    formobj.tipo_ent_sal  = $("#tipoajuste>option:selected").attr("data");
+
+    // Armar cabecera (tipo_ajuste vacío, ahora va en el detalle)
+    var cabecera = {
+        establecimiento: $('#establecimiento').val(),
+        deposito: $('#deposito').val(),
+        justificacion: $('#justificacion').val(),
+        tipoajuste: '' // vacío, el tipo va en cada detalle
+    };
+
+    // Armar detalle desde los hidden inputs de la tabla
+    var detalle = [];
+    $('#tablaArticulos tbody tr').each(function() {
+        var fila = $(this);
+        detalle.push({
+            articulo_id: fila.find('input[name="articulos_id[]"]').val(),
+            lote_id: fila.find('input[name="lotes_id[]"]').val(),
+            cantidad: fila.find('input[name="cantidades[]"]').val(),
+            tipo_ajuste: fila.find('input[name="tipos_ajuste[]"]').val(),
+            tipo_ent_sal: fila.find('input[name="tipos_ent_sal[]"]').val(),
+            unidad_medida: fila.find('input[name="unidades_medida[]"]').val()
+        });
+    });
+
     wo();
     $.ajax({
         type: 'POST',
         dataType: 'json',
-    data: {
-        data: formobj
-    },
-    url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
-    success: function(rsp) {
-        wc();
-        // debugger;
-        alertify.success(rsp.data);
-        limpiaForms();
-    },
-    error: function(rsp) {
-        wc();
-        alertify.error(rsp.data);
-    },
-    complete: function() {}
+        data: {
+            cabecera: cabecera,
+            detalle: detalle
+        },
+        url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
+        success: function(rsp) {
+            wc();
+            alertify.success(rsp.data);
+            setTimeout(function() {
+                linkTo('<?php echo ALM; ?>Ajustestock');
+            }, 1000);
+        },
+        error: function(rsp) {
+            wc();
+            alertify.error(rsp.data);
+        },
+        complete: function() {}
     });
 }
 
 
-/* limpia los formularios */
-function limpiaForms(){
-
-        //vacia datos cabecera
-        $("#establecimiento").val('');
-        $("#tipoajuste").val('');
-        $("#deposito").val('');
-        
-        /* vacio inputs de entrada */
-        $('#articuloent').val(null).trigger('change'); 
-        $('#loteent').val(null).trigger('change'); 
-        $('#cantidadent').val('');
-        $('#unidadesent').val('');
-        $('#detalle').html('');
-
-        /* vacio inputs salida */
-        $('#articulosal').val(null).trigger('change'); 
-        $('#lotesal').val(null).trigger('change'); 
-        $('#cantidadsal').val('');
-        $('#unidadsal').val('');
-        $('#detallesal').html('');
-
-        /* vacio justificacion */
-        $('#justificacion').val('');
-
-        /* Oculta los box ENTRADA/SALIDA */
-        $("#boxSalida :input").prop("disabled", true);
-        $("#boxEntrada :input").prop("disabled", true);
-        $("#boxEntrada").removeClass("box-primary");
-        $("#boxSalida").removeClass("box-primary");
-        $('#boxEntrada').css('opacity', '0.5');
-        $('#boxSalida').css('opacity', '0.5');
-
-}
-
 function validarForm() {
     console.log('Validando');
     var ban = ($('#establecimiento').val() != null && $('#establecimiento').val() != '' 
-    && $('#deposito').val() != null && $('#deposito').val() != ''
-    && $('#tipoajuste').val() != null && $('#tipoajuste').val() != '');
-    if (!ban) 
+    && $('#deposito').val() != null && $('#deposito').val() != '');
+    if (!ban) {
     	Swal.fire(
             'Error...',
             'Debes completar los campos Obligatorios (*)',
             'error'
         );
+        return false;
+    }
 
-    //validacion para que no permita guardar vacio el campo cantidad salida
-    if($('#articulosal').val() != null && $('#articulosal').val() != '')
-    {
-        ban = $('#cantidadsal').val() != null && $('#cantidadsal').val() != ''
-
-        if(!ban)
-            Swal.fire(
-                'Error...',
-                'Debes seleccionar cantidad',
-                'error'
-            ); 
+    // Validar que haya al menos un artículo en la tabla
+    if ($('#tablaArticulos tbody tr').length === 0) {
+        Swal.fire(
+            'Error...',
+            'Debe agregar al menos un artículo a la tabla',
+            'error'
+        );
+        return false;
     }
 
     return ban;
@@ -346,4 +343,170 @@ function formatCustom(state) {
     );
 }
 
+function confirmarCancelar() {
+    Swal.fire({
+        title: '¿Está seguro?',
+        text: '¿Está seguro que desea cancelar el Ajuste de Stock?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí, cancelar',
+        cancelButtonText: 'No'
+    }).then((result) => {
+        if (result.value) {
+            linkTo('<?php echo ALM; ?>Ajustestock');
+        }
+    });
+}
+
+function agregarArticulo() {
+    var tipoAjuste = $('#tipoajuste option:selected');
+    var tipoData = tipoAjuste.attr('data');
+    var tipoTexto = tipoAjuste.text();
+
+    if (!tipoAjuste.val()) {
+        Swal.fire({title: 'Error', text: 'Debe seleccionar un tipo de ajuste', type: 'error', confirmButtonText: 'Aceptar'});
+        return;
+    }
+
+    var itemsToAdd = [];
+
+    if (tipoData == 'ENTRADA') {
+        var articuloId = $('#articuloent option:selected').val();
+        var cantidad = $('#cantidadent').val();
+        if (!articuloId) {
+            Swal.fire({title: 'Error', text: 'Debe seleccionar un artículo', type: 'error', confirmButtonText: 'Aceptar'});
+            return;
+        }
+        if (!cantidad || parseFloat(cantidad) <= 0) {
+            Swal.fire({title: 'Error', text: 'Debe ingresar una cantidad válida', type: 'error', confirmButtonText: 'Aceptar'});
+            return;
+        }
+        itemsToAdd.push({
+            articuloId: articuloId,
+            articulo: $('#articuloent option:selected').text().trim(),
+            loteId: $('#loteent option:selected').val(),
+            lote: $('#loteent option:selected').text().trim(),
+            unidadMedida: $('#unidadesent').val(),
+            cantidad: cantidad,
+            tipoEntSal: 'ENTRADA',
+            tipoTexto: tipoTexto
+        });
+    } else if (tipoData == 'SALIDA') {
+        var articuloId = $('#articulosal option:selected').val();
+        var cantidad = $('#cantidadsal').val();
+        if (!articuloId) {
+            Swal.fire({title: 'Error', text: 'Debe seleccionar un artículo', type: 'error', confirmButtonText: 'Aceptar'});
+            return;
+        }
+        if (!cantidad || parseFloat(cantidad) <= 0) {
+            Swal.fire({title: 'Error', text: 'Debe ingresar una cantidad válida', type: 'error', confirmButtonText: 'Aceptar'});
+            return;
+        }
+        var cantNum = parseFloat(cantidad);
+        var cantFinal = (cantNum > 0 ? -cantNum : cantNum).toString();
+        itemsToAdd.push({
+            articuloId: articuloId,
+            articulo: $('#articulosal option:selected').text().trim(),
+            loteId: $('#lotesal option:selected').val(),
+            lote: $('#lotesal option:selected').text().trim(),
+            unidadMedida: $('#unidadsal').val(),
+            cantidad: cantFinal,
+            tipoEntSal: 'SALIDA',
+            tipoTexto: tipoTexto
+        });
+    } else if (tipoData == 'E/S') {
+        var entCompleto = $('#articuloent option:selected').val() && $('#cantidadent').val();
+        var salCompleto = $('#articulosal option:selected').val() && $('#cantidadsal').val();
+
+        if (!entCompleto && !salCompleto) {
+            Swal.fire({title: 'Error', text: 'Debe completar los datos de al menos un artículo (Entrada o Salida)', type: 'error', confirmButtonText: 'Aceptar'});
+            return;
+        }
+
+        if (salCompleto) {
+            var cantSal = parseFloat($('#cantidadsal').val());
+            if (isNaN(cantSal) || cantSal <= 0) {
+                Swal.fire({title: 'Error', text: 'Debe ingresar una cantidad válida para Salida', type: 'error', confirmButtonText: 'Aceptar'});
+                return;
+            }
+            itemsToAdd.push({
+                articuloId: $('#articulosal option:selected').val(),
+                articulo: $('#articulosal option:selected').text().trim(),
+                loteId: $('#lotesal option:selected').val(),
+                lote: $('#lotesal option:selected').text().trim(),
+                unidadMedida: $('#unidadsal').val(),
+                cantidad: (-cantSal).toString(),
+                tipoEntSal: 'SALIDA',
+                tipoTexto: tipoTexto + ' (Salida)'
+            });
+        }
+
+        if (entCompleto) {
+            var cantEnt = parseFloat($('#cantidadent').val());
+            if (isNaN(cantEnt) || cantEnt <= 0) {
+                Swal.fire({title: 'Error', text: 'Debe ingresar una cantidad válida para Entrada', type: 'error', confirmButtonText: 'Aceptar'});
+                return;
+            }
+            itemsToAdd.push({
+                articuloId: $('#articuloent option:selected').val(),
+                articulo: $('#articuloent option:selected').text().trim(),
+                loteId: $('#loteent option:selected').val(),
+                lote: $('#loteent option:selected').text().trim(),
+                unidadMedida: $('#unidadesent').val(),
+                cantidad: $('#cantidadent').val(),
+                tipoEntSal: 'ENTRADA',
+                tipoTexto: tipoTexto + ' (Entrada)'
+            });
+        }
+    }
+
+    itemsToAdd.forEach(function(item) {
+        var fila = '<tr>' +
+            '<td class="text-center"><button type="button" class="btn btn-danger btn-xs" onclick="eliminarArticulo(this)"><i class="fa fa-trash"></i></button></td>' +
+            '<td>' + item.tipoTexto + '</td>' +
+            '<td>' + item.articulo + '</td>' +
+            '<td>' + (item.lote || '-') + '</td>' +
+            '<td>' + (item.unidadMedida || '-') + '</td>' +
+            '<td>' + item.cantidad + '</td>' +
+            '<input type="hidden" name="articulos_id[]" value="' + item.articuloId + '">' +
+            '<input type="hidden" name="lotes_id[]" value="' + (item.loteId || '') + '">' +
+            '<input type="hidden" name="cantidades[]" value="' + item.cantidad + '">' +
+            '<input type="hidden" name="tipos_ajuste[]" value="' + tipoAjuste.val() + '">' +
+            '<input type="hidden" name="tipos_ent_sal[]" value="' + item.tipoEntSal + '">' +
+            '<input type="hidden" name="unidades_medida[]" value="' + (item.unidadMedida || '') + '">' +
+            '</tr>';
+
+        $('#tablaArticulos tbody').append(fila);
+    });
+
+    // Deshabilitar Establecimiento y Depósito
+    $('#establecimiento').prop('disabled', true);
+    $('#deposito').prop('disabled', true);
+
+    // Limpiar campos después de agregar
+    if (tipoData == 'ENTRADA' || (tipoData == 'E/S' && $('#articuloent option:selected').val())) {
+        $('#articuloent').val('').trigger('change');
+        $('#loteent').val('').trigger('change');
+        $('#unidadesent').val('');
+        $('#cantidadent').val('');
+    }
+    if (tipoData == 'SALIDA' || (tipoData == 'E/S' && $('#articulosal option:selected').val())) {
+        $('#articulosal').val('').trigger('change');
+        $('#lotesal').val('').trigger('change');
+        $('#unidadsal').val('');
+        $('#cantidadsal').val('');
+    }
+}
+
+function eliminarArticulo(btn) {
+    $(btn).closest('tr').remove();
+
+    // Si la tabla queda vacía, habilitar de nuevo Establecimiento y Depósito
+    if ($('#tablaArticulos tbody tr').length === 0) {
+        $('#establecimiento').prop('disabled', false);
+        $('#deposito').prop('disabled', false);
+    }
+}
 </script>
