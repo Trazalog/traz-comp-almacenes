@@ -18,7 +18,7 @@
 
     <div class="row">
         <div class="col-md-12 text-right">
-            <button type="button" class="btn btn-primary" onclick="agregarArticulo()">Agregar <i class="fa fa-plus"></i></button>
+            <button type="button" id="btnAgregar" class="btn btn-primary" onclick="agregarArticulo()" disabled>Agregar <i class="fa fa-plus"></i></button>
         </div>
     </div>
     
@@ -74,6 +74,10 @@ $("#articulosal").on('change', function() {
     var $idarticulo = $("#articulosal option:selected").val();
     var $iddeposito = $("#deposito option:selected").val();   
     
+    // Limpiar proveedor e inputs de cantidad
+    $('#detallesal').html('');
+    $('#cantidadsal').val('').prop('disabled', true);
+    
     if(!_isset($iddeposito)) return;
     
     wo('Buscando lotes activos...');
@@ -83,7 +87,9 @@ $("#articulosal").on('change', function() {
         url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' + $iddeposito,
         success: function(result) {
             if (!result || result.length === 0) {
-                $('#lotesal').html('<option value="" disabled selected>Sin lotes</option>').select2();
+                $('#lotesal').html('<option value="" disabled selected>Sin lotes en Depósito</option>').prop('disabled', true).select2();
+                $('#cantidadsal').val('').prop('disabled', true);
+                $('#btnAgregar').prop('disabled', true);
             } else {
                 var option_lote = '<option value="" disabled>-Seleccione opción-</option>';
                 
@@ -97,7 +103,7 @@ $("#articulosal").on('change', function() {
                 });
                 
                 // Actualizar el select y configurar Select2
-                $('#lotesal').html(option_lote).select2({
+                $('#lotesal').prop('disabled', false).html(option_lote).select2({
                     matcher: matchCustom,
                     templateResult: formatCustom
                 });
@@ -105,12 +111,20 @@ $("#articulosal").on('change', function() {
                 // Seleccionar el primer lote y disparar el evento
                 if (result.length > 0) {
                     $('#lotesal').val(result[0].lote_id).trigger('change');
+                    $('#cantidadsal').prop('disabled', false);
+                    $('#btnAgregar').prop('disabled', false);
+                } else {
+                    $('#cantidadsal').prop('disabled', true);
+                    $('#btnAgregar').prop('disabled', true);
                 }
             }
             wc();
         },
         error: function() {
             wc();
+            $('#lotesal').prop('disabled', true);
+            $('#cantidadsal').prop('disabled', true);
+            $('#btnAgregar').prop('disabled', true);
             alert('Error');
         }
     });
@@ -119,6 +133,11 @@ $("#articulosal").on('change', function() {
 $("#articuloent").on('change', function() {    
     $idarticulo = $("#articuloent>option:selected").val();
     $iddeposito = $("#deposito>option:selected").val();
+    
+    // Limpiar proveedor e inputs de cantidad
+    $('#detalle').html('');
+    $('#cantidadent').val('').prop('disabled', true);
+    
     if(! _isset($iddeposito)) return;
     wo('Buscando lotes activos...');
     $.ajax({
@@ -127,10 +146,11 @@ $("#articuloent").on('change', function() {
         url: '<?php echo ALM ?>Lote/listarPorArticulo?arti_id=' + $idarticulo + '&depo_id=' +
             $iddeposito,
         success: function(result) {
-            if (result == null) {
-                var option_lote = '<option value="" disabled selected>Sin lotes</option>';
-                $('#loteent').html(option_lote);
-                $('#loteent').select2(); 
+            if (result == null || result.length === 0) {
+                var option_lote = '<option value="" disabled selected>Sin lotes en Depósito</option>';
+                $('#loteent').html(option_lote).prop('disabled', true).select2(); 
+                $('#cantidadent').val('').prop('disabled', true);
+                $('#btnAgregar').prop('disabled', true);
             } else {
                 // Crear la opción por defecto sin el atributo 'selected'
                 var option_lote = '<option value="" disabled>-Seleccione opción-</option>';
@@ -146,7 +166,7 @@ $("#articuloent").on('change', function() {
                                                     "</option>";
                     }
                    // Actualizar el select y configurar Select2
-                    $('#loteent').html(option_lote).select2({
+                    $('#loteent').prop('disabled', false).html(option_lote).select2({
                         matcher: matchCustom,
                         templateResult: formatCustom
                     });
@@ -154,13 +174,21 @@ $("#articuloent").on('change', function() {
                     // Seleccionar el primer lote y disparar el evento
                     if (result.length > 0) {
                         $('#loteent').val(result[0].lote_id).trigger('change');
+                        $('#cantidadent').prop('disabled', false);
+                        $('#btnAgregar').prop('disabled', false);
+                    } else {
+                        $('#cantidadent').prop('disabled', true);
+                        $('#btnAgregar').prop('disabled', true);
                     }
 
             }
             wc();
         },
         error: function() {
-						wc();
+            wc();
+            $('#loteent').prop('disabled', true);
+            $('#cantidadent').prop('disabled', true);
+            $('#btnAgregar').prop('disabled', true);
             alert('Error');
         }
     });
@@ -219,7 +247,8 @@ function guardar(){
 function validarForm() {
     console.log('Validando');
     var ban = ($('#establecimiento').val() != null && $('#establecimiento').val() != '' 
-    && $('#deposito').val() != null && $('#deposito').val() != '');
+    && $('#deposito').val() != null && $('#deposito').val() != ''
+    && $('#justificacion').val() != null && $('#justificacion').val().trim() != '');
     if (!ban) {
     	Swal.fire(
             'Error...',
