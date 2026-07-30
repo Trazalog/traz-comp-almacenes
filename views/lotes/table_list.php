@@ -293,6 +293,19 @@ $(document).ready(function() {
                 filename: 'Reporte_Stock',
                 className: 'btn btn-success btn-flat ml-1',
                 text: 'Exportar a Excel <i class="fa fa-file-excel-o"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        var btnAction = $.fn.dataTable.ext.buttons.excelHtml5 ? $.fn.dataTable.ext.buttons.excelHtml5.action : $.fn.dataTable.ext.buttons.excel.action;
+                        btnAction.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                },
                 messageTop: function () {
                     var f = new Date();
                     var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
@@ -322,6 +335,19 @@ $(document).ready(function() {
                 filename: 'Reporte_Stock',
                 className: 'btn btn-danger btn-flat ml-1',
                 text: 'Exportar a PDF <i class="fa fa-file-pdf-o"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        var btnAction = $.fn.dataTable.ext.buttons.pdfHtml5 ? $.fn.dataTable.ext.buttons.pdfHtml5.action : $.fn.dataTable.ext.buttons.pdf.action;
+                        btnAction.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                },
                 messageTop: function () {
                     var f = new Date();
                     var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
@@ -396,7 +422,20 @@ $(document).ready(function() {
                 title: 'Reporte Stock',
                 filename: 'Reporte_Stock',
                 className: 'btn btn-primary btn-flat ml-1',
-                text: 'Copiar <i class="fa fa-file-text-o"></i>'
+                text: 'Copiar <i class="fa fa-file-text-o"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        var btnAction = $.fn.dataTable.ext.buttons.copyHtml5 ? $.fn.dataTable.ext.buttons.copyHtml5.action : $.fn.dataTable.ext.buttons.copy.action;
+                        btnAction.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                }
             },
             {
                 extend: 'print',
@@ -408,6 +447,28 @@ $(document).ready(function() {
                 filename: 'Reporte_Stock',
                 className: 'btn btn-default btn-flat ml-1',
                 text: 'Imprimir <i class="fa fa-print"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    // 1. Guardar la paginación actual
+                    var oldLength = dt.page.len();
+                    
+                    // 2. Cambiar la longitud a un número grande para traer todos los registros del servidor
+                    dt.page.len(1000000);
+                    
+                    // 3. Listener por única vez al terminar de renderizar los datos
+                    dt.one('draw', function () {
+                        // Invocar la acción original de impresión
+                        $.fn.dataTable.ext.buttons.print.action.call(self, e, dt, button, config);
+                        
+                        // 4. Restaurar la longitud de página original tras un pequeño delay
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    
+                    // 5. Disparar el dibujado con la nueva longitud
+                    dt.draw();
+                },
                 messageTop: function () {
                     var f = new Date();
                     var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();

@@ -94,11 +94,12 @@ $("#articulosal").on('change', function() {
                 var option_lote = '<option value="" disabled>-Seleccione opción-</option>';
                 
                 result.forEach(function(item) {
+                    var codigoLote = (item.codigo == '1' || item.codigo == 1) ? 'S/L' : item.codigo;
                     option_lote += `<option value="${item.lote_id}" 
                                     data-json='${JSON.stringify(item)}'
                                     data-foo='<small><cite>Proveedor: <span class="text-blue">${item.proveedor}</span></cite></small>'
                                     data-cantidad="${item.cantidad}">
-                                    ${item.codigo}
+                                    ${codigoLote}
                                   </option>`;
                 });
                 
@@ -158,11 +159,12 @@ $("#articuloent").on('change', function() {
                     for (let index = 0; index < result.length; index++) {
                         // Convertir el objeto 'result[index]' a JSON
                         let json = JSON.stringify(result[index]);
+                        let codigoLote = (result[index].codigo == '1' || result[index].codigo == 1) ? 'S/L' : result[index].codigo;
                         option_lote += "<option value='" + result[index].lote_id + "' " + 
                                                     "data-json='" + json + "' " +
                                                     "data-foo='<small><cite>Proveedor: <span class=\"text-blue\">" + result[index].proveedor + "</span></cite></small>' " +
                                                     "data-cantidad='" + result[index].cantidad + "'>" + 
-                                                    result[index].codigo + 
+                                                    codigoLote + 
                                                     "</option>";
                     }
                    // Actualizar el select y configurar Select2
