@@ -255,12 +255,21 @@ class Notapedidos extends CI_Model
     //guarda nota del pedido y retorna pema_id desde el servicio
     public function setCabeceraNotaV2($cabecera){
         log_message("DEBUG", '#TRAZA | #TRAZ-COMP-ALMACENES | Notapedidos | setCabeceraNotaV2($cabecera)');
+        // El DataService declara TODOS sus parametros como STRING (311 de 312 en
+        // ALMDataService). Si aca viaja un entero, json_encode lo emite sin comillas y
+        // el parser de WSO2 lo rechaza con "Value type miss match, Expected value type
+        // - 'string', but found - 'NUMBER'": la cabecera no se inserta, no devuelve
+        // pema_id, y el detalle explota despues con "invalid input syntax for integer".
+        //
+        // empresa() devuelve lo que haya en la sesion, y el tipo depende de quien la
+        // escribio: por POST llega string, pero hay caminos que guardan un entero.
+        // setCabeceraNP() ya castea por este mismo motivo; aca faltaba.
         $data['_post_notapedidos'] = array(
-            'fecha' => $cabecera['fecha'],
-            'justificacion' => $cabecera['justificacion'],
+            'fecha' => (string) $cabecera['fecha'],
+            'justificacion' => (string) $cabecera['justificacion'],
             'case_id' => null,
-            'estado' => $cabecera['estado'],
-            'empr_id' => $cabecera['empr_id'],
+            'estado' => (string) $cabecera['estado'],
+            'empr_id' => (string) $cabecera['empr_id'],
             'batch_id' => null
         );
         $resource = '/pedidos';
