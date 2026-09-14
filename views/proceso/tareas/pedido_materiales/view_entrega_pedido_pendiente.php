@@ -174,15 +174,14 @@ debugger;
 					if(idFormDinamico != "#undefined"){
 									wo();
 									var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+									if(!newInfoID){
+										wc();
+										alertify.error("Error al Agregar Formulario dinamico");
+										return;
+									}
 					}
+					// Sin formulario dinamico configurado, se entrega igual (info_id queda null).
 
-					if(newInfoID){
-
-					}else{
-									wc();
-									alertify.error("Error al Agregar Formulario dinamico");
-									return;
-					}
 
     $.ajax({
         type: 'POST',
@@ -231,15 +230,14 @@ async function cerrarTareaParcial() {
 					if(idFormDinamico != "#undefined"){
 									wo();
 									var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+									if(!newInfoID){
+										wc();
+										alertify.error("Error al Agregar Formulario dinamico");
+										return;
+									}
 					}
+					// Sin formulario dinamico configurado, se entrega igual (info_id queda null).
 
-					if(newInfoID){
-
-					}else{
-									wc();
-									alertify.error("Error al Agregar Formulario dinamico");
-									return;
-					}
 
 
     $('#entregas tr').each(function() {
@@ -436,15 +434,14 @@ async function cerrarTareaSinEntrega() {
 					if(idFormDinamico != "#undefined"){
 									wo();
 									var newInfoID = await frmGuardarConPromesa($(idFormDinamico));
+									if(!newInfoID){
+										wc();
+										alertify.error("Error al Agregar Formulario dinamico");
+										return;
+									}
 					}
+					// Sin formulario dinamico configurado, se entrega igual (info_id queda null).
 
-					if(newInfoID){
-
-					}else{
-									wc();
-									alertify.error("Error al Agregar Formulario dinamico");
-									return;
-					}
 
 
 
