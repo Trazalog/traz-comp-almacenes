@@ -4,7 +4,7 @@
     </div>
     <div class="box-body">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Establecimiento<strong class="text-danger">*</strong>:</label>
                     <select class="form-control" id="establecimiento"
@@ -20,7 +20,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Depósito<strong class="text-danger">*</strong>:</label>
                     <select class="form-control" id="deposito" name="deposito"
@@ -30,15 +30,18 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label>Tipo de ajuste<strong class="text-danger">*</strong>:</label>
-                    <select class="form-control" id="tipoajuste" name="tipoajuste" disabled>
-                        <!-- si no me equivoco le falta asignar el atributo data-->
-                        <option value="" disabled selected>-Seleccione opción-</option>
-                    </select>
-                </div>
-            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label>Tipo de ajuste<strong class="text-danger">*</strong>:</label>
+            <select class="form-control" id="tipoajuste" name="tipoajuste" disabled>
+                <!-- si no me equivoco le falta asignar el atributo data-->
+                <option value="" disabled selected>-Seleccione opción-</option>
+            </select>
         </div>
     </div>
 </div>

@@ -292,6 +292,29 @@ class Lote extends CI_Controller
     public function getDataTable()
     {
         $params = $this->input->post();
+
+        // --- Resolver ordenamiento pedido por DataTables ---
+        // Mapeo: índice de columna del datatable -> nombre de columna usado en la query DSS
+        $orderableColumns = array(
+            1 => 'codigo',
+            2 => 'artbarcode',
+            3 => 'artdescription',
+            4 => 'cantidad',
+            5 => 'un_medida',
+            6 => 'arttype',
+            7 => 'establecimiento',
+            8 => 'depositodescrip',
+        );
+
+        $orderColIndex = isset($params['order'][0]['column']) ? (int)$params['order'][0]['column'] : 3;
+        $orderDirRaw   = isset($params['order'][0]['dir']) ? strtolower($params['order'][0]['dir']) : 'desc';
+        $orderDir      = ($orderDirRaw === 'asc') ? 'ASC' : 'DESC';
+        $orderColumn   = isset($orderableColumns[$orderColIndex]) ? $orderableColumns[$orderColIndex] : 'fecha_nueva';
+
+        $params['order_column'] = $orderColumn;
+        $params['order_dir']    = $orderDir;
+        // --- Fin resolución de ordenamiento ---
+
         $result = $this->Lotes->getDataTable($params);
         
         $data = array();

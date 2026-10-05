@@ -244,8 +244,8 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 
 
 <!-- Modal Carga -->
-<div class="modal fade" id="depoDescarga" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg">
+<div class="modal fade" id="depoDescarga" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog modal-lg" style="margin-top: 60%;">
 			<div class="modal-content">
 					<div class="modal-header">
 							<div class="row">
@@ -289,7 +289,7 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-primary" onclick="agregaCantidadLote(event)">Aceptar</button>
-						<button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
+						<button type="button" class="btn btn-primary" onclick="$('#depoDescarga').modal('hide');">Cerrar</button>
 					</div> <!-- /.modal footer -->
 			</div><!-- /.tab-content -->
     </div> <!-- /.modal-dialog modal-lg -->

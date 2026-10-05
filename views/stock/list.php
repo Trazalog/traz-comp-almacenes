@@ -389,10 +389,16 @@ function limpiar() {
     //Deshabilito deposito
     $("#depositodescrip").prop('disabled', 'disabled');
 
+    // Limpiar y destruir DataTable antes de vaciar el contenedor
+    if ($.fn.DataTable.isDataTable('#stock')) {
+        $('#stock').DataTable().destroy();
+    }
+
     // Vaciar tabla
     $("#cargar_tabla").empty();
     $("#cantidadLotesDeposito").text("-");
     $("#nombreLotesDeposito").text("");
+
 }
 
 function getItem(item) {

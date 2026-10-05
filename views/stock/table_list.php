@@ -257,7 +257,12 @@ $(document).ready(function() {
                 }
             }
         ],
-        iDisplayLength: 10,
+         lengthMenu: [
+        [10, 25, 50, 100, 500, 1000],
+        [10, 25, 50, 100, 500, 1000]
+    ],
+
+    pageLength: 10,
         rowGroup: {
          enable: false
         },
@@ -266,6 +271,26 @@ $(document).ready(function() {
         },
         dom: 'lBfrtip',
         destroy: true,
+        searchDelay: 700,
+        initComplete: function() {
+            var api = this.api();
+            $('.dataTables_filter input')
+                .off('.DT')
+                .on('keyup.DT input.DT', function(e) {
+                    var value = this.value;
+                    if (e.type === 'keyup' && e.keyCode === 13) {
+                        clearTimeout(window.searchTimeout);
+                        api.search(value).draw();
+                        return;
+                    }
+                    clearTimeout(window.searchTimeout);
+                    window.searchTimeout = setTimeout(function() {
+                        if (value.length >= 2 || value.length === 0) {
+                            api.search(value).draw();
+                        }
+                    }, 700);
+                });
+        },
         buttons: [{
                 //Botón para Excel
                 extend: 'excel',
@@ -277,6 +302,18 @@ $(document).ready(function() {
                 filename: 'Reporte_Stock',
                 className: 'btn btn-success btn-flat ml-1',
                 text: 'Exportar a Excel <i class="fa fa-file-excel-o"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                },
                 messageTop: function () {
                     var f = new Date();
                     var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
@@ -306,6 +343,18 @@ $(document).ready(function() {
                 filename: 'Reporte_Stock',
                 className: 'btn btn-danger btn-flat ml-1',
                 text: 'Exportar a PDF <i class="fa fa-file-pdf-o"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        $.fn.dataTable.ext.buttons.pdfHtml5.action.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                },
                 messageTop: function () {
                     var f = new Date();
                     var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
@@ -380,8 +429,21 @@ $(document).ready(function() {
                 title: 'Reporte Stock',
                 filename: 'Reporte_Stock',
                 className: 'btn btn-primary btn-flat ml-1',
-                text: 'Copiar <i class="fa fa-file-text-o"></i>'
+                text: 'Copiar <i class="fa fa-file-text-o"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    var oldLength = dt.page.len();
+                    dt.page.len(1000000);
+                    dt.one('draw', function () {
+                        $.fn.dataTable.ext.buttons.copyHtml5.action.call(self, e, dt, button, config);
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    dt.draw();
+                }
             },
+                    
             {
                 extend: 'print',
                 exportOptions: {
@@ -392,6 +454,28 @@ $(document).ready(function() {
                 filename: 'Reporte_Stock',
                 className: 'btn btn-default btn-flat ml-1',
                 text: 'Imprimir <i class="fa fa-print"></i>',
+                action: function (e, dt, button, config) {
+                    var self = this;
+                    // 1. Guardar la paginación actual
+                    var oldLength = dt.page.len();
+                    
+                    // 2. Cambiar la longitud a un número grande para traer todos los registros del servidor
+                    dt.page.len(1000000);
+                    
+                    // 3. Listener por única vez al terminar de renderizar los datos
+                    dt.one('draw', function () {
+                        // Invocar la acción original de impresión
+                        $.fn.dataTable.ext.buttons.print.action.call(self, e, dt, button, config);
+                        
+                        // 4. Restaurar la longitud de página original tras un pequeño delay
+                        setTimeout(function() {
+                            dt.page.len(oldLength).draw();
+                        }, 100);
+                    });
+                    
+                    // 5. Disparar el dibujado con la nueva longitud
+                    dt.draw();
+                },
                 messageTop: function () {
                     var f = new Date();
                     var fecha = (f.getDate() < 10 ? '0' : '') + f.getDate() + "/" + ((f.getMonth() + 1) < 10 ? '0' : '') + (f.getMonth() + 1) + "/" + f.getFullYear();
@@ -408,13 +492,22 @@ $(document).ready(function() {
                     return filtros;
                 },
                 customize: function (win) {
+                    // Remover links y scripts vacíos o rotos que causan error 404 /index en CodeIgniter
+                    $(win.document.head).find('link[href=""], link[href="#"], link:not([href])').remove();
+                    $(win.document.head).find('script[src=""], script[src="#"]').remove();
+
+                    // CAUSA REAL del crash RESULT_CODE_KILLED_BAD_MESSAGE:
+                    // Cada <tr> tiene un atributo data-json con el objeto PHP completo serializado.
+                    // Al copiar el HTML de la tabla a la ventana de impresión, estos atributos
+                    // multiplican el tamaño del mensaje IPC de Chrome hasta hacerlo crashear.
+                    $(win.document.body).find('tr[data-json]').removeAttr('data-json');
+
                     // Remover el título original H1
                     $(win.document.body).find('h1').remove();
                     
-                    // Agregar Cabecera con Título y Logo
+                    // Cabecera solo de texto
                     var cabecera = '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 2px solid #dd4b39; padding-bottom: 10px;">' +
                                    '  <h1 style="margin: 0; font-size: 22pt; font-weight: bold; color: #333;">Reporte Stock</h1>' +
-                                   '  <img src="<?php echo $logo; ?>" style="width: 100px; height: auto;" />' +
                                    '</div>';
                     $(win.document.body).prepend(cabecera);
 
@@ -452,7 +545,7 @@ $(document).ready(function() {
                         'padding': '8px'
                     });
                 }
-            }
+            } 
         ],
         drawCallback: function(settings) {
             // Actualizar contadores si es necesario
