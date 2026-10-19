@@ -87,7 +87,9 @@
             "orderable": false,
             "className": "text-center",
             "render": function(data, type, row) {
-                return '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir" data-demiid="' + row.demi_id + '" onclick="modalReimpresion(this)"></i>';
+                return '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir" data-demiid="' + row.demi_id + '" onclick="modalReimpresion(this)"></i>'
+                    + '<i class="fa fa-qrcode" style="cursor: pointer; margin: 3px;" title="QR"></i>'
+                    + '<i class="fa fa-truck" style="cursor: pointer; margin: 3px;" title="Camión"></i>';
             }
         },
         { 
@@ -596,6 +598,11 @@ async function DatosEmpresaRemito() {
         console.error('Error en DatosEmpresaRemito:', error);
         return {};
     }
+}
+
+// Desactivar enforceFocus de Bootstrap para permitir que los inputs de Select2 dentro de los modales funcionen por teclado
+if ($.fn.modal && $.fn.modal.Constructor && $.fn.modal.Constructor.prototype) {
+    $.fn.modal.Constructor.prototype.enforceFocus = function () {};
 }
 
 // Solución para restablecer el scroll cuando se cierran modales anidados
