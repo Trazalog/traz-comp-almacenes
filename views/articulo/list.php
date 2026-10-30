@@ -389,12 +389,12 @@ $('#articles').DataTable({
 </script>
 
 <!-- Modal -->
-<div class="modal" id="new_articulo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal" id="new_articulo" tabindex="-1" role="dialog" aria-labelledby="mdl-titulo">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-blue">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                        aria-hidden="true" style="color:white;">&times;</span></button>
                 <h4 class="modal-title" id="mdl-titulo">Nuevo Artículo</h4>
             </div>
 

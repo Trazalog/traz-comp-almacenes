@@ -7,8 +7,8 @@
         </div><!-- /.box-header -->
 
         <div class="box-body">
-          <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="linkTo('<?php echo ALM; ?>Ajustestock/nuevoAjuste')">
-            <i class="fa fa-plus"></i> Nuevo Ajuste
+          <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="nuevoAjusteModal()">
+             Agregar
           </button>
           
           <table id="tbl-ajustes" class="table table-bordered table-hover">
@@ -90,6 +90,28 @@
   </div>
 </div>
 
+
+<!-- MODAL NUEVO AJUSTE -->
+<div class="modal fade" id="modalNuevoAjuste" tabindex="-1" role="dialog" aria-labelledby="modalNuevoAjusteLabel">
+  <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1200px;">
+    <div class="modal-content">
+      <div class="modal-header bg-blue">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true" style="color:white;">&times;</span>
+        </button>
+        <h4 class="modal-title" id="modalNuevoAjusteLabel">Nuevo Ajuste de Stock</h4>
+      </div>
+      <div class="modal-body" id="modalNuevoAjusteBody">
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #modalNuevoAjusteBody { padding: 5px; }
+  /* La vista reutilizada trae su propio titulo de caja: en el modal es redundante */
+  #modalNuevoAjusteBody > form > .box:first-child > .box-header { display: none; }
+</style>
 
 <script>
 $(document).ready(function() {
@@ -255,6 +277,33 @@ $(document).ready(function() {
             console.log('WaitingClose not defined');
         }
     };
+
+    // Abre el formulario de nuevo ajuste dentro de un modal (sin cambiar de pantalla)
+    window.nuevoAjusteModal = function() {
+        wo();
+    
+        $('#modalNuevoAjuste').modal('show');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: '<?php echo base_url(ALM) ?>Ajustestock/nuevoAjuste',
+            success: function(rsp) {
+                $('#modalNuevoAjusteBody').html(rsp);
+            },
+            error: function() {
+                $('#modalNuevoAjusteBody').html('<div class="alert alert-danger"><i class="fa fa-times-circle"></i> No se pudo cargar el formulario de ajuste.</div>');
+            },
+            complete: function() {
+                wc();
+            }
+        });
+    };
+
+    // Al cerrar, limpio el contenido para que el proximo alta arranque de cero
+    $('#modalNuevoAjuste').on('hidden.bs.modal', function() {
+        $('#modalNuevoAjusteBody').empty();
+    });
 
     window.verAjuste = function(deaj_id) {
         wo();

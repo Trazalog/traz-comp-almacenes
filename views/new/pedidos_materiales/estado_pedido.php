@@ -2,11 +2,11 @@
 <div class="modal fade" id="detalle_pedido2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-blue">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                        aria-hidden="true" style="color:white;">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-battery-full text-light-blue"></span> Estado Pedido Materiales</h4>
+                        class="fa fa-battery-full"></span> Estado Pedido Materiales</h4>
             </div> <!-- /.modal-header  -->
             <div class="modal-body">
                 <div class="row">

@@ -46,6 +46,9 @@ function obtenerArticulos() {
                 error('Error','No hay artículos disponibles!');
                 return;
 						}
+            // Evito duplicados si el formulario se abre mas de una vez en el modal
+            // (mantengo las opciones placeholder originales de cada select)
+            $('.articulos option[data-json]').remove();
             rsp.data.forEach(function(e, i) {
                 $('.articulos').append(
                     `<option data-json='${JSON.stringify(e)}' value="${e.arti_id}" data="${e.unidad_medida}">${e.barcode} | ${e.titulo}</option>`
@@ -232,8 +235,25 @@ function guardar(){
         url: '<?php echo ALM ?>Ajustestock/guardarAjuste',
         success: function(rsp) {
             wc();
+
+            if (!rsp.status) {
+                alertify.error(rsp.data);
+                return;
+            }
+
             alertify.success(rsp.data);
             setTimeout(function() {
+                // Si el formulario se abrio dentro del modal de la lista, lo cierro
+                // y refresco la tabla sin salir de la pantalla.
+                if ($('#modalNuevoAjuste').length) {
+                    $('#modalNuevoAjuste').modal('hide');
+
+                    if ($.fn.DataTable.isDataTable('#tbl-ajustes')) {
+                        $('#tbl-ajustes').DataTable().ajax.reload(null, false);
+                    }
+                    return;
+                }
+
                 linkTo('<?php echo ALM; ?>Ajustestock');
             }, 1000);
         },
@@ -386,6 +406,11 @@ function confirmarCancelar() {
         cancelButtonText: 'No'
     }).then((result) => {
         if (result.value) {
+            if ($('#modalNuevoAjuste').length) {
+                $('#modalNuevoAjuste').modal('hide');
+                return;
+            }
+
             linkTo('<?php echo ALM; ?>Ajustestock');
         }
     });

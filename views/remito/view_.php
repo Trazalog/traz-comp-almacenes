@@ -155,7 +155,7 @@
                 </div><!-- /.box-body -->
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal"
+                    <button type="button" class="btn btn-primary"
                         onclick="guardar()">Guardar</button>
                 </div> <!-- /.modal footer -->
 
@@ -550,8 +550,9 @@ function guardar() {
 
     });
 
-    if (detalles.lenght == 0) {
+    if (detalles.length == 0) {
         alert('No hay datos cargados');
+        return;
     }
     wo();
     $.ajax({
@@ -563,7 +564,15 @@ function guardar() {
         url: 'index.php/<?php echo ALM ?>Remito/guardar_mejor', //index.php/
         success: function(data) {
 
-            linkTo('<?php echo ALM ?>Remito');
+            // Si se abrio desde la lista, cierro el modal y refresco la lista
+            if ($('#modalNuevaRecepcion').length) {
+                $('#modalNuevaRecepcion').one('hidden.bs.modal', function () {
+                    linkTo('<?php echo ALM ?>Remito');
+                });
+                $('#modalNuevaRecepcion').modal('hide');
+            } else {
+                linkTo('<?php echo ALM ?>Remito');
+            }
         },
         error: function(result) {
             alert('Error');
@@ -623,16 +632,22 @@ function selectItemiculo(e) {
 </script>
 
 <!-- Modal -->
-<div class="modal fade" id="acumular" tabindex="false" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="acumular" tabindex="-1" role="dialog" aria-labelledby="acumularLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
+            <div class="modal-header bg-blue">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white;">&times;</span>
+                </button>
+                <h4 class="modal-title" id="acumularLabel">Lote existente</h4>
+            </div>
             <div class="modal-body text-center">
                 <h4>El Nro de Lote ya existe en el Deposito Seleccionado</h4>
                 <h4>¿Desea acumular las cantidades?</h4>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="agregar()">Si</button>
             </div>
         </div>

@@ -195,9 +195,9 @@
 <div class="modal" id="modal_articulos" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
      <div class="modal-dialog" role="document">
          <div class="modal-content">
-             <div class="modal-header">
+             <div class="modal-header bg-blue">
                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                         aria-hidden="true">&times;</span></button>
+                         aria-hidden="true" style="color:white;">&times;</span></button>
                  <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Listado de Artículos</h4>
              </div>
 
@@ -488,6 +488,7 @@
 							WaitingClose();
 							$('#btn_guardar').attr("disabled", "");
 							//alertify.success(result.data);
+							window.__ultimoMoinId = (result && result.moin_id) ? result.moin_id : null;
 							imprimir();
 						},
 						error: function(result) {
@@ -581,7 +582,7 @@ function imprimir() {
 		swalWithBootstrapButtons.fire({
 			title: '¡Éxito!',
 			text: '¿Desea imprimir antes de salir?',
-			icon: 'success',
+			type: 'success',
 			showCancelButton: true,
 			confirmButtonText: 'Imprimir',
 			cancelButtonText: 'Cerrar',
@@ -593,6 +594,7 @@ function imprimir() {
 			} else if (
 				result.dismiss === Swal.DismissReason.cancel
 			) {
+				wc();
 				swalWithBootstrapButtons.fire(
 					'Cancelado',
 					'Recuerda que puedes imprimir luego',

@@ -49,7 +49,7 @@
         <div class="modal-content" style="border-top: 3px solid #dd4b39; border-radius: 4px;">
             <div class="modal-body" id="modalRecepcionBody">
                 <p class="text-center">
-                    <i class="fa fa-spinner fa-spin"></i> Cargando...
+                    
                 </p>
             </div>
         </div>
@@ -62,7 +62,7 @@
         <div class="modal-content" style="border-top: 3px solid #dd4b39; border-radius: 4px;">
             <div class="modal-body" id="modalSalidaBody">
                 <p class="text-center">
-                    <i class="fa fa-spinner fa-spin"></i> Cargando...
+                    
                 </p>
             </div>
             
@@ -71,6 +71,41 @@
 </div>
 
 <div id="modalContainer"></div>
+
+<!-- MODAL TRANSPORTISTAS -->
+<div class="modal fade" id="modalTransportistas" tabindex="-1" role="dialog" aria-labelledby="modalTransportistasLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-blue">
+                <button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white;">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modalTransportistasLabel">Transportistas</h4>
+            </div>
+            <div class="modal-body">
+                <div id="transporteRemitoInfo" style="text-align: left; margin-bottom: 12px;">
+                    <div>Remito interno N° <strong id="transporteNroRemito">-</strong></div>
+                    <div>Fecha <strong id="transporteFechaRemito">-</strong></div>
+                </div>
+                <table id="tablaTransportistasModal" class="table table-bordered table-striped">
+                    <thead bgcolor="#eeeeee">
+                        <tr>
+                            <th style="width: 70%;">Nombre Transportista</th>
+                            <th style="width: 30%;">Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer hidden-print">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="imprimirTransportistas()">
+                    <i class="fa fa-print"></i> Imprimir
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
 
@@ -85,11 +120,15 @@
         {
             "data": null,
             "orderable": false,
+            "searchable": false,
             "className": "text-center",
+            "createdCell": function(td) {
+                $(td).addClass('text-light-blue');
+            },
             "render": function(data, type, row) {
-                return '<i class="fa fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir" data-demiid="' + row.demi_id + '" onclick="modalReimpresion(this)"></i>'
-                    + '<i class="fa fa-qrcode" style="cursor: pointer; margin: 3px;" title="QR"></i>'
-                    + '<i class="fa fa-truck" style="cursor: pointer; margin: 3px;" title="Camión"></i>';
+                return '<i class="fa fa-fw fa-print" style="cursor: pointer; margin: 3px;" title="Imprimir" data-demiid="' + row.demi_id + '" onclick="modalReimpresion(this)"></i>'
+                    + '<i class="fa fa-fw fa-qrcode" style="cursor: pointer; margin: 3px;" title="QR" data-demiid="' + row.demi_id + '" onclick="modalQrMovimiento(this)"></i>'
+                    + '<i class="fa fa-fw fa-truck" style="cursor: pointer; margin: 3px;" title="Transportistas" data-moinid="' + (row.moin_id || '') + '" data-comprobante="' + (row.num_comprobante || '') + '" data-fecha="' + (row.fec_alta || '') + '" onclick="modalTransportistas(this)"></i>';
             }
         },
         { 
@@ -159,7 +198,7 @@
                 }
                 clearTimeout(window.searchTimeout);
                 window.searchTimeout = setTimeout(function() {
-                    if (value.length >= 2 || value.length === 0) {
+                    if (value.length >= 15 || value.length === 0) {
                         api.search(value).draw();
                     }
                 }, 700);
@@ -387,6 +426,275 @@
     ]
  });
 
+ // -------------------------------------------------------
+ // QR de movimientos internos (metodologia traz-comp-codigos)
+ // El link con token se cachea por demi_id para que el QR del
+ // remito y el del boton de la tabla sean exactamente el mismo.
+ // -------------------------------------------------------
+ var __qrMovimientoLinks = {};       // demi_id -> url con token
+ var __qrMovimientoPendientes = {};  // demi_id -> promesa en curso
+ var EMPRESA_NOMBRE = <?php echo json_encode(isset($empresa_nombre) ? $empresa_nombre : ''); ?>;
+
+ var __qrMovimientoConfig = {
+     pixel: <?php echo json_encode(isset($qr_movimiento_pixel) ? $qr_movimiento_pixel : '7'); ?>,
+     level: <?php echo json_encode(isset($qr_movimiento_level) ? $qr_movimiento_level : 'L'); ?>,
+     framSize: <?php echo json_encode(isset($qr_movimiento_framsize) ? $qr_movimiento_framsize : '2'); ?>
+ };
+
+ // Crea el link con token que apunta a la vista publica del movimiento interno
+ function crearUrlQrMovimiento(demiId) {
+     return new Promise(function(resolve, reject) {
+         $.ajax({
+             type: 'POST',
+             data: {
+                 id: demiId,
+                 funcion: 'ALM.movimientointerno'
+             },
+             url: '<?php echo COD ?>Url/generarLink',
+             success: function(data) {
+                 try {
+                     var url = JSON.parse(data);
+                     resolve(url.url);
+                 } catch (e) {
+                     reject(e);
+                 }
+             },
+             error: function(err) {
+                 reject(err);
+             }
+         });
+     });
+ }
+
+ // Devuelve el link cacheado o lo genera una sola vez por demi_id
+ function obtenerLinkQrMovimiento(demiId) {
+     if (__qrMovimientoLinks[demiId]) {
+         return Promise.resolve(__qrMovimientoLinks[demiId]);
+     }
+     if (__qrMovimientoPendientes[demiId]) {
+         return __qrMovimientoPendientes[demiId];
+     }
+
+     __qrMovimientoPendientes[demiId] = crearUrlQrMovimiento(demiId).then(function(link) {
+         __qrMovimientoLinks[demiId] = link;
+         delete __qrMovimientoPendientes[demiId];
+         return link;
+     }).catch(function(err) {
+         delete __qrMovimientoPendientes[demiId];
+         throw err;
+     });
+
+     return __qrMovimientoPendientes[demiId];
+ }
+
+ // Genera la imagen QR del movimiento y la inserta en el contenedor indicado
+ function generarQrMovimiento(demiId, selectorContenedor) {
+     return obtenerLinkQrMovimiento(demiId).then(function(link) {
+         return new Promise(function(resolve, reject) {
+             var titulo = 'MovimientoInterno_' + String(demiId).replace(/[^a-zA-Z0-9_-]/g, '_');
+             var config = {
+                 titulo: titulo,
+                 pixel: __qrMovimientoConfig.pixel,
+                 level: __qrMovimientoConfig.level,
+                 framSize: __qrMovimientoConfig.framSize
+             };
+
+             $.ajax({
+                 type: 'POST',
+                 dataType: 'json',
+                 data: {
+                     config: config,
+                     data: { link: link },
+                     direccion: 'codigosQR/traz-comp-almacenes/movimientos-internos'
+                 },
+                 url: 'index.php/<?php echo COD ?>Codigo/generarQRlite',
+                 success: function(result) {
+                     if (result && result.filename) {
+                         $(selectorContenedor).html('<img src="' + result.filename + '" alt="Código QR" style="max-width: 140px;">');
+                         resolve(result.filename);
+                     } else {
+                         reject('No se pudo generar el QR');
+                     }
+                 },
+                 error: function(err) {
+                     reject(err);
+                 }
+             });
+         });
+     });
+ }
+
+ // Genera el QR que se muestra al final del remito impreso
+ function generarQrRemitoMovimiento(demiId) {
+     var $seccion = $('#contenedorQrRemito');
+     var $contenedor = $('#qrRemitoImagen');
+     if (!$seccion.length || !$contenedor.length) {
+         return Promise.resolve();
+     }
+     if (!demiId) {
+         $seccion.hide();
+         return Promise.resolve();
+     }
+
+     $seccion.show();
+
+     return generarQrMovimiento(demiId, '#qrRemitoImagen').then(function(filename) {
+         $seccion.show();
+         return filename;
+     }).catch(function(err) {
+         console.error('Error al generar el QR del remito:', err);
+         $seccion.hide();
+         return null;
+     });
+ }
+
+ // Muestra el QR del movimiento en el modal del boton QR de la tabla
+ function modalQrMovimiento(element) {
+    wo();
+     var $icon = $(element);
+     var $tr = $icon.closest('tr');
+     var demiId = $icon.data('demiid');
+
+     if (!demiId) {
+         try {
+             var rowTmp = $('#movimientos').DataTable().row($tr).data();
+             demiId = rowTmp ? rowTmp.demi_id : null;
+         } catch (e) {
+             demiId = null;
+         }
+     }
+
+     if (!demiId) {
+         if (typeof alertify !== 'undefined') {
+             alertify.error('No se pudo obtener el movimiento interno');
+         } else {
+             alert('No se pudo obtener el movimiento interno');
+         }
+         return;
+     }
+
+     var rowData = {};
+     try {
+         rowData = $('#movimientos').DataTable().row($tr).data() || {};
+     } catch (e) {
+         rowData = {};
+     }
+
+     var esc = function(txt) {
+         return $('<div>').text(txt == null ? '' : txt).html();
+     };
+
+     var infoHtml = ''
+         + '<div><strong>Empresa:</strong> ' + esc(EMPRESA_NOMBRE || '-') + '</div>'
+         + '<div><strong>Remito:</strong> ' + esc(rowData.num_comprobante || '-') + '</div>'
+         + '<div><strong>Fecha:</strong> ' + esc(rowData.fec_alta || '-') + '</div>';
+
+     $('#infoQrMovimientoInterno').html(infoHtml);
+
+     verModalImpresionMovimientoInterno();
+
+     generarQrMovimiento(demiId, '#contenedorCodigoQrMovimientoInterno').catch(function(err) {
+         console.error('Error al generar el QR del movimiento:', err);
+         $('#contenedorCodigoQrMovimientoInterno').html('<span class="text-danger">No se pudo generar el QR</span>');
+     });
+     wc();
+ }
+
+// Formatea una fecha de la base (YYYY-MM-DD HH:MM:SS) a dd/mm/yyyy HH:MM
+function formatearFechaTransportistas(valor) {
+    if (!valor) {
+        return '-';
+    }
+    if (/^\d{2}\/\d{2}\/\d{4}/.test(String(valor))) {
+        return valor;
+    }
+    var d = new Date(String(valor).replace(' ', 'T'));
+    if (isNaN(d.getTime())) {
+        return valor;
+    }
+    var dd = String(d.getDate()).padStart(2, '0');
+    var mm = String(d.getMonth() + 1).padStart(2, '0');
+    var yy = d.getFullYear();
+    var hh = String(d.getHours()).padStart(2, '0');
+    var mi = String(d.getMinutes()).padStart(2, '0');
+    return dd + '/' + mm + '/' + yy + ' ' + hh + ':' + mi;
+}
+
+// Muestra los transportistas del movimiento en el modal del icono Camion
+function modalTransportistas(element) {
+    wo();
+    var $icon = $(element);
+    var $tr = $icon.closest('tr');
+
+    var rowData = {};
+    try {
+        rowData = $('#movimientos').DataTable().row($tr).data() || {};
+    } catch (e) {
+        rowData = {};
+    }
+
+    var moinId = $icon.data('moinid') || rowData.moin_id || null;
+    var nro = $icon.data('comprobante') || rowData.num_comprobante || '-';
+    var fecha = $icon.data('fecha') || rowData.fec_alta || '-';
+
+    $('#transporteNroRemito').text(nro);
+    $('#transporteFechaRemito').text(formatearFechaTransportistas(fecha));
+
+    var $tbody = $('#tablaTransportistasModal tbody');
+
+    $('#modalTransportistas').modal('show');
+
+    if (!moinId) {
+        $tbody.html('<tr><td colspan="2" class="text-center text-danger">No se pudo identificar el movimiento.</td></tr>');
+        wc();
+        return;
+    }
+
+    $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: { moin_id: moinId },
+        url: '<?php echo base_url(ALM) ?>Movimientointerno/getTransportistasMovimiento',
+        success: function(rows) {
+            $tbody.empty();
+            if (!Array.isArray(rows) || rows.length === 0) {
+                $tbody.append('<tr><td colspan="2" class="text-center">Sin transportistas registrados.</td></tr>');
+                return;
+            }
+            rows.forEach(function(row) {
+                var fechaTxt = row.fec_alta_txt || formatearFechaTransportistas(row.fec_alta);
+                $tbody.append(
+                    $('<tr>')
+                        .append($('<td>').text(row.transportista || ''))
+                        .append($('<td>').text(fechaTxt || ''))
+                );
+            });
+        },
+        error: function() {
+            $tbody.html('<tr><td colspan="2" class="text-center text-danger">No se pudieron cargar los transportistas.</td></tr>');
+        },
+        complete: function() {
+            wc();
+        }
+    });
+}
+
+// Imprime solo el contenido del modal de transportistas
+function imprimirTransportistas() {
+    var base = '<?php echo base_url()?>';
+    $('#modalTransportistas .modal-content').printThis({
+        debug: false,
+        importCSS: true,
+        importStyle: true,
+        pageTitle: 'Transportistas',
+        printContainer: true,
+        loadCSS: base + 'lib/bower_components/bootstrap/dist/css/bootstrap.min.css',
+        copyTagClasses: true,
+        printDelay: 500,
+        base: base
+    });
+}
+
  function verDetalle(movimiento) {
      console.log("Detalle del movimiento:", movimiento);
      // Aquí se puede implementar la lógica para abrir un modal con los detalles del movimiento si es necesario
@@ -396,7 +704,6 @@ function nuevaRecepcion(e) {
     wo();
 
     // Limpiar y abrir el modal
-    $('#modalRecepcionBody').html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Cargando...</p>');
     $('#modalRecepcion').modal('show');
 
     wo();
@@ -424,7 +731,6 @@ function nuevaSalida(e) {
     wo();
 
     // Limpiar y abrir el modal
-    $('#modalSalidaBody').html('<p class="text-center"><i class="fa fa-spinner fa-spin"></i> Cargando...</p>');
     $('#modalSalida').modal('show');
 
     wo();
@@ -433,6 +739,10 @@ function nuevaSalida(e) {
         data: {},
         url: '<?php echo base_url(ALM) ?>Movimientointerno/movimientoSalida',
         success: function(rsp) {
+
+            // Evito IDs duplicados: si quedo un modal de remito pegado al body
+            // de una apertura anterior, lo elimino antes de inyectar la vista.
+            $('body > #modalRemito').remove();
 
             // 1. Inyectamos la vista en el modal
             $('#modalSalidaBody').html(rsp);
@@ -469,7 +779,15 @@ async function modalReimpresion(element) {
             success: function(response) {
 
                 console.log(dataRemito);
+                // Evito IDs duplicados al reimprimir varias veces
+                $('body > #modalRemito').remove();
                 $('#modalContainer').html(response); // Cargar el modal en el contenedor
+
+                // Evito que el overlay de carga (z-index 50000) bloquee los clics del modal
+                if ($('#waiting').length) {
+                    $('#waiting').stop(true, true).hide();
+                }
+
                 $('#modalRemito').modal('show');
 
                 // Asignar los datos de la empresa al modal
@@ -503,6 +821,14 @@ async function modalReimpresion(element) {
                 // Limpiar la tabla antes de agregar nuevas filas
                 var tablaDetalle = $('#tabla_detalle tbody');
                 tablaDetalle.empty();
+
+                // Generar el QR del remito con el mismo link que usara el boton QR
+                generarQrRemitoMovimiento(referencia);
+
+                // Cargo los transportistas guardados (la tabla usa moin_id)
+                if (typeof cargarTransportistasRemito === 'function') {
+                    cargarTransportistasRemito(r0.moin_id);
+                }
 
                 // Verifica si dataRemito es un arreglo
                 if (Array.isArray(dataRemito)) {
@@ -629,3 +955,5 @@ $(document).ajaxSuccess(function(event, xhr, settings) {
 });
 
 </script>
+
+<?php $this->load->view(COD . 'componentes/modalMovimientoInterno'); ?>

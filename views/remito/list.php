@@ -10,7 +10,7 @@
         <div class="box-body">
           <?php
             if (strpos($permission,'Add') !== false) {
-              echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;" onclick="linkTo(\''.ALM.'Remito/cargarlista\')">Agregar</button>';
+              echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;" onclick="nuevaRecepcionModal()">Agregar</button>';
             }
           ?>
           <table id="tbl-remitos" class="table table-bordered table-hover">
@@ -47,6 +47,64 @@
     </div><!-- /.col -->
   </div><!-- /.row -->
 </section><!-- /.content -->
+
+<!-- MODAL NUEVA RECEPCION -->
+<div class="modal fade" id="modalNuevaRecepcion" tabindex="-1" role="dialog" aria-labelledby="modalNuevaRecepcionLabel">
+    <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1200px;">
+        <div class="modal-content">
+            <div class="modal-header bg-blue">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white;">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modalNuevaRecepcionLabel">Nueva Recepción de Materiales</h4>
+            </div>
+            <div class="modal-body" id="modalNuevaRecepcionBody"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #modalNuevaRecepcionBody { padding: 5px; }
+    /* La vista reutilizada trae su propio titulo de caja: en el modal es redundante */
+    #modalNuevaRecepcionBody > section > .row > .col-xs-12 > .box > .box-header { display: none; }
+</style>
+
+<script>
+    $('#modalNuevaRecepcion').on('hidden.bs.modal', function () {
+        $('#modalNuevaRecepcionBody').empty();
+    });
+
+    // Al cerrar un modal anidado (articulos / acumular) mantengo el fondo y scroll del modal padre
+    $(document).on('hidden.bs.modal', '#modalNuevaRecepcion .modal', function () {
+        if ($('#modalNuevaRecepcion').hasClass('in')) {
+            $('body').addClass('modal-open');
+            if (!$('.modal-backdrop').length) {
+                $('<div class="modal-backdrop fade in"></div>').appendTo('body');
+            }
+        }
+    });
+
+    function nuevaRecepcionModal() {
+        wo();
+        $('#modalNuevaRecepcionBody').html('<p class="text-center text-muted">Cargando...</p>');
+        $('#modalNuevaRecepcion').modal('show');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: '<?php echo base_url(ALM) ?>Remito/cargarlista',
+            success: function (rsp) {
+                $('#modalNuevaRecepcionBody').html(rsp);
+            },
+            error: function () {
+                $('#modalNuevaRecepcionBody').html('<div class="alert alert-danger"><i class="fa fa-times-circle"></i> No se pudo cargar el formulario de recepción.</div>');
+            },
+            complete: function () {
+                wc();
+            }
+        });
+    }
+</script>
 
 <script>
 $('#modalvista').on('shown.bs.modal', function (e) {
@@ -273,9 +331,9 @@ var table = $('#tablaconsulta').DataTable( {
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus text-light-blue"></span> Detalle Recepción de Materiales</h4>
+      <div class="modal-header bg-blue">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true" style="color:white;">&times;</span></button>
+        <h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search-plus"></span> Detalle Recepción de Materiales</h4>
       </div> <!-- /.modal-header  -->
 
       <div class="modal-body" id="modalBodyArticle">
@@ -331,12 +389,13 @@ var table = $('#tablaconsulta').DataTable( {
 <div class="modal fade" id="modal_impresion_remito" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title hidden-print" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-print text-light-blue"></span> Imprimir Recepción de Materiales</h4>
-                <br>
+            <div class="modal-header bg-blue hidden-print">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true" style="color:white;">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
+                        class="fa fa-print"></span> Imprimir Recepción de Materiales</h4>
+            </div> <!-- /.modal-header  -->
+            <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-8 col-md-8">
                         <h3 style="margin-top:-10px;"><strong>Recepción de Materiales</strong></h3>
@@ -347,7 +406,6 @@ var table = $('#tablaconsulta').DataTable( {
                             style="max-width: 150px; margin-left: 0%;">
                     </div>
                 </div>
-
 
                 <div class="row">
                     <br>
@@ -364,8 +422,7 @@ var table = $('#tablaconsulta').DataTable( {
                         <input class="form-control proveedor_impresion" type="text" value="???" readonly>
                     </div>
                 </div>
-            </div> <!-- /.modal-header  -->
-            <div class="modal-body">
+
                 <div class="row">
                     <div class="col-xs-12">
                         <table class="table table-bordered table-striped table-hover">

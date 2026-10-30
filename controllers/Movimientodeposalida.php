@@ -98,7 +98,7 @@ class Movimientodeposalida extends CI_Controller {
 		}
 
 		$resp_desc = $this->descontarLote($post_detalle);
-		echo json_encode(['status' => $resp_desc, 'data' => 'Guardado Exitoso...']);
+		echo json_encode(['status' => $resp_desc, 'data' => 'Guardado Exitoso...', 'moin_id' => $moin_id]);
 	}
 
 	/**

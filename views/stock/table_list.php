@@ -14,7 +14,7 @@
         <?php
             foreach($list as $f){
             echo "<tr data-json='".json_encode($f)."'>";
-            echo '<td class="text-center"><button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></but</td>';
+            echo '<td class="text-center text-light-blue"><i class="fa fa-search btnInfo" style="cursor: pointer; margin: 3px;" title="Detalle Stock" data-toggle="modal" data-target="#modalinfo"></i></td>';
             echo '<td class="text-center">'.(($f->codigo == "1" || empty($f->codigo)) ? 'S/L' : $f->codigo).'</td>';
             echo '<td>'.$f->artbarcode.'</td>';
             echo '<td>'.$f->artdescription.'</td>';
@@ -37,6 +37,9 @@
                 <button type="button" class="close close_modal_edit" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true" style="color:white;">&times;</span>
                 </button>
+                <h4 class="modal-title" id="myLargeModalLabel">
+                    <span class="fa fa-fw fa-search"></span> Detalle Stock
+                </h4>
             </div>
             <div class="modal-body ">
                 <form class="formEdicion" id="formEdicion">
@@ -150,39 +153,48 @@
 <!---///////--- FIN MODAL EDICION E INFORMACION ---///////--->
 <script>
 // extrae datos de la tabla
-$(".btnInfo").on("click", function(e) {
-    $(".modal-header h4").remove();
+// Delegado: los botones de info se re-renderizan con cada pagina/busqueda del DataTable
+$(document).off('click.stockInfo', '.btnInfo').on('click.stockInfo', '.btnInfo', function(e) {
+    var $btn = $(this);
+
     //guardo el tipo de operacion en el modal
     $("#operacion").val("Info");
     //pongo titulo al modal
-    $(".modal-header").append(
-        '<h4 class="modal-title"  id="myModalLabel"><span id="modalAction" class="fa fa-fw fa-search"></span> Detalle Stock </h4>'
-    );
-    var table = $('#stock').DataTable();
-    var rowData = table.row($(this).closest('tr')).data();
-    var data = $(this).parents("tr").attr("data-json");
-    var datajson = rowData ? rowData : (data ? JSON.parse(data) : {});
+    $("#modalinfo .modal-title").html('<span id="modalAction" class="fa fa-fw fa-search"></span> Detalle Stock');
+
+    var data = $btn.parents("tr").attr("data-json");
+    var datajson = data ? JSON.parse(data) : {};
+
+    // Si la tabla es server-side, el rowData del DataTable tiene los datos completos
+    if ($.fn.DataTable.isDataTable('#stock')) {
+        var rowData = $('#stock').DataTable().row($btn.closest('tr')).data();
+        if (rowData) {
+            datajson = rowData;
+        }
+    }
+
     blockEdicion();
     llenarModal(datajson);
 });
 
 // llena modal para edicion y muestra
 function llenarModal(datajson) {
-    $('#lote_id_edit').val(datajson.lote_id);
+    datajson = datajson || {};
+    $('#lote_id_edit').val(datajson.lote_id || '');
     if (datajson.codigo == 1) {
         $('#codigo_edit').val("S/L");
     } else {
-        $('#codigo_edit').val(datajson.codigo);
+        $('#codigo_edit').val(datajson.codigo || '');
     }
-    $('#artBarCode_edit').val(datajson.artbarcode);
-    $('#artDescription_edit').val(datajson.artdescription);
-    $('#cantidad_edit').val(datajson.cantidad);
-    $('#un_medida_edit').val(datajson.un_medida);
-    $('#nom_reci_edit').val(datajson.nom_reci);
-    var fecha = datajson.fec_alta.substring(0, 10);
+    $('#artBarCode_edit').val(datajson.artbarcode || '');
+    $('#artDescription_edit').val(datajson.artdescription || '');
+    $('#cantidad_edit').val((datajson.cantidad === null || datajson.cantidad === undefined) ? '0' : datajson.cantidad);
+    $('#un_medida_edit').val(datajson.un_medida || '');
+    $('#nom_reci_edit').val(datajson.nom_reci || '');
+    var fecha = datajson.fec_alta ? String(datajson.fec_alta).substring(0, 10) : '';
     $('#fec_alta_edit').val(fecha);
-    $('#depositodescrip_edit').val(datajson.depositodescrip);
-    $('#recipiente_edit').val(datajson.recipiente);
+    $('#depositodescrip_edit').val(datajson.depositodescrip || '');
+    $('#recipiente_edit').val(datajson.recipiente || '');
 }
 // deshabilita botones, selects e inputs de modal
 function blockEdicion() {
@@ -216,8 +228,12 @@ $(document).ready(function() {
                 data: null, 
                 className: 'text-center', 
                 orderable: false,
+                searchable: false,
+                createdCell: function(td) {
+                    $(td).addClass('text-light-blue');
+                },
                 render: function(data, type, row) {
-                    return '<button type="button" title="Info" class="btn btn-primary btn-circle btnInfo" data-toggle="modal" data-target="#modalinfo" ><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span></button>';
+                    return '<i class="fa fa-search btnInfo" style="cursor: pointer; margin: 3px;" title="Detalle Stock" data-toggle="modal" data-target="#modalinfo"></i>';
                 }
             },
             { 
@@ -278,14 +294,16 @@ $(document).ready(function() {
                 .off('.DT')
                 .on('keyup.DT input.DT', function(e) {
                     var value = this.value;
+
+                    clearTimeout(window.searchTimeout);
+
                     if (e.type === 'keyup' && e.keyCode === 13) {
-                        clearTimeout(window.searchTimeout);
                         api.search(value).draw();
                         return;
                     }
-                    clearTimeout(window.searchTimeout);
+
                     window.searchTimeout = setTimeout(function() {
-                        if (value.length >= 2 || value.length === 0) {
+                        if (value.length >= 15 || value.length === 0) {
                             api.search(value).draw();
                         }
                     }, 700);
