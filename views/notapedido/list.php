@@ -7,7 +7,7 @@
             if(!viewOT)
             {
             echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
-                    onclick="linkTo(\''.ALM.'Notapedido/crearPedido\')">Agregar</button>';
+                    onclick="nuevoPedidoModal()">Agregar</button>';
             }else{
                     echo '<button class="btn btn-block btn-primary" style="width: 100px; margin: 10px;"
                     onclick="AbrirModal()">Agregar</button>';
@@ -17,7 +17,7 @@
                     echo '<input type="hidden" value="'.$descripcionOT.'" id="descripcionOT">';
             }
         ?>
-        <table id="deposito" class="table table-bordered table-striped table-hover">
+        <table id="tbl-pedidos" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                     <th>Acciones</th>
@@ -239,7 +239,7 @@ function rellenarCabeceraEntrega(json){
 //Funcion de datatable para extencion de botones exportar
 //excel, pdf, copiado portapapeles e impresion
 
-var tablaDeposito =  $('#deposito').DataTable({
+var tablaDeposito =  $('#tbl-pedidos').DataTable({
         responsive: true,
         language: {
             url: '<?php base_url() ?>lib/bower_components/datatables.net/js/es-ar.json' //Ubicacion del archivo con el json del idioma.
@@ -296,21 +296,85 @@ var tablaDeposito =  $('#deposito').DataTable({
 </script>
 
 <!-- Modal Agregar -->
-<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg" >
+<div class="modal fade" id="agregar_pedido" tabindex="-1" role="dialog" aria-labelledby="agregarPedidoLabel">
+    <div class="modal-dialog modal-lg" style="width: 90%; max-width: 1200px;">
         <div class="modal-content">
-            <div class="modal-header">
-            </div> <!-- /.modal-header  -->
-             <div class="modal-body table-responsive" id="modalBodyArticle">
+            <div class="modal-header bg-blue">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white;">&times;</span>
+                </button>
+                <h4 class="modal-title" id="agregarPedidoLabel">Nuevo Pedido de Materiales</h4>
+            </div>
+             <div class="modal-body table-responsive" id="modalBodyNuevoPedido">
                 <?php 
-                
-                $this->load->view(ALM.'notapedido/generar_pedido');?>
+                // En el flujo de OT el formulario ya viene con los datos de la orden.
+                // En el listado general se carga por AJAX (nuevoPedidoModal).
+                if (viewOT) {
+                    $this->load->view(ALM.'notapedido/generar_pedido');
+                }
+                ?>
             </div> <!-- /.modal-body -->
-                        
-                    </div> <!-- /.modal-content -->
-                </div>
+        </div> <!-- /.modal-content -->
     </div> <!-- /.modal-dialog modal-lg -->
+</div> <!-- /.modal fade -->
 <!-- Fin Modal Agregar -->
+
+<style>
+    #modalBodyNuevoPedido { padding: 5px; }
+    /* La vista reutilizada trae su propio titulo de caja: en el modal es redundante */
+    #modalBodyNuevoPedido > .box > .box-header { display: none; }
+</style>
+
+<script>
+    // Al cerrar un modal anidado (articulos / cantidad / eliminar) mantengo el fondo y scroll del modal padre
+    $(document).on('hidden.bs.modal', '#agregar_pedido .modal', function () {
+        if ($('#agregar_pedido').hasClass('in')) {
+            $('body').addClass('modal-open');
+            if (!$('.modal-backdrop').length) {
+                $('<div class="modal-backdrop fade in"></div>').appendTo('body');
+            }
+        }
+    });
+
+    var nuevoPedidoReq = 0;
+
+    // Si el contenido se cargo por AJAX, lo limpio al cerrar el modal
+    $('#agregar_pedido').on('hidden.bs.modal', function () {
+        nuevoPedidoReq++; // invalido respuestas que lleguen tarde
+        if ($(this).data('cargadoAjax')) {
+            $('#modalBodyNuevoPedido').empty();
+            $(this).data('cargadoAjax', false);
+        }
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+
+    function nuevoPedidoModal() {
+        var req = ++nuevoPedidoReq;
+        wo();
+        $('#modalBodyNuevoPedido').html('<p class="text-center text-muted">Cargando...</p>');
+        $('#agregar_pedido').data('cargadoAjax', true).modal('show');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: '<?php echo base_url(ALM) ?>Notapedido/crearPedido',
+            success: function (rsp) {
+                // Si se cerro el modal o hubo otra apertura, descarto la respuesta
+                if (req !== nuevoPedidoReq || !$('#agregar_pedido').hasClass('in')) return;
+                $('#modalBodyNuevoPedido').html(rsp);
+            },
+            error: function () {
+                if (req !== nuevoPedidoReq) return;
+                $('#modalBodyNuevoPedido').html('<div class="alert alert-danger"><i class="fa fa-times-circle"></i> No se pudo cargar el formulario de pedido.</div>');
+            },
+            complete: function () {
+                wc();
+            }
+        });
+    }
+</script>
+
 <!-- Modal ver nota pedido-->
 <div class="modal fade" id="detalle_pedido" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg" >

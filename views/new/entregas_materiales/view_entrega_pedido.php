@@ -398,8 +398,17 @@ async function guardarTodo() {
                                     directo: true
                                 },
                                 success: function() {
-                                    Swal.fire('Guardado!', 'La entrega se registró con éxito.', 'success');
-                                    linkTo('<?php echo base_url(ALM) ?>new/Entrega_Material');
+                                    Swal.fire('Guardado!', 'La entrega se registró con éxito.', 'success').then(function () {
+                                        // Si se abrio desde la lista, cierro el modal y refresco la lista
+                                        if ($('#modalEntregaDirecta').length) {
+                                            $('#modalEntregaDirecta').one('hidden.bs.modal', function () {
+                                                linkTo('<?php echo base_url(ALM) ?>new/Entrega_Material');
+                                            });
+                                            $('#modalEntregaDirecta').modal('hide');
+                                        } else {
+                                            linkTo('<?php echo base_url(ALM) ?>new/Entrega_Material');
+                                        }
+                                    });
                                 },
                                 error: function() {
                                     Swal.fire('Error', 'Error al registrar la entrega.', 'error');

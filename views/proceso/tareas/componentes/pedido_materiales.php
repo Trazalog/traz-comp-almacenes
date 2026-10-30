@@ -136,9 +136,9 @@ function get_detalle() {;
 <div class="modal fade" id="set_cantidad">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-blue">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span></button>
+                    <span aria-hidden="true" style="color:white;">&times;</span></button>
                 <h4 class="modal-title">Ingresar Cantidad</h4>
             </div>
             <div class="modal-body">
@@ -162,11 +162,11 @@ function get_detalle() {;
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content">
 
-            <div class="modal-header">
+            <div class="modal-header bg-blue">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                        aria-hidden="true" style="color:white;">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-fw fa-times-circle text-light-blue"></span> Eliminar Artículo</h4>
+                        class="fa fa-fw fa-times-circle"></span> Eliminar Artículo</h4>
             </div> <!-- /.modal-header  -->
 
             <div class="modal-body" id="modalBodyArticle">
@@ -274,7 +274,15 @@ function lanzarPedido() {
                             console.log('pemaId: '+ result.data.pemaId);
                             var pedido_num = result.data.pemaId;
                             if (result.status) {
-                                linkTo('<?php echo ALM ?>Notapedido');
+                                // Si se abrio desde la lista, cierro el modal y refresco la lista
+                                if ($('#agregar_pedido').hasClass('in')) {
+                                    $('#agregar_pedido').one('hidden.bs.modal', function () {
+                                        linkTo('<?php echo ALM ?>Notapedido');
+                                    });
+                                    $('#agregar_pedido').modal('hide');
+                                } else {
+                                    linkTo('<?php echo ALM ?>Notapedido');
+                                }
                                 Swal.fire(
                                     'Pedido de Materiales N°:' +pedido_num,
                                     'Pedido de Materiales generado con Exito',

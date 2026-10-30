@@ -95,9 +95,12 @@ class Movimdeposalida extends CI_Model {
 	* @param string columna tabla a buscar
 	* @return array listado de coincidencias
 	*/
-    public function obtenerTablaEmpr_id($tabla)
+    public function obtenerTablaEmpr_id($tabla, $empr_id = null)
     {
-        $url = REST_CORE."/tabla/$tabla/empresa/".empresa();
+        if ($empr_id === null || $empr_id === '') {
+            $empr_id = empresa();
+        }
+        $url = REST_CORE."/tabla/$tabla/empresa/".$empr_id;
 		$aux = $this->rest->callAPI("GET",$url);
 		$aux = json_decode($aux['data']);
 		return $aux->tablas->tabla;
@@ -105,12 +108,67 @@ class Movimdeposalida extends CI_Model {
     }
 
 	/**
+	* Obtiene los transportistas asociados a un movimiento interno
+	* @param string moin_id
+	* @return array listado de transportistas
+	*/
+	public function getTransportistasMovimiento($moin_id)
+	{
+		$url = REST_ALM . '/movimientoInterno/transportistas/moin/' . $moin_id;
+		$aux = $this->rest->callAPI("GET", $url);
+		$aux = json_decode($aux['data']);
+
+		if (isset($aux->transportistasMovimientosInternos->transportistaMovimientoInterno)) {
+			$rows = $aux->transportistasMovimientosInternos->transportistaMovimientoInterno;
+			return is_array($rows) ? $rows : array($rows);
+		}
+
+		return array();
+	}
+
+	/**
+	* Guarda un transportista asociado a un movimiento interno
+	* @param string moin_id, string nombre transportista
+	* @return array respuesta del servicio
+	*/
+	public function guardarTransportistaMovimiento($moin_id, $transportista)
+	{
+		$user_app = userNick();
+		if (empty($user_app)) {
+			// Alta desde la vista publica del QR (sin sesion)
+			$user_app = 'QR';
+		}
+
+		// WSO2 Data Services espera el payload envuelto con el nombre de la
+		// operacion POST: _post_ + path del recurso (igual que
+		// _post_movimientointerno o _post_lote_descontar).
+		$post = array(
+			'_post_movimientointerno_transportista' => array(
+				'transportista' => $transportista,
+				'user_app'      => $user_app,
+				'moin_id'       => (string) $moin_id
+			)
+		);
+
+		$aux = $this->rest->callAPI("POST", REST_ALM . '/movimientoInterno/transportista', $post);
+
+		if (empty($aux['status'])) {
+			throw new Exception('ALMDataService respondio con error al guardar el transportista.');
+		}
+
+		return json_decode($aux['data'], true);
+	}
+
+	/**
 	* Obtiene los datos de movimientos internos por demi_id para reimprimir el remito
 	* @param string demi_id
 	* @return array listado de coincidencias
 	*/
-	public function getDatosRemito($data){
-		$url = REST_ALM."/getmovimientointerno/demi/$data/$data/$data/".empresa();
+	public function getDatosRemito($data, $empr_id = null){
+		if ($empr_id === null || $empr_id === '') {
+			$empr_id = empresa();
+		}
+		$url = REST_ALM."/getmovimientointerno/demi/$data/$data/$data/".$empr_id;
 		$aux = $this->rest->callAPI("GET",$url);
 		$aux = json_decode($aux['data']);
 		return $aux->movimientosInternos->movimientoInterno;

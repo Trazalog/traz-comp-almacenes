@@ -6,7 +6,7 @@
         <?php if(isset($entrega_directa) && $entrega_directa !== null && ($entrega_directa === true || $entrega_directa === 'true' || $entrega_directa == 1)): 
             
             echo '<button class="btn btn-block btn-primary"  style="width: 200px; margin: 10px;" 
-                    onclick="linkTo(\''.ALM.'new/Entrega_Material/entregaMaterialesDirecto\')">Entrega Materiales Directa</button>';
+                    onclick="nuevaEntregaDirecta()">Entrega Materiales Directa</button>';
         endif; 
         ?>
         <table id="entregas" class="table table-bordered table-striped table-hover">
@@ -45,6 +45,63 @@
         </table>
     </div><!-- /.box-body -->
 </div><!-- /.box -->
+
+<!-- MODAL ENTREGA MATERIALES DIRECTA -->
+<div class="modal fade" id="modalEntregaDirecta" tabindex="-1" role="dialog" aria-labelledby="modalEntregaDirectaLabel">
+    <div class="modal-dialog modal-lg" role="document" style="width: 90%; max-width: 1200px;">
+        <div class="modal-content">
+            <div class="modal-header bg-blue">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" style="color:white;">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modalEntregaDirectaLabel">Entrega Materiales Directa</h4>
+            </div>
+            <div class="modal-body" id="modalEntregaDirectaBody"></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    #modalEntregaDirectaBody { padding: 5px; }
+    /* La vista reutilizada trae su propio titulo de caja: en el modal es redundante */
+    #modalEntregaDirectaBody > .box > .box-header { display: none; }
+</style>
+
+<script>
+    $('#modalEntregaDirecta').on('hidden.bs.modal', function () {
+        $('#modalEntregaDirectaBody').empty();
+    });
+
+    // Al cerrar un modal anidado (articulos / lotes) mantengo el fondo y scroll del modal padre
+    $(document).on('hidden.bs.modal', '#modalEntregaDirecta .modal', function () {
+        if ($('#modalEntregaDirecta').hasClass('in')) {
+            $('body').addClass('modal-open');
+            if (!$('.modal-backdrop').length) {
+                $('<div class="modal-backdrop fade in"></div>').appendTo('body');
+            }
+        }
+    });
+
+    function nuevaEntregaDirecta() {
+        wo();
+        $('#modalEntregaDirecta').modal('show');
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'html',
+            url: '<?php echo base_url(ALM) ?>new/Entrega_Material/entregaMaterialesDirecto',
+            success: function (rsp) {
+                $('#modalEntregaDirectaBody').html(rsp);
+            },
+            error: function () {
+                $('#modalEntregaDirectaBody').html('<div class="alert alert-danger"><i class="fa fa-times-circle"></i> No se pudo cargar el formulario de entrega.</div>');
+            },
+            complete: function () {
+                wc();
+            }
+        });
+    }
+</script>
 
 <script>
     //DataTable($('#entregas'));
@@ -235,12 +292,13 @@
 <div class="modal fade" id="modal_detalle_entrega" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-blue">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                        aria-hidden="true" style="color:white;">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-search text-light-blue"></span> Detalle Pedido Materiales</h4>
-                <br>
+                        class="fa fa-search"></span> Detalle Pedido Materiales</h4>
+            </div> <!-- /.modal-header  -->
+            <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-12 col-sm-6 col-lg-4">
                         <label for="">Entrega:</label>
@@ -271,8 +329,6 @@
                         <input class="form-control estado" type="text" value="???" readonly>
                     </div>
                 </div>
-            </div> <!-- /.modal-header  -->
-            <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-12">
                         <table class="table table-bordered table-striped table-hover">
@@ -304,12 +360,13 @@
 <div class="modal fade" id="modal_detalle_entrega_impresion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog " role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close hidden-print" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title hidden-print" id="myModalLabel"><span id="modalAction"
-                        class="fa fa-print text-light-blue"></span> Imprimir Detalle Pedido Materiales</h4>
-                <br>
+            <div class="modal-header bg-blue hidden-print">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true" style="color:white;">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"><span id="modalAction"
+                        class="fa fa-print"></span> Imprimir Detalle Pedido Materiales</h4>
+            </div> <!-- /.modal-header  -->
+            <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-8 col-md-8">
                         <h3 style="margin-top:-10px;"><strong>Comprobante de entrega</strong></h3>
@@ -353,8 +410,6 @@
                         <input class="form-control estado_impresion" type="text" value="???" readonly>
                     </div>
                 </div>
-            </div> <!-- /.modal-header  -->
-            <div class="modal-body">
                 <div class="row">
                     <div class="col-xs-12">
                         <table class="table table-bordered table-striped table-hover">

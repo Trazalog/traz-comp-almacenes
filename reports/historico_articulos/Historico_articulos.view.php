@@ -619,7 +619,7 @@ $(function() {
                     }
                     clearTimeout(window.searchTimeout);
                     window.searchTimeout = setTimeout(function() {
-                        if (value.length >= 2 || value.length === 0) {
+                        if (value.length >= 15 || value.length === 0) {
                             api.search(value).draw();
                         }
                     }, 700);

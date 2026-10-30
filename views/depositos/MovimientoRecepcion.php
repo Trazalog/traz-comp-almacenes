@@ -184,12 +184,11 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 <div class="modal fade" id="modalVista" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg">
 			<div class="modal-content">
-					<div class="modal-header">
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-lg-12">
-									<h3>Detalle De Recepción</h3>
-								</div>
-							</div>
+					<div class="modal-header bg-blue">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true" style="color:white;">&times;</span>
+							</button>
+							<h4 class="modal-title" id="myModalLabel">Detalle De Recepción</h4>
 					</div> <!-- /.modal-header  -->
 					<div class="modal-body table-responsive" id="modalBodyArticle">
 
@@ -247,12 +246,8 @@ table#tbl_recepciones tbody tr:nth-child(odd):hover td, table#tbl_productos_rece
 <div class="modal fade" id="depoDescarga" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-lg" style="margin-top: 60%;">
 			<div class="modal-content">
-					<div class="modal-header">
-							<div class="row">
-								<div class="col-xs-12 col-sm-12 col-lg-12">
-									<h3>Cargar en Depósito y Lote</h3>
-								</div>
-							</div>
+					<div class="modal-header bg-blue">
+							<h4 class="modal-title" id="myModalLabel">Cargar en Depósito y Lote</h4>
 					</div> <!-- /.modal-header  -->
 					<div class="modal-body table-responsive" id="modalBodyArticle">
 						<div class="row">
